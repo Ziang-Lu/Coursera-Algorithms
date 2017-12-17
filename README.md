@@ -1,1 +1,2 @@
-### Coursera-Algorithms
+### Coursera-Algorithms [Stanford University]
+
