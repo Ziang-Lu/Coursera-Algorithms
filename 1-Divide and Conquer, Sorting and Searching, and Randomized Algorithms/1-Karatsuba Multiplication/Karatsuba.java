@@ -64,14 +64,4 @@ public class Karatsuba {
         return newStr;
     }
 
-    /**
-     * Main driver.
-     * @param args arguments from command line
-     */
-    public static void main(String[] args) {
-        BigInteger x = new BigInteger("1234"), y = new BigInteger("5678");
-        assert karatsuba(x, y).equals(new BigInteger("7006652"));
-        System.out.println("Passed!");
-    }
-
 }

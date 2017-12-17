@@ -50,7 +50,3 @@ def pad_zeros(s, n_zeros, at_front):
         new_s += '0' * n_zeros
     return new_s
 
-
-if __name__ == '__main__':
-    assert karatsuba(1234, 5678) == 7006652
-    print('Passed!')
