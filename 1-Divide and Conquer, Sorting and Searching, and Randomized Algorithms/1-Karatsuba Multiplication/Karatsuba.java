@@ -36,6 +36,9 @@ public class Karatsuba {
         String part1Str = padZeros(ac.toString(), 2 * (n - n / 2), false);
         String part2Str = padZeros(adBC.toString(), n - n / 2, false);
         return new BigInteger(part1Str).add(new BigInteger(part2Str)).add(bd);
+        // T(n) = 3T(n/2) + O(n)
+        // a = 2, b = 2, d = 1
+        // According to Master Method, the overall running time complexity is O(n^1.585), better than O(n^2).
     }
 
     /**

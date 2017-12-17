@@ -1,6 +1,8 @@
 #!usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+__author__ = 'Ziang Lu'
+
 
 def karatsuba(x, y):
     """
@@ -32,6 +34,10 @@ def karatsuba(x, y):
     part_1_s = pad_zeros(str(ac), n_zeros=2 * (n - n // 2), at_front=False)
     part_2_s = pad_zeros(str(ad_bc), n_zeros=n - n // 2, at_front=False)
     return int(part_1_s) + int(part_2_s) + bd
+    # T(n) = 3T(n/2) + O(n)
+    # a = 2, b = 2, d = 1
+    # According to Master Method, the overall running time complexity is
+    # O(n^1.585), better than O(n^2).
 
 
 def pad_zeros(s, n_zeros, at_front):
