@@ -5,11 +5,14 @@ public class Karatsuba {
     /**
      * Calculates the multiplication of two integers using Karatsuba
      * Multiplication.
+     * Naive calculation: O(n^2)
      * @param x first operand
      * @param y second operand
      * @return product
      */
     private static BigInteger karatsuba(BigInteger x, BigInteger y) {
+        // We assume the input x and y are both non-negative.
+
         String xStr = x.toString(), yStr = y.toString();
 
         // Pad leading zeros to make x and y of the same length
@@ -42,7 +45,8 @@ public class Karatsuba {
     }
 
     /**
-     * Private helper method to pad the given number of zeros to the given string.
+     * Private helper method to pad the given number of zeros to the given
+     * string.
      * @param s string to be padded
      * @param nZeros number of zeros
      * @param atFront boolean whether to pad zeros at front
