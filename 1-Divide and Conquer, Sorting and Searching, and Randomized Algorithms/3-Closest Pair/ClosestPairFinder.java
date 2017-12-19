@@ -112,7 +112,7 @@ public class ClosestPairFinder {
 
         // Recursive case
         // [Divide]
-        // Let Q be the left half of P, R be the right half of P
+        // Let Q be the left half of P, and R be the right half of P
         Point2D.Double[] Qx = new Point2D.Double[numOfPoints / 2], Qy = new Point2D.Double[numOfPoints / 2];
         System.arraycopy(Px, 0, Qx, 0, numOfPoints / 2);
         Point2D.Double[] Rx = new Point2D.Double[numOfPoints - numOfPoints / 2],
@@ -131,8 +131,6 @@ public class ClosestPairFinder {
             }
         }
         // [Conquer]
-        System.out.println("Qx " + Arrays.toString(Qx));
-        System.out.println("Rx " + Arrays.toString(Rx));
         Point2D.Double[] leftClosestPair = findClosestPair2DHelper(Qx, Qy);
         Point2D.Double[] rightClosestPair = findClosestPair2DHelper(Rx, Ry);
         // Combine the results
@@ -144,7 +142,7 @@ public class ClosestPairFinder {
             delta = rightClosestDistance;
             deltaPair = rightClosestPair;
         }
-        Point2D.Double[] closerSplitPair = findCloserSplitPair(Px, Py, xThreshold, delta);
+        Point2D.Double[] closerSplitPair = findCloserSplitPair(Py, xThreshold, delta);
         if (closerSplitPair != null) {
             return closerSplitPair;
         } else {
@@ -158,14 +156,12 @@ public class ClosestPairFinder {
     /**
      * Helper method to find the closest closer split pair in the given 2D
      * points.
-     * @param Px given 2D points sorted by x
      * @param Py given 2D points sorted by y
      * @param xThreshold maximum x in the left-half
      * @param delta closest distance among non-split pairs
      * @return closer closest split pair
      */
-    private Point2D.Double[] findCloserSplitPair(Point2D.Double[] Px, Point2D.Double[] Py, double xThreshold,
-            double delta) {
+    private Point2D.Double[] findCloserSplitPair(Point2D.Double[] Py, double xThreshold, double delta) {
         // Filtering
         double lowerBound = xThreshold - delta, upperBound = xThreshold + delta;
         // Let Sy be the points of P with x within the range
@@ -176,7 +172,7 @@ public class ClosestPairFinder {
                 Sy.add(p);
             }
         }
-        // Iterate over Sy, and for each point, look at its at most 7 subsequent points, and find the closest split pair
+        // Iterate over Sy, and for each point, look at its at most 7 subsequent points, and find the closest closer split pair
         Point2D.Double p1 = null, p2 = null;
         double closerDistance = delta;
         for (int i = 0; i < (Sy.size() - 1); ++i) {
