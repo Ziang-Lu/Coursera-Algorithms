@@ -18,7 +18,7 @@ def karatsuba(x, y):
 
     x_s, y_s = str(x), str(y)
 
-    # Pad leading zeros
+    # Pad leading zeros   [O(n)]
     if len(x_s) > len(y_s):
         y_s = _pad_zeros(y_s, n_zeros=len(x_s) - len(y_s), at_front=True)
     elif len(x_s) < len(y_s):
@@ -29,12 +29,14 @@ def karatsuba(x, y):
     if n == 1:
         return x * y
     # Recursive case
+    # [Divide]   [O(n)]
     a_s, b_s, c_s, d_s = x_s[:n // 2], x_s[n // 2:], y_s[:n // 2], y_s[n // 2:]
     a, b, c, d = int(a_s), int(b_s), int(c_s), int(d_s)
+    # [Conquer]
     ac = karatsuba(a, c)
     bd = karatsuba(b, d)
     ad_bc = karatsuba(a + b, c + d) - ac - bd
-    # Combine the results
+    # Combine the results   [O(n)]
     part_1_s = _pad_zeros(str(ac), n_zeros=2 * (n - n // 2), at_front=False)
     part_2_s = _pad_zeros(str(ad_bc), n_zeros=n - n // 2, at_front=False)
     return int(part_1_s) + int(part_2_s) + bd

@@ -30,6 +30,7 @@ def count_inversions(nums):
     nums_copy = nums.copy()
     return _merge_sort_helper(nums_copy, left=0, right=len(nums_copy) - 1,
                               aux=[0] * len(nums_copy))
+    # Overall running time complexity: O(nlog n), better than O(n^2)
 
 
 def _merge_sort_helper(nums, left, right, aux):
@@ -46,14 +47,19 @@ def _merge_sort_helper(nums, left, right, aux):
     if left == right:
         return 0
     # Recursive case
+    # [Divide]
     mid = left + (right - left) // 2
+    # [Conquer]
     left_inversion_count = _merge_sort_helper(nums, left=left, right=mid,
                                               aux=aux)
     right_inversion_count = _merge_sort_helper(nums, left=mid + 1, right=right,
                                                aux=aux)
+    # Combine the results
     return left_inversion_count + right_inversion_count + \
         _merge(nums, left=left, mid=mid, right=right, aux=aux)
-    # Overall running time complexity: O(nlog n)
+    # T(n) = 2T(n/2) + O(n)
+    # a = 2, b = 2, d = 1
+    # According to Master Method, the running time complexity is O(nlog n).
 
 
 def _merge(nums, left, mid, right, aux):
@@ -73,18 +79,20 @@ def _merge(nums, left, mid, right, aux):
         if nums[left_ptr] <= nums[right_ptr]:
             aux[merged_ptr] = nums[left_ptr]
             left_ptr += 1
+            inversion_count += right_ptr - (mid + 1)
         else:
             aux[merged_ptr] = nums[right_ptr]
             right_ptr += 1
-            inversion_count += 1
         merged_ptr += 1
     while left_ptr <= mid:
         aux[merged_ptr] = nums[left_ptr]
         left_ptr += 1
         merged_ptr += 1
+        inversion_count += right_ptr + 1 - (mid + 1)
     while right_ptr <= right:
         aux[merged_ptr] = nums[right_ptr]
         right_ptr += 1
         merged_ptr += 1
     nums[left:right + 1] = aux[left:right + 1]
     return inversion_count
+    # Running time complexity: O(n)

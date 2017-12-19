@@ -10,12 +10,12 @@ public class Karatsuba {
      * @param y second operand
      * @return product
      */
-    private static BigInteger karatsuba(BigInteger x, BigInteger y) {
+    private BigInteger karatsuba(BigInteger x, BigInteger y) {
         // We assume the input x and y are both non-negative.
 
         String xStr = x.toString(), yStr = y.toString();
 
-        // Pad leading zeros to make x and y of the same length
+        // Pad leading zeros to make x and y of the same length   [O(n)]
         if (xStr.length() > yStr.length()) {
             yStr = padZeros(yStr, xStr.length() - yStr.length(), true);
         } else if (xStr.length() < yStr.length()) {
@@ -28,14 +28,16 @@ public class Karatsuba {
             return x.multiply(y);
         }
         // Recursive case
+        // [Divide]   [O(n)]
         String aStr = xStr.substring(0, n / 2), bStr = xStr.substring(n / 2), cStr = yStr.substring(0, n / 2),
                 dStr = yStr.substring(n / 2);
         BigInteger a = new BigInteger(aStr), b = new BigInteger(bStr), c = new BigInteger(cStr),
                 d = new BigInteger(dStr);
+        // [Conquer]
         BigInteger ac = karatsuba(new BigInteger(aStr), c);
         BigInteger bd = karatsuba(b, d);
         BigInteger adBC = karatsuba(a.add(b), c.add(d)).subtract(ac).subtract(bd);
-        // Combine the results
+        // Combine the results   [O(n)]
         String part1Str = padZeros(ac.toString(), 2 * (n - n / 2), false);
         String part2Str = padZeros(adBC.toString(), n - n / 2, false);
         return new BigInteger(part1Str).add(new BigInteger(part2Str)).add(bd);
@@ -52,7 +54,7 @@ public class Karatsuba {
      * @param atFront boolean whether to pad zeros at front
      * @return string with padded zeros
      */
-    private static String padZeros(String s, int nZeros, boolean atFront) {
+    private String padZeros(String s, int nZeros, boolean atFront) {
         String newStr = "";
         if (atFront) {
             for (int i = 0; i < nZeros; ++i) {
