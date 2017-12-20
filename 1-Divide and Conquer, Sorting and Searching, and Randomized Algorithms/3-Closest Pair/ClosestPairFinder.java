@@ -19,10 +19,12 @@ public class ClosestPairFinder {
     private double[] findClosestPair1D(double[] points) {
         // Check whether the input point array is null or empty
         if ((points == null) || (points.length == 0)) {
+            System.out.println("The input point array should not be null or empty.");
             return new double[0];
         }
 
         if (points.length == 1) {
+            System.out.println("The length of the input array should be at least 2.")
             return new double[0];
         }
 

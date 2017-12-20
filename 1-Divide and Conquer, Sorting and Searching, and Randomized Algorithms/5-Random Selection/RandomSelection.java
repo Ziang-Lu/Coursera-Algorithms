@@ -20,10 +20,12 @@ public class RandomSelection {
     public int kthLargest(int[] nums, int k) {
         // Check whether the input array is null or empty
         if ((nums == null) || nums.length == 0) {
+            System.out.println("The input array should not be null or empty.");
             return 0;
         }
         // Check whether the input k is valid
         if ((k < 0) || (k >= nums.length)) {
+            System.out.println("The input k should be within the range of the given array.");
             return 0;
         }
 

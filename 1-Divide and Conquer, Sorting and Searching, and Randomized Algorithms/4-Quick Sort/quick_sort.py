@@ -8,12 +8,13 @@ import random
 
 def quick_sort(nums):
     """
-    Sorts the given array using Quick Sort.
+    Sorts the given list using Quick Sort.
     :param nums: list[int]
     :return: None
     """
-    # Check whether the input array is null or empty
+    # Check whether the input list is null or empty
     if nums is None or len(nums) == 0:
+        print('The input list should not be None or empty.')
         return
 
     _quick_sort_helper(nums, left=0, right=len(nums) - 1)
@@ -21,7 +22,7 @@ def quick_sort(nums):
 
 def _quick_sort_helper(nums, left, right):
     """
-    Private helper function to sort the given sub-array recursively using Quick
+    Private helper function to sort the given sub-list recursively using Quick
     Sort.
     :param nums: list[int]
     :param left: int
@@ -32,7 +33,7 @@ def _quick_sort_helper(nums, left, right):
     if left >= right:
         return
     # Recursive case
-    # Choose a pivot from the given sub-array, and move it to the left.
+    # Choose a pivot from the given sub-list, and move it to the left.
     _choose_pivot(nums, left=left, right=right)
     pivot_idx = _partition(nums, left=left, right=right)
     _quick_sort_helper(nums, left=left, right=pivot_idx - 1)
@@ -41,7 +42,7 @@ def _quick_sort_helper(nums, left, right):
 
 def _choose_pivot(nums, left, right, randomly=True):
     """
-    Helper function to choose a pivot from the given sub-array, and move it to
+    Helper function to choose a pivot from the given sub-list, and move it to
     the left.
     :param nums: list[int]
     :param left: int
@@ -50,7 +51,7 @@ def _choose_pivot(nums, left, right, randomly=True):
     :return: None
     """
     if randomly:
-        # [Randomized] Randomly choose a pivot from the given sub-array
+        # [Randomized] Randomly choose a pivot from the given sub-list
         pivot_idx = random.randrange(left, right + 1)
         # Move the pivot to the left
     else:
@@ -78,7 +79,7 @@ def _choose_pivot(nums, left, right, randomly=True):
 
 def _partition(nums, left, right):
     """
-    Helper function to partition the given sub-array.
+    Helper function to partition the given sub-list.
     :param nums: list[int]
     :param left: int
     :param right: int
@@ -87,7 +88,7 @@ def _partition(nums, left, right):
     # The pivot has already been moved to the left.
     pivot = nums[left]
 
-    # Iterate over the sub-array, use a pointer to keep track of the smaller
+    # Iterate over the sub-list, use a pointer to keep track of the smaller
     # part, and swap the current number with the pointer as necessary
     smaller_ptr = left + 1
     i = left + 1

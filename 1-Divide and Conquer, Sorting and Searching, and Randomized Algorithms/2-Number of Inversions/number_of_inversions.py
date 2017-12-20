@@ -18,15 +18,16 @@ __author__ = 'Ziang Lu'
 
 def count_inversions(nums):
     """
-    Counts the # of inversions in the given array.
+    Counts the # of inversions in the given list.
     :param nums: list[int]
     :return: int
     """
-    # Check whether the input array is None or empty
+    # Check whether the input list is None or empty
     if nums is None or len(nums) == 0:
+        print('The input list should not be None or empty.')
         return 0
 
-    # Since we can't modify the input array, we need to make a copy.
+    # Since we can't modify the input list, we need to make a copy.
     nums_copy = nums.copy()
     return _merge_sort_helper(nums_copy, left=0, right=len(nums_copy) - 1,
                               aux=[0] * len(nums_copy))
@@ -35,7 +36,7 @@ def count_inversions(nums):
 
 def _merge_sort_helper(nums, left, right, aux):
     """
-    Private helper function to sort the given sub-array recursively using Merge
+    Private helper function to sort the given sub-list recursively using Merge
     Sort.
     :param nums: list[int]
     :param left: int
@@ -64,7 +65,7 @@ def _merge_sort_helper(nums, left, right, aux):
 
 def _merge(nums, left, mid, right, aux):
     """
-    Helper function to merge the given sub-array.
+    Helper function to merge the given sub-list.
     :param nums: list[int]
     :param left: int
     :param mid: int

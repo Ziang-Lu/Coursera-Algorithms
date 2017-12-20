@@ -19,11 +19,13 @@ def find_closest_pair_1d(points):
     :param points: list[float]
     :return: list[float]
     """
-    # Check whether the input point array is null or empty
+    # Check whether the input point list is null or empty
     if points is None or len(points) == 0:
+        print('The input list should not be None or empty.')
         return []
 
     if len(points) == 1:
+        print('The length of the input list should be at least 2.')
         return []
 
     # Sort the points   [O(nlog n)]
@@ -89,7 +91,7 @@ def find_closest_pair_2d(points):
     :param points: list[Point]
     :return: list[Point]
     """
-    # Check whether the input point array is None or empty
+    # Check whether the input point list is None or empty
     if points is None or len(points) == 0:
         return []
 

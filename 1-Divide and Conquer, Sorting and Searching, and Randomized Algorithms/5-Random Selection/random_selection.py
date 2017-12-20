@@ -17,16 +17,18 @@ import random
 
 def kth_largest(nums, k):
     """
-    Finds the k-th largest element in the given array.
+    Finds the k-th largest element in the given list.
     :param nums: list[int]
     :param k: int
     :return: int
     """
-    # Check whether the input array is null or empty
+    # Check whether the input list is null or empty
     if nums is None or len(nums) == 0:
+        print('The input list should not be None or empty.')
         return 0
     # Check whether the input k is valid
     if k < 0 or k >= len(nums):
+        print('The input k should be within the range of the input list.')
         return 0
 
     return _kth_largest_helper(nums, left=0, right=len(nums) - 1, k=k)
@@ -35,7 +37,7 @@ def kth_largest(nums, k):
 
 def _kth_largest_helper(nums, left, right, k):
     """
-    Private helper function to find the k-th largest element in the given array
+    Private helper function to find the k-th largest element in the given list
     recursively.
     :param nums: list[int]
     :param left: int
@@ -46,7 +48,7 @@ def _kth_largest_helper(nums, left, right, k):
     # Base case 1: Shrink to only one number
     if left == right:
         return nums[left]
-    # Choose a pivot from the given sub-array, and move it to the left
+    # Choose a pivot from the given sub-list, and move it to the left
     _choose_pivot(nums, left=left, right=right)
     pivot_idx = _partition(nums, left=left, right=right)
     # Base case 2: Found it
@@ -62,14 +64,14 @@ def _kth_largest_helper(nums, left, right, k):
 
 def _choose_pivot(nums, left, right):
     """
-    Helper function to choose a pivot from the given sub-array, and move it to
+    Helper function to choose a pivot from the given sub-list, and move it to
     the left.
     :param nums: list[int]
     :param left: int
     :param right: int
     :return: None
     """
-    # [Randomized] Randomly choose a pivot from the given sub-array
+    # [Randomized] Randomly choose a pivot from the given sub-list
     pivot_idx = random.randrange(left, right + 1)
     # Move the pivot to the left
     if pivot_idx != left:
@@ -78,7 +80,7 @@ def _choose_pivot(nums, left, right):
 
 def _partition(nums, left, right):
     """
-    Helper function to partition the given sub-array.
+    Helper function to partition the given sub-list.
     :param nums: list[int]
     :param left: int
     :param right: int
@@ -87,7 +89,7 @@ def _partition(nums, left, right):
     # The pivot has already been moved to the left.
     pivot = nums[left]
 
-    # Iterate over the sub-array, use a pointer to keep track of the smaller
+    # Iterate over the sub-list, use a pointer to keep track of the smaller
     # part, and swap the current number with the pointer as necessary
     smaller_ptr = left + 1
     i = left + 1

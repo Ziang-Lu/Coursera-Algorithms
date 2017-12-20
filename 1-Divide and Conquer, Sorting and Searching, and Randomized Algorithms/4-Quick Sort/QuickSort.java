@@ -11,6 +11,7 @@ public class QuickSort {
     public void quickSort(int[] nums) {
         // Check whether the input array is null or empty
         if ((nums == null) || (nums.length == 0)) {
+            System.out.println("The input array should not be null or empty.");
             return;
         }
 
