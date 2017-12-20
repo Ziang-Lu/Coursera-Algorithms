@@ -35,8 +35,8 @@ def count_inversions(nums):
 
 def _merge_sort_helper(nums, left, right, aux):
     """
-    Private helper function to sort the given part of the array recursively
-    using Merge Sort.
+    Private helper function to sort the given sub-array recursively using Merge
+    Sort.
     :param nums: list[int]
     :param left: int
     :param right: int
@@ -64,7 +64,7 @@ def _merge_sort_helper(nums, left, right, aux):
 
 def _merge(nums, left, mid, right, aux):
     """
-    Helper function to merge the given part of the array.
+    Helper function to merge the given sub-array.
     :param nums: list[int]
     :param left: int
     :param mid: int

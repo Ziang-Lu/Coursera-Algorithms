@@ -31,13 +31,13 @@ public class InversionCounter {
     }
 
     /**
-     * Private helper method to sort the given part of the array recursively
-     * using Merge Sort.
+     * Private helper method to sort the given sub-array recursively using Merge
+     * Sort.
      * @param nums array to sort
      * @param left left bound
      * @param right right bound
      * @param aux auxiliary array for merging
-     * @return # of inversions in the given part
+     * @return # of inversions in the given sub-array
      */
     private int mergeSortHelper(int[] nums, int left, int right, int[] aux) {
         // Base case
@@ -58,7 +58,7 @@ public class InversionCounter {
     }
 
     /**
-     * Helper method to merge the given part of the array.
+     * Helper method to merge the given sub-array.
      * @param nums array to sort
      * @param left left bound
      * @param mid right bound of the left half
