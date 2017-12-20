@@ -43,7 +43,7 @@ public class QuickSort {
      * @param nums array to sort
      * @param left left bound
      * @param right right bound
-     * @param randomly boolean of whether to randomly choose the pivot
+     * @param randomly whether to randomly choose the pivot
      */
     private void choosePivot(int[] nums, int left, int right, boolean randomly) {
         int pivotIdx = 0;
@@ -52,7 +52,7 @@ public class QuickSort {
             Random randomGenerator = new Random();
             pivotIdx = left + randomGenerator.nextInt(right + 1 - left);
         } else {
-            // Use the median of the medians as the pivot
+            // Use the median of medians as the pivot
 
             // Create the sorted parts
             ArrayList<int[]> sortedParts = new ArrayList<int[]>();
@@ -71,7 +71,7 @@ public class QuickSort {
                 int[] sortedPart = sortedParts.get(j);
                 medians[j] = sortedPart[sortedPart.length / 2];
             }
-            // Use the median of the medians as the pivot
+            // Use the median of medians as the pivot
             Arrays.sort(medians);
             pivotIdx = medians.length / 2;
         }
