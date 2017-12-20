@@ -1,7 +1,7 @@
 /**
- * Given an array of numbers A, calculate the # of inversions in the given
- * array, where an inversion is defined as a pair of numbers with indices i and
- * j, s.t. i < j and A[i] > A[j].
+ * Given an array A, calculate the # of inversions in the given array, where an
+ * inversion is defined as a pair of numbers with indices i and j, s.t. i < j
+ * and A[i] > A[j].
  *
  * Naive implementation: O(n^2)
  *
