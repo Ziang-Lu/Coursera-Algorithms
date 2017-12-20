@@ -39,17 +39,38 @@ def _quick_sort_helper(nums, left, right):
     _quick_sort_helper(nums, left=pivot_idx + 1, right=right)
 
 
-def _choose_pivot(nums, left, right):
+def _choose_pivot(nums, left, right, randomly=True):
     """
     Helper function to choose a pivot from the given sub-array, and move it to
     the left.
     :param nums: list[int]
     :param left: int
     :param right: int
+    :param randomly: bool
     :return: None
     """
-    # Randomly choose a pivot from the given sub-array
-    pivot_idx = random.randrange(left, right + 1)
+    if randomly:
+        # Randomly choose a pivot from the given sub-array
+        pivot_idx = random.randrange(left, right + 1)
+        # Move the pivot to the left
+    else:
+        # Use the median of medians as the pivot
+
+        # Create sorted parts
+        sorted_parts = []
+        i = left
+        while i <= right:
+            num_of_elems = min(5, right + 1 - left)
+            part = nums[i:i + num_of_elems]
+            part.sort()
+            sorted_parts.append(part)
+            i += num_of_elems
+        # Take out the medians of the sorted parts
+        medians = []
+        for sorted_part in sorted_parts:
+            medians.append(sorted_part[len(sorted_part) // 2])
+        # Use the median of the medians as the pivot
+        pivot_idx = len(medians) // 2
     # Move the pivot to the left
     if pivot_idx != left:
         nums[left], nums[pivot_idx] = nums[pivot_idx], nums[left]

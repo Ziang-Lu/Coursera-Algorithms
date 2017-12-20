@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 public class QuickSort {
@@ -29,7 +31,7 @@ public class QuickSort {
         }
         // Recursive case
         // Choose a pivot from the given sub-array, and move it to the left
-        choosePivot(nums, left, right);
+        choosePivot(nums, left, right, true);
         int pivotIdx = partition(nums, left, right);
         quickSortHelper(nums, left, pivotIdx - 1);
         quickSortHelper(nums, pivotIdx + 1, right);
@@ -41,11 +43,38 @@ public class QuickSort {
      * @param nums array to sort
      * @param left left bound
      * @param right right bound
+     * @param randomly boolean of whether to randomly choose the pivot
      */
-    private void choosePivot(int[] nums, int left, int right) {
-        // Randomly choose a pivot from the given sub-array
-        Random randomGenerator = new Random();
-        int pivotIdx = left + randomGenerator.nextInt(right + 1 - left);
+    private void choosePivot(int[] nums, int left, int right, boolean randomly) {
+        int pivotIdx = 0;
+        if (randomly) {
+            // Randomly choose a pivot from the given sub-array
+            Random randomGenerator = new Random();
+            pivotIdx = left + randomGenerator.nextInt(right + 1 - left);
+        } else {
+            // Use the median of the medians as the pivot
+
+            // Create the sorted parts
+            ArrayList<int[]> sortedParts = new ArrayList<int[]>();
+            int i = left;
+            while (i <= right) {
+                int numOfElems = Math.min(5, right + 1 - left);
+                int[] part = new int[numOfElems];
+                System.arraycopy(nums, i, part, 0, numOfElems);
+                Arrays.sort(part);
+                sortedParts.add(part);
+                i += numOfElems;
+            }
+            // Take out the medians of the sorted parts
+            int[] medians = new int[sortedParts.size()];
+            for (int j = 0;  j < sortedParts.size(); ++j) {
+                int[] sortedPart = sortedParts.get(j);
+                medians[j] = sortedPart[sortedPart.length / 2];
+            }
+            // Use the median of the medians as the pivot
+            Arrays.sort(medians);
+            pivotIdx = medians.length / 2;
+        }
         // Move the pivot to the left
         if (pivotIdx != left) {
             swap(nums, pivotIdx, left);
@@ -91,7 +120,7 @@ public class QuickSort {
             ++smallerPtr;
             ++i;
         }
-        if (left != smallerPtr) {
+        if (left != (smallerPtr - 1)) {
             swap(nums, left, smallerPtr - 1);
         }
         return smallerPtr - 1;
