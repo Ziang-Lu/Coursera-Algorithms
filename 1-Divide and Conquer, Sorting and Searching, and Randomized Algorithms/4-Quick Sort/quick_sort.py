@@ -50,11 +50,11 @@ def _choose_pivot(nums, left, right, randomly=True):
     :return: None
     """
     if randomly:
-        # Randomly choose a pivot from the given sub-array
+        # [Randomized] Randomly choose a pivot from the given sub-array
         pivot_idx = random.randrange(left, right + 1)
         # Move the pivot to the left
     else:
-        # Use the median of medians as the pivot
+        # [Deterministic] Use the median of medians as the pivot
 
         # Create sorted parts
         sorted_parts = []
