@@ -79,7 +79,7 @@ class Point(object):
 
     def __repr__(self):
         """
-        String representation of the point.
+        String representation of this point.
         :return: str
         """
         return 'Point(x=%s, y=%s)' % (self._x, self._y)
@@ -151,8 +151,8 @@ def _find_closest_pair_2d_helper(Px, Py):
     r_closet_pair = _find_closest_pair_2d_helper(Rx, Ry)
     # Combine the results
     l_closest_distance, r_closest_distance = \
-        (l_closest_pair[0].distance(l_closest_pair[1]),
-         r_closet_pair[0].distance(r_closet_pair[1]))
+        l_closest_pair[0].distance(l_closest_pair[1]), \
+        r_closet_pair[0].distance(r_closet_pair[1])
     delta = l_closest_distance
     delta_pair = l_closest_pair
     if l_closest_distance > r_closest_distance:
