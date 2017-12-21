@@ -1,3 +1,5 @@
+package undirected_graph;
+
 import java.util.ArrayList;
 
 /**
@@ -137,3 +139,4 @@ public class AdjacencyList {
     }
 
 }
+

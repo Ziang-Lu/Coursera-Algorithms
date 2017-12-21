@@ -1,3 +1,5 @@
+package undirected_graph;
+
 class Edge {
 
     /**
