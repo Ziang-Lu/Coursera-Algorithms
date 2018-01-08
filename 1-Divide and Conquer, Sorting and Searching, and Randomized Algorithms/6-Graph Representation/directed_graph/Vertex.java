@@ -1,4 +1,4 @@
-package undirected_graph;
+package directed_graph;
 
 import java.util.ArrayList;
 
@@ -34,12 +34,12 @@ class Vertex {
     void addEdge(Edge newEdge) {
         // Check whether the input edge is null
         if (newEdge == null) {
-            System.out.println("The input edge should not be null.");
+            System.out.println("The edge to add should not be null.");
             return;
         }
         // Check whether the input edge involves this vertex
-        if ((newEdge.end1 != this) && (newEdge.end2 != this)) {
-            System.out.println("The input edge should involve this vertex.");
+        if ((newEdge.tail != this) && (newEdge.head != this)) {
+            System.out.println("The edge to add should involve this vertex.");
             return;
         }
 
@@ -47,18 +47,18 @@ class Vertex {
     }
 
     /**
-     * Removes the given edge from this vertex.
+     * Removes the given edge from this vertex
      * @param edgeToRemove edge to remove
      */
     void removeEdge(Edge edgeToRemove) {
         // Check whether the input edge is null
         if (edgeToRemove == null) {
-            System.out.println("The input edge should not be null.");
+            System.out.println("The edge to remove should not be null.");
             return;
         }
         // Check whether the input edge involves this vertex
-        if ((edgeToRemove.end1 != this) || (edgeToRemove.end2 != this)) {
-            System.out.println("The input edge should involve this vertex.");
+        if ((edgeToRemove.tail != this) && (edgeToRemove.head != null)) {
+            System.out.println("The edge to remove should involve this vertex.");
             return;
         }
 

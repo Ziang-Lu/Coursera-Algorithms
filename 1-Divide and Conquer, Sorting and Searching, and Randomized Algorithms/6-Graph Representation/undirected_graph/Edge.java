@@ -1,5 +1,10 @@
 package undirected_graph;
 
+/**
+ * Edge class.
+ *
+ * @author Ziang Lu
+ */
 class Edge {
 
     /**

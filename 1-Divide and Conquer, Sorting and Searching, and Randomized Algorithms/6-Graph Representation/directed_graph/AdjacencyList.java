@@ -1,11 +1,10 @@
-package undirected_graph;
+package directed_graph;
 
 import java.util.ArrayList;
 
 /**
- * Adjacency list representation of a undirected graph.
+ * Adjacency list representation of a directed graph.
  *
- * Note that parallel edges and self-loops are not allowed.
  * @author Ziang Lu
  */
 public class AdjacencyList {
@@ -33,7 +32,7 @@ public class AdjacencyList {
      */
     public void addVtx(int newVtxID) {
         // Check whether the input vertex is repeated
-        if (findVtx(newVtxID) != null) {
+        if (findVtx(newVtxID) == null) {
             System.out.println("The input vertex is repeated.");
             return;
         }
@@ -59,40 +58,38 @@ public class AdjacencyList {
 
     /**
      * Adds a new edge to this graph.
-     * @param end1ID endpoint1 ID
-     * @param end2ID endpoint2 ID
+     * @param tailID tail ID
+     * @param headID head ID
      */
-    public void addEdge(int end1ID, int end2ID) {
+    public void addEdge(int tailID, int headID) {
         // Check whether the input vertices both exist
-        Vertex end1 = findVtx(end1ID), end2 = findVtx(end2ID);
-        if ((end1 == null) || (end2 == null)) {
+        Vertex tail = findVtx(tailID), head = findVtx(headID);
+        if ((tail == null) || (head == null)) {
             System.out.println("The input vertices don't both exist.");
             return;
         }
         // Check whether the edge to add already exists
-        if (findEdge(end1ID, end2ID) != null) {
+        if (findEdge(tailID, headID) != null) {
             System.out.println("The edge to add already exists.");
             return;
         }
 
-        Edge newEdge = new Edge(end1, end2);
-        end1.addEdge(newEdge);
-        end2.addEdge(newEdge);
+        Edge newEdge = new Edge(tail, head);
+        tail.addEdge(newEdge);
+        head.addEdge(newEdge);
         edgeList.add(newEdge);
     }
 
     /**
-     * Private helper method to find the edge connecting the given vertices in
-     * this adjacency list.
-     * @param end1ID endpoint1 ID
-     * @param end2ID endpoint2 ID
+     * Private helper method to find the edge from the given tail to the given
+     * head.
+     * @param tailID tail ID
+     * @param headID head ID
      * @return edge if found, null if not found
      */
-    private Edge findEdge(int end1ID, int end2ID) {
+    private Edge findEdge(int tailID, int headID) {
         for (Edge edge : edgeList) {
-            int currEnd1ID = edge.end1.vtxID, currEnd2ID = edge.end2.vtxID;
-            if (((currEnd1ID == end1ID) && (currEnd2ID == end2ID))
-                    || ((currEnd1ID == end2ID) && (currEnd2ID == end1ID))) {
+            if ((edge.tail.vtxID == tailID) && (edge.head.vtxID == headID)) {
                 return edge;
             }
         }
@@ -102,25 +99,25 @@ public class AdjacencyList {
 
     /**
      * Removes an edge from this graph.
-     * @param end1ID endpoint1 ID
-     * @param end2ID endpoint2 ID
+     * @param tailID tail ID
+     * @param headID head ID
      */
-    public void removeEdge(int end1ID, int end2ID) {
+    public void removeEdge(int tailID, int headID) {
         // Check whether the input vertices both exist
-        Vertex end1 = findVtx(end1ID), end2 = findVtx(end2ID);
-        if ((end1 == null) || (end2 == null)) {
+        Vertex tail = findVtx(tailID), head = findVtx(headID);
+        if ((tail == null) || (head == null)) {
             System.out.println("The input vertices don't both exist.");
             return;
         }
         // Check whether the edge to remove exists
-        Edge edgeToRemove = findEdge(end1ID, end2ID);
+        Edge edgeToRemove = findEdge(tailID, headID);
         if (edgeToRemove == null) {
             System.out.println("The edge to remove doesn't exist.");
             return;
         }
 
-        end1.removeEdge(edgeToRemove);
-        end2.removeEdge(edgeToRemove);
+        tail.removeEdge(edgeToRemove);
+        head.removeEdge(edgeToRemove);
         edgeList.remove(edgeToRemove);
     }
 
@@ -139,4 +136,3 @@ public class AdjacencyList {
     }
 
 }
-
