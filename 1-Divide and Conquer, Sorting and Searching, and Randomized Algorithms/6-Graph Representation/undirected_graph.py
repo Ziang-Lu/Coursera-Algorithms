@@ -35,11 +35,11 @@ class Vertex(object):
         """
         # Check whether the input edge is None
         if new_edge is None:
-            print('The input edge should not be None.')
+            print('The edge to add should not be None.')
             return
         # Check whether the input edge involves this vertex
         if new_edge.end1 != self and new_edge.end2 != self:
-            print('The input edge should involve this vertex.')
+            print('The edge to add should involve this vertex.')
             return
 
         self._my_edges.append(new_edge)
@@ -52,11 +52,11 @@ class Vertex(object):
         """
         # Check whether the input edge is None
         if edge_to_remove is None:
-            print('The input edge should not be None.')
+            print('The edge to remove should not be None.')
             return
         # Check whether the input edge involves this vertex
         if edge_to_remove.end1 != self and edge_to_remove.end2 != self:
-            print('The input edge should involve this vertex.')
+            print('The edge to remove should involve this vertex.')
             return
 
         self._my_edges.remove(edge_to_remove)
@@ -64,9 +64,9 @@ class Vertex(object):
     def __repr__(self):
         """
         String representation of this vertex.
-        :return:
+        :return: str
         """
-        return "Vertex #%d" % self._vtx_id
+        return 'Vertex #%d' % self._vtx_id
 
     def __eq__(self, other):
         """
@@ -166,16 +166,16 @@ class AdjacencyList(object):
         end1, end2 = self._find_vtx(vtx_id=end1_id), \
             self._find_vtx(vtx_id=end2_id)
         if end1 is None or end2 is None:
-            print("The input vertices don't both exist.")
+            print('The input vertices don\'t both exist.')
             return
         # Check whether the edge to add already exists.
         if self._find_edge(end1_id=end1_id, end2_id=end2_id):
-            print("The edge to add already exists.")
+            print('The edge to add already exists.')
             return
 
         new_edge = Edge(end1, end2)
-        end1.add_edge(new_edge=new_edge)
-        end2.add_edge(new_edge=new_edge)
+        end1.add_edge(new_edge)
+        end2.add_edge(new_edge)
         self._edge_list.append(new_edge)
 
     def _find_edge(self, end1_id, end2_id):
@@ -205,12 +205,12 @@ class AdjacencyList(object):
         end1, end2 = self._find_vtx(vtx_id=end1_id), \
             self._find_vtx(vtx_id=end2_id)
         if end1 is None or end2 is None:
-            print("The input vertices don't both exist.")
+            print('The input vertices don\'t both exist.')
             return
         # Check whether the edge to remove exists
         edge_to_remove = self._find_edge(end1_id=end1_id, end2_id=end2_id)
         if edge_to_remove is None:
-            print("The edge to remove doesn't exist.")
+            print('The edge to remove doesn\'t exist.')
             return
 
         end1.remove_edge(edge_to_remove)
@@ -220,7 +220,7 @@ class AdjacencyList(object):
     def show_graph(self):
         """
         Shows this graph.
-        :return:
+        :return: None
         """
         print('The vertices are:')
         for vtx in self._vtx_list:
