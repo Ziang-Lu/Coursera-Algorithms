@@ -5,6 +5,7 @@ import java.util.ArrayList;
 /**
  * Adjacency list representation of a directed graph.
  *
+ * Note that parallel edges and self-loops are not allowed.
  * @author Ziang Lu
  */
 public class AdjacencyList {
