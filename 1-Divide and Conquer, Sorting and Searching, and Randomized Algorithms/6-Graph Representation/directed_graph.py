@@ -4,7 +4,7 @@
 """
 Adjacency list representation of directed graph.
 
-Note that parallel edges and self-loops are not allowed.
+Note that parallel edges are allowed, but not self-loops.
 """
 
 __author__ = 'Ziang Lu'
@@ -17,7 +17,10 @@ class Vertex(object):
         :param vtx_id: int
         """
         self._vtx_id = vtx_id
-        self._my_edges = []
+        self._emissive_edges = []
+        self._freq_of_emissive_neighbors = {}
+        self._incident_edges = []
+        self._freq_of_incident_neighbors = {}
 
     @property
     def vtx_id(self):
@@ -27,41 +30,115 @@ class Vertex(object):
         """
         return self._vtx_id
 
-    def add_edge(self, new_edge):
+    def add_emissive_edge(self, new_emissive_edge):
         """
-        Adds the given edge to this vertex.
-        :param new_edge: Edge
+        Adds the given emissive edge to this vertex.
+        :param new_emissive_edge: Edge
         :return: None
         """
-        # Check whether the input edge is None
-        if new_edge is None:
-            print('The edge to add should not be None.')
+        # Check whether the input emissive edge is None
+        if new_emissive_edge is None:
+            print('The emissive edge to add should not be None.')
             return
-        # Check whether the input edge involves this vertex
-        if new_edge.tail != self and new_edge.head != self:
-            print('The edge to add should involve this vertex.')
-            return
-
-        self._my_edges.append(new_edge)
-
-    def remove_edge(self, edge_to_remove):
-        # Check whether the input edge is None
-        if edge_to_remove is None:
-            print('The edge to remove should not be None.')
-            return
-        # Check whether the input edge involves this vertex
-        if edge_to_remove.tail != self and edge_to_remove.head != self:
-            print('The edge to remove should involve this vertex')
+        # Check whether the input emissive edge involves this vertex as the tail
+        if new_emissive_edge.tail != self:
+            print('The emissive edge to add should involve this vertex as the '
+                  'tail.')
             return
 
-        self._my_edges.remove(edge_to_remove)
+        self._emissive_edges.append(new_emissive_edge)
+
+        emissive_neighbor = new_emissive_edge.head
+        freq = self._freq_of_emissive_neighbors.get(emissive_neighbor.vtx_id, 0)
+        freq += 1
+        self._freq_of_emissive_neighbors[emissive_neighbor.vtx_id] = freq
+
+    def add_incident_edge(self, new_incident_edge):
+        """
+        Adds the given incident edge to this vertex
+        :param new_incident_edge: Edge
+        :return: None
+        """
+        # Check whether the input incident edge is None
+        if new_incident_edge is None:
+            print('The incident edge to add should not be None.')
+            return
+        # Check whether the input incident edge involves this vertex as the head
+        if new_incident_edge.head != self:
+            print('The incident edge to add should involve this vertex as the '
+                  'head.')
+            return
+
+        self._incident_edges.append(new_incident_edge)
+
+        incident_neighbor = new_incident_edge.tail
+        freq = self._freq_of_incident_neighbors.get(incident_neighbor.vtx_id, 0)
+        freq += 1
+        self._freq_of_incident_neighbors[incident_neighbor.vtx_id] = freq
+
+    def remove_emissive_edge(self, emissive_edge_to_remove):
+        """
+        Removes the given emissive edge from this vertex.
+        :param emissive_edge_to_remove: Edge
+        :return: None
+        """
+        # Check whether the input emissive edge is None
+        if emissive_edge_to_remove is None:
+            print('The emissive edge to remove should not be None.')
+            return
+        # Check whether the input emissive edge involves this vertex as the tail
+        if emissive_edge_to_remove.tail != self:
+            print('The emissive edge to remove should involve this vertex as '
+                  'the tail.')
+            return
+
+        self._emissive_edges.remove(emissive_edge_to_remove)
+
+        emissive_neighbor = emissive_edge_to_remove.head
+        freq = self._freq_of_emissive_neighbors.get(emissive_neighbor.vtx_id)
+        if freq == 1:
+            self._freq_of_emissive_neighbors.pop(emissive_neighbor.vtx_id)
+        else:
+            freq -= 1
+            self._freq_of_emissive_neighbors[emissive_neighbor.vtx_id] = freq
+
+    def remove_incident_edge(self, incident_edge_to_remove):
+        """
+        Removes the given incident edge from this vertex.
+        :param incident_edge_to_remove: Edge
+        :return: None
+        """
+        # Check whether the input incident edge is None
+        if incident_edge_to_remove is None:
+            print('The incident edge to remove should not be None.')
+            return
+        # Check whether the input incident edge involves this vertex as the head
+        if incident_edge_to_remove.head != self:
+            print('The incident edge to remove should involve this vertex as '
+                  'the head.')
+            return
+
+        self._incident_edges.remove(incident_edge_to_remove)
+
+        incident_neighbor = incident_edge_to_remove.tail
+        freq = self._freq_of_incident_neighbors.get(incident_neighbor.vtx_id)
+        if freq == 1:
+            self._freq_of_incident_neighbors.pop(incident_neighbor.vtx_id)
+        else:
+            freq -= 1
+            self._freq_of_incident_neighbors[incident_neighbor.vtx_id] = freq
 
     def __repr__(self):
         """
         String representation of this vertex.
         :return: str
         """
-        return 'Vertex #%d' % self._vtx_id
+        s = 'Vertex #%d\n' % self._vtx_id
+        s += 'Its emissive neighbors and frequencies: %s\n' % \
+             self._freq_of_emissive_neighbors
+        s += 'Its incident neighbors and frequencies: %s\n' % \
+             self._freq_of_incident_neighbors
+        return s
 
     def __eq__(self, other):
         """
@@ -112,7 +189,7 @@ class Edge(object):
         String representation of this edge.
         :return: str
         """
-        return 'Edge from Vertex #%d to Vertex #d' % \
+        return 'Edge from Vertex #%d to Vertex #%d' % \
             (self._tail.vtx_id, self._head.vtx_id)
 
 
@@ -163,29 +240,11 @@ class AdjacencyList(object):
         if tail is None or head is None:
             print('The input vertices don\'t both exist.')
             return
-        # Check whether the edge to add already exists
-        if self._find_edge(tail_id=tail_id, head_id=head_id):
-            print('The edge to add already exists.')
-            return
 
         new_edge = Edge(tail, head)
-        tail.add_edge(new_edge)
-        head.add_edge(new_edge)
+        tail.add_emissive_edge(new_edge)
+        head.add_incident_edge(new_edge)
         self._edge_list.append(new_edge)
-
-    def _find_edge(self, tail_id, head_id):
-        """
-        Private helper function to find the edge from the given tail to the
-        given head in this adjacency list.
-        :param tail_id: int
-        :param head_id: int
-        :return: Edge
-        """
-        for edge in self._edge_list:
-            if edge.tail.vtx_id == tail_id and edge.head.vtx_id == head_id:
-                return edge
-        # Not found
-        return None
 
     def remove_edge(self, tail_id, head_id):
         """
@@ -206,9 +265,23 @@ class AdjacencyList(object):
             print('The edge to remove doesn\'t exist.')
             return
 
-        tail.remove_edge(edge_to_remove)
-        head.remove_edge(edge_to_remove)
+        tail.remove_emissive_edge(edge_to_remove)
+        head.remove_incident_edge(edge_to_remove)
         self._edge_list.remove(edge_to_remove)
+
+    def _find_edge(self, tail_id, head_id):
+        """
+        Private helper function to find the first edge from the given tail to
+        the given head in this adjacency list.
+        :param tail_id: int
+        :param head_id: int
+        :return: Edge
+        """
+        for edge in self._edge_list:
+            if edge.tail.vtx_id == tail_id and edge.head.vtx_id == head_id:
+                return edge
+        # Not found
+        return None
 
     def show_graph(self):
         """

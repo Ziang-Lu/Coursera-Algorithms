@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * Adjacency list representation of a directed graph.
  *
- * Note that parallel edges and self-loops are not allowed.
+ * Note that parallel edges are allowed, but not self-loops.
  * @author Ziang Lu
  */
 public class AdjacencyList {
@@ -33,7 +33,7 @@ public class AdjacencyList {
      */
     public void addVtx(int newVtxID) {
         // Check whether the input vertex is repeated
-        if (findVtx(newVtxID) == null) {
+        if (findVtx(newVtxID) != null) {
             System.out.println("The input vertex is repeated.");
             return;
         }
@@ -69,33 +69,11 @@ public class AdjacencyList {
             System.out.println("The input vertices don't both exist.");
             return;
         }
-        // Check whether the edge to add already exists
-        if (findEdge(tailID, headID) != null) {
-            System.out.println("The edge to add already exists.");
-            return;
-        }
 
         Edge newEdge = new Edge(tail, head);
-        tail.addEdge(newEdge);
-        head.addEdge(newEdge);
+        tail.addEmissiveEdge(newEdge);
+        head.addIncidentEdge(newEdge);
         edgeList.add(newEdge);
-    }
-
-    /**
-     * Private helper method to find the edge from the given tail to the given
-     * head.
-     * @param tailID tail ID
-     * @param headID head ID
-     * @return edge if found, null if not found
-     */
-    private Edge findEdge(int tailID, int headID) {
-        for (Edge edge : edgeList) {
-            if ((edge.tail.vtxID == tailID) && (edge.head.vtxID == headID)) {
-                return edge;
-            }
-        }
-        // Not found
-        return null;
     }
 
     /**
@@ -117,9 +95,26 @@ public class AdjacencyList {
             return;
         }
 
-        tail.removeEdge(edgeToRemove);
-        head.removeEdge(edgeToRemove);
+        tail.removeEmissiveEdge(edgeToRemove);
+        head.removeIncidentEdge(edgeToRemove);
         edgeList.remove(edgeToRemove);
+    }
+
+    /**
+     * Private helper method to find the first edge from the given tail to the
+     * given head.
+     * @param tailID tail ID
+     * @param headID head ID
+     * @return edge if found, null if not found
+     */
+    private Edge findEdge(int tailID, int headID) {
+        for (Edge edge : edgeList) {
+            if ((edge.tail.vtxID == tailID) && (edge.head.vtxID == headID)) {
+                return edge;
+            }
+        }
+        // Not found
+        return null;
     }
 
     /**

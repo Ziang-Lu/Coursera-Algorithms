@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * Adjacency list representation of a undirected graph.
  *
- * Note that parallel edges and self-loops are not allowed.
+ * Note that parallel edges are allowed, but not self-loops.
  * @author Ziang Lu
  */
 public class AdjacencyList {
@@ -69,35 +69,11 @@ public class AdjacencyList {
             System.out.println("The input vertices don't both exist.");
             return;
         }
-        // Check whether the edge to add already exists
-        if (findEdge(end1ID, end2ID) != null) {
-            System.out.println("The edge to add already exists.");
-            return;
-        }
 
         Edge newEdge = new Edge(end1, end2);
         end1.addEdge(newEdge);
         end2.addEdge(newEdge);
         edgeList.add(newEdge);
-    }
-
-    /**
-     * Private helper method to find the edge connecting the given vertices in
-     * this adjacency list.
-     * @param end1ID endpoint1 ID
-     * @param end2ID endpoint2 ID
-     * @return edge if found, null if not found
-     */
-    private Edge findEdge(int end1ID, int end2ID) {
-        for (Edge edge : edgeList) {
-            int currEnd1ID = edge.end1.vtxID, currEnd2ID = edge.end2.vtxID;
-            if (((currEnd1ID == end1ID) && (currEnd2ID == end2ID))
-                    || ((currEnd1ID == end2ID) && (currEnd2ID == end1ID))) {
-                return edge;
-            }
-        }
-        // Not found
-        return null;
     }
 
     /**
@@ -123,6 +99,26 @@ public class AdjacencyList {
         end2.removeEdge(edgeToRemove);
         edgeList.remove(edgeToRemove);
     }
+
+    /**
+     * Private helper method to find the first edge connecting the given
+     * vertices in this adjacency list.
+     * @param end1ID endpoint1 ID
+     * @param end2ID endpoint2 ID
+     * @return edge if found, null if not found
+     */
+    private Edge findEdge(int end1ID, int end2ID) {
+        for (Edge edge : edgeList) {
+            int currEnd1ID = edge.end1.vtxID, currEnd2ID = edge.end2.vtxID;
+            if (((currEnd1ID == end1ID) && (currEnd2ID == end2ID))
+                    || ((currEnd1ID == end2ID) && (currEnd2ID == end1ID))) {
+                return edge;
+            }
+        }
+        // Not found
+        return null;
+    }
+
 
     /**
      * Shows the graph.
