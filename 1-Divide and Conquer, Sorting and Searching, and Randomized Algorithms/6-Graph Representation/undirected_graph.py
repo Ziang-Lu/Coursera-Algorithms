@@ -151,8 +151,8 @@ class AdjacencyList(object):
         """
         Default constructor.
         """
-        self.vtx_list = []
-        self.edge_list = []
+        self._vtx_list = []
+        self._edge_list = []
 
     def add_vtx(self, new_vtx_id):
         """
@@ -166,7 +166,7 @@ class AdjacencyList(object):
             return
 
         new_vtx = Vertex(new_vtx_id)
-        self.vtx_list.append(new_vtx)
+        self._vtx_list.append(new_vtx)
 
     def _find_vtx(self, vtx_id):
         """
@@ -174,7 +174,7 @@ class AdjacencyList(object):
         :param vtx_id: int
         :return: Vertex
         """
-        for vtx in self.vtx_list:
+        for vtx in self._vtx_list:
             if vtx.vtx_id == vtx_id:
                 return vtx
         # Not found
@@ -197,7 +197,7 @@ class AdjacencyList(object):
         new_edge = Edge(end1, end2)
         end1.add_edge(new_edge)
         end2.add_edge(new_edge)
-        self.edge_list.append(new_edge)
+        self._edge_list.append(new_edge)
 
     def remove_edge(self, end1_id, end2_id):
         """
@@ -220,7 +220,7 @@ class AdjacencyList(object):
 
         end1.remove_edge(edge_to_remove)
         end2.remove_edge(edge_to_remove)
-        self.edge_list.remove(edge_to_remove)
+        self._edge_list.remove(edge_to_remove)
 
     def _find_edge(self, end1_id, end2_id):
         """
@@ -230,7 +230,7 @@ class AdjacencyList(object):
         :param end2_id: int
         :return: Edge
         """
-        for edge in self.edge_list:
+        for edge in self._edge_list:
             curr_end1_id, curr_end2_id = edge.end1.vtx_id, edge.end2.vtx_id
             if (curr_end1_id == end1_id and curr_end2_id == end2_id) or \
                     (curr_end1_id == end2_id and curr_end2_id == end1_id):
@@ -244,8 +244,8 @@ class AdjacencyList(object):
         :return: None
         """
         print('The vertices are:')
-        for vtx in self.vtx_list:
+        for vtx in self._vtx_list:
             print(vtx)
         print('The edges are:')
-        for edge in self.edge_list:
+        for edge in self._edge_list:
             print(edge)
