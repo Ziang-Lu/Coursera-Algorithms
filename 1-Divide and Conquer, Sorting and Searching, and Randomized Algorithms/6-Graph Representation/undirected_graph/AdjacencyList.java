@@ -13,11 +13,11 @@ public class AdjacencyList {
     /**
      * Vertex list.
      */
-    private ArrayList<Vertex> vtxList;
+    public ArrayList<Vertex> vtxList;
     /**
      * Edge list.
      */
-    private ArrayList<Edge> edgeList;
+    public ArrayList<Edge> edgeList;
 
     /**
      * Default constructor.
