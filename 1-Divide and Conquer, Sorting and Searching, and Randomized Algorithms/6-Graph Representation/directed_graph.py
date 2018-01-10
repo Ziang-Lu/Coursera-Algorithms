@@ -198,8 +198,8 @@ class AdjacencyList(object):
         """
         Default constructor.
         """
-        self._vtx_list = []
-        self._edge_list = []
+        self.vtx_list = []
+        self.edge_list = []
 
     def add_vtx(self, new_vtx_id):
         """
@@ -213,7 +213,7 @@ class AdjacencyList(object):
             return
 
         new_vtx = Vertex(new_vtx_id)
-        self._vtx_list.append(new_vtx)
+        self.vtx_list.append(new_vtx)
 
     def _find_vtx(self, vtx_id):
         """
@@ -221,7 +221,7 @@ class AdjacencyList(object):
         :param vtx_id: int
         :return: Vertex
         """
-        for vtx in self._vtx_list:
+        for vtx in self.vtx_list:
             if vtx.vtx_id == vtx_id:
                 return vtx
         # Not found
@@ -244,7 +244,7 @@ class AdjacencyList(object):
         new_edge = Edge(tail, head)
         tail.add_emissive_edge(new_edge)
         head.add_incident_edge(new_edge)
-        self._edge_list.append(new_edge)
+        self.edge_list.append(new_edge)
 
     def remove_edge(self, tail_id, head_id):
         """
@@ -267,7 +267,7 @@ class AdjacencyList(object):
 
         tail.remove_emissive_edge(edge_to_remove)
         head.remove_incident_edge(edge_to_remove)
-        self._edge_list.remove(edge_to_remove)
+        self.edge_list.remove(edge_to_remove)
 
     def _find_edge(self, tail_id, head_id):
         """
@@ -277,7 +277,7 @@ class AdjacencyList(object):
         :param head_id: int
         :return: Edge
         """
-        for edge in self._edge_list:
+        for edge in self.edge_list:
             if edge.tail.vtx_id == tail_id and edge.head.vtx_id == head_id:
                 return edge
         # Not found
@@ -289,8 +289,8 @@ class AdjacencyList(object):
         :return: None
         """
         print('The vertices are:')
-        for vtx in self._vtx_list:
+        for vtx in self.vtx_list:
             print(vtx)
         print('The edges are:')
-        for edge in self._edge_list:
+        for edge in self.edge_list:
             print(edge)
