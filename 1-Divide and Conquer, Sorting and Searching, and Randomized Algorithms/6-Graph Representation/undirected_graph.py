@@ -10,6 +10,10 @@ Note that parallel edges are allowed, but not self-loops.
 __author__ = 'Ziang Lu'
 
 
+class IllegalArgumentError(ValueError):
+    pass
+
+
 class Vertex(object):
     def __init__(self, vtx_id):
         """
@@ -17,7 +21,7 @@ class Vertex(object):
         :param vtx_id: int
         """
         self._vtx_id = vtx_id
-        self._my_edges = []
+        self._edges = []
         self._freq_of_neighbors = {}
 
     @property
@@ -28,6 +32,31 @@ class Vertex(object):
         """
         return self._vtx_id
 
+    def get_edge_with_neighbor(self, neighbor):
+        """
+        Returns the first edge with the given neighbor.
+        :param neighbor: Vertex
+        :return: Edge
+        """
+        # Check whether the input neighbor is None
+        if neighbor is None:
+            raise IllegalArgumentError('The input neighbor should not be None.')
+
+        for edge in self._edges:
+            if (edge.end1 is self and edge.end2 is neighbor) or \
+                    (edge.end1 is neighbor and edge.end2 is self):
+                return edge
+        # Not found
+        return None
+
+    @property
+    def edges(self):
+        """
+        Accessor of edges.
+        :return: list[Edge]
+        """
+        return self._edges
+
     def add_edge(self, new_edge):
         """
         Adds the given edge to this vertex.
@@ -36,17 +65,16 @@ class Vertex(object):
         """
         # Check whether the input edge is None
         if new_edge is None:
-            print('The edge to add should not be None.')
-            return
+            raise IllegalArgumentError('The edge to add should not be None.')
         # Check whether the input edge involves this vertex
-        if new_edge.end1 != self and new_edge.end2 != self:
-            print('The edge to add should involve this vertex.')
-            return
+        if (new_edge.end1 is not self) and (new_edge.end2 is not self):
+            raise IllegalArgumentError('The edge to add should involve this '
+                                       'vertex.')
 
-        self._my_edges.append(new_edge)
+        self._edges.append(new_edge)
 
         # Find the neighbor associated with the input edge
-        if new_edge.end1 == self:  # endpoint2 is the neighbor.
+        if new_edge.end1 is self:  # endpoint2 is the neighbor.
             neighbor = new_edge.end2
         else:  # endpoint1 is the neighbor
             neighbor = new_edge.end1
@@ -63,17 +91,17 @@ class Vertex(object):
         """
         # Check whether the input edge is None
         if edge_to_remove is None:
-            print('The edge to remove should not be None.')
-            return
+            raise IllegalArgumentError('The edge to remove should not be None.')
         # Check whether the input edge involves this vertex
-        if edge_to_remove.end1 != self and edge_to_remove.end2 != self:
-            print('The edge to remove should involve this vertex.')
-            return
+        if (edge_to_remove.end1 is not self) and \
+                (edge_to_remove.end2 is not self):
+            raise IllegalArgumentError('The edge to remove should involve this '
+                                       'vertex.')
 
-        self._my_edges.remove(edge_to_remove)
+        self._edges.remove(edge_to_remove)
 
         # Find the neighbor associated with the input edge
-        if edge_to_remove.end1 == self:  # endpoint2 is the neighbor.
+        if edge_to_remove.end1 is self:  # endpoint2 is the neighbor.
             neighbor = edge_to_remove.end2
         else:  # endpoint1 is the neighbor
             neighbor = edge_to_remove.end1
@@ -92,14 +120,6 @@ class Vertex(object):
         """
         return 'Vertex #%d, Its neighbors and frequencies: %s' % \
             (self._vtx_id, self._freq_of_neighbors)
-
-    def __eq__(self, other):
-        """
-        Equality test between this and the given vertex.
-        :param other: Vertex
-        :return: bool
-        """
-        return isinstance(other, Vertex) and self._vtx_id == other.vtx_id
 
 
 class Edge(object):
@@ -162,8 +182,7 @@ class AdjacencyList(object):
         """
         # Check whether the input vertex is repeated
         if self._find_vtx(vtx_id=new_vtx_id):
-            print('The input vertex is repeated.')
-            return
+            raise IllegalArgumentError('The input vertex is repeated.')
 
         new_vtx = Vertex(new_vtx_id)
         self._vtx_list.append(new_vtx)
@@ -180,6 +199,33 @@ class AdjacencyList(object):
         # Not found
         return None
 
+    def remove_vtx(self, vtx_id):
+        """
+        Removes a vertex from this graph.
+        :param vtx_id: int
+        :return: None
+        """
+        # Check whether the input vertex exists
+        vtx_to_remove = self._find_vtx(vtx_id=vtx_id)
+        if vtx_to_remove is None:
+            raise IllegalArgumentError("The input vertex doesn't exist.")
+
+        self._remove_vtx(vtx_to_remove=vtx_to_remove)
+
+    def _remove_vtx(self, vtx_to_remove):
+        """
+        Private helper function to remove the given vertex from this graph.
+        :param vtx_to_remove: Vertex
+        :return: None
+        """
+        # Remove all the edges associated with the vertex to remove
+        edges_to_remove = vtx_to_remove.edges
+        while len(edges_to_remove) > 0:
+            edge_to_remove = edges_to_remove[0]
+            self._remove_edge(edge_to_remove=edge_to_remove)
+        # Remove the vertex
+        self._vtx_list.remove(vtx_to_remove)
+
     def add_edge(self, end1_id, end2_id):
         """
         Adds a new edge to this graph.
@@ -191,10 +237,22 @@ class AdjacencyList(object):
         end1, end2 = self._find_vtx(vtx_id=end1_id), \
             self._find_vtx(vtx_id=end2_id)
         if end1 is None or end2 is None:
-            print('The input vertices don\'t both exist.')
-            return
+            raise IllegalArgumentError("The input vertices don't both exist.")
+        # Check whether the input vertices are the same (self-loop)
+        if end1_id == end2_id:
+            raise IllegalArgumentError("The input vertices are the same "
+                                       "(self-loop).")
 
         new_edge = Edge(end1, end2)
+        self._add_edge(new_edge=new_edge)
+
+    def _add_edge(self, new_edge):
+        """
+        Private helper function to add the given edge to this graph.
+        :param new_edge: Edge
+        :return: None
+        """
+        end1, end2 = new_edge.end1, new_edge.end2
         end1.add_edge(new_edge)
         end2.add_edge(new_edge)
         self._edge_list.append(new_edge)
@@ -210,33 +268,25 @@ class AdjacencyList(object):
         end1, end2 = self._find_vtx(vtx_id=end1_id), \
             self._find_vtx(vtx_id=end2_id)
         if end1 is None or end2 is None:
-            print('The input vertices don\'t both exist.')
-            return
-        # Check whether the edge to remove exists
-        edge_to_remove = self._find_edge(end1_id=end1_id, end2_id=end2_id)
-        if edge_to_remove is None:
-            print('The edge to remove doesn\'t exist.')
-            return
+            raise IllegalArgumentError("The input vertices don't both exist.")
 
+        # Check whether the edge to remove exists
+        edge_to_remove = end1.get_edge_with_neighbor(neighbor=end2)
+        if edge_to_remove is None:
+            raise IllegalArgumentError("The edge to remove doesn't exist.")
+
+        self._remove_edge(edge_to_remove=edge_to_remove)
+
+    def _remove_edge(self, edge_to_remove):
+        """
+        Private helper function to remove the given edge from this graph.
+        :param edge_to_remove: Edge
+        :return: None
+        """
+        end1, end2 = edge_to_remove.end1, edge_to_remove.end2
         end1.remove_edge(edge_to_remove)
         end2.remove_edge(edge_to_remove)
         self._edge_list.remove(edge_to_remove)
-
-    def _find_edge(self, end1_id, end2_id):
-        """
-        Private helper function to find the first edge connecting the given two
-        vertices in this adjacency list.
-        :param end1_id: int
-        :param end2_id: int
-        :return: Edge
-        """
-        for edge in self._edge_list:
-            curr_end1_id, curr_end2_id = edge.end1.vtx_id, edge.end2.vtx_id
-            if (curr_end1_id == end1_id and curr_end2_id == end2_id) or \
-                    (curr_end1_id == end2_id and curr_end2_id == end1_id):
-                return edge
-        # Not found
-        return None
 
     def show_graph(self):
         """

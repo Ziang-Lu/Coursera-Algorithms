@@ -14,15 +14,15 @@ class Vertex {
     /**
      * Vertex ID.
      */
-    final int vtxID;
+    private final int vtxID;
     /**
      * Edges of this vertex.
      */
-    ArrayList<Edge> myEdges;
+    private ArrayList<Edge> edges;
     /**
      * Frequency of neighbors.
      */
-    HashMap<Integer, Integer> freqOfNeighbors;
+    private HashMap<Integer, Integer> freqOfNeighbors;
 
     /**
      * Constructor with parameter.
@@ -30,8 +30,44 @@ class Vertex {
      */
     Vertex(int vtxID) {
         this.vtxID = vtxID;
-        myEdges = new ArrayList<Edge>();
+        edges = new ArrayList<Edge>();
         freqOfNeighbors = new HashMap<Integer, Integer>();
+    }
+
+    /**
+     * Accessor of vtxID.
+     * @return vtxID
+     */
+    int getID() {
+        return vtxID;
+    }
+
+    /**
+     * Returns the first edge with the given neighbor.
+     * @param neighbor given neighbor
+     * @return edge if found, null if not found
+     */
+    Edge getEdgeWithNeighbor(Vertex neighbor) {
+        // Check whether the input neighbor is null
+        if (neighbor == null) {
+            throw new IllegalArgumentException("The input neighbor should not be null.");
+        }
+
+        for (Edge edge : edges) {
+            if (((edge.end1 == this) && (edge.end2 == neighbor)) || ((edge.end1 == neighbor) && (edge.end2 == this))) {
+                return edge;
+            }
+        }
+        // Not found
+        return null;
+    }
+
+    /**
+     * Accessor of edges.
+     * @return edges
+     */
+    ArrayList<Edge> getEdges() {
+        return edges;
     }
 
     /**
@@ -41,16 +77,14 @@ class Vertex {
     void addEdge(Edge newEdge) {
         // Check whether the input edge is null
         if (newEdge == null) {
-            System.out.println("The input edge should not be null.");
-            return;
+            throw new IllegalArgumentException("The edge to add should not be null.");
         }
         // Check whether the input edge involves this vertex
         if ((newEdge.end1 != this) && (newEdge.end2 != this)) {
-            System.out.println("The input edge should involve this vertex.");
-            return;
+            throw new IllegalArgumentException("The edge to add should involve this vertex.");
         }
 
-        myEdges.add(newEdge);
+        edges.add(newEdge);
 
         // Find the neighbor associated with the input edge
         Vertex neighbor = null;
@@ -72,16 +106,14 @@ class Vertex {
     void removeEdge(Edge edgeToRemove) {
         // Check whether the input edge is null
         if (edgeToRemove == null) {
-            System.out.println("The input edge should not mbe null.");
-            return;
+            throw new IllegalArgumentException("The edge to remove should not be null.");
         }
         // Check whether the input edge involves this vertex
-        if ((edgeToRemove.end1 != this) || (edgeToRemove.end2 != this)) {
-            System.out.println("The input edge should involve this vertex.");
-            return;
+        if ((edgeToRemove.end1 != this) && (edgeToRemove.end2 != this)) {
+            throw new IllegalArgumentException("The edge to remove should involve this vertex.");
         }
 
-        myEdges.remove(edgeToRemove);
+        edges.remove(edgeToRemove);
 
         // Find the neighbor associated with the input edge
         Vertex neighbor = null;
@@ -103,15 +135,6 @@ class Vertex {
     @Override
     public String toString() {
         return String.format("Vertex #%d, Its neighbors and frequencies: %s", vtxID, freqOfNeighbors);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof Vertex)) {
-            return false;
-        }
-        Vertex another = (Vertex) o;
-        return vtxID == another.vtxID;
     }
 
 }

@@ -34,8 +34,7 @@ public class AdjacencyList {
     public void addVtx(int newVtxID) {
         // Check whether the input vertex is repeated
         if (findVtx(newVtxID) != null) {
-            System.out.println("The input vertex is repeated.");
-            return;
+            throw new IllegalArgumentException("The input vertex is repeated.");
         }
 
         Vertex newVtx = new Vertex(newVtxID);
@@ -49,12 +48,41 @@ public class AdjacencyList {
      */
     private Vertex findVtx(int vtxID) {
         for (Vertex vtx : vtxList) {
-            if (vtx.vtxID == vtxID) {
+            if (vtx.getID() == vtxID) {
                 return vtx;
             }
         }
         // Not found
         return null;
+    }
+
+    /**
+     * Removes a vertex from this graph.
+     * @param vtxID vertex ID
+     */
+    public void removeVtx(int vtxID) {
+        // Check whether the input vertex exists
+        Vertex vtxToRemove = findVtx(vtxID);
+        if (vtxToRemove == null) {
+            throw new IllegalArgumentException("The input vertex doesn't exist.");
+        }
+
+        removeVtx(vtxToRemove);
+    }
+
+    /**
+     * Private helper method to remove the given vertex from this graph.
+     * @param vtxToRemove vertex to remove
+     */
+    private void removeVtx(Vertex vtxToRemove) {
+        // Remove all the edges associated with the vertex to remove
+        ArrayList<Edge> edgesToRemove = vtxToRemove.getEdges();
+        while (edgesToRemove.size() > 0) {
+            Edge edgeToRemove = edgesToRemove.get(0);
+            removeEdge(edgeToRemove);
+        }
+        // Remove the vertex
+        vtxList.remove(vtxToRemove);
     }
 
     /**
@@ -66,11 +94,23 @@ public class AdjacencyList {
         // Check whether the input vertices both exist
         Vertex end1 = findVtx(end1ID), end2 = findVtx(end2ID);
         if ((end1 == null) || (end2 == null)) {
-            System.out.println("The input vertices don't both exist.");
-            return;
+            throw new IllegalArgumentException("The input vertices don't both exist.");
+        }
+        // Check whether the input vertices are the same (self-loop)
+        if (end1ID == end2ID) {
+            throw new IllegalArgumentException("The input vertices are the same (self-loop).");
         }
 
         Edge newEdge = new Edge(end1, end2);
+        addEdge(newEdge);
+    }
+
+    /**
+     * Private helper method to add the given edge to this graph.
+     * @param newEdge new edge
+     */
+    private void addEdge(Edge newEdge) {
+        Vertex end1 = newEdge.end1, end2 = newEdge.end2;
         end1.addEdge(newEdge);
         end2.addEdge(newEdge);
         edgeList.add(newEdge);
@@ -85,38 +125,26 @@ public class AdjacencyList {
         // Check whether the input vertices both exist
         Vertex end1 = findVtx(end1ID), end2 = findVtx(end2ID);
         if ((end1 == null) || (end2 == null)) {
-            System.out.println("The input vertices don't both exist.");
-            return;
+            throw new IllegalArgumentException("The input vertices don't both exist.");
         }
         // Check whether the edge to remove exists
-        Edge edgeToRemove = findEdge(end1ID, end2ID);
+        Edge edgeToRemove = end1.getEdgeWithNeighbor(end2);
         if (edgeToRemove == null) {
-            System.out.println("The edge to remove doesn't exist.");
-            return;
+            throw new IllegalArgumentException("The edge to remove doesn't exist.");
         }
 
-        end1.removeEdge(edgeToRemove);
-        end2.removeEdge(edgeToRemove);
-        edgeList.remove(edgeToRemove);
+        removeEdge(edgeToRemove);
     }
 
     /**
-     * Private helper method to find the first edge connecting the given
-     * vertices in this adjacency list.
-     * @param end1ID endpoint1 ID
-     * @param end2ID endpoint2 ID
-     * @return edge if found, null if not found
+     * Private helper method to remove the given edge from this graph.
+     * @param edgeToRemove edge to remove
      */
-    private Edge findEdge(int end1ID, int end2ID) {
-        for (Edge edge : edgeList) {
-            int currEnd1ID = edge.end1.vtxID, currEnd2ID = edge.end2.vtxID;
-            if (((currEnd1ID == end1ID) && (currEnd2ID == end2ID))
-                    || ((currEnd1ID == end2ID) && (currEnd2ID == end1ID))) {
-                return edge;
-            }
-        }
-        // Not found
-        return null;
+    private void removeEdge(Edge edgeToRemove) {
+        Vertex end1 = edgeToRemove.end1, end2 = edgeToRemove.end2;
+        end1.removeEdge(edgeToRemove);
+        end2.removeEdge(edgeToRemove);
+        edgeList.remove(edgeToRemove);
     }
 
     /**
@@ -133,5 +161,16 @@ public class AdjacencyList {
         }
     }
 
-}
+    public static void main(String[] args) {
+        AdjacencyList graph = new AdjacencyList();
+        graph.addVtx(0);
+        graph.addVtx(1);
+        graph.addVtx(2);
+        graph.addEdge(0, 1);
+        graph.addEdge(0, 1);
+        graph.addEdge(1, 2);
+        graph.removeVtx(2);
+        graph.showGraph();
+    }
 
+}

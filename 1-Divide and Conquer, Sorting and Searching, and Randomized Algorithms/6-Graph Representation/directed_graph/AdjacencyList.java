@@ -34,8 +34,7 @@ public class AdjacencyList {
     public void addVtx(int newVtxID) {
         // Check whether the input vertex is repeated
         if (findVtx(newVtxID) != null) {
-            System.out.println("The input vertex is repeated.");
-            return;
+            throw new IllegalArgumentException("The input vertex is repeated.");
         }
 
         Vertex newVtx = new Vertex(newVtxID);
@@ -49,12 +48,43 @@ public class AdjacencyList {
      */
     private Vertex findVtx(int vtxID) {
         for (Vertex vtx : vtxList) {
-            if (vtx.vtxID == vtxID) {
+            if (vtx.getID() == vtxID) {
                 return vtx;
             }
         }
         // Not found
         return null;
+    }
+
+    /**
+     * Removes a vertex from this graph.
+     * @param vtxID vertex ID
+     */
+    public void removeVtx(int vtxID) {
+        // Check whether the input vertex exists
+        Vertex vtxToRemove = findVtx(vtxID);
+        if (vtxToRemove == null) {
+            throw new IllegalArgumentException("The inpue vertex doesn't exist.");
+        }
+
+        removeVtx(vtxToRemove);
+    }
+
+    /**
+     * Private helper method to remove the given vertex from this graph.
+     * @param vtxToRemove vertex to remove
+     */
+    private void removeVtx(Vertex vtxToRemove) {
+        // Remove all the edges associated with the vertex to remove
+        ArrayList<Edge> edgesToRemove = new ArrayList<Edge>();
+        edgesToRemove.addAll(vtxToRemove.getEmissiveEdges());
+        edgesToRemove.addAll(vtxToRemove.getIncidentEdges());
+        while (edgesToRemove.size() > 0) {
+            Edge edgeToRemove = edgesToRemove.get(0);
+            removeEdge(edgeToRemove);
+        }
+        // Remove the vertex
+        vtxList.remove(vtxToRemove);
     }
 
     /**
@@ -66,11 +96,23 @@ public class AdjacencyList {
         // Check whether the input vertices both exist
         Vertex tail = findVtx(tailID), head = findVtx(headID);
         if ((tail == null) || (head == null)) {
-            System.out.println("The input vertices don't both exist.");
-            return;
+            throw new IllegalArgumentException("The input vertices don't both exist.");
+        }
+        // Check whether the input vertices both exist
+        if (tailID == headID) {
+            throw new IllegalArgumentException("The input vertices are the same (self-loop).");
         }
 
         Edge newEdge = new Edge(tail, head);
+        addEdge(newEdge);
+    }
+
+    /**
+     * Private helper method to add the given edge to this graph.
+     * @param newEdge new edge
+     */
+    private void addEdge(Edge newEdge) {
+        Vertex tail = newEdge.tail, head = newEdge.head;
         tail.addEmissiveEdge(newEdge);
         head.addIncidentEdge(newEdge);
         edgeList.add(newEdge);
@@ -85,36 +127,26 @@ public class AdjacencyList {
         // Check whether the input vertices both exist
         Vertex tail = findVtx(tailID), head = findVtx(headID);
         if ((tail == null) || (head == null)) {
-            System.out.println("The input vertices don't both exist.");
-            return;
+            throw new IllegalArgumentException("The input vertices don't both exist.");
         }
         // Check whether the edge to remove exists
-        Edge edgeToRemove = findEdge(tailID, headID);
+        Edge edgeToRemove = tail.getEmissiveEdgeWithHead(head);
         if (edgeToRemove == null) {
-            System.out.println("The edge to remove doesn't exist.");
-            return;
+            throw new IllegalArgumentException("The edge to remove doesn't exist.");
         }
 
-        tail.removeEmissiveEdge(edgeToRemove);
-        head.removeIncidentEdge(edgeToRemove);
-        edgeList.remove(edgeToRemove);
+        removeEdge(edgeToRemove);
     }
 
     /**
-     * Private helper method to find the first edge from the given tail to the
-     * given head.
-     * @param tailID tail ID
-     * @param headID head ID
-     * @return edge if found, null if not found
+     * Private helper method to remove the given edge from this graph.
+     * @param edgeToRemove edge to remove
      */
-    private Edge findEdge(int tailID, int headID) {
-        for (Edge edge : edgeList) {
-            if ((edge.tail.vtxID == tailID) && (edge.head.vtxID == headID)) {
-                return edge;
-            }
-        }
-        // Not found
-        return null;
+    private void removeEdge(Edge edgeToRemove) {
+        Vertex tail = edgeToRemove.tail, head = edgeToRemove.head;
+        tail.removeEmissiveEdge(edgeToRemove);
+        head.removeIncidentEdge(edgeToRemove);
+        edgeList.remove(edgeToRemove);
     }
 
     /**

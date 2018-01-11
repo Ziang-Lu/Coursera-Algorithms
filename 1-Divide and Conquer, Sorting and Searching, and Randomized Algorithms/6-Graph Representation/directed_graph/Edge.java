@@ -28,7 +28,7 @@ class Edge {
 
     @Override
     public String toString() {
-        return String.format("Edge from Vertex #%d to Vertex #%d", tail.vtxID, head.vtxID);
+        return String.format("Edge from Vertex #%d to Vertex #%d", tail.getID(), head.getID());
     }
 
 }

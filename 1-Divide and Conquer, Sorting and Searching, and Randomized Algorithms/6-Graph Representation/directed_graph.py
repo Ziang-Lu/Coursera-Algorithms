@@ -10,6 +10,10 @@ Note that parallel edges are allowed, but not self-loops.
 __author__ = 'Ziang Lu'
 
 
+class IllegalArgumentError(ValueError):
+    pass
+
+
 class Vertex(object):
     def __init__(self, vtx_id):
         """
@@ -30,6 +34,54 @@ class Vertex(object):
         """
         return self._vtx_id
 
+    def get_emissive_edge_with_head(self, head):
+        """
+        Returns the first emissive edge with the given head.
+        :param head: Vertex
+        :return: Edge
+        """
+        # Check whether the input head is None
+        if head is None:
+            raise IllegalArgumentError('The input head should not be None.')
+
+        for emissive_edge in self._emissive_edges:
+            if emissive_edge.head is head:
+                return emissive_edge
+        # Not found
+        return None
+
+    @property
+    def emissive_edges(self):
+        """
+        Accessor of emissive_edges.
+        :return: list[Edge]
+        """
+        return self._emissive_edges
+
+    def get_incident_edge_with_tail(self, tail):
+        """
+        Returns the first incident edge with the given tail.
+        :param tail: Vertex
+        :return: Edge
+        """
+        # Check whether the input tail is None
+        if tail is None:
+            raise IllegalArgumentError('The input tail should not be None.')
+
+        for incident_edge in self._incident_edges:
+            if incident_edge.tail is tail:
+                return incident_edge
+        # Not found
+        return None
+
+    @property
+    def incident_edges(self):
+        """
+        Accessor of incident_edges.
+        :return: list[Edge]
+        """
+        return self._incident_edges
+
     def add_emissive_edge(self, new_emissive_edge):
         """
         Adds the given emissive edge to this vertex.
@@ -38,13 +90,12 @@ class Vertex(object):
         """
         # Check whether the input emissive edge is None
         if new_emissive_edge is None:
-            print('The emissive edge to add should not be None.')
-            return
+            raise IllegalArgumentError('The emissive edge to add should not be '
+                                       'None.')
         # Check whether the input emissive edge involves this vertex as the tail
-        if new_emissive_edge.tail != self:
-            print('The emissive edge to add should involve this vertex as the '
-                  'tail.')
-            return
+        if new_emissive_edge.tail is not self:
+            raise IllegalArgumentError('The emissive edge to add should involve'
+                                       ' this vertex as the tail.')
 
         self._emissive_edges.append(new_emissive_edge)
 
@@ -61,13 +112,12 @@ class Vertex(object):
         """
         # Check whether the input incident edge is None
         if new_incident_edge is None:
-            print('The incident edge to add should not be None.')
-            return
+            raise IllegalArgumentError('The incident edge to add should not be '
+                                       'None.')
         # Check whether the input incident edge involves this vertex as the head
-        if new_incident_edge.head != self:
-            print('The incident edge to add should involve this vertex as the '
-                  'head.')
-            return
+        if new_incident_edge.head is not self:
+            raise IllegalArgumentError('The incident edge to add should involve'
+                                       ' this vertex as the head.')
 
         self._incident_edges.append(new_incident_edge)
 
@@ -84,13 +134,12 @@ class Vertex(object):
         """
         # Check whether the input emissive edge is None
         if emissive_edge_to_remove is None:
-            print('The emissive edge to remove should not be None.')
-            return
+            raise IllegalArgumentError('The emissive edge to remove should not '
+                                       'be None.')
         # Check whether the input emissive edge involves this vertex as the tail
-        if emissive_edge_to_remove.tail != self:
-            print('The emissive edge to remove should involve this vertex as '
-                  'the tail.')
-            return
+        if emissive_edge_to_remove.tail is not self:
+            raise IllegalArgumentError('The emissive edge to remove should '
+                                       'involve this vertex as the tail.')
 
         self._emissive_edges.remove(emissive_edge_to_remove)
 
@@ -110,13 +159,12 @@ class Vertex(object):
         """
         # Check whether the input incident edge is None
         if incident_edge_to_remove is None:
-            print('The incident edge to remove should not be None.')
-            return
+            raise IllegalArgumentError('The incident edge to remove should not '
+                                       'be None.')
         # Check whether the input incident edge involves this vertex as the head
-        if incident_edge_to_remove.head != self:
-            print('The incident edge to remove should involve this vertex as '
-                  'the head.')
-            return
+        if incident_edge_to_remove.head is not self:
+            raise IllegalArgumentError('The incident edge to remove should '
+                                       'involve this vertex as the head.')
 
         self._incident_edges.remove(incident_edge_to_remove)
 
@@ -209,8 +257,7 @@ class AdjacencyList(object):
         """
         # Check whether the input vertex is repeated
         if self._find_vtx(vtx_id=new_vtx_id):
-            print('The input vertex is repeated.')
-            return
+            raise IllegalArgumentError('The input vertex is repeated.')
 
         new_vtx = Vertex(new_vtx_id)
         self._vtx_list.append(new_vtx)
@@ -227,9 +274,38 @@ class AdjacencyList(object):
         # Not found
         return None
 
+    def remove_vtx(self, vtx_id):
+        """
+        Removes a vertex from this graph.
+        :param vtx_id: int
+        :return: None
+        """
+        # Check whether the input vertex exists
+        vtx_to_remove = self._find_vtx(vtx_id=vtx_id)
+        if vtx_to_remove is None:
+            raise IllegalArgumentError("The input vertex doesn't exist.")
+
+        self._remove_vtx(vtx_to_remove=vtx_to_remove)
+
+    def _remove_vtx(self, vtx_to_remove):
+        """
+        Private helper function to remove the given vertex from this graph.
+        :param vtx_to_remove: Vertex
+        :return: None
+        """
+        # Remove all the edges associated with the vertex to remove
+        edges_to_remove = []
+        edges_to_remove.extend(vtx_to_remove.emissive_edges)
+        edges_to_remove.extend(vtx_to_remove.incident_edges)
+        while len(edges_to_remove) > 0:
+            edge_to_remove = edges_to_remove[0]
+            self._remove_edge(edge_to_remove=edge_to_remove)
+        # Remove the vertex
+        self._vtx_list.remove(vtx_to_remove)
+
     def add_edge(self, tail_id, head_id):
         """
-        Adds a new egde to this graph.
+        Adds a new edge to this graph.
         :param tail_id: int
         :param head_id: int
         :return: None
@@ -238,10 +314,22 @@ class AdjacencyList(object):
         tail, head = self._find_vtx(vtx_id=tail_id), \
             self._find_vtx(vtx_id=head_id)
         if tail is None or head is None:
-            print('The input vertices don\'t both exist.')
-            return
+            raise IllegalArgumentError("The input vertices don't both exist.")
+        # Check whether the input vertices are the same
+        if tail_id == head_id:
+            raise IllegalArgumentError("The input vertices are the same "
+                                       "(self-loop).")
 
         new_edge = Edge(tail, head)
+        self._add_edge(new_edge=new_edge)
+
+    def _add_edge(self, new_edge):
+        """
+        Private helper method to add the given edge to this graph.
+        :param new_edge: Edge
+        :return: None
+        """
+        tail, head = new_edge.tail, new_edge.head
         tail.add_emissive_edge(new_edge)
         head.add_incident_edge(new_edge)
         self._edge_list.append(new_edge)
@@ -257,17 +345,13 @@ class AdjacencyList(object):
         tail, head = self._find_vtx(vtx_id=tail_id), \
             self._find_vtx(vtx_id=head_id)
         if tail is None or head is None:
-            print('The input vertices don\'t both exist.')
-            return
+            raise IllegalArgumentError("The input vertices don't both exist.")
         # Check whether the edge to remove exists
         edge_to_remove = self._find_edge(tail_id=tail_id, head_id=head_id)
         if edge_to_remove is None:
-            print('The edge to remove doesn\'t exist.')
-            return
+            raise IllegalArgumentError("The edge to remove doesn't exist.")
 
-        tail.remove_emissive_edge(edge_to_remove)
-        head.remove_incident_edge(edge_to_remove)
-        self._edge_list.remove(edge_to_remove)
+        self._remove_edge(edge_to_remove=edge_to_remove)
 
     def _find_edge(self, tail_id, head_id):
         """
@@ -282,6 +366,17 @@ class AdjacencyList(object):
                 return edge
         # Not found
         return None
+
+    def _remove_edge(self, edge_to_remove):
+        """
+        Private helper function to remove the given edge from this graph.
+        :param edge_to_remove: Edge
+        :return: None
+        """
+        tail, head = edge_to_remove.tail, edge_to_remove.head
+        tail.remove_emissive_edge(edge_to_remove)
+        head.remove_incident_edge(edge_to_remove)
+        self._edge_list.remove(edge_to_remove)
 
     def show_graph(self):
         """
