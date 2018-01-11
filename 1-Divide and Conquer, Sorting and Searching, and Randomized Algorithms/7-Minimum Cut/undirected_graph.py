@@ -9,6 +9,8 @@ Note that parallel edges are allowed, but not self-loops.
 
 __author__ = 'Ziang Lu'
 
+import random
+
 
 class IllegalArgumentError(ValueError):
     pass
@@ -31,6 +33,14 @@ class Vertex(object):
         :return: int
         """
         return self._vtx_id
+
+    @property
+    def freq_of_neighbors(self):
+        """
+        Accessor of freq_of_neighbors.
+        :return: dict{int: int}
+        """
+        return self._freq_of_neighbors
 
     def get_edge_with_neighbor(self, neighbor):
         """
@@ -312,3 +322,58 @@ class AdjacencyList(object):
         print('The edges are:')
         for edge in self._edge_list:
             print(edge)
+
+    def compute_minimum_cut(self):
+        """
+        Computes a cut with the fewest number of crossing edges.
+        :return: int
+        """
+        if len(self._vtx_list) <= 1:
+            return 0
+
+        # While there are more than 2 vertices
+        while len(self._vtx_list) > 2:
+            # 1. Pick up an edge randomly
+            random_idx = random.randrange(len(self._edge_list))
+            edge_to_contract = self._edge_list[random_idx]
+            end1, end2 = edge_to_contract.end1, edge_to_contract.end2
+
+            # 2. Contract the two endpoints into a single vertex
+
+            # (1) Remove all the edges between the pair
+            self.remove_edges_between_pair(end1_id=end1.vtx_id,
+                                           end2_id=end2.vtx_id)
+            # (2) Create a merged vertex
+            merged_vtx_id = self._get_next_vtx_id()
+            self.add_vtx(new_vtx_id=merged_vtx_id)
+            # (3) Reconstruct the edges associated with the two endpoints to the
+            # merged vertex, and remove the two endpoints
+            self._reconstruct_edges(end=end1, merged_vtx_id=merged_vtx_id)
+            self._remove_vtx(vtx_to_remove=end1)
+            self._reconstruct_edges(end=end2, merged_vtx_id=merged_vtx_id)
+            self._remove_vtx(vtx_to_remove=end2)
+        return len(self._edge_list)
+
+    def _get_next_vtx_id(self):
+        """
+        Private helper function to get the next available vertex ID, which is 1
+        greater than the current largest vertex ID.
+        :return: int
+        """
+        vtx_ids = []
+        for vtx in self._vtx_list:
+            vtx_ids.append(vtx.vtx_id)
+        return max(vtx_ids) + 1
+
+    def _reconstruct_edges(self, end, merged_vtx_id):
+        """
+        Private helper function to reconstruct the edges associated with the
+        given endpoint to the given merged vertex.
+        :param end: Vertex
+        :param merged_vtx_id: int
+        :return: None
+        """
+        freq_of_neighbors = end.freq_of_neighbors
+        for neighbor_id, freq in freq_of_neighbors.items():
+            for i in range(freq):
+                self.add_edge(end1_id=merged_vtx_id, end2_id=neighbor_id)

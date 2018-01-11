@@ -21,10 +21,10 @@ class Vertex(object):
         :param vtx_id: int
         """
         self._vtx_id = vtx_id
-        self._emissive_edges = []
         self._freq_of_emissive_neighbors = {}
-        self._incident_edges = []
+        self._emissive_edges = []
         self._freq_of_incident_neighbors = {}
+        self._incident_edges = []
 
     @property
     def vtx_id(self):
@@ -310,14 +310,14 @@ class AdjacencyList(object):
         :param head_id: int
         :return: None
         """
-        # Check whether the input vertices both exist
+        # Check whether the input endpoints both exist
         tail, head = self._find_vtx(vtx_id=tail_id), \
             self._find_vtx(vtx_id=head_id)
         if tail is None or head is None:
-            raise IllegalArgumentError("The input vertices don't both exist.")
+            raise IllegalArgumentError("The endpoints don't both exist.")
         # Check whether the input vertices are the same
         if tail_id == head_id:
-            raise IllegalArgumentError("The input vertices are the same "
+            raise IllegalArgumentError("The endpoints are the same "
                                        "(self-loop).")
 
         new_edge = Edge(tail, head)
@@ -341,11 +341,11 @@ class AdjacencyList(object):
         :param head_id: int
         :return: None
         """
-        # Check whether the input vertices both exist
+        # Check whether the input endpoints both exist
         tail, head = self._find_vtx(vtx_id=tail_id), \
             self._find_vtx(vtx_id=head_id)
         if tail is None or head is None:
-            raise IllegalArgumentError("The input vertices don't both exist.")
+            raise IllegalArgumentError("The endpoints don't both exist.")
         # Check whether the edge to remove exists
         edge_to_remove = self._find_edge(tail_id=tail_id, head_id=head_id)
         if edge_to_remove is None:
@@ -386,7 +386,8 @@ class AdjacencyList(object):
         :return: None
         """
         try:
-            self.remove_edge(tail_id=tail_id, head_id=head_id)
+            while True:
+                self.remove_edge(tail_id=tail_id, head_id=head_id)
         except IllegalArgumentError:
             pass
 

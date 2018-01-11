@@ -1,6 +1,10 @@
 package undirected_graph;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 /**
  * Adjacency list representation of a undirected graph.
@@ -171,6 +175,70 @@ public class AdjacencyList {
         System.out.println("The edges are:");
         for (Edge edge : edgeList) {
             System.out.println(edge);
+        }
+    }
+
+    /**
+     * Computes a cut with the fewest number of crossing edges.
+     * @return fewest number of crossing edges
+     */
+    public int computeMinimumCut() {
+        if (vtxList.size() <= 1) {
+            return 0;
+        }
+
+        Random randomGenerator = new Random();
+
+        // While there are more than 2 vertices
+        while (vtxList.size() > 2) {
+            // 1. Pick up an edge randomly
+            int randomIdx = randomGenerator.nextInt(edgeList.size());
+            Edge edgeToContract = edgeList.get(randomIdx);
+            Vertex end1 = edgeToContract.end1, end2 = edgeToContract.end2;
+
+            // 2. Contract the two endpoints into a single vertex
+
+            // (1) Remove all the edges between the pair
+            removeEdgesBetweenPair(end1.getID(), end2.getID());
+            // (2) Create a merged vertex
+            int mergedVtxID = getNextVtxID();
+            addVtx(mergedVtxID);
+            // (3) Reconstruct the edges associated with the two endpoints to the merged vertex, and remove the two
+            // endpoints
+            reconstructEdges(end1, mergedVtxID);
+            removeVtx(end1);
+            reconstructEdges(end2, mergedVtxID);
+            removeVtx(end2);
+        }
+        return edgeList.size();
+    }
+
+    /**
+     * Private helper method to get the next available vertex ID, which is 1
+     * greater than the current largest vertex ID.
+     * @return next available vertex ID
+     */
+    private int getNextVtxID() {
+        ArrayList<Integer> vtxIDs = new ArrayList<Integer>();
+        for (Vertex vtx : vtxList) {
+            vtxIDs.add(vtx.getID());
+        }
+        return Collections.max(vtxIDs) + 1;
+    }
+
+    /**
+     * Private helper method to reconstruct the edges associated with the given
+     * endpoint to the given merged vertex.
+     * @param end endpoint
+     * @param mergedVtxID merged vertex ID
+     */
+    private void reconstructEdges(Vertex end, int mergedVtxID) {
+        HashMap<Integer, Integer> freqOfNeighbors = end.getFreqOfNeighbors();
+        for (Map.Entry<Integer, Integer> freqOfNeighbor : freqOfNeighbors.entrySet()) {
+            Integer neighborID = freqOfNeighbor.getKey(), freq = freqOfNeighbor.getValue();
+            for (int i = 0; i < freq; ++i) {
+                addEdge(mergedVtxID, neighborID);
+            }
         }
     }
 

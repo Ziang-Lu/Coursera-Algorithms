@@ -16,21 +16,21 @@ class Vertex {
      */
     private final int vtxID;
     /**
-     * Emissive edge of this vertex.
-     */
-    private ArrayList<Edge> emissiveEdges;
-    /**
      * Frequency of emissive neighbors.
      */
     private HashMap<Integer, Integer> freqOfEmissiveNeighbors;
     /**
-     * Incident of this vertex.
+     * Emissive edge of this vertex.
      */
-    private ArrayList<Edge> incidentEdges;
+    private ArrayList<Edge> emissiveEdges;
     /**
      * Frequency of incident neighbors.
      */
     private HashMap<Integer, Integer> freqOfIncidentNeighbors;
+    /**
+     * Incident of this vertex.
+     */
+    private ArrayList<Edge> incidentEdges;
 
     /**
      * Constructor with parameter.
@@ -38,10 +38,10 @@ class Vertex {
      */
     Vertex(int vtxID) {
         this.vtxID = vtxID;
-        emissiveEdges = new ArrayList<Edge>();
         freqOfEmissiveNeighbors = new HashMap<Integer, Integer>();
-        incidentEdges = new ArrayList<Edge>();
+        emissiveEdges = new ArrayList<Edge>();
         freqOfIncidentNeighbors = new HashMap<Integer, Integer>();
+        incidentEdges = new ArrayList<Edge>();
     }
 
     /**

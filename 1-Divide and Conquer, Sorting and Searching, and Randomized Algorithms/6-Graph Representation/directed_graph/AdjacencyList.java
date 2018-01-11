@@ -93,14 +93,14 @@ public class AdjacencyList {
      * @param headID head ID
      */
     public void addEdge(int tailID, int headID) {
-        // Check whether the input vertices both exist
+        // Check whether the input endpoints both exist
         Vertex tail = findVtx(tailID), head = findVtx(headID);
         if ((tail == null) || (head == null)) {
-            throw new IllegalArgumentException("The input vertices don't both exist.");
+            throw new IllegalArgumentException("The endpoints don't both exist.");
         }
-        // Check whether the input vertices both exist
+        // Check whether the input endpoints both exist
         if (tailID == headID) {
-            throw new IllegalArgumentException("The input vertices are the same (self-loop).");
+            throw new IllegalArgumentException("The endpoints are the same (self-loop).");
         }
 
         Edge newEdge = new Edge(tail, head);
@@ -124,10 +124,10 @@ public class AdjacencyList {
      * @param headID head ID
      */
     public void removeEdge(int tailID, int headID) {
-        // Check whether the input vertices both exist
+        // Check whether the input endpoints both exist
         Vertex tail = findVtx(tailID), head = findVtx(headID);
         if ((tail == null) || (head == null)) {
-            throw new IllegalArgumentException("The input vertices don't both exist.");
+            throw new IllegalArgumentException("The endpoints don't both exist.");
         }
         // Check whether the edge to remove exists
         Edge edgeToRemove = tail.getEmissiveEdgeWithHead(head);
