@@ -148,6 +148,19 @@ public class AdjacencyList {
     }
 
     /**
+     * Removes all the edges between a vertex pair from this graph.
+     * @param end1ID endpoint1 ID
+     * @param end2ID endpoint2 ID
+     */
+    public void removeEdgesBetweenPair(int end1ID, int end2ID) {
+        try {
+            while (true) {
+                removeEdge(end1ID, end2ID);
+            }
+        } catch (IllegalArgumentException ex) {}
+    }
+
+    /**
      * Shows the graph.
      */
     public void showGraph() {
@@ -159,18 +172,6 @@ public class AdjacencyList {
         for (Edge edge : edgeList) {
             System.out.println(edge);
         }
-    }
-
-    public static void main(String[] args) {
-        AdjacencyList graph = new AdjacencyList();
-        graph.addVtx(0);
-        graph.addVtx(1);
-        graph.addVtx(2);
-        graph.addEdge(0, 1);
-        graph.addEdge(0, 1);
-        graph.addEdge(1, 2);
-        graph.removeVtx(2);
-        graph.showGraph();
     }
 
 }

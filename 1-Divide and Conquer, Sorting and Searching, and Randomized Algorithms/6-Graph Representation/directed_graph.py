@@ -378,6 +378,18 @@ class AdjacencyList(object):
         head.remove_incident_edge(edge_to_remove)
         self._edge_list.remove(edge_to_remove)
 
+    def remove_directed_edges_between_pair(self, tail_id, head_id):
+        """
+        Removes all the directed edges between a vertex pair from this graph.
+        :param tail_id: int
+        :param head_id: int
+        :return: None
+        """
+        try:
+            self.remove_edge(tail_id=tail_id, head_id=head_id)
+        except IllegalArgumentError:
+            pass
+
     def show_graph(self):
         """
         Shows this graph.

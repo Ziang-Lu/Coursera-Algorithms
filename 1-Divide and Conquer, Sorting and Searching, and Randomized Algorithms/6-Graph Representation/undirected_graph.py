@@ -288,6 +288,18 @@ class AdjacencyList(object):
         end2.remove_edge(edge_to_remove)
         self._edge_list.remove(edge_to_remove)
 
+    def remove_edges_between_pair(self, end1_id, end2_id):
+        """
+        Removes all the edges between a vertex pair from this graph.
+        :param end1_id: int
+        :param end2_id: int
+        :return: None
+        """
+        try:
+            self.remove_edge(end1_id=end1_id, end2_id=end2_id)
+        except IllegalArgumentError:
+            pass
+
     def show_graph(self):
         """
         Shows this graph.

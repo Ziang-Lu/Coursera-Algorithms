@@ -150,6 +150,17 @@ public class AdjacencyList {
     }
 
     /**
+     * Removes all the directed edges between a vertex pair from this graph.
+     * @param tailID tail ID
+     * @param headID head ID
+     */
+    public void removeDirectedEdgesBetweenPair(int tailID, int headID) {
+        try {
+            removeEdge(tailID, headID);
+        } catch (IllegalArgumentException ex) {};
+    }
+
+    /**
      * Shows the graph.
      */
     public void showGraph() {
