@@ -43,14 +43,6 @@ class Vertex {
     }
 
     /**
-     * Accessor of freqOfNeighbors.
-     * @return freqOfNeighbors
-     */
-    HashMap<Integer, Integer> getFreqOfNeighbors() {
-        return freqOfNeighbors;
-    }
-
-    /**
      * Returns the first edge with the given neighbor.
      * @param neighbor given neighbor
      * @return edge if found, null if not found

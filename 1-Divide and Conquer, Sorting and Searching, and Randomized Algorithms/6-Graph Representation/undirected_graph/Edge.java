@@ -10,11 +10,11 @@ class Edge {
     /**
      * Endpoint 1.
      */
-    final Vertex end1;
+    Vertex end1;
     /**
      * Endpoint 2.
      */
-    final Vertex end2;
+    Vertex end2;
 
     /**
      * Constructor with parameter.

@@ -10,11 +10,11 @@ class Edge {
     /**
      * Tail of this edge.
      */
-    final Vertex tail;
+    Vertex tail;
     /**
      * Head of this edge.
      */
-    final Vertex head;
+    Vertex head;
 
     /**
      * Constructor with parameter.

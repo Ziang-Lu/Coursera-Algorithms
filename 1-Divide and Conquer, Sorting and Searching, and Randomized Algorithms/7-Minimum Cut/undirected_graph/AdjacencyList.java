@@ -2,8 +2,6 @@ package undirected_graph;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 
 /**
@@ -205,10 +203,9 @@ public class AdjacencyList {
             addVtx(mergedVtxID);
             // (3) Reconstruct the edges associated with the two endpoints to the merged vertex, and remove the two
             // endpoints
-            reconstructEdges(end1, mergedVtxID);
-            removeVtx(end1);
-            reconstructEdges(end2, mergedVtxID);
-            removeVtx(end2);
+            Vertex mergedVtx = findVtx(mergedVtxID);
+            reconstructEdges(end1, mergedVtx);
+            reconstructEdges(end2, mergedVtx);
         }
         return edgeList.size();
     }
@@ -227,19 +224,28 @@ public class AdjacencyList {
     }
 
     /**
-     * Private helper method to reconstruct the edges associated with the given
-     * endpoint to the given merged vertex.
+     * Private helper method to reconnect the edges associated with the given
+     * endpoint to the given merged vertex, and remove the endpoint.
      * @param end endpoint
-     * @param mergedVtxID merged vertex ID
+     * @param mergedVtx merged vertex
      */
-    private void reconstructEdges(Vertex end, int mergedVtxID) {
-        HashMap<Integer, Integer> freqOfNeighbors = end.getFreqOfNeighbors();
-        for (Map.Entry<Integer, Integer> freqOfNeighbor : freqOfNeighbors.entrySet()) {
-            Integer neighborID = freqOfNeighbor.getKey(), freq = freqOfNeighbor.getValue();
-            for (int i = 0; i < freq; ++i) {
-                addEdge(mergedVtxID, neighborID);
+    private void reconstructEdges(Vertex end, Vertex mergedVtx) {
+        for (Edge edgeFromEnd : end.getEdges()) {
+            // Find the neighbor
+            Vertex neighbor = null;
+            if (edgeFromEnd.end1 == end) { // endpoint2 is the neighbor.
+                neighbor = edgeFromEnd.end2;
+                neighbor.removeEdge(edgeFromEnd);
+                edgeFromEnd.end1 = mergedVtx;
+            } else { // endpoint1 is the neighbor
+                neighbor = edgeFromEnd.end1;
+                neighbor.removeEdge(edgeFromEnd);
+                edgeFromEnd.end2 = mergedVtx;
             }
+            neighbor.addEdge(edgeFromEnd);
+            mergedVtx.addEdge(edgeFromEnd);
         }
+        vtxList.remove(end);
     }
 
 }
