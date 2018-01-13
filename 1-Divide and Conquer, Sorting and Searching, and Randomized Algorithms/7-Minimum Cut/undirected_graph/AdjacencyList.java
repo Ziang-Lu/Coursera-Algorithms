@@ -235,16 +235,20 @@ public class AdjacencyList {
             Vertex neighbor = null;
             if (edgeFromEnd.getEnd1() == end) { // endpoint2 is the neighbor.
                 neighbor = edgeFromEnd.getEnd2();
+                // Remove the edge from the neighbor
                 neighbor.removeEdge(edgeFromEnd);
+                // Reform the edge to connect the neighbor and the merged vertex
                 edgeFromEnd.setEnd1(mergedVtx);
             } else { // endpoint1 is the neighbor.
                 neighbor = edgeFromEnd.getEnd1();
                 neighbor.removeEdge(edgeFromEnd);
                 edgeFromEnd.setEnd2(mergedVtx);
             }
+            // Add the new edge to both the neighbor and the merged vertex
             neighbor.addEdge(edgeFromEnd);
             mergedVtx.addEdge(edgeFromEnd);
         }
+        // Remove the endpoint
         vtxList.remove(end);
     }
 

@@ -383,14 +383,19 @@ class AdjacencyList(object):
         :return: None
         """
         for edge_from_end in end.edges:
+            # Find the neighbor
             if edge_from_end.end1 is end:  # endpoint2 is the neighbor.
                 neighbor = edge_from_end.end2
+                # Remove the dge from the neighbor
                 neighbor.remove_edge(edge_to_remove=edge_from_end)
+                # Reform the edge to connect the neighbor and the merged vertex
                 edge_from_end.end1 = merged_vtx
             else:  # endpoint1 is the neighbor.
                 neighbor = edge_from_end.end1
                 neighbor.remove_edge(edge_to_remove=edge_from_end)
                 edge_from_end.end2 = merged_vtx
+            # add the new edge to both the neighbor and the merged vertex
             neighbor.add_edge(edge_from_end)
             merged_vtx.add_edge(edge_from_end)
+        # Remove the endpoint
         self._vtx_list.remove(end)
