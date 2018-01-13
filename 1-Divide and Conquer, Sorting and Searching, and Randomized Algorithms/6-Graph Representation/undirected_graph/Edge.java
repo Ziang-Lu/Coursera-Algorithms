@@ -10,11 +10,11 @@ class Edge {
     /**
      * Endpoint 1.
      */
-    Vertex end1;
+    private Vertex end1;
     /**
      * Endpoint 2.
      */
-    Vertex end2;
+    private Vertex end2;
 
     /**
      * Constructor with parameter.
@@ -23,6 +23,38 @@ class Edge {
      */
     Edge(Vertex end1, Vertex end2) {
         this.end1 = end1;
+        this.end2 = end2;
+    }
+
+    /**
+     * Accessor of end1.
+     * @return end1
+     */
+    Vertex getEnd1() {
+        return end1;
+    }
+
+    /**
+     * Accessor of end2.
+     * @return end2
+     */
+    Vertex getEnd2() {
+        return end2;
+    }
+
+    /**
+     * Mutator of end1.
+     * @param end1 end1
+     */
+    void setEnd1(Vertex end1) {
+        this.end1 = end1;
+    }
+
+    /**
+     * Mutator of end2.
+     * @param end2 end2
+     */
+    void setEnd2(Vertex end2) {
         this.end2 = end2;
     }
 

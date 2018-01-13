@@ -232,10 +232,28 @@ class Edge(object):
         """
         return self._head
 
+    @tail.setter
+    def tail(self, tail):
+        """
+        Mutator of tail.
+        :param tail: Vertex
+        :return: None
+        """
+        self._tail = tail
+
+    @head.setter
+    def head(self, head):
+        """
+        Mutator of head.
+        :param head: Vertex
+        :return: None
+        """
+        self._head = head
+
     def __repr__(self):
         """
         String representation of this edge.
-        :return: str
+        :return head: str
         """
         return 'Edge from Vertex #%d to Vertex #%d' % \
             (self._tail.vtx_id, self._head.vtx_id)

@@ -64,7 +64,7 @@ class Vertex {
         }
 
         for (Edge emissiveEdge : emissiveEdges) {
-            if (emissiveEdge.head == head) {
+            if (emissiveEdge.getHead() == head) {
                 return emissiveEdge;
             }
         }
@@ -92,7 +92,7 @@ class Vertex {
         }
 
         for (Edge incidentEdge : incidentEdges) {
-            if (incidentEdge.tail == tail) {
+            if (incidentEdge.getTail() == tail) {
                 return incidentEdge;
             }
         }
@@ -118,14 +118,14 @@ class Vertex {
             throw new IllegalArgumentException("The emissive edge to add should not be null.");
         }
         // Check whether the input emissive edge involves this vertex as the tail
-        if (newEmissiveEdge.tail != this) {
+        if (newEmissiveEdge.getTail() != this) {
             throw new IllegalArgumentException("The emissive edge to add should involve this vertex as the tail.");
         }
 
         emissiveEdges.add(newEmissiveEdge);
 
         // Find the emissive neighbor associated with the input emissive edge
-        Vertex emissiveNeighbor = newEmissiveEdge.head;
+        Vertex emissiveNeighbor = newEmissiveEdge.getHead();
         // Update the frequency of the emissive neighbor
         Integer freq = freqOfEmissiveNeighbors.getOrDefault(emissiveNeighbor.vtxID, 0);
         ++freq;
@@ -142,14 +142,14 @@ class Vertex {
             throw new IllegalArgumentException("The incident edge to add should not be null.");
         }
         // Check whether the input incident edge involves this vertex as the head
-        if (newIncidentEdge.head != this) {
+        if (newIncidentEdge.getHead() != this) {
             throw new IllegalArgumentException("The incident edge to add should involve this vertex as the head.");
         }
 
         incidentEdges.add(newIncidentEdge);
 
         // Find the incident neighbor associated with the input incident edge
-        Vertex incidentNeighbor = newIncidentEdge.tail;
+        Vertex incidentNeighbor = newIncidentEdge.getTail();
         // Update the frequency of the incident neighbor
         Integer freq = freqOfIncidentNeighbors.getOrDefault(incidentNeighbor.vtxID, 0);
         ++freq;
@@ -166,14 +166,14 @@ class Vertex {
             throw new IllegalArgumentException("The emissive edge to remove should not be null.");
         }
         // Check whether the input emissive edge involves this vertex as the tail
-        if (emissiveEdgeToRemove.tail != this) {
+        if (emissiveEdgeToRemove.getTail() != this) {
             throw new IllegalArgumentException("The emissive edge to remove should involve this vertex as the tail.");
         }
 
         emissiveEdges.remove(emissiveEdgeToRemove);
 
         // Find the emissive neighbor associated with the input emissive edge
-        Vertex emissiveNeighbor = emissiveEdgeToRemove.head;
+        Vertex emissiveNeighbor = emissiveEdgeToRemove.getHead();
         // Update the frequency of the emissive neighbor
         Integer freq = freqOfEmissiveNeighbors.get(emissiveNeighbor.vtxID);
         if (freq == 1) {
@@ -194,14 +194,14 @@ class Vertex {
             throw new IllegalArgumentException("The incident edge to remove should not be null.");
         }
         // Check whether the input incident edge involves this vertex as the head
-        if (incidentEdgeToRemove.head != this) {
+        if (incidentEdgeToRemove.getHead() != this) {
             throw new IllegalArgumentException("The incident edge to remove should involve this vertex as the head.");
         }
 
         incidentEdges.remove(incidentEdgeToRemove);
 
         // Find the incident neighbor associated with the input incident edge
-        Vertex incidentNeighbor = incidentEdgeToRemove.tail;
+        Vertex incidentNeighbor = incidentEdgeToRemove.getTail();
         // Update the frequency of the emissive neighbor
         Integer freq = freqOfIncidentNeighbors.get(incidentNeighbor.vtxID);
         if (freq == 1) {

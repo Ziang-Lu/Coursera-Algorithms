@@ -10,11 +10,11 @@ class Edge {
     /**
      * Tail of this edge.
      */
-    Vertex tail;
+    private Vertex tail;
     /**
      * Head of this edge.
      */
-    Vertex head;
+    private Vertex head;
 
     /**
      * Constructor with parameter.
@@ -23,6 +23,38 @@ class Edge {
      */
     Edge(Vertex tail, Vertex head) {
         this.tail = tail;
+        this.head = head;
+    }
+
+    /**
+     * Accessor of tail.
+     * @return tail
+     */
+    Vertex getTail() {
+        return tail;
+    }
+
+    /**
+     * Accessor of head.
+     * @return head
+     */
+    Vertex getHead() {
+        return head;
+    }
+
+    /**
+     * Mutator of tail.
+     * @param tail tail
+     */
+    void setTail(Vertex tail) {
+        this.tail = tail;
+    }
+
+    /**
+     * Mutator of head.
+     * @param head head
+     */
+    void setHead(Vertex head) {
         this.head = head;
     }
 

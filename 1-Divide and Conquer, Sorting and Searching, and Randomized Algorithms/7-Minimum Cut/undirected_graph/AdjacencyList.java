@@ -112,7 +112,7 @@ public class AdjacencyList {
      * @param newEdge new edge
      */
     private void addEdge(Edge newEdge) {
-        Vertex end1 = newEdge.end1, end2 = newEdge.end2;
+        Vertex end1 = newEdge.getEnd1(), end2 = newEdge.getEnd2();
         end1.addEdge(newEdge);
         end2.addEdge(newEdge);
         edgeList.add(newEdge);
@@ -143,7 +143,7 @@ public class AdjacencyList {
      * @param edgeToRemove edge to remove
      */
     private void removeEdge(Edge edgeToRemove) {
-        Vertex end1 = edgeToRemove.end1, end2 = edgeToRemove.end2;
+        Vertex end1 = edgeToRemove.getEnd1(), end2 = edgeToRemove.getEnd2();
         end1.removeEdge(edgeToRemove);
         end2.removeEdge(edgeToRemove);
         edgeList.remove(edgeToRemove);
@@ -192,7 +192,7 @@ public class AdjacencyList {
             // 1. Pick up an edge randomly
             int randomIdx = randomGenerator.nextInt(edgeList.size());
             Edge edgeToContract = edgeList.get(randomIdx);
-            Vertex end1 = edgeToContract.end1, end2 = edgeToContract.end2;
+            Vertex end1 = edgeToContract.getEnd1(), end2 = edgeToContract.getEnd2();
 
             // 2. Contract the two endpoints into a single vertex
 
@@ -233,14 +233,14 @@ public class AdjacencyList {
         for (Edge edgeFromEnd : end.getEdges()) {
             // Find the neighbor
             Vertex neighbor = null;
-            if (edgeFromEnd.end1 == end) { // endpoint2 is the neighbor.
-                neighbor = edgeFromEnd.end2;
+            if (edgeFromEnd.getEnd1() == end) { // endpoint2 is the neighbor.
+                neighbor = edgeFromEnd.getEnd2();
                 neighbor.removeEdge(edgeFromEnd);
-                edgeFromEnd.end1 = mergedVtx;
-            } else { // endpoint1 is the neighbor
-                neighbor = edgeFromEnd.end1;
+                edgeFromEnd.setEnd1(mergedVtx);
+            } else { // endpoint1 is the neighbor.
+                neighbor = edgeFromEnd.getEnd1();
                 neighbor.removeEdge(edgeFromEnd);
-                edgeFromEnd.end2 = mergedVtx;
+                edgeFromEnd.setEnd2(mergedVtx);
             }
             neighbor.addEdge(edgeFromEnd);
             mergedVtx.addEdge(edgeFromEnd);

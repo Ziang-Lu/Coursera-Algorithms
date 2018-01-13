@@ -34,14 +34,6 @@ class Vertex(object):
         """
         return self._vtx_id
 
-    @property
-    def freq_of_neighbors(self):
-        """
-        Accessor of freq_of_neighbors.
-        :return: dict{int: int}
-        """
-        return self._freq_of_neighbors
-
     def get_edge_with_neighbor(self, neighbor):
         """
         Returns the first edge with the given neighbor.
@@ -166,6 +158,24 @@ class Edge(object):
         :return: Vertex
         """
         return self._end2
+
+    @end1.setter
+    def end1(self, end1):
+        """
+        Mutator of end1.
+        :param end1: Vertex
+        :return: None
+        """
+        self._end1 = end1
+
+    @end2.setter
+    def end2(self, end2):
+        """
+        Mutator of end2.
+        :param end2: Vertex
+        :return: None
+        """
+        self._end2 = end2
 
     def __repr__(self):
         """
@@ -348,10 +358,9 @@ class AdjacencyList(object):
             self.add_vtx(new_vtx_id=merged_vtx_id)
             # (3) Reconstruct the edges associated with the two endpoints to the
             # merged vertex, and remove the two endpoints
-            self._reconstruct_edges(end=end1, merged_vtx_id=merged_vtx_id)
-            self._remove_vtx(vtx_to_remove=end1)
-            self._reconstruct_edges(end=end2, merged_vtx_id=merged_vtx_id)
-            self._remove_vtx(vtx_to_remove=end2)
+            merged_vtx = self._find_vtx(vtx_id=merged_vtx_id)
+            self._reconnect_edges(end=end1, merged_vtx=merged_vtx)
+            self._reconnect_edges(end=end2, merged_vtx=merged_vtx)
         return len(self._edge_list)
 
     def _get_next_vtx_id(self):
@@ -365,15 +374,23 @@ class AdjacencyList(object):
             vtx_ids.append(vtx.vtx_id)
         return max(vtx_ids) + 1
 
-    def _reconstruct_edges(self, end, merged_vtx_id):
+    def _reconnect_edges(self, end, merged_vtx):
         """
         Private helper function to reconstruct the edges associated with the
-        given endpoint to the given merged vertex.
+        given endpoint to the given merged vertex, and remove the endpoint.
         :param end: Vertex
-        :param merged_vtx_id: int
+        :param merged_vtx: Vertex
         :return: None
         """
-        freq_of_neighbors = end.freq_of_neighbors
-        for neighbor_id, freq in freq_of_neighbors.items():
-            for i in range(freq):
-                self.add_edge(end1_id=merged_vtx_id, end2_id=neighbor_id)
+        for edge_from_end in end.edges:
+            if edge_from_end.end1 is end:  # endpoint2 is the neighbor.
+                neighbor = edge_from_end.end2
+                neighbor.remove_edge(edge_to_remove=edge_from_end)
+                edge_from_end.end1 = merged_vtx
+            else:  # endpoint1 is the neighbor.
+                neighbor = edge_from_end.end1
+                neighbor.remove_edge(edge_to_remove=edge_from_end)
+                edge_from_end.end2 = merged_vtx
+            neighbor.add_edge(edge_from_end)
+            merged_vtx.add_edge(edge_from_end)
+        self._vtx_list.remove(end)

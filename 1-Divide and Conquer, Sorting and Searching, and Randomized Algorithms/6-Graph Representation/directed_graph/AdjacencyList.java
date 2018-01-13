@@ -112,7 +112,7 @@ public class AdjacencyList {
      * @param newEdge new edge
      */
     private void addEdge(Edge newEdge) {
-        Vertex tail = newEdge.tail, head = newEdge.head;
+        Vertex tail = newEdge.getTail(), head = newEdge.getHead();
         tail.addEmissiveEdge(newEdge);
         head.addIncidentEdge(newEdge);
         edgeList.add(newEdge);
@@ -143,7 +143,7 @@ public class AdjacencyList {
      * @param edgeToRemove edge to remove
      */
     private void removeEdge(Edge edgeToRemove) {
-        Vertex tail = edgeToRemove.tail, head = edgeToRemove.head;
+        Vertex tail = edgeToRemove.getTail(), head = edgeToRemove.getHead();
         tail.removeEmissiveEdge(edgeToRemove);
         head.removeIncidentEdge(edgeToRemove);
         edgeList.remove(edgeToRemove);

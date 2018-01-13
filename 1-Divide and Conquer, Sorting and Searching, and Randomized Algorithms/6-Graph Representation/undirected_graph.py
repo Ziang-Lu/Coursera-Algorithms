@@ -76,7 +76,7 @@ class Vertex(object):
         # Find the neighbor associated with the input edge
         if new_edge.end1 is self:  # endpoint2 is the neighbor.
             neighbor = new_edge.end2
-        else:  # endpoint1 is the neighbor
+        else:  # endpoint1 is the neighbor.
             neighbor = new_edge.end1
         # Update the frequency of the neighbor
         freq = self._freq_of_neighbors.get(neighbor.vtx_id, 0)
@@ -103,7 +103,7 @@ class Vertex(object):
         # Find the neighbor associated with the input edge
         if edge_to_remove.end1 is self:  # endpoint2 is the neighbor.
             neighbor = edge_to_remove.end2
-        else:  # endpoint1 is the neighbor
+        else:  # endpoint1 is the neighbor.
             neighbor = edge_to_remove.end1
         # Update the frequency of the neighbor
         freq = self._freq_of_neighbors.get(neighbor.vtx_id)
@@ -156,6 +156,24 @@ class Edge(object):
         :return: Vertex
         """
         return self._end2
+
+    @end1.setter
+    def end1(self, end1):
+        """
+        Mutator of end1.
+        :param end1: Vertex
+        :return: None
+        """
+        self._end1 = end1
+
+    @end2.setter
+    def end2(self, end2):
+        """
+        Mutator of end2.
+        :param end2: Vertex
+        :return: None
+        """
+        self._end2 = end2
 
     def __repr__(self):
         """
