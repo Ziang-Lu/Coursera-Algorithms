@@ -201,7 +201,7 @@ class AdjacencyList(object):
         :return: None
         """
         # Check whether the input vertex is repeated
-        if self._find_vtx(vtx_id=new_vtx_id):
+        if self._find_vtx(new_vtx_id):
             raise IllegalArgumentError('The input vertex is repeated.')
 
         new_vtx = Vertex(new_vtx_id)
@@ -226,7 +226,7 @@ class AdjacencyList(object):
         :return: None
         """
         # Check whether the input vertex exists
-        vtx_to_remove = self._find_vtx(vtx_id=vtx_id)
+        vtx_to_remove = self._find_vtx(vtx_id)
         if vtx_to_remove is None:
             raise IllegalArgumentError("The input vertex doesn't exist.")
 
@@ -254,8 +254,7 @@ class AdjacencyList(object):
         :return: None
         """
         # Check whether the input endpoints both exist
-        end1, end2 = self._find_vtx(vtx_id=end1_id), \
-            self._find_vtx(vtx_id=end2_id)
+        end1, end2 = self._find_vtx(end1_id), self._find_vtx(end2_id)
         if end1 is None or end2 is None:
             raise IllegalArgumentError("The endpoints don't both exist.")
         # Check whether the input endpoints are the same (self-loop)
@@ -285,8 +284,7 @@ class AdjacencyList(object):
         :return: None
         """
         # Check whether the input endpoints both exist
-        end1, end2 = self._find_vtx(vtx_id=end1_id), \
-            self._find_vtx(vtx_id=end2_id)
+        end1, end2 = self._find_vtx(end1_id), self._find_vtx(end2_id)
         if end1 is None or end2 is None:
             raise IllegalArgumentError("The endpoints don't both exist.")
 
@@ -358,7 +356,7 @@ class AdjacencyList(object):
             self.add_vtx(new_vtx_id=merged_vtx_id)
             # (3) Reconstruct the edges associated with the two endpoints to the
             # merged vertex, and remove the two endpoints
-            merged_vtx = self._find_vtx(vtx_id=merged_vtx_id)
+            merged_vtx = self._find_vtx(merged_vtx_id)
             self._reconnect_edges(end=end1, merged_vtx=merged_vtx)
             self._reconnect_edges(end=end2, merged_vtx=merged_vtx)
         return len(self._edge_list)

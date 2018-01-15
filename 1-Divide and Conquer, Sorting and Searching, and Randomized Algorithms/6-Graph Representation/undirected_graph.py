@@ -199,7 +199,7 @@ class AdjacencyList(object):
         :return: None
         """
         # Check whether the input vertex is repeated
-        if self._find_vtx(vtx_id=new_vtx_id):
+        if self._find_vtx(new_vtx_id):
             raise IllegalArgumentError('The input vertex is repeated.')
 
         new_vtx = Vertex(new_vtx_id)
@@ -224,7 +224,7 @@ class AdjacencyList(object):
         :return: None
         """
         # Check whether the input vertex exists
-        vtx_to_remove = self._find_vtx(vtx_id=vtx_id)
+        vtx_to_remove = self._find_vtx(vtx_id)
         if vtx_to_remove is None:
             raise IllegalArgumentError("The input vertex doesn't exist.")
 
@@ -252,8 +252,7 @@ class AdjacencyList(object):
         :return: None
         """
         # Check whether the input endpoints both exist
-        end1, end2 = self._find_vtx(vtx_id=end1_id), \
-            self._find_vtx(vtx_id=end2_id)
+        end1, end2 = self._find_vtx(end1_id), self._find_vtx(end2_id)
         if end1 is None or end2 is None:
             raise IllegalArgumentError("The endpoints don't both exist.")
         # Check whether the input endpoints are the same (self-loop)
@@ -283,13 +282,12 @@ class AdjacencyList(object):
         :return: None
         """
         # Check whether the input endpoints both exist
-        end1, end2 = self._find_vtx(vtx_id=end1_id), \
-            self._find_vtx(vtx_id=end2_id)
+        end1, end2 = self._find_vtx(end1_id), self._find_vtx(vtx_id=end2_id)
         if end1 is None or end2 is None:
             raise IllegalArgumentError("The endpoints don't both exist.")
 
         # Check whether the edge to remove exists
-        edge_to_remove = end1.get_edge_with_neighbor(neighbor=end2)
+        edge_to_remove = end1.get_edge_with_neighbor(end2)
         if edge_to_remove is None:
             raise IllegalArgumentError("The edge to remove doesn't exist.")
 

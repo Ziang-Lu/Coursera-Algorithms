@@ -31,18 +31,18 @@ def kth_largest(nums, k):
         print('The input k should be within the range of the input list.')
         return 0
 
-    return _kth_largest_helper(nums, left=0, right=len(nums) - 1, k=k)
+    return _kth_largest_helper(nums, k, left=0, right=len(nums) - 1)
     # Overall running time complexity: O(n), better than O(nlog n)
 
 
-def _kth_largest_helper(nums, left, right, k):
+def _kth_largest_helper(nums, k, left, right):
     """
     Private helper function to find the k-th largest element in the given list
     recursively.
     :param nums: list[int]
+    :param k: int
     :param left: int
     :param right: int
-    :param k: int
     :return: int
     """
     # Base case 1: Shrink to only one number
@@ -57,9 +57,9 @@ def _kth_largest_helper(nums, left, right, k):
 
     # Recursive case
     if pivot_idx > k:
-        return _kth_largest_helper(nums, left=left, right=pivot_idx, k=k)
+        return _kth_largest_helper(nums, k, left=left, right=pivot_idx)
     else:
-        return _kth_largest_helper(nums, left=pivot_idx + 1, right=right, k=k)
+        return _kth_largest_helper(nums, k, left=pivot_idx + 1, right=right)
 
 
 def _choose_pivot(nums, left, right):
