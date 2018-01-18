@@ -1,4 +1,4 @@
-/**
+p/**
  * Select & Rank problem:
  * Given the ranking of a key in the BST, find the key.
  * Given a key in the BST, find its ranking.
@@ -123,7 +123,7 @@ public class AugmentedBST implements BSTInterface {
         }
         // Base case 2: Found it
         if (curr.key == key) {
-            // No duplicates allowed
+            // No duplicate allowed
             return false;
         }
 

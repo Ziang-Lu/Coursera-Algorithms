@@ -162,7 +162,7 @@ class AugmentedBST(object):
             return True
         # Base case 2: Found it
         if curr.key == key:
-            # No duplicates allowed
+            # No duplicate allowed
             return False
 
         curr.size += 1

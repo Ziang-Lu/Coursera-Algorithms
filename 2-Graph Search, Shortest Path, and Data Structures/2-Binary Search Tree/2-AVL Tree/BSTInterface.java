@@ -14,11 +14,10 @@ public interface BSTInterface {
 
     /**
      * Inserts the given key to the BST.
-     * No duplicate allowed
+     * No duplicates allowed
      * @param key key to insert
-     * @return whether the insertion is successful
      */
-    boolean insert(int key);
+    void insert(int key);
 
     /**
      * Traverses the BST in-order.
