@@ -151,6 +151,10 @@ class AVLTree(object):
         # An insertion in the left or right sub-tree may break the balance of
         # the current node.
         return self._rebalance(curr)
+        # For insertion, there is at most one rebalancing operation when
+        # backtracking and rebalancing, since after rebalancing the first
+        # encountered unbalanced node when backtracking, all of its upper nodes
+        # remain balanced.
 
     def _rebalance(self, curr):
         """
@@ -199,7 +203,8 @@ class AVLTree(object):
 
             return self._left_rotate(unbalanced=curr)
 
-        # The insertion doesn't break the balance of the current node.
+        # The insertion/deletion/reconnection doesn't break the balance of the
+        # current node.
         return curr
 
     def _get_balance(self, node):
@@ -310,6 +315,10 @@ class AVLTree(object):
         # A deletion in the left or right sub-tree may break the balance of the
         # current node.
         return self._rebalance(curr=curr)
+        # For deletion, there could be multiple rebalancing operations when
+        # backtracking and rebalancing, since after rebalancing the first
+        # encountered unbalanced node when backtracking, its upper nodes may
+        # also be unbalanced.
 
     def _get_successor(self, node_to_delete):
         """

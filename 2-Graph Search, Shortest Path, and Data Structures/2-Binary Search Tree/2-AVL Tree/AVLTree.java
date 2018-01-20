@@ -118,6 +118,8 @@ public class AVLTree implements BSTInterface {
 
         // An insertion in the left or right sub-tree may break the balance of the current node.
         return rebalance(curr);
+        // For insertion, there is at most one rebalancing operation when backtracking and rebalancing, since after
+        // rebalancing the first encountered unbalanced node when backtracking, all of its upper nodes remain balanced.
     }
 
     /**
@@ -274,6 +276,8 @@ public class AVLTree implements BSTInterface {
 
         // A deletion in the left or right sub-tree may break the balance of the current node.
         return rebalance(curr);
+        // For deletion, there could be multiple rebalancing operations when backtracking and rebalancing, since after
+        // rebalancing the first encountered unbalanced node when backtracking, its upper nodes may also be unbalanced.
     }
 
     /**
