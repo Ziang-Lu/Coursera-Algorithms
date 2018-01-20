@@ -20,6 +20,12 @@ public interface BSTInterface {
     void insert(int key);
 
     /**
+     * Deletes the given key from the BST.
+     * @param key key to delete
+     */
+    void delete(int key);
+
+    /**
      * Traverses the BST in-order.
      */
     void traverseInOrder();

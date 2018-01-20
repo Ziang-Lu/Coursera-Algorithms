@@ -84,7 +84,8 @@ public class AVLTree implements BSTInterface {
     }
 
     /**
-     * Private helper method to insert the given key to the given sub-tree.
+     * Private helper method to insert the given key to the given sub-tree
+     * recursively.
      * @param key key to insert
      * @param parent parent node
      * @param curr current node
@@ -116,6 +117,15 @@ public class AVLTree implements BSTInterface {
         }
 
         // An insertion in the left or right sub-tree may break the balance of the current node.
+        return rebalance(curr);
+    }
+
+    /**
+     * Helper method to rebalance the given node if it is unbalanced.
+     * @param curr given node
+     * @return root of the sub-tree after rebalancing
+     */
+    private Node rebalance(Node curr) {
         int balance = getBalance(curr);
         // For detailed explanation, please refer to the tutorial.
         if ((balance > 1) && (getBalance(curr.left) > 0)) {
@@ -211,6 +221,97 @@ public class AVLTree implements BSTInterface {
         tmp.left = unbalanced;
 
         return tmp;
+    }
+
+    @Override
+    public void delete(int key) {
+        if (root == null) {
+            return;
+        }
+
+        root = deleteHelper(key, root);
+    }
+
+    /**
+     * Private helper method to delete the given key from the given sub-tree
+     * recursively.
+     * @param key key to delete
+     * @param curr current node
+     * @return root of the sub-tree after deletion
+     */
+    private Node deleteHelper(int key, Node curr) {
+        // Case 1: Not found
+        if (curr == null) {
+            return null;
+        }
+
+        if (curr.key == key) { // Found it
+            if ((curr.left == null) && (curr.right == null)) {
+                // Case 2: The node to delete is a leaf.
+                return null;
+            } else if (curr.right == null) {
+                // Case 3: The node only have left child.
+                return curr.left;
+            } else if (curr.left == null) {
+                // Case 3: The node only have right child.
+                return curr.right;
+            } else {
+                // Case 4: The node has both left and right children.
+                Node successor = getSuccessor(curr);
+                successor.left = curr.left;
+
+                // A reconnection in the right sub-tree may break the balance of the current (successor) node.
+                return rebalance(successor);
+            }
+        }
+
+        // Recursive case
+        if (curr.key > key) {
+            curr.left = deleteHelper(key, curr.left);
+        } else {
+            curr.right = deleteHelper(key, curr.right);
+        }
+
+        // A deletion in the left or right sub-tree may break the balance of the current node.
+        return rebalance(curr);
+    }
+
+    /**
+     * Helper method to get the successor of the given node to delete.
+     * Note that the given node to delete has both left and right children
+     * @param nodeToDelete node to delete
+     * @return successor
+     */
+    private Node getSuccessor(Node nodeToDelete) {
+        return getSuccessorHelper(nodeToDelete, nodeToDelete, nodeToDelete.right);
+    }
+
+    /**
+     * Helper method to get the successor of the given node to delete in the
+     * given sub-tree recursively.
+     * @param nodeToDelete node to delete
+     * @param parent parent node
+     * @param curr current node
+     * @return successor
+     */
+    private Node getSuccessorHelper(Node nodeToDelete, Node parent, Node curr) {
+        // Base case
+        if (curr.left == null) {
+            if (curr != nodeToDelete.right) {
+                parent.left = curr.right;
+                curr.right = nodeToDelete.right;
+            }
+            return curr;
+        }
+        // Recursive case
+        Node successor = getSuccessorHelper(nodeToDelete, curr, curr.left);
+        // A reconnection in the left sub-tree may break the balance of the current node.
+        if (curr == nodeToDelete.right) {
+            parent.right = rebalance(curr);
+        } else {
+            parent.left = rebalance(curr);
+        }
+        return successor;
     }
 
     @Override

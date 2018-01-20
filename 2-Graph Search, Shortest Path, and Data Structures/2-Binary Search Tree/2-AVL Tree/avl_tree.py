@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-A very simple self-balanced AVL Tree implementation.
+A very simple self-balancing AVL Tree implementation.
 
 Invariance of an AVL Tree:
 The heights of the left and right sub-trees of any node in an AVL Tree won't
@@ -150,6 +150,14 @@ class AVLTree(object):
 
         # An insertion in the left or right sub-tree may break the balance of
         # the current node.
+        return self._rebalance(curr)
+
+    def _rebalance(self, curr):
+        """
+        Helper function to rebalance the given node if it is unbalanced.
+        :param curr: Node
+        :return: Node
+        """
         balance = self._get_balance(curr)
         # For detailed explanation, please refer to the tutorial.
         if balance > 1 and self._get_balance(curr.left) > 0:
@@ -250,6 +258,94 @@ class AVLTree(object):
         tmp.left = unbalanced
 
         return tmp
+
+    def delete(self, key):
+        """
+        Deletes the given key from the BST.
+        :param key: int
+        :return: None
+        """
+        if self._root is None:
+            return
+
+        self._root = self._delete_helper(key, curr=self._root)
+
+    def _delete_helper(self, key, curr):
+        """
+        Private helper function to delete the given key from the given sub-tree
+        recursively.
+        :param key: int
+        :param curr: Node
+        :return: Node
+        """
+        # Case 1: Not found
+        if curr is None:
+            return None
+
+        if curr.key == key:  # Found it
+            if curr.left is None and curr.right is None:
+                # Case 2: The node to delete is a leaf.
+                return None
+            elif curr.right is None:
+                # Case 3: The node to delete only have left child.
+                return None
+            elif curr.left is None:
+                # Case 3: The node to delete only have right child.
+                return None
+            else:
+                # Case 4: The node to delete has both left and right children.
+                successor = self._get_successor(node_to_delete=curr)
+                successor.left = curr.left
+
+                # A reconnection in the right sub-tree may break the balance of
+                # the current (successor) node.
+                return self._rebalance(curr=successor)
+
+        # Recursive case
+        if curr.key > key:
+            curr.left = self._delete_helper(key, curr=curr.left)
+        else:
+            curr.right = self._delete_helper(key, curr=curr.right)
+
+        # A deletion in the left or right sub-tree may break the balance of the
+        # current node.
+        return self._rebalance(curr=curr)
+
+    def _get_successor(self, node_to_delete):
+        """
+        Helper function to get the successor of the given node to delete.
+        :param node_to_delete: Node
+        :return: Node
+        """
+        return self._get_successor_helper(node_to_delete=node_to_delete,
+                                          parent=node_to_delete,
+                                          curr=node_to_delete.right)
+
+    def _get_successor_helper(self, node_to_delete, parent, curr):
+        """
+        Helper function to get the successor of the given node to delete in the
+        given sub-tree recursively.
+        :param node_to_delete: Node
+        :param parent: Node
+        :param curr: Node
+        :return: Node
+        """
+        # Base case
+        if curr.left is None:
+            if curr is not node_to_delete.right:
+                parent.left = curr.right
+                curr.right = node_to_delete.right
+            return curr
+        # Recursive case
+        successor = self._get_successor_helper(node_to_delete=node_to_delete,
+                                               parent=curr, curr=curr.left)
+        # A reconnection in the right sub-tree may break the balance of
+        # the current node.
+        if curr is node_to_delete.right:
+            parent.right = self._rebalance(curr=curr)
+        else:
+            parent.left = self._rebalance(curr=curr)
+        return successor
 
     def traverse_in_order(self):
         """
