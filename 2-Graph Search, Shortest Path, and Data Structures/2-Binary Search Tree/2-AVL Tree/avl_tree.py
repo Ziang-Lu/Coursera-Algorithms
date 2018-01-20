@@ -288,10 +288,10 @@ class AVLTree(object):
                 return None
             elif curr.right is None:
                 # Case 3: The node to delete only have left child.
-                return None
+                return curr.left
             elif curr.left is None:
                 # Case 3: The node to delete only have right child.
-                return None
+                return curr.right
             else:
                 # Case 4: The node to delete has both left and right children.
                 successor = self._get_successor(node_to_delete=curr)
@@ -370,3 +370,53 @@ class AVLTree(object):
         s += str(curr) + ' '
         s += self._traverse_in_order_helper(curr=curr.right)
         return s
+
+
+def main():
+    tree = AVLTree()
+
+    print('Testing insertion **********************************')
+    tree.insert(7)
+    tree.insert(2)
+    tree.insert(1), tree.insert(1)
+    tree.insert(5)
+    tree.insert(3)
+    tree.insert(6)
+    tree.insert(4)
+    tree.insert(9)
+    tree.insert(8)
+    tree.insert(11), tree.insert(11)
+    tree.insert(10)
+    tree.insert(12)
+    print('After inserting 7, 2, 1, 5, 3, 6, 4, 9, 11, 10, 12:')
+    tree.traverse_in_order()  # [1] [2] [3] [4] [5] [6] [7] [8] [9] [10] [11] [12]
+    print('root: %s' % tree._root)  # root: [5]
+    print('root.left: %s' % tree._root.left)  # root.left: [2]
+    print('root.right: %s' % tree._root.right)  # root.right: [9]
+    print('****************************************************')
+    print()
+
+    print('Testing searching *******')
+    print('Searching for 2:', tree.search(2))  # True
+    print('Searching for 100:', tree.search(100))  # False
+    print('*************************')
+    print()
+
+    print('Testing deletion ******************************')
+    tree.delete(1)
+    print('After deleting 1:')
+    tree.traverse_in_order()  # [2] [3] [4] [5] [6] [7] [8] [9] [10] [11] [12]
+
+    tree.delete(9)
+    print('After deleting 9:')
+    tree.traverse_in_order()  # [2] [3] [4] [5] [6] [7] [8] [10] [11] [12]
+
+    tree.delete(11)
+    print('After deleting 11:')
+    tree.traverse_in_order()  # [2] [3] [4] [5] [6] [7] [8] [10] [12]
+    print('***********************************************')
+    print()
+
+
+if __name__ == '__main__':
+    main()

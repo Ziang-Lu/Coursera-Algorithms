@@ -338,4 +338,57 @@ public class AVLTree implements BSTInterface {
         traverseInOrderHelper(curr.right, s);
     }
 
+    /**
+     * Main driver.
+     * @param args arguments from command line
+     */
+    public static void main(String[] args) {
+        AVLTree tree = new AVLTree();
+
+        // Test insertion
+        tree.insert(7);
+        tree.insert(2);
+        tree.insert(1); tree.insert(1);
+        tree.insert(5);
+        tree.insert(3);
+        tree.insert(6);
+        tree.insert(4);
+        tree.insert(9);
+        tree.insert(8);
+        tree.insert(11); tree.insert(11);
+        tree.insert(10);
+        tree.insert(12);
+        System.out.println("Testing insertion **********************************");
+        System.out.println("At");
+        tree.traverseInOrder(); // [1] [2] [3] [4] [5] [6] [7] [8] [9] [10] [11] [12]
+        System.out.println("root: " + tree.root); // [5]
+        System.out.println("root.left: " + tree.root.left); // [2]
+        System.out.println("root.right: " + tree.root.right); // [9]
+        System.out.println("****************************************************");
+        System.out.println();
+
+        // Test search
+        System.out.println("Testing searching *******");
+        System.out.println("Searching for 2: " + tree.search(2)); // true
+        System.out.println("Searching for 100: " + tree.search(100)); // false
+        System.out.println("*************************");
+        System.out.println();
+
+        // Test deletion
+        System.out.println("Testing deletion ******************************");
+        tree.delete(1);
+        System.out.println("After deleting 1:");
+        tree.traverseInOrder(); // [2] [3] [4] [5] [6] [7] [8] [9] [10] [11] [12]
+
+        tree.delete(9);
+        System.out.println("After deleting 9:");
+        tree.traverseInOrder(); // [2] [3] [4] [5] [6] [7] [8] [10] [11] [12]
+
+        tree.delete(11);
+        System.out.println("After deleting 11:");
+        tree.traverseInOrder(); // [2] [3] [4] [5] [6] [7] [8] [10] [12]
+        System.out.println("***********************************************");
+        System.out.println();
+    }
+
 }
