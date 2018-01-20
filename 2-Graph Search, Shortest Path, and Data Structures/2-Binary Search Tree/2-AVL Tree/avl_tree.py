@@ -151,6 +151,11 @@ class AVLTree(object):
         # An insertion in the left or right sub-tree may break the balance of
         # the current node.
         return self._rebalance(curr)
+        # T(n) = T(n/2) + O(n)
+        # a = 1, b = 2, d = 1
+        # According to Master Method, the overall running time complexity is
+        # O(n).
+
         # For insertion, there is at most one rebalancing operation when
         # backtracking and rebalancing, since after rebalancing the first
         # encountered unbalanced node when backtracking, all of its upper nodes
@@ -206,6 +211,7 @@ class AVLTree(object):
         # The insertion/deletion/reconnection doesn't break the balance of the
         # current node.
         return curr
+        # Running time complexity: O(n)
 
     def _get_balance(self, node):
         """
@@ -219,6 +225,7 @@ class AVLTree(object):
         left_height, right_height = self._get_height(node.left), \
             self._get_height(node.right)
         return left_height - right_height
+        # Running time complexity: O(n)
 
     def _get_height(self, node):
         """
@@ -233,6 +240,9 @@ class AVLTree(object):
         left_height, right_height = self._get_height(node.left), \
             self._get_height(node.right)
         return 1 + max(left_height, right_height)
+        # T(n) = 2T(n/2) + O(1)
+        # a = 2, b = 2, d = 0
+        # According to Master Method, the running time complexity is O(n).
 
     def _right_rotate(self, unbalanced):
         """
@@ -248,6 +258,7 @@ class AVLTree(object):
         tmp.right = unbalanced
 
         return tmp
+        # Running time complexity: O(1)
 
     def _left_rotate(self, unbalanced):
         """
@@ -263,6 +274,7 @@ class AVLTree(object):
         tmp.left = unbalanced
 
         return tmp
+        # Running time complexity: O(1)
 
     def delete(self, key):
         """
@@ -315,6 +327,11 @@ class AVLTree(object):
         # A deletion in the left or right sub-tree may break the balance of the
         # current node.
         return self._rebalance(curr=curr)
+        # T(n) = T(n/2) + O(n)
+        # a = 1, b = 2, d = 1
+        # According to Master Method, the overall running time complexity is
+        # O(n).
+
         # For deletion, there could be multiple rebalancing operations when
         # backtracking and rebalancing, since after rebalancing the first
         # encountered unbalanced node when backtracking, its upper nodes may
@@ -329,6 +346,7 @@ class AVLTree(object):
         return self._get_successor_helper(node_to_delete=node_to_delete,
                                           parent=node_to_delete,
                                           curr=node_to_delete.right)
+        # Running time complexity: O(n)
 
     def _get_successor_helper(self, node_to_delete, parent, curr):
         """
@@ -355,6 +373,9 @@ class AVLTree(object):
         else:
             parent.left = self._rebalance(curr=curr)
         return successor
+        # T(n) = T(n/2) + O(n)
+        # a = 1, b = 2, d = 1
+        # According to Master Method, the running time complexity is O(n).
 
     def traverse_in_order(self):
         """

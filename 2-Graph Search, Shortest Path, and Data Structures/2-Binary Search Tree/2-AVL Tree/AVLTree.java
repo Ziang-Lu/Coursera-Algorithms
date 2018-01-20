@@ -118,6 +118,10 @@ public class AVLTree implements BSTInterface {
 
         // An insertion in the left or right sub-tree may break the balance of the current node.
         return rebalance(curr);
+        // T(n) = T(n/2) + O(n)
+        // a = 1, b = 2, d = 1
+        // According to Master Method, the overall running time complexity is O(n).
+
         // For insertion, there is at most one rebalancing operation when backtracking and rebalancing, since after
         // rebalancing the first encountered unbalanced node when backtracking, all of its upper nodes remain balanced.
     }
@@ -162,6 +166,7 @@ public class AVLTree implements BSTInterface {
 
         // The insertion doesn't break the balance of the current node.
         return curr;
+        // Running time complexity: O(n)
     }
 
     /**
@@ -176,6 +181,7 @@ public class AVLTree implements BSTInterface {
 
         int leftHeight = getHeight(node.left), rightHeight = getHeight(node.right);
         return leftHeight - rightHeight;
+        // Running time complexity: O(n)
     }
 
     /**
@@ -191,6 +197,9 @@ public class AVLTree implements BSTInterface {
         // Recursive case
         int leftHeight = getHeight(node.left), rightHeight = getHeight(node.right);
         return 1 + Math.max(leftHeight, rightHeight);
+        // T(n) = 2T(n/2) + O(1)
+        // a = 2, b = 2, d = 0
+        // According to Master Method, the running time complexity is O(n).
     }
 
     /**
@@ -207,6 +216,7 @@ public class AVLTree implements BSTInterface {
         tmp.right = unbalanced;
 
         return tmp;
+        // Running time complexity: O(1)
     }
 
     /**
@@ -223,6 +233,7 @@ public class AVLTree implements BSTInterface {
         tmp.left = unbalanced;
 
         return tmp;
+        // Running time complexity: O(1)
     }
 
     @Override
@@ -276,6 +287,10 @@ public class AVLTree implements BSTInterface {
 
         // A deletion in the left or right sub-tree may break the balance of the current node.
         return rebalance(curr);
+        // T(n) = T(n/2) + O(n)
+        // a = 1, b = 2, d = 1
+        // According to Master Method, the overall running time complexity is O(n).
+
         // For deletion, there could be multiple rebalancing operations when backtracking and rebalancing, since after
         // rebalancing the first encountered unbalanced node when backtracking, its upper nodes may also be unbalanced.
     }
@@ -288,6 +303,7 @@ public class AVLTree implements BSTInterface {
      */
     private Node getSuccessor(Node nodeToDelete) {
         return getSuccessorHelper(nodeToDelete, nodeToDelete, nodeToDelete.right);
+        // Running time complexity: O(n)
     }
 
     /**
@@ -316,6 +332,9 @@ public class AVLTree implements BSTInterface {
             parent.left = rebalance(curr);
         }
         return successor;
+        // T(n) = T(n/2) + O(n)
+        // a = 1, b = 2, d = 1
+        // According to Master Method, the running time complexity is O(n).
     }
 
     @Override
