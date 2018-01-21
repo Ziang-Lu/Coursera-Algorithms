@@ -1,7 +1,7 @@
 /**
  * A very simple self-balanced AVL Tree implementation.
  *
- * Invariance of an AVL Tree:
+ * Invariant of an AVL Tree:
  * The heights of the left and right sub-trees of any node in an AVL Tree won't
  * differ more than 1.
  *
@@ -32,6 +32,8 @@ public class AVLTree implements BSTInterface {
          */
         Node(int key) {
             this.key = key;
+            left = null;
+            right = null;
         }
 
         @Override
