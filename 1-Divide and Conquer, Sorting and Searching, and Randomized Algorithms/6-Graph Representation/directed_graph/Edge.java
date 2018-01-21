@@ -30,7 +30,7 @@ class Edge {
      * Accessor of tail.
      * @return tail
      */
-    Vertex getTail() {
+    Vertex tail() {
         return tail;
     }
 
@@ -38,7 +38,7 @@ class Edge {
      * Accessor of head.
      * @return head
      */
-    Vertex getHead() {
+    Vertex head() {
         return head;
     }
 
@@ -60,7 +60,7 @@ class Edge {
 
     @Override
     public String toString() {
-        return String.format("Edge from Vertex #%d to Vertex #%d", tail.getID(), head.getID());
+        return String.format("Edge from Vertex #%d to Vertex #%d", tail.id(), head.id());
     }
 
 }

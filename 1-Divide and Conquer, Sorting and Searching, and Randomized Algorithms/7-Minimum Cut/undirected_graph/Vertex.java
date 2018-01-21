@@ -38,7 +38,7 @@ class Vertex {
      * Accessor of vtxID.
      * @return vtxID
      */
-    int getID() {
+    int id() {
         return vtxID;
     }
 
@@ -54,8 +54,8 @@ class Vertex {
         }
 
         for (Edge edge : edges) {
-            if (((edge.getEnd1() == this) && (edge.getEnd2() == neighbor))
-                    || ((edge.getEnd1() == neighbor) && (edge.getEnd2() == this))) {
+            if (((edge.end1() == this) && (edge.end2() == neighbor))
+                    || ((edge.end1() == neighbor) && (edge.end2() == this))) {
                 return edge;
             }
         }
@@ -67,7 +67,7 @@ class Vertex {
      * Accessor of edges.
      * @return edges
      */
-    ArrayList<Edge> getEdges() {
+    ArrayList<Edge> edges() {
         return edges;
     }
 
@@ -81,7 +81,7 @@ class Vertex {
             throw new IllegalArgumentException("The edge to add should not be null.");
         }
         // Check whether the input edge involves this vertex
-        if ((newEdge.getEnd1() != this) && (newEdge.getEnd2() != this)) {
+        if ((newEdge.end1() != this) && (newEdge.end2() != this)) {
             throw new IllegalArgumentException("The edge to add should involve this vertex.");
         }
 
@@ -89,10 +89,10 @@ class Vertex {
 
         // Find the neighbor associated with the input edge
         Vertex neighbor = null;
-        if (newEdge.getEnd1() == this) { // endpoint2 is the neighbor.
-            neighbor = newEdge.getEnd2();
+        if (newEdge.end1() == this) { // endpoint2 is the neighbor.
+            neighbor = newEdge.end2();
         } else { // endpoint1 is the neighbor.
-            neighbor = newEdge.getEnd1();
+            neighbor = newEdge.end1();
         }
         // Update the frequency of the neighbor
         Integer freq = freqOfNeighbors.getOrDefault(neighbor.vtxID, 0);
@@ -110,7 +110,7 @@ class Vertex {
             throw new IllegalArgumentException("The edge to remove should not be null.");
         }
         // Check whether the input edge involves this vertex
-        if ((edgeToRemove.getEnd1()!= this) && (edgeToRemove.getEnd2() != this)) {
+        if ((edgeToRemove.end1()!= this) && (edgeToRemove.end2() != this)) {
             throw new IllegalArgumentException("The edge to remove should involve this vertex.");
         }
 
@@ -118,10 +118,10 @@ class Vertex {
 
         // Find the neighbor associated with the input edge
         Vertex neighbor = null;
-        if (edgeToRemove.getEnd1() == this) { // endpoint2 is the neighbor.
-            neighbor = edgeToRemove.getEnd2();
+        if (edgeToRemove.end1() == this) { // endpoint2 is the neighbor.
+            neighbor = edgeToRemove.end2();
         } else { // endpoint1 is the neighbor.
-            neighbor = edgeToRemove.getEnd1();
+            neighbor = edgeToRemove.end1();
         }
         // Update the frequency of the neighbor
         Integer freq = freqOfNeighbors.get(neighbor.vtxID);

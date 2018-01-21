@@ -1,4 +1,3 @@
-
 /**
  * Given a graph, compute a cut with the fewest number of crossing edges.
  *

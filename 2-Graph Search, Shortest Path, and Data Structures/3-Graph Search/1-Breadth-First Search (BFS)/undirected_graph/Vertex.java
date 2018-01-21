@@ -23,6 +23,10 @@ class Vertex {
      * Edges of this vertex.
      */
     private ArrayList<Edge> edges;
+    /**
+     * Whether this vertex is explored by BFS.
+     */
+    private boolean explored;
 
     /**
      * Constructor with parameter.
@@ -32,6 +36,7 @@ class Vertex {
         this.vtxID = vtxID;
         freqOfNeighbors = new HashMap<Integer, Integer>();
         edges = new ArrayList<Edge>();
+        explored = false;
     }
 
     /**
@@ -69,6 +74,14 @@ class Vertex {
      */
     ArrayList<Edge> edges() {
         return edges;
+    }
+
+    /**
+     * Accessor of explored.
+     * @return explored
+     */
+    boolean isExplored() {
+        return explored;
     }
 
     /**
@@ -131,6 +144,13 @@ class Vertex {
             --freq;
             freqOfNeighbors.put(neighbor.vtxID, freq);
         }
+    }
+
+    /**
+     * Sets this vertex to explored.
+     */
+    void setAsExplored() {
+        explored = true;
     }
 
     @Override

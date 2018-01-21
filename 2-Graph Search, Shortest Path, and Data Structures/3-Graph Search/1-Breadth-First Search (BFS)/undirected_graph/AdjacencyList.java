@@ -1,5 +1,6 @@
 package undirected_graph;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 
 /**
@@ -172,6 +173,55 @@ public class AdjacencyList {
         for (Edge edge : edgeList) {
             System.out.println(edge);
         }
+    }
+
+    /**
+     * Finds all the findable vertices from the given source vertex using BFS.
+     * @param srcVtxID source vertex ID
+     * @return all the findable vertices
+     */
+    public ArrayList<Integer> bfs(int srcVtxID) {
+        // Check whether the input source vertex exists
+        Vertex srcVtx = findVtx(srcVtxID);
+        if (srcVtx == null) {
+            throw new IllegalArgumentException("The source vertex doesn't exist.");
+        }
+
+        ArrayList<Integer> findableVtxIDs = new ArrayList<Integer>();
+        findableVtxIDs.add(srcVtxID);
+
+        // 1. Initialize G as s explored and other vertices unexplored
+        srcVtx.setAsExplored();
+        // 2. Let Q be the queue of vertices initialized with s
+        ArrayDeque<Vertex> queue = new ArrayDeque<Vertex>();
+        queue.offer(srcVtx);
+        // 3. While Q is not empty
+        while (!queue.isEmpty()) {
+            // (1) Take out the first vertex v
+            Vertex vtx = queue.poll();
+            // (2) For every edge (v, w)
+            for (Edge edge : vtx.edges()) {
+                // Find the neighbor
+                Vertex neighbor = null;
+                if (edge.end1() == vtx) { // endpoint2 is the neighbor.
+                    neighbor = edge.end2();
+                } else { // endpoint1 is the neighbor.
+                    neighbor = edge.end1();
+                }
+                // If w is not explored
+                if (!neighbor.isExplored()) {
+
+                    findableVtxIDs.add(neighbor.id());
+
+                    // Mark w as explored
+                    neighbor.setAsExplored();
+                    // Push w to Q
+                    queue.offer(neighbor);
+                }
+            }
+        }
+
+        return findableVtxIDs;
     }
 
 }

@@ -48,7 +48,7 @@ public class AdjacencyList {
      */
     private Vertex findVtx(int vtxID) {
         for (Vertex vtx : vtxList) {
-            if (vtx.getID() == vtxID) {
+            if (vtx.id() == vtxID) {
                 return vtx;
             }
         }
@@ -77,8 +77,8 @@ public class AdjacencyList {
     private void removeVtx(Vertex vtxToRemove) {
         // Remove all the edges associated with the vertex to remove
         ArrayList<Edge> edgesToRemove = new ArrayList<Edge>();
-        edgesToRemove.addAll(vtxToRemove.getEmissiveEdges());
-        edgesToRemove.addAll(vtxToRemove.getIncidentEdges());
+        edgesToRemove.addAll(vtxToRemove.emissiveEdges());
+        edgesToRemove.addAll(vtxToRemove.incidentEdges());
         while (edgesToRemove.size() > 0) {
             Edge edgeToRemove = edgesToRemove.get(0);
             removeEdge(edgeToRemove);
@@ -112,7 +112,7 @@ public class AdjacencyList {
      * @param newEdge new edge
      */
     private void addEdge(Edge newEdge) {
-        Vertex tail = newEdge.getTail(), head = newEdge.getHead();
+        Vertex tail = newEdge.tail(), head = newEdge.head();
         tail.addEmissiveEdge(newEdge);
         head.addIncidentEdge(newEdge);
         edgeList.add(newEdge);
@@ -143,7 +143,7 @@ public class AdjacencyList {
      * @param edgeToRemove edge to remove
      */
     private void removeEdge(Edge edgeToRemove) {
-        Vertex tail = edgeToRemove.getTail(), head = edgeToRemove.getHead();
+        Vertex tail = edgeToRemove.tail(), head = edgeToRemove.head();
         tail.removeEmissiveEdge(edgeToRemove);
         head.removeIncidentEdge(edgeToRemove);
         edgeList.remove(edgeToRemove);

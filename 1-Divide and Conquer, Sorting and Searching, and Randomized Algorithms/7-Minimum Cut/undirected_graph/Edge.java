@@ -30,7 +30,7 @@ class Edge {
      * Accessor of end1.
      * @return end1
      */
-    Vertex getEnd1() {
+    Vertex end1() {
         return end1;
     }
 
@@ -38,7 +38,7 @@ class Edge {
      * Accessor of end2.
      * @return end2
      */
-    Vertex getEnd2() {
+    Vertex end2() {
         return end2;
     }
 
@@ -60,7 +60,7 @@ class Edge {
 
     @Override
     public String toString() {
-        return String.format("Edge connecting Vertex #%d and Vertex #%d", end1.getID(), end2.getID());
+        return String.format("Edge connecting Vertex #%d and Vertex #%d", end1.id(), end2.id());
     }
 
 }

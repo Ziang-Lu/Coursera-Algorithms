@@ -50,7 +50,7 @@ public class AdjacencyList {
      */
     private Vertex findVtx(int vtxID) {
         for (Vertex vtx : vtxList) {
-            if (vtx.getID() == vtxID) {
+            if (vtx.id() == vtxID) {
                 return vtx;
             }
         }
@@ -78,7 +78,7 @@ public class AdjacencyList {
      */
     private void removeVtx(Vertex vtxToRemove) {
         // Remove all the edges associated with the vertex to remove
-        ArrayList<Edge> edgesToRemove = vtxToRemove.getEdges();
+        ArrayList<Edge> edgesToRemove = vtxToRemove.edges();
         while (edgesToRemove.size() > 0) {
             Edge edgeToRemove = edgesToRemove.get(0);
             removeEdge(edgeToRemove);
@@ -112,7 +112,7 @@ public class AdjacencyList {
      * @param newEdge new edge
      */
     private void addEdge(Edge newEdge) {
-        Vertex end1 = newEdge.getEnd1(), end2 = newEdge.getEnd2();
+        Vertex end1 = newEdge.end1(), end2 = newEdge.end2();
         end1.addEdge(newEdge);
         end2.addEdge(newEdge);
         edgeList.add(newEdge);
@@ -143,7 +143,7 @@ public class AdjacencyList {
      * @param edgeToRemove edge to remove
      */
     private void removeEdge(Edge edgeToRemove) {
-        Vertex end1 = edgeToRemove.getEnd1(), end2 = edgeToRemove.getEnd2();
+        Vertex end1 = edgeToRemove.end1(), end2 = edgeToRemove.end2();
         end1.removeEdge(edgeToRemove);
         end2.removeEdge(edgeToRemove);
         edgeList.remove(edgeToRemove);
@@ -192,12 +192,12 @@ public class AdjacencyList {
             // 1. Pick up an edge randomly
             int randomIdx = randomGenerator.nextInt(edgeList.size());
             Edge edgeToContract = edgeList.get(randomIdx);
-            Vertex end1 = edgeToContract.getEnd1(), end2 = edgeToContract.getEnd2();
+            Vertex end1 = edgeToContract.end1(), end2 = edgeToContract.end2();
 
             // 2. Contract the two endpoints into a single vertex
 
             // (1) Remove all the edges between the pair
-            removeEdgesBetweenPair(end1.getID(), end2.getID());
+            removeEdgesBetweenPair(end1.id(), end2.id());
             // (2) Create a merged vertex
             int mergedVtxID = getNextVtxID();
             addVtx(mergedVtxID);
@@ -218,7 +218,7 @@ public class AdjacencyList {
     private int getNextVtxID() {
         ArrayList<Integer> vtxIDs = new ArrayList<Integer>();
         for (Vertex vtx : vtxList) {
-            vtxIDs.add(vtx.getID());
+            vtxIDs.add(vtx.id());
         }
         return Collections.max(vtxIDs) + 1;
     }
@@ -230,17 +230,17 @@ public class AdjacencyList {
      * @param mergedVtx merged vertex
      */
     private void reconstructEdges(Vertex end, Vertex mergedVtx) {
-        for (Edge edgeFromEnd : end.getEdges()) {
+        for (Edge edgeFromEnd : end.edges()) {
             // Find the neighbor
             Vertex neighbor = null;
-            if (edgeFromEnd.getEnd1() == end) { // endpoint2 is the neighbor.
-                neighbor = edgeFromEnd.getEnd2();
+            if (edgeFromEnd.end1() == end) { // endpoint2 is the neighbor.
+                neighbor = edgeFromEnd.end2();
                 // Remove the edge from the neighbor
                 neighbor.removeEdge(edgeFromEnd);
                 // Reform the edge to connect the neighbor and the merged vertex
                 edgeFromEnd.setEnd1(mergedVtx);
             } else { // endpoint1 is the neighbor.
-                neighbor = edgeFromEnd.getEnd1();
+                neighbor = edgeFromEnd.end1();
                 neighbor.removeEdge(edgeFromEnd);
                 edgeFromEnd.setEnd2(mergedVtx);
             }
