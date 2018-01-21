@@ -27,6 +27,10 @@ class Vertex {
      * Whether this vertex is explored by BFS.
      */
     private boolean explored;
+    /**
+     * Layer from a source vertex.
+     */
+    private int layer;
 
     /**
      * Constructor with parameter.
@@ -37,6 +41,7 @@ class Vertex {
         freqOfNeighbors = new HashMap<Integer, Integer>();
         edges = new ArrayList<Edge>();
         explored = false;
+        layer = 0;
     }
 
     /**
@@ -80,8 +85,16 @@ class Vertex {
      * Accessor of explored.
      * @return explored
      */
-    boolean isExplored() {
+    boolean explored() {
         return explored;
+    }
+
+    /**
+     * Accessor of layer.
+     * @return layer
+     */
+    int layer() {
+        return layer;
     }
 
     /**
@@ -151,6 +164,14 @@ class Vertex {
      */
     void setAsExplored() {
         explored = true;
+    }
+
+    /**
+     * Mutator of layer.
+     * @param layer layer
+     */
+    void setLayer(int layer) {
+        this.layer = layer;
     }
 
     @Override

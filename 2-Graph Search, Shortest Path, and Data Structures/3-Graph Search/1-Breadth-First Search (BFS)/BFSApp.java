@@ -3,7 +3,7 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 import undirected_graph.AdjacencyList;
 
-public class BFS {
+public class BFSApp {
 
     /**
      * Main driver.
@@ -27,8 +27,11 @@ public class BFS {
                 graph.addEdge(Integer.parseInt(ends[0]), Integer.parseInt(ends[1]));
             }
 
-            // Find all the findable vertices starting from vertex #0
+            // Find all the findable vertices starting from vertex #1 using BFS
             System.out.println(graph.bfs(1));
+
+            // Find the length of the shortest path from vertex #1 to vertex #6 using BFS
+            System.out.println(graph.shortestPath(1, 6));
         } catch (FileNotFoundException ex) {
             System.out.println("Cannot find the file.");
         } finally {

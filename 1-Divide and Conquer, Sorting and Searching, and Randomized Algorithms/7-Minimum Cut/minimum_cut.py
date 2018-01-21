@@ -99,8 +99,7 @@ def main():
     for i in range(n_trial):
         with open('graph_info.txt', 'rt') as f:
             # Construct the graph
-            graph = AdjacencyList()
-
+            graph = AdjacencyList()n
             # Add the vertices
             n_vtx = int(f.readline())
             for vtx_id in range(1, n_vtx + 1):
