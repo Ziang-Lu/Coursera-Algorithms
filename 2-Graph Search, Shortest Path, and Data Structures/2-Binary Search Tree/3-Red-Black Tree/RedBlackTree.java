@@ -66,8 +66,10 @@ public class RedBlackTree {
         root = null;
     }
 
-    // Insertion:
-    // 1. Insert the new element as a normal BST (Might break invariants)
-    // 2. Recolor and perform rotations until invariants are restored.
+    /*
+     * Insertion:
+     * 1. Insert the new element as a normal BST (Might break invariants)
+     * 2. Recolor and perform rotations until invariants are restored.
+     */
 
 }
