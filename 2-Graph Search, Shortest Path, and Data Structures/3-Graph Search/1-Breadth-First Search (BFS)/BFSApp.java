@@ -12,7 +12,7 @@ public class BFSApp {
     public static void main(String[] args) {
         Scanner scanner = null;
         try {
-            scanner = new Scanner(new File("graph_info.txt"));
+            scanner = new Scanner(new File("undirected_graph_info.txt"));
             
             // Construct the graph
             AdjacencyList graph = new AdjacencyList();
@@ -28,10 +28,15 @@ public class BFSApp {
             }
 
             // Find all the findable vertices starting from vertex #1 using BFS
-            System.out.println(graph.bfs(1));
+            System.out.println("Findable vertices from vertex #1: " + graph.bfs(1)); // [1, 2, 3, 4, 5, 6]
+            graph.clearExplored();
 
             // Find the length of the shortest path from vertex #1 to vertex #6 using BFS
-            System.out.println(graph.shortestPath(1, 6));
+            System.out.println("Length of the shortest path from vertex #1 to vertex #6: " + graph.shortestPath(1, 6)); // 3
+            graph.clearExplored();
+
+            // Finds the number of connected components of the graph
+            System.out.println("Number of connected components of the graph: " + graph.numOfConnectedComponents()); // 1
         } catch (FileNotFoundException ex) {
             System.out.println("Cannot find the file.");
         } finally {

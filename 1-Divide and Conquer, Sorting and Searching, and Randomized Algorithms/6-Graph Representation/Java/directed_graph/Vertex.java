@@ -1,5 +1,6 @@
 package directed_graph;
 
+import graph.AbstractVertex;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -9,12 +10,8 @@ import java.util.HashMap;
  * Note that parallel edges are allowed, but not self-loops.
  * @author Ziang Lu
  */
-class Vertex {
+class Vertex extends AbstractVertex {
 
-    /**
-     * Vertex ID.
-     */
-    private final int vtxID;
     /**
      * Frequency of emissive neighbors.
      */
@@ -22,7 +19,7 @@ class Vertex {
     /**
      * Emissive edge of this vertex.
      */
-    private ArrayList<Edge> emissiveEdges;
+    private ArrayList<DirectedEdge> emissiveEdges;
     /**
      * Frequency of incident neighbors.
      */
@@ -30,26 +27,18 @@ class Vertex {
     /**
      * Incident of this vertex.
      */
-    private ArrayList<Edge> incidentEdges;
+    private ArrayList<DirectedEdge> incidentEdges;
 
     /**
      * Constructor with parameter.
      * @param vtxID vertex ID
      */
     Vertex(int vtxID) {
-        this.vtxID = vtxID;
+        super(vtxID);
         freqOfEmissiveNeighbors = new HashMap<Integer, Integer>();
-        emissiveEdges = new ArrayList<Edge>();
+        emissiveEdges = new ArrayList<DirectedEdge>();
         freqOfIncidentNeighbors = new HashMap<Integer, Integer>();
-        incidentEdges = new ArrayList<Edge>();
-    }
-
-    /**
-     * Accessor of vtxID.
-     * @return vtxID
-     */
-    int id() {
-        return vtxID;
+        incidentEdges = new ArrayList<DirectedEdge>();
     }
 
     /**
@@ -57,13 +46,13 @@ class Vertex {
      * @param head given head
      * @return emissive edge if found, null if not found
      */
-    Edge getEmissiveEdgeWithHead(Vertex head) {
+    DirectedEdge getEmissiveEdgeWithHead(Vertex head) {
         // Check whether the input head is null
         if (head == null) {
             throw new IllegalArgumentException("The input head should not be null.");
         }
 
-        for (Edge emissiveEdge : emissiveEdges) {
+        for (DirectedEdge emissiveEdge : emissiveEdges) {
             if (emissiveEdge.head() == head) {
                 return emissiveEdge;
             }
@@ -76,7 +65,7 @@ class Vertex {
      * Accessor of emissiveEdges.
      * @return emissiveEdges
      */
-    ArrayList<Edge> emissiveEdges() {
+    ArrayList<DirectedEdge> emissiveEdges() {
         return emissiveEdges;
     }
 
@@ -85,13 +74,13 @@ class Vertex {
      * @param tail given tail
      * @return incident edge if found, null if not found
      */
-    Edge getIncidentEdgeWithTail(Vertex tail) {
+    DirectedEdge getIncidentEdgeWithTail(Vertex tail) {
         // Check whether the input tail is null
         if (tail == null) {
             throw new IllegalArgumentException("The input tail should not be null.");
         }
 
-        for (Edge incidentEdge : incidentEdges) {
+        for (DirectedEdge incidentEdge : incidentEdges) {
             if (incidentEdge.tail() == tail) {
                 return incidentEdge;
             }
@@ -104,7 +93,7 @@ class Vertex {
      * Accessor of incidentEdges.
      * @return incidentEdges
      */
-    ArrayList<Edge> incidentEdges() {
+    ArrayList<DirectedEdge> incidentEdges() {
         return incidentEdges;
     }
 
@@ -112,7 +101,7 @@ class Vertex {
      * Adds the given emissive edge to this vertex.
      * @param newEdge emissive edge to add
      */
-    void addEmissiveEdge(Edge newEmissiveEdge) {
+    void addEmissiveEdge(DirectedEdge newEmissiveEdge) {
         // Check whether the input emissive edge is null
         if (newEmissiveEdge == null) {
             throw new IllegalArgumentException("The emissive edge to add should not be null.");
@@ -136,7 +125,7 @@ class Vertex {
      * Adds the given incident edge to this vertex.
      * @param newIncidentEdge incident edge to add
      */
-    void addIncidentEdge(Edge newIncidentEdge) {
+    void addIncidentEdge(DirectedEdge newIncidentEdge) {
         // Check whether the input incident edge is null
         if (newIncidentEdge == null) {
             throw new IllegalArgumentException("The incident edge to add should not be null.");
@@ -160,7 +149,7 @@ class Vertex {
      * Removes the given emissive edge from this vertex
      * @param emissiveEdgeToRemove edge to remove
      */
-    void removeEmissiveEdge(Edge emissiveEdgeToRemove) {
+    void removeEmissiveEdge(DirectedEdge emissiveEdgeToRemove) {
         // Check whether the input emissive edge is null
         if (emissiveEdgeToRemove == null) {
             throw new IllegalArgumentException("The emissive edge to remove should not be null.");
@@ -188,7 +177,7 @@ class Vertex {
      * Removes the given incident edge from this vertex
      * @param incidentEdgeToRemove edge to remove
      */
-    void removeIncidentEdge(Edge incidentEdgeToRemove) {
+    void removeIncidentEdge(DirectedEdge incidentEdgeToRemove) {
         // Check whether the input incident edge is null
         if (incidentEdgeToRemove == null) {
             throw new IllegalArgumentException("The incident edge to remove should not be null.");

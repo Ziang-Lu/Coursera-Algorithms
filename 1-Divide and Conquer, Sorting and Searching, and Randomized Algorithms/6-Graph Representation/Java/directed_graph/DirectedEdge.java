@@ -5,7 +5,7 @@ package directed_graph;
  *
  * @author Ziang Lu
  */
-class Edge {
+class DirectedEdge {
 
     /**
      * Tail of this edge.
@@ -21,7 +21,7 @@ class Edge {
      * @param tail tail of this edge
      * @param head head of this edge
      */
-    Edge(Vertex tail, Vertex head) {
+    DirectedEdge(Vertex tail, Vertex head) {
         this.tail = tail;
         this.head = head;
     }

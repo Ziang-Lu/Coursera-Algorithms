@@ -9,30 +9,22 @@ Note that parallel edges are allowed, but not self-loops.
 
 __author__ = 'Ziang Lu'
 
-import random
+from graph_basics import AbstractVertex, AbstractGraph
 
 
 class IllegalArgumentError(ValueError):
     pass
 
 
-class Vertex(object):
+class Vertex(AbstractVertex):
     def __init__(self, vtx_id):
         """
         Constructor with parameter.
         :param vtx_id: int
         """
-        self._vtx_id = vtx_id
+        super().__init__(vtx_id)
         self._freq_of_neighbors = {}
         self._edges = []
-
-    @property
-    def vtx_id(self):
-        """
-        Accessor of vtx_id.
-        :return: int
-        """
-        return self._vtx_id
 
     def get_edge_with_neighbor(self, neighbor):
         """
@@ -78,7 +70,7 @@ class Vertex(object):
         # Find the neighbor associated with the input edge
         if new_edge.end1 is self:  # endpoint2 is the neighbor.
             neighbor = new_edge.end2
-        else:  # endpoint1 is the neighbor
+        else:  # endpoint1 is the neighbor.
             neighbor = new_edge.end1
         # Update the frequency of the neighbor
         freq = self._freq_of_neighbors.get(neighbor.vtx_id, 0)
@@ -105,7 +97,7 @@ class Vertex(object):
         # Find the neighbor associated with the input edge
         if edge_to_remove.end1 is self:  # endpoint2 is the neighbor.
             neighbor = edge_to_remove.end2
-        else:  # endpoint1 is the neighbor
+        else:  # endpoint1 is the neighbor.
             neighbor = edge_to_remove.end1
         # Update the frequency of the neighbor
         freq = self._freq_of_neighbors.get(neighbor.vtx_id)
@@ -124,7 +116,7 @@ class Vertex(object):
             (self._vtx_id, self._freq_of_neighbors)
 
 
-class Edge(object):
+class UndirectedEdge(object):
     def __init__(self, end1, end2):
         """
         Constructor with parameter.
@@ -186,20 +178,14 @@ class Edge(object):
             (self._end1.vtx_id, self._end2.vtx_id)
 
 
-class AdjacencyList(object):
+class UndirectedGraph(AbstractGraph):
     def __init__(self):
         """
         Default constructor.
         """
-        self._vtx_list = []
-        self._edge_list = []
+        super().__init__()
 
     def add_vtx(self, new_vtx_id):
-        """
-        Adds a new vertex to this graph.
-        :param new_vtx_id: int
-        :return: None
-        """
         # Check whether the input vertex is repeated
         if self._find_vtx(new_vtx_id):
             raise IllegalArgumentError('The input vertex is repeated.')
@@ -207,37 +193,7 @@ class AdjacencyList(object):
         new_vtx = Vertex(new_vtx_id)
         self._vtx_list.append(new_vtx)
 
-    def _find_vtx(self, vtx_id):
-        """
-        Private helper function to find the given vertex in this adjacency list.
-        :param vtx_id: int
-        :return: Vertex
-        """
-        for vtx in self._vtx_list:
-            if vtx.vtx_id == vtx_id:
-                return vtx
-        # Not found
-        return None
-
-    def remove_vtx(self, vtx_id):
-        """
-        Removes a vertex from this graph.
-        :param vtx_id: int
-        :return: None
-        """
-        # Check whether the input vertex exists
-        vtx_to_remove = self._find_vtx(vtx_id)
-        if vtx_to_remove is None:
-            raise IllegalArgumentError("The input vertex doesn't exist.")
-
-        self._remove_vtx(vtx_to_remove=vtx_to_remove)
-
     def _remove_vtx(self, vtx_to_remove):
-        """
-        Private helper function to remove the given vertex from this graph.
-        :param vtx_to_remove: Vertex
-        :return: None
-        """
         # Remove all the edges associated with the vertex to remove
         edges_to_remove = vtx_to_remove.edges
         while len(edges_to_remove) > 0:
@@ -247,12 +203,6 @@ class AdjacencyList(object):
         self._vtx_list.remove(vtx_to_remove)
 
     def add_edge(self, end1_id, end2_id):
-        """
-        Adds a new edge to this graph.
-        :param end1_id: int
-        :param end2_id: int
-        :return: None
-        """
         # Check whether the input endpoints both exist
         end1, end2 = self._find_vtx(end1_id), self._find_vtx(end2_id)
         if end1 is None or end2 is None:
@@ -262,45 +212,29 @@ class AdjacencyList(object):
             raise IllegalArgumentError("The endpoints are the same "
                                        "(self-loop).")
 
-        new_edge = Edge(end1, end2)
+        new_edge = UndirectedEdge(end1, end2)
         self._add_edge(new_edge=new_edge)
 
     def _add_edge(self, new_edge):
-        """
-        Private helper function to add the given edge to this graph.
-        :param new_edge: Edge
-        :return: None
-        """
         end1, end2 = new_edge.end1, new_edge.end2
         end1.add_edge(new_edge)
         end2.add_edge(new_edge)
         self._edge_list.append(new_edge)
 
     def remove_edge(self, end1_id, end2_id):
-        """
-        Removes an edge from this graph.
-        :param end1_id: int
-        :param end2_id: int
-        :return: None
-        """
         # Check whether the input endpoints both exist
-        end1, end2 = self._find_vtx(end1_id), self._find_vtx(end2_id)
+        end1, end2 = self._find_vtx(end1_id), self._find_vtx(vtx_id=end2_id)
         if end1 is None or end2 is None:
             raise IllegalArgumentError("The endpoints don't both exist.")
 
         # Check whether the edge to remove exists
-        edge_to_remove = end1.get_edge_with_neighbor(neighbor=end2)
+        edge_to_remove = end1.get_edge_with_neighbor(end2)
         if edge_to_remove is None:
             raise IllegalArgumentError("The edge to remove doesn't exist.")
 
         self._remove_edge(edge_to_remove=edge_to_remove)
 
     def _remove_edge(self, edge_to_remove):
-        """
-        Private helper function to remove the given edge from this graph.
-        :param edge_to_remove: Edge
-        :return: None
-        """
         end1, end2 = edge_to_remove.end1, edge_to_remove.end2
         end1.remove_edge(edge_to_remove)
         end2.remove_edge(edge_to_remove)
@@ -318,82 +252,3 @@ class AdjacencyList(object):
                 self.remove_edge(end1_id=end1_id, end2_id=end2_id)
         except IllegalArgumentError:
             pass
-
-    def show_graph(self):
-        """
-        Shows this graph.
-        :return: None
-        """
-        print('The vertices are:')
-        for vtx in self._vtx_list:
-            print(vtx)
-        print('The edges are:')
-        for edge in self._edge_list:
-            print(edge)
-
-    def compute_minimum_cut(self):
-        """
-        Computes a cut with the fewest number of crossing edges.
-        :return: int
-        """
-        if len(self._vtx_list) <= 1:
-            return 0
-
-        # While there are more than 2 vertices
-        while len(self._vtx_list) > 2:
-            # 1. Pick up an edge randomly
-            random_idx = random.randrange(len(self._edge_list))
-            edge_to_contract = self._edge_list[random_idx]
-            end1, end2 = edge_to_contract.end1, edge_to_contract.end2
-
-            # 2. Contract the two endpoints into a single vertex
-
-            # (1) Remove all the edges between the pair
-            self.remove_edges_between_pair(end1_id=end1.vtx_id,
-                                           end2_id=end2.vtx_id)
-            # (2) Create a merged vertex
-            merged_vtx_id = self._get_next_vtx_id()
-            self.add_vtx(new_vtx_id=merged_vtx_id)
-            # (3) Reconstruct the edges associated with the two endpoints to the
-            # merged vertex, and remove the two endpoints
-            merged_vtx = self._find_vtx(merged_vtx_id)
-            self._reconnect_edges(end=end1, merged_vtx=merged_vtx)
-            self._reconnect_edges(end=end2, merged_vtx=merged_vtx)
-        return len(self._edge_list)
-
-    def _get_next_vtx_id(self):
-        """
-        Private helper function to get the next available vertex ID, which is 1
-        greater than the current largest vertex ID.
-        :return: int
-        """
-        vtx_ids = []
-        for vtx in self._vtx_list:
-            vtx_ids.append(vtx.vtx_id)
-        return max(vtx_ids) + 1
-
-    def _reconnect_edges(self, end, merged_vtx):
-        """
-        Private helper function to reconstruct the edges associated with the
-        given endpoint to the given merged vertex, and remove the endpoint.
-        :param end: Vertex
-        :param merged_vtx: Vertex
-        :return: None
-        """
-        for edge_from_end in end.edges:
-            # Find the neighbor
-            if edge_from_end.end1 is end:  # endpoint2 is the neighbor.
-                neighbor = edge_from_end.end2
-                # Remove the dge from the neighbor
-                neighbor.remove_edge(edge_to_remove=edge_from_end)
-                # Reform the edge to connect the neighbor and the merged vertex
-                edge_from_end.end1 = merged_vtx
-            else:  # endpoint1 is the neighbor.
-                neighbor = edge_from_end.end1
-                neighbor.remove_edge(edge_to_remove=edge_from_end)
-                edge_from_end.end2 = merged_vtx
-            # add the new edge to both the neighbor and the merged vertex
-            neighbor.add_edge(edge_from_end)
-            merged_vtx.add_edge(edge_from_end)
-        # Remove the endpoint
-        self._vtx_list.remove(end)

@@ -1,4 +1,4 @@
-### Breadth-First Search (BF)
+### Breadth-First Search (BFS)
 
 "Cautious and tentative exploration of the graph"
 
@@ -19,4 +19,21 @@
       ​		Mark $w$ as explored
 
       ​		Push it to $Q$ (to the back of $Q$)
+
+
+
+
+##### Applications:
+
+1. Naive BFS
+
+   ​	Given a graph $G$ and a source vertex $s$, find all the findable vertices starting from $s$.
+
+2. Shortest path   **[Specific to BFS]**
+
+   ​	Given a graph $G$, a source vertex $s$ and a destination vertex $d$, find the length of the shortest path from $s$ to $d$.
+
+3. Undirected connectivity   **[Applies only to undirected graph]**
+
+   ​	Given a undirected graph $G$, find the number of connected components ("pieces") of $G$.
 

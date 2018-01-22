@@ -1,4 +1,5 @@
 /**
+ * Minimum Cut Problem:
  * Given a graph, compute a cut with the fewest number of crossing edges.
  *
  * Format of the graph file:
@@ -83,7 +84,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
-import undirected_graph.AdjacencyList;
+import undirected_graph.UndirectedGraph;
 
 public class MinimumCut {
 
@@ -118,7 +119,7 @@ public class MinimumCut {
                 scanner = new Scanner(new File("graph_info.txt"), "latin1");
 
                 // Construct the graph
-                AdjacencyList graph = new AdjacencyList();
+                UndirectedGraph graph = new UndirectedGraph();
                 // Add the vertices
                 int nVtx = Integer.parseInt(scanner.nextLine());
                 for (int vtxID = 1; vtxID <= nVtx; ++vtxID) {
@@ -136,7 +137,7 @@ public class MinimumCut {
                     minimumCut = currMinimumCut;
                 }
             }
-            System.out.println("Minimum cut: " + minimumCut);
+            System.out.println("Minimum cut: " + minimumCut); // 2
         } catch (FileNotFoundException ex) {
             System.out.println("Cannot find the file.");
         } finally {

@@ -224,6 +224,15 @@ public class AdjacencyList {
     }
 
     /**
+     * Sets all the vertices to unexplored.
+     */
+    public void clearExplored() {
+        for (Vertex vtx : vtxList) {
+            vtx.setAsUnexplored();
+        }
+    }
+
+    /**
      * Finds the length of the shortest path from the given source vertex to the
      * given destination vertex using BFS.
      * @param srcVtxID source vertex ID
@@ -275,6 +284,21 @@ public class AdjacencyList {
         }
         // The destination vertex is not findable starting from the given source vertex.
         return Integer.MAX_VALUE;
+    }
+
+    /**
+     * Returns the number of connected components of this graph.
+     * @return number of connected components
+     */
+    public int numOfConnectedComponents() {
+        ArrayList<ArrayList<Integer>> components = new ArrayList<ArrayList<Integer>>();
+        for (Vertex vtx : vtxList) {
+            if (!vtx.explored()) {
+                ArrayList<Integer> component = bfs(vtx.id());
+                components.add(component);
+            }
+        }
+        return components.size();
     }
 
 }

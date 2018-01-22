@@ -24,7 +24,7 @@ class Vertex {
      */
     private ArrayList<Edge> edges;
     /**
-     * Whether this vertex is explored by BFS.
+     * Whether this vertex is explored by BFS/DFS.
      */
     private boolean explored;
     /**
@@ -164,6 +164,13 @@ class Vertex {
      */
     void setAsExplored() {
         explored = true;
+    }
+
+    /**
+     * Sets this vertex to unexplored.
+     */
+    void setAsUnexplored() {
+        explored = false;
     }
 
     /**

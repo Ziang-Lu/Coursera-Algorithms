@@ -412,14 +412,11 @@ class AdjacencyList(object):
 
             findable_vtx_ids.append(vtx.vtx_id)
 
-        # Do clear work
-        self._clear_explored()
-
         return findable_vtx_ids
 
-    def _clear_explored(self):
+    def clear_explored(self):
         """
-        Private helper function to set all the vertices to unexplored.
+        Sets all the vertices to unexplored.
         :return: None
         """
         for vtx in self._vtx_list:
@@ -473,3 +470,15 @@ class AdjacencyList(object):
         # The destination vertex is not findable starting from the given source
         # vertex.
         return -1
+
+    def num_of_connected_components(self):
+        """
+        Returns the number of connected components of this graph.
+        :return: int
+        """
+        components = []
+        for vtx in self._vtx_list:
+            if not vtx.explored:
+                component = self.bfs(src_vtx_id=vtx.vtx_id)
+                components.append(component)
+        return len(components)

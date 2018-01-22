@@ -5,7 +5,7 @@ package undirected_graph;
  *
  * @author Ziang Lu
  */
-class Edge {
+class UndirectedEdge {
 
     /**
      * Endpoint 1.
@@ -21,7 +21,7 @@ class Edge {
      * @param end1 endpoint1
      * @param end2 endpoint2
      */
-    Edge(Vertex end1, Vertex end2) {
+    UndirectedEdge(Vertex end1, Vertex end2) {
         this.end1 = end1;
         this.end2 = end2;
     }

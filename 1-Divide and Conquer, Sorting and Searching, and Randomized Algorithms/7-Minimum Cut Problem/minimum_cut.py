@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
+Minimum Cut Problem:
 Given a graph, compute a cut with the fewest number of crossing edges.
 
 Format of graph file:
@@ -86,7 +87,7 @@ Pr[success] >= 1 - 1/n
 __author__ = 'Ziang Lu'
 
 import math
-from undirected_graph import AdjacencyList
+from undirected_graph import UndirectedGraph
 
 
 def main():
@@ -99,7 +100,7 @@ def main():
     for i in range(n_trial):
         with open('graph_info.txt', 'rt') as f:
             # Construct the graph
-            graph = AdjacencyList()n
+            graph = UndirectedGraph()
             # Add the vertices
             n_vtx = int(f.readline())
             for vtx_id in range(1, n_vtx + 1):
@@ -113,7 +114,7 @@ def main():
             minimum_cut = graph.compute_minimum_cut()
             if minimum_cut < curr_minimum_cut:
                 curr_minimum_cut = minimum_cut
-    print('Minimum cut: %d' % curr_minimum_cut)
+    print('Minimum cut: %d' % curr_minimum_cut)  # 2
 
 
 if __name__ == '__main__':

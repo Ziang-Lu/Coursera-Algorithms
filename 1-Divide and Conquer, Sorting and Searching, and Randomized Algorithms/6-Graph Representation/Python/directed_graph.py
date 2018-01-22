@@ -9,30 +9,24 @@ Note that parallel edges are allowed, but not self-loops.
 
 __author__ = 'Ziang Lu'
 
+from graph_basics import AbstractVertex, AbstractGraph
+
 
 class IllegalArgumentError(ValueError):
     pass
 
 
-class Vertex(object):
+class Vertex(AbstractVertex):
     def __init__(self, vtx_id):
         """
         Constructor with parameter.
         :param vtx_id: int
         """
-        self._vtx_id = vtx_id
+        super().__init__(vtx_id)
         self._freq_of_emissive_neighbors = {}
         self._emissive_edges = []
         self._freq_of_incident_neighbors = {}
         self._incident_edges = []
-
-    @property
-    def vtx_id(self):
-        """
-        Accessor of vtx_id.
-        :return: int
-        """
-        return self._vtx_id
 
     def get_emissive_edge_with_head(self, head):
         """
@@ -197,7 +191,7 @@ class Vertex(object):
         return isinstance(other, Vertex) and self._vtx_id == other.vtx_id
 
 
-class Edge(object):
+class DirectedEdge(object):
     def __init__(self, tail, head):
         """
         Constructor with parameter.
@@ -259,20 +253,14 @@ class Edge(object):
             (self._tail.vtx_id, self._head.vtx_id)
 
 
-class AdjacencyList(object):
+class DirectedGraph(AbstractGraph):
     def __init__(self):
         """
         Default constructor.
         """
-        self._vtx_list = []
-        self._edge_list = []
+        super().__init__()
 
     def add_vtx(self, new_vtx_id):
-        """
-        Adds a new vertex to this graph.
-        :param new_vtx_id: int
-        :return: None
-        """
         # Check whether the input vertex is repeated
         if self._find_vtx(new_vtx_id):
             raise IllegalArgumentError('The input vertex is repeated.')
@@ -280,37 +268,7 @@ class AdjacencyList(object):
         new_vtx = Vertex(new_vtx_id)
         self._vtx_list.append(new_vtx)
 
-    def _find_vtx(self, vtx_id):
-        """
-        Private helper function to find the given vertex in this adjacency list.
-        :param vtx_id: int
-        :return: Vertex
-        """
-        for vtx in self._vtx_list:
-            if vtx.vtx_id == vtx_id:
-                return vtx
-        # Not found
-        return None
-
-    def remove_vtx(self, vtx_id):
-        """
-        Removes a vertex from this graph.
-        :param vtx_id: int
-        :return: None
-        """
-        # Check whether the input vertex exists
-        vtx_to_remove = self._find_vtx(vtx_id)
-        if vtx_to_remove is None:
-            raise IllegalArgumentError("The input vertex doesn't exist.")
-
-        self._remove_vtx(vtx_to_remove=vtx_to_remove)
-
     def _remove_vtx(self, vtx_to_remove):
-        """
-        Private helper function to remove the given vertex from this graph.
-        :param vtx_to_remove: Vertex
-        :return: None
-        """
         # Remove all the edges associated with the vertex to remove
         edges_to_remove = []
         edges_to_remove.extend(vtx_to_remove.emissive_edges)
@@ -322,12 +280,6 @@ class AdjacencyList(object):
         self._vtx_list.remove(vtx_to_remove)
 
     def add_edge(self, tail_id, head_id):
-        """
-        Adds a new edge to this graph.
-        :param tail_id: int
-        :param head_id: int
-        :return: None
-        """
         # Check whether the input endpoints both exist
         tail, head = self._find_vtx(tail_id), self._find_vtx(head_id)
         if tail is None or head is None:
@@ -337,58 +289,28 @@ class AdjacencyList(object):
             raise IllegalArgumentError("The endpoints are the same "
                                        "(self-loop).")
 
-        new_edge = Edge(tail, head)
+        new_edge = DirectedEdge(tail, head)
         self._add_edge(new_edge=new_edge)
 
     def _add_edge(self, new_edge):
-        """
-        Private helper method to add the given edge to this graph.
-        :param new_edge: Edge
-        :return: None
-        """
         tail, head = new_edge.tail, new_edge.head
         tail.add_emissive_edge(new_edge)
         head.add_incident_edge(new_edge)
         self._edge_list.append(new_edge)
 
     def remove_edge(self, tail_id, head_id):
-        """
-        Removes an edge from this graph.
-        :param tail_id: int
-        :param head_id: int
-        :return: None
-        """
         # Check whether the input endpoints both exist
         tail, head = self._find_vtx(tail_id), self._find_vtx(head_id)
         if tail is None or head is None:
             raise IllegalArgumentError("The endpoints don't both exist.")
         # Check whether the edge to remove exists
-        edge_to_remove = self._find_edge(tail_id=tail_id, head_id=head_id)
+        edge_to_remove = tail.get_emissive_edge_with_head(head)
         if edge_to_remove is None:
             raise IllegalArgumentError("The edge to remove doesn't exist.")
 
         self._remove_edge(edge_to_remove=edge_to_remove)
 
-    def _find_edge(self, tail_id, head_id):
-        """
-        Private helper function to find the first edge from the given tail to
-        the given head in this adjacency list.
-        :param tail_id: int
-        :param head_id: int
-        :return: Edge
-        """
-        for edge in self._edge_list:
-            if edge.tail.vtx_id == tail_id and edge.head.vtx_id == head_id:
-                return edge
-        # Not found
-        return None
-
     def _remove_edge(self, edge_to_remove):
-        """
-        Private helper function to remove the given edge from this graph.
-        :param edge_to_remove: Edge
-        :return: None
-        """
         tail, head = edge_to_remove.tail, edge_to_remove.head
         tail.remove_emissive_edge(edge_to_remove)
         head.remove_incident_edge(edge_to_remove)
@@ -406,15 +328,3 @@ class AdjacencyList(object):
                 self.remove_edge(tail_id=tail_id, head_id=head_id)
         except IllegalArgumentError:
             pass
-
-    def show_graph(self):
-        """
-        Shows this graph.
-        :return: None
-        """
-        print('The vertices are:')
-        for vtx in self._vtx_list:
-            print(vtx)
-        print('The edges are:')
-        for edge in self._edge_list:
-            print(edge)

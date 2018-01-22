@@ -1,5 +1,6 @@
 package directed_graph;
 
+import graph.GraphInterface;
 import java.util.ArrayList;
 
 /**
@@ -8,7 +9,7 @@ import java.util.ArrayList;
  * Note that parallel edges are allowed, but not self-loops.
  * @author Ziang Lu
  */
-public class AdjacencyList {
+public class DirectedGraph implements GraphInterface {
 
     /**
      * Vertex list.
@@ -17,20 +18,17 @@ public class AdjacencyList {
     /**
      * Edge list.
      */
-    private ArrayList<Edge> edgeList;
+    private ArrayList<DirectedEdge> edgeList;
 
     /**
      * Default constructor.
      */
-    public AdjacencyList() {
+    public DirectedGraph() {
         vtxList = new ArrayList<Vertex>();
-        edgeList = new ArrayList<Edge>();
+        edgeList = new ArrayList<DirectedEdge>();
     }
 
-    /**
-     * Adds a new vertex to this graph.
-     * @param newVtxID new vertex ID
-     */
+    @Override
     public void addVtx(int newVtxID) {
         // Check whether the input vertex is repeated
         if (findVtx(newVtxID) != null) {
@@ -56,10 +54,7 @@ public class AdjacencyList {
         return null;
     }
 
-    /**
-     * Removes a vertex from this graph.
-     * @param vtxID vertex ID
-     */
+    @Override
     public void removeVtx(int vtxID) {
         // Check whether the input vertex exists
         Vertex vtxToRemove = findVtx(vtxID);
@@ -76,22 +71,18 @@ public class AdjacencyList {
      */
     private void removeVtx(Vertex vtxToRemove) {
         // Remove all the edges associated with the vertex to remove
-        ArrayList<Edge> edgesToRemove = new ArrayList<Edge>();
+        ArrayList<DirectedEdge> edgesToRemove = new ArrayList<DirectedEdge>();
         edgesToRemove.addAll(vtxToRemove.emissiveEdges());
         edgesToRemove.addAll(vtxToRemove.incidentEdges());
         while (edgesToRemove.size() > 0) {
-            Edge edgeToRemove = edgesToRemove.get(0);
+            DirectedEdge edgeToRemove = edgesToRemove.get(0);
             removeEdge(edgeToRemove);
         }
         // Remove the vertex
         vtxList.remove(vtxToRemove);
     }
 
-    /**
-     * Adds a new edge to this graph.
-     * @param tailID tail ID
-     * @param headID head ID
-     */
+    @Override
     public void addEdge(int tailID, int headID) {
         // Check whether the input endpoints both exist
         Vertex tail = findVtx(tailID), head = findVtx(headID);
@@ -103,7 +94,7 @@ public class AdjacencyList {
             throw new IllegalArgumentException("The endpoints are the same (self-loop).");
         }
 
-        Edge newEdge = new Edge(tail, head);
+        DirectedEdge newEdge = new DirectedEdge(tail, head);
         addEdge(newEdge);
     }
 
@@ -111,18 +102,14 @@ public class AdjacencyList {
      * Private helper method to add the given edge to this graph.
      * @param newEdge new edge
      */
-    private void addEdge(Edge newEdge) {
+    private void addEdge(DirectedEdge newEdge) {
         Vertex tail = newEdge.tail(), head = newEdge.head();
         tail.addEmissiveEdge(newEdge);
         head.addIncidentEdge(newEdge);
         edgeList.add(newEdge);
     }
 
-    /**
-     * Removes an edge from this graph.
-     * @param tailID tail ID
-     * @param headID head ID
-     */
+    @Override
     public void removeEdge(int tailID, int headID) {
         // Check whether the input endpoints both exist
         Vertex tail = findVtx(tailID), head = findVtx(headID);
@@ -130,7 +117,7 @@ public class AdjacencyList {
             throw new IllegalArgumentException("The endpoints don't both exist.");
         }
         // Check whether the edge to remove exists
-        Edge edgeToRemove = tail.getEmissiveEdgeWithHead(head);
+        DirectedEdge edgeToRemove = tail.getEmissiveEdgeWithHead(head);
         if (edgeToRemove == null) {
             throw new IllegalArgumentException("The edge to remove doesn't exist.");
         }
@@ -142,7 +129,7 @@ public class AdjacencyList {
      * Private helper method to remove the given edge from this graph.
      * @param edgeToRemove edge to remove
      */
-    private void removeEdge(Edge edgeToRemove) {
+    private void removeEdge(DirectedEdge edgeToRemove) {
         Vertex tail = edgeToRemove.tail(), head = edgeToRemove.head();
         tail.removeEmissiveEdge(edgeToRemove);
         head.removeIncidentEdge(edgeToRemove);
@@ -160,16 +147,14 @@ public class AdjacencyList {
         } catch (IllegalArgumentException ex) {};
     }
 
-    /**
-     * Shows the graph.
-     */
+    @Override
     public void showGraph() {
         System.out.println("The vertices are:");
         for (Vertex vtx : vtxList) {
             System.out.println(vtx);
         }
         System.out.println("The edges are:");
-        for (Edge edge : edgeList) {
+        for (DirectedEdge edge : edgeList) {
             System.out.println(edge);
         }
     }

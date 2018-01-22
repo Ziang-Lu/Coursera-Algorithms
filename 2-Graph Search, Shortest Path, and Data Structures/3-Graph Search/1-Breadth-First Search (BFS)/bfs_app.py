@@ -7,7 +7,7 @@ from undirected_graph import AdjacencyList
 
 
 def main():
-    with open('graph_info.txt', 'rt') as f:
+    with open('undirected_graph_info.txt', 'rt') as f:
         # Construct the graph
         graph = AdjacencyList()
         # Add the vertices
@@ -20,11 +20,17 @@ def main():
             graph.add_edge(end1_id=int(ends[0]), end2_id=int(ends[1]))
 
         # Find all the findable vertices starting from vertex #1 using BFS
-        print(graph.bfs(src_vtx_id=1))
+        print('Findable vertices from vertex #1: %s' % graph.bfs(src_vtx_id=1))  # [1, 2, 3, 4, 5, 6]
+        graph.clear_explored()
 
         # Find the length of the shorted path from vertex #1 to vertex #6 using
         # BFS
-        print(graph.shortest_path(src_vtx_id=1, dest_vtx_id=6))
+        print('Length of the shortest path from vertex #1 to vertex #6: %d' %
+              graph.shortest_path(src_vtx_id=1, dest_vtx_id=6))  # 3
+        graph.clear_explored()
+
+        print('Number of connected components: %d' %
+              graph.num_of_connected_components())
 
 
 if __name__ == '__main__':
