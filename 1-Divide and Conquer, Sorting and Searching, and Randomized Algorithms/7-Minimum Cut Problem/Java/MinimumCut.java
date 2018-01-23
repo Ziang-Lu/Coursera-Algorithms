@@ -114,37 +114,50 @@ public class MinimumCut {
             }
         }
 
-        try {
-            for (int i = 0; i < nTrial; ++i) {
-                scanner = new Scanner(new File("graph_info.txt"), "latin1");
+        for (int i = 0; i < nTrial; ++i) {// Construct the graph
+            UndirectedGraph graph = constructUndirectedGraph("undirected_graph_info.txt");
 
-                // Construct the graph
-                UndirectedGraph graph = new UndirectedGraph();
-                // Add the vertices
-                int nVtx = Integer.parseInt(scanner.nextLine());
-                for (int vtxID = 1; vtxID <= nVtx; ++vtxID) {
-                    graph.addVtx(vtxID);
-                }
-                // Add the edges
-                while (scanner.hasNextLine()) {
-                    String[] ends = scanner.nextLine().split(" ");
-                    graph.addEdge(Integer.parseInt(ends[0]), Integer.parseInt(ends[1]));
-                }
-
-                // Compute a minimum cut
-                int currMinimumCut = graph.computeMinimumCut();
-                if (currMinimumCut < minimumCut) {
-                    minimumCut = currMinimumCut;
-                }
+            // Compute a minimum cut
+            int currMinimumCut = graph.computeMinimumCut();
+            if (currMinimumCut < minimumCut) {
+                minimumCut = currMinimumCut;
             }
-            System.out.println("Minimum cut: " + minimumCut); // 2
+        }
+        System.out.println("Minimum cut: " + minimumCut); // 2
+    }
+
+    /**
+     * Private helper method to construct a undirected graph from the given file.
+     * @param filename given filename
+     * @return constructed undirected graph
+     */
+    private static UndirectedGraph constructUndirectedGraph(String filename) {
+        UndirectedGraph graph = null;
+
+        Scanner scanner = null;
+        try {
+            scanner = new Scanner(new File(filename), "latin1");
+
+            graph = new UndirectedGraph();
+            // Add the vertices
+            int nVtx = Integer.parseInt(scanner.nextLine());
+            for (int vtxID = 1; vtxID <= nVtx; ++vtxID) {
+                graph.addVtx(vtxID);
+            }
+            // Add the edges
+            while (scanner.hasNextLine()) {
+                String[] ends = scanner.nextLine().split(" ");
+                graph.addEdge(Integer.parseInt(ends[0]), Integer.parseInt(ends[1]));
+            }
         } catch (FileNotFoundException ex) {
-            System.out.println("Cannot find the file.");
+            System.out.println("Cannot found the file.");
         } finally {
             if (scanner != null) {
                 scanner.close();
             }
         }
+
+        return graph;
     }
 
 }

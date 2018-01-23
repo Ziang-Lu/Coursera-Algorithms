@@ -92,29 +92,36 @@ from undirected_graph import UndirectedGraph
 
 def main():
     # Calculate the number of trials (n^2ln n)
-    with open('graph_info.txt', 'rt') as f:
+    with open('undirected_graph_info.txt', 'rt') as f:
         n_vtx = int(f.readline())
         n_trial = math.ceil(n_vtx**2 * math.log(n_vtx))
         curr_minimum_cut = len(f.readlines())
 
     for i in range(n_trial):
-        with open('graph_info.txt', 'rt') as f:
-            # Construct the graph
-            graph = UndirectedGraph()
-            # Add the vertices
-            n_vtx = int(f.readline())
-            for vtx_id in range(1, n_vtx + 1):
-                graph.add_vtx(new_vtx_id=vtx_id)
-            # Add the edges
-            for line in f.readlines():
-                ends = line.split(' ')
-                graph.add_edge(end1_id=int(ends[0]), end2_id=int(ends[1]))
+        # Construct the graph
+        graph = construct_undirected_graph('undirected_graph_info.txt')
 
-            # Compute a minimum cut
-            minimum_cut = graph.compute_minimum_cut()
-            if minimum_cut < curr_minimum_cut:
-                curr_minimum_cut = minimum_cut
+        # Compute a minimum cut
+        minimum_cut = graph.compute_minimum_cut()
+        if minimum_cut < curr_minimum_cut:
+            curr_minimum_cut = minimum_cut
     print('Minimum cut: %d' % curr_minimum_cut)  # 2
+
+
+def construct_undirected_graph(filename):
+    with open(filename, 'rt') as f:
+        # Construct the graph
+        graph = UndirectedGraph()
+        # Add the vertices
+        n_vtx = int(f.readline())
+        for vtx_id in range(1, n_vtx + 1):
+            graph.add_vtx(new_vtx_id=vtx_id)
+        # Add the edges
+        for line in f.readlines():
+            ends = line.split(' ')
+            graph.add_edge(end1_id=int(ends[0]), end2_id=int(ends[1]))
+
+        return graph
 
 
 if __name__ == '__main__':
