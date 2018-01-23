@@ -91,6 +91,10 @@ from undirected_graph import UndirectedGraph
 
 
 def main():
+    """
+    Main driver.
+    :return: None
+    """
     # Calculate the number of trials (n^2ln n)
     with open('undirected_graph_info.txt', 'rt') as f:
         n_vtx = int(f.readline())
@@ -99,7 +103,7 @@ def main():
 
     for i in range(n_trial):
         # Construct the graph
-        graph = construct_undirected_graph('undirected_graph_info.txt')
+        graph = _construct_undirected_graph('undirected_graph_info.txt')
 
         # Compute a minimum cut
         minimum_cut = graph.compute_minimum_cut()
@@ -108,7 +112,13 @@ def main():
     print('Minimum cut: %d' % curr_minimum_cut)  # 2
 
 
-def construct_undirected_graph(filename):
+def _construct_undirected_graph(filename):
+    """
+    Private helper function to construct a undirected graph from the given
+    undirected graph file.
+    :param str
+    :return: UndirectedGraph
+    """
     with open(filename, 'rt') as f:
         # Construct the graph
         graph = UndirectedGraph()
@@ -120,7 +130,6 @@ def construct_undirected_graph(filename):
         for line in f.readlines():
             ends = line.split(' ')
             graph.add_edge(end1_id=int(ends[0]), end2_id=int(ends[1]))
-
         return graph
 
 

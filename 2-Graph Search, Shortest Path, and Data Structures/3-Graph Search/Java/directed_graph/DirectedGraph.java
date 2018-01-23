@@ -1,15 +1,17 @@
-package undirected_graph;
+package directed_graph;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 
+import graph.GraphInterface;
+
 /**
- * Adjacency list representation of a undirected graph.
+ * Adjacency list representation of a directed graph.
  *
  * Note that parallel edges are allowed, but not self-loops.
  * @author Ziang Lu
  */
-public class AdjacencyList {
+public class DirectedGraph implements GraphInterface {
 
     /**
      * Vertex list.
@@ -18,20 +20,17 @@ public class AdjacencyList {
     /**
      * Edge list.
      */
-    private ArrayList<Edge> edgeList;
+    private ArrayList<DirectedEdge> edgeList;
 
     /**
      * Default constructor.
      */
-    public AdjacencyList() {
+    public DirectedGraph() {
         vtxList = new ArrayList<Vertex>();
-        edgeList = new ArrayList<Edge>();
+        edgeList = new ArrayList<DirectedEdge>();
     }
 
-    /**
-     * Adds a new vertex to this graph.
-     * @param newVtxID new vertex ID
-     */
+    @Override
     public void addVtx(int newVtxID) {
         // Check whether the input vertex is repeated
         if (findVtx(newVtxID) != null) {
@@ -57,15 +56,12 @@ public class AdjacencyList {
         return null;
     }
 
-    /**
-     * Removes a vertex from this graph.
-     * @param vtxID vertex ID
-     */
+    @Override
     public void removeVtx(int vtxID) {
         // Check whether the input vertex exists
         Vertex vtxToRemove = findVtx(vtxID);
         if (vtxToRemove == null) {
-            throw new IllegalArgumentException("The input vertex doesn't exist.");
+            throw new IllegalArgumentException("The inpue vertex doesn't exist.");
         }
 
         removeVtx(vtxToRemove);
@@ -77,32 +73,30 @@ public class AdjacencyList {
      */
     private void removeVtx(Vertex vtxToRemove) {
         // Remove all the edges associated with the vertex to remove
-        ArrayList<Edge> edgesToRemove = vtxToRemove.edges();
+        ArrayList<DirectedEdge> edgesToRemove = new ArrayList<DirectedEdge>();
+        edgesToRemove.addAll(vtxToRemove.emissiveEdges());
+        edgesToRemove.addAll(vtxToRemove.incidentEdges());
         while (edgesToRemove.size() > 0) {
-            Edge edgeToRemove = edgesToRemove.get(0);
+            DirectedEdge edgeToRemove = edgesToRemove.get(0);
             removeEdge(edgeToRemove);
         }
         // Remove the vertex
         vtxList.remove(vtxToRemove);
     }
 
-    /**
-     * Adds a new edge to this graph.
-     * @param end1ID endpoint1 ID
-     * @param end2ID endpoint2 ID
-     */
-    public void addEdge(int end1ID, int end2ID) {
+    @Override
+    public void addEdge(int tailID, int headID) {
         // Check whether the input endpoints both exist
-        Vertex end1 = findVtx(end1ID), end2 = findVtx(end2ID);
-        if ((end1 == null) || (end2 == null)) {
+        Vertex tail = findVtx(tailID), head = findVtx(headID);
+        if ((tail == null) || (head == null)) {
             throw new IllegalArgumentException("The endpoints don't both exist.");
         }
-        // Check whether the input endpoints are the same (self-loop)
-        if (end1ID == end2ID) {
+        // Check whether the input endpoints both exist
+        if (tailID == headID) {
             throw new IllegalArgumentException("The endpoints are the same (self-loop).");
         }
 
-        Edge newEdge = new Edge(end1, end2);
+        DirectedEdge newEdge = new DirectedEdge(tail, head);
         addEdge(newEdge);
     }
 
@@ -110,26 +104,22 @@ public class AdjacencyList {
      * Private helper method to add the given edge to this graph.
      * @param newEdge new edge
      */
-    private void addEdge(Edge newEdge) {
-        Vertex end1 = newEdge.end1(), end2 = newEdge.end2();
-        end1.addEdge(newEdge);
-        end2.addEdge(newEdge);
+    private void addEdge(DirectedEdge newEdge) {
+        Vertex tail = newEdge.tail(), head = newEdge.head();
+        tail.addEmissiveEdge(newEdge);
+        head.addIncidentEdge(newEdge);
         edgeList.add(newEdge);
     }
 
-    /**
-     * Removes an edge from this graph.
-     * @param end1ID endpoint1 ID
-     * @param end2ID endpoint2 ID
-     */
-    public void removeEdge(int end1ID, int end2ID) {
-        // Check whether the input vertices both exist
-        Vertex end1 = findVtx(end1ID), end2 = findVtx(end2ID);
-        if ((end1 == null) || (end2 == null)) {
-            throw new IllegalArgumentException("The input vertices don't both exist.");
+    @Override
+    public void removeEdge(int tailID, int headID) {
+        // Check whether the input endpoints both exist
+        Vertex tail = findVtx(tailID), head = findVtx(headID);
+        if ((tail == null) || (head == null)) {
+            throw new IllegalArgumentException("The endpoints don't both exist.");
         }
         // Check whether the edge to remove exists
-        Edge edgeToRemove = end1.getEdgeWithNeighbor(end2);
+        DirectedEdge edgeToRemove = tail.getEmissiveEdgeWithHead(head);
         if (edgeToRemove == null) {
             throw new IllegalArgumentException("The edge to remove doesn't exist.");
         }
@@ -141,45 +131,37 @@ public class AdjacencyList {
      * Private helper method to remove the given edge from this graph.
      * @param edgeToRemove edge to remove
      */
-    private void removeEdge(Edge edgeToRemove) {
-        Vertex end1 = edgeToRemove.end1(), end2 = edgeToRemove.end2();
-        end1.removeEdge(edgeToRemove);
-        end2.removeEdge(edgeToRemove);
+    private void removeEdge(DirectedEdge edgeToRemove) {
+        Vertex tail = edgeToRemove.tail(), head = edgeToRemove.head();
+        tail.removeEmissiveEdge(edgeToRemove);
+        head.removeIncidentEdge(edgeToRemove);
         edgeList.remove(edgeToRemove);
     }
 
     /**
-     * Removes all the edges between a vertex pair from this graph.
-     * @param end1ID endpoint1 ID
-     * @param end2ID endpoint2 ID
+     * Removes all the directed edges between a vertex pair from this graph.
+     * @param tailID tail ID
+     * @param headID head ID
      */
-    public void removeEdgesBetweenPair(int end1ID, int end2ID) {
+    public void removeDirectedEdgesBetweenPair(int tailID, int headID) {
         try {
-            while (true) {
-                removeEdge(end1ID, end2ID);
-            }
-        } catch (IllegalArgumentException ex) {}
+            removeEdge(tailID, headID);
+        } catch (IllegalArgumentException ex) {};
     }
 
-    /**
-     * Shows the graph.
-     */
+    @Override
     public void showGraph() {
         System.out.println("The vertices are:");
         for (Vertex vtx : vtxList) {
             System.out.println(vtx);
         }
         System.out.println("The edges are:");
-        for (Edge edge : edgeList) {
+        for (DirectedEdge edge : edgeList) {
             System.out.println(edge);
         }
     }
 
-    /**
-     * Finds all the findable vertices from the given source vertex using BFS.
-     * @param srcVtxID source vertex ID
-     * @return all the findable vertices
-     */
+    @Override
     public ArrayList<Integer> bfs(int srcVtxID) {
         // Check whether the input source vertex exists
         Vertex srcVtx = findVtx(srcVtxID);
@@ -200,20 +182,13 @@ public class AdjacencyList {
             // (1) Take out the first vertex v
             Vertex vtx = queue.poll();
             // (2) For every edge (v, w)
-            for (Edge edge : vtx.edges()) {
-                // Find the neighbor
-                Vertex neighbor = null;
-                if (edge.end1() == vtx) { // endpoint2 is the neighbor.
-                    neighbor = edge.end2();
-                } else { // endpoint1 is the neighbor.
-                    neighbor = edge.end1();
-                }
-                // If w is not explored
-                if (!neighbor.explored()) {
+            for (DirectedEdge edge : vtx.emissiveEdges()) {
+                Vertex w = edge.head();
+                if (!w.explored()) {
                     // Mark w as explored
-                    neighbor.setAsExplored();
+                    w.setAsExplored();
                     // Push w to Q
-                    queue.offer(neighbor);
+                    queue.offer(w);
                 }
             }
 
@@ -223,24 +198,16 @@ public class AdjacencyList {
         return findableVtxIDs;
     }
 
-    /**
-     * Sets all the vertices to unexplored.
-     */
+    @Override
     public void clearExplored() {
         for (Vertex vtx : vtxList) {
             vtx.setAsUnexplored();
         }
     }
 
-    /**
-     * Finds the length of the shortest path from the given source vertex to the
-     * given destination vertex using BFS.
-     * @param srcVtxID source vertex ID
-     * @param destVtxID destination vertex ID
-     * @return length of the shorted path
-     */
+    @Override
     public int shortestPath(int srcVtxID, int destVtxID) {
-        // Check whether the input source and destination vertices exist
+        // Check whether the input source and destination vertices both exist
         Vertex srcVtx = findVtx(srcVtxID), destVtx = findVtx(destVtxID);
         if ((srcVtx == null) || (destVtx == null)) {
             throw new IllegalArgumentException("The source and destination vertices don't both exist.");
@@ -255,50 +222,32 @@ public class AdjacencyList {
         while (!queue.isEmpty()) {
             // (1) Take out the first vertex v
             Vertex vtx = queue.poll();
-
-            int currLayer = vtx.layer();
-
             // (2) For every edge (v, w)
-            for (Edge edge : vtx.edges()) {
-                // Find the neighbor
-                Vertex neighbor = null;
-                if (edge.end1() == vtx) { // endpoint2 is the neighbor.
-                    neighbor = edge.end2();
-                } else { // endpoint1 is the neighbor.
-                    neighbor = edge.end1();
-                }
+            for (DirectedEdge edge : vtx.emissiveEdges()) {
+                Vertex w = edge.head();
                 // If w is not explored
-                if (!neighbor.explored()) {
+                if (!w.explored()) {
                     // Mark w as explored
-                    neighbor.setAsExplored();
+                    w.setAsExplored();
 
-                    neighbor.setLayer(currLayer + 1);
-                    if (neighbor == destVtx) { // Found it
+                    w.setLayer(vtx.layer() + 1);
+                    if (w == destVtx) { // Found it
                         return destVtx.layer();
                     }
 
                     // Push w to Q
-                    queue.offer(neighbor);
+                    queue.offer(w);
                 }
             }
         }
-        // The destination vertex is not findable starting from the given source vertex.
+        // The destination vertex is not findable starting from the given source vertex along directed edges.
         return Integer.MAX_VALUE;
     }
 
-    /**
-     * Returns the number of connected components of this graph.
-     * @return number of connected components
-     */
-    public int numOfConnectedComponents() {
-        ArrayList<ArrayList<Integer>> components = new ArrayList<ArrayList<Integer>>();
-        for (Vertex vtx : vtxList) {
-            if (!vtx.explored()) {
-                ArrayList<Integer> component = bfs(vtx.id());
-                components.add(component);
-            }
-        }
-        return components.size();
+    @Override
+    public int numOfConnectedComponentsWithBFS() {
+        // TODO Auto-generated method stub
+        return 0;
     }
 
 }

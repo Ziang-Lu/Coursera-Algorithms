@@ -3,18 +3,16 @@ package undirected_graph;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import graph.AbstractVertex;
+
 /**
  * Vertex class.
  *
  * Note that parallel edges are allowed, but not self-loops.
  * @author Ziang Lu
  */
-class Vertex {
+class Vertex extends AbstractVertex {
 
-    /**
-     * Vertex ID.
-     */
-    private final int vtxID;
     /**
      * Frequency of neighbors.
      */
@@ -22,34 +20,16 @@ class Vertex {
     /**
      * Edges of this vertex.
      */
-    private ArrayList<Edge> edges;
-    /**
-     * Whether this vertex is explored by BFS/DFS.
-     */
-    private boolean explored;
-    /**
-     * Layer from a source vertex.
-     */
-    private int layer;
+    private ArrayList<UndirectedEdge> edges;
 
     /**
      * Constructor with parameter.
      * @param vtxID vertex ID
      */
     Vertex(int vtxID) {
-        this.vtxID = vtxID;
+        super(vtxID);
         freqOfNeighbors = new HashMap<Integer, Integer>();
-        edges = new ArrayList<Edge>();
-        explored = false;
-        layer = 0;
-    }
-
-    /**
-     * Accessor of vtxID.
-     * @return vtxID
-     */
-    int id() {
-        return vtxID;
+        edges = new ArrayList<UndirectedEdge>();
     }
 
     /**
@@ -57,13 +37,13 @@ class Vertex {
      * @param neighbor given neighbor
      * @return edge if found, null if not found
      */
-    Edge getEdgeWithNeighbor(Vertex neighbor) {
+    UndirectedEdge getEdgeWithNeighbor(Vertex neighbor) {
         // Check whether the input neighbor is null
         if (neighbor == null) {
             throw new IllegalArgumentException("The input neighbor should not be null.");
         }
 
-        for (Edge edge : edges) {
+        for (UndirectedEdge edge : edges) {
             if (((edge.end1() == this) && (edge.end2() == neighbor))
                     || ((edge.end1() == neighbor) && (edge.end2() == this))) {
                 return edge;
@@ -77,31 +57,15 @@ class Vertex {
      * Accessor of edges.
      * @return edges
      */
-    ArrayList<Edge> edges() {
+    ArrayList<UndirectedEdge> edges() {
         return edges;
-    }
-
-    /**
-     * Accessor of explored.
-     * @return explored
-     */
-    boolean explored() {
-        return explored;
-    }
-
-    /**
-     * Accessor of layer.
-     * @return layer
-     */
-    int layer() {
-        return layer;
     }
 
     /**
      * Adds the given edge to this vertex.
      * @param newEdge edge to add
      */
-    void addEdge(Edge newEdge) {
+    void addEdge(UndirectedEdge newEdge) {
         // Check whether the input edge is null
         if (newEdge == null) {
             throw new IllegalArgumentException("The edge to add should not be null.");
@@ -130,7 +94,7 @@ class Vertex {
      * Removes the given edge from this vertex.
      * @param edgeToRemove edge to remove
      */
-    void removeEdge(Edge edgeToRemove) {
+    void removeEdge(UndirectedEdge edgeToRemove) {
         // Check whether the input edge is null
         if (edgeToRemove == null) {
             throw new IllegalArgumentException("The edge to remove should not be null.");
@@ -157,28 +121,6 @@ class Vertex {
             --freq;
             freqOfNeighbors.put(neighbor.vtxID, freq);
         }
-    }
-
-    /**
-     * Sets this vertex to explored.
-     */
-    void setAsExplored() {
-        explored = true;
-    }
-
-    /**
-     * Sets this vertex to unexplored.
-     */
-    void setAsUnexplored() {
-        explored = false;
-    }
-
-    /**
-     * Mutator of layer.
-     * @param layer layer
-     */
-    void setLayer(int layer) {
-        this.layer = layer;
     }
 
     @Override

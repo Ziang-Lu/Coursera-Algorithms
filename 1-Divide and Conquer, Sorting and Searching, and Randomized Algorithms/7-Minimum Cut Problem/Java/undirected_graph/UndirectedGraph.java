@@ -1,9 +1,10 @@
 package undirected_graph;
 
-import graph.GraphInterface;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
+
+import graph.GraphInterface;
 
 /**
  * Adjacency list representation of a undirected graph.

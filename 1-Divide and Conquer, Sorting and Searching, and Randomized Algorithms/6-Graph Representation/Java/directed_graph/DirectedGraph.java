@@ -1,7 +1,8 @@
 package directed_graph;
 
-import graph.GraphInterface;
 import java.util.ArrayList;
+
+import graph.GraphInterface;
 
 /**
  * Adjacency list representation of a directed graph.

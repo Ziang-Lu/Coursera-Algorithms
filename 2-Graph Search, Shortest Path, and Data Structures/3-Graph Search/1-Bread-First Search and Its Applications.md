@@ -33,7 +33,7 @@
 
    ​	Given a graph $G$, a source vertex $s$ and a destination vertex $d$, find the length of the shortest path from $s$ to $d$.
 
-3. Undirected connectivity   **[Applies only to undirected graph]**
+3. Undirected connectivity
 
    ​	Given a undirected graph $G$, find the number of connected components ("pieces") of $G$.
 

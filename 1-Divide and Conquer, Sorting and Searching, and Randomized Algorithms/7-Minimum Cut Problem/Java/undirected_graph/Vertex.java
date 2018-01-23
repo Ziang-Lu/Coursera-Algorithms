@@ -1,8 +1,9 @@
 package undirected_graph;
 
-import graph.AbstractVertex;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import graph.AbstractVertex;
 
 /**
  * Vertex class.
