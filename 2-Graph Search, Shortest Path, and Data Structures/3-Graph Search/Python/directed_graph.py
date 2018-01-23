@@ -342,7 +342,7 @@ class DirectedGraph(AbstractGraph):
         queue = Queue()
         queue.put(src_vtx)
 
-        findable_vtx_ids = []
+        findable_vtx_ids = [src_vtx_id]
 
         # 3. While Q is not empty
         while not queue.empty():
@@ -355,11 +355,11 @@ class DirectedGraph(AbstractGraph):
                 if not w.explored:
                     # Mark w as explored
                     w.set_as_explored()
+
+                    findable_vtx_ids.append(w.vtx_id)
+
                     # Push w to Q
                     queue.put(w)
-
-            findable_vtx_ids.append(vtx.vtx_id)
-
         return findable_vtx_ids
 
     def shortest_path(self, src_vtx_id, dest_vtx_id):

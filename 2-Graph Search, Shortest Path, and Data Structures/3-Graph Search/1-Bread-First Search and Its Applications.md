@@ -6,9 +6,9 @@
 
 1. Initialize $G$ as $s$ explored and other vertices unexplored
 
-2. Let $Q$ be the queue of vertices (vertices explored whose edges haven't been checked yet) initialized with $s$
+2. Let $Q$ be the **queue** of vertices (vertices explored whose edges haven't been checked yet) initialized with $s$
 
-3. While $q$ is not empty,
+3. While $Q$ is not empty,
 
    1. Take out the first vertex $v$ (in the front of $Q$)
 

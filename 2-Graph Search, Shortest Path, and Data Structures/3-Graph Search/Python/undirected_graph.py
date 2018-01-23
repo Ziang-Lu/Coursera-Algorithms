@@ -266,7 +266,7 @@ class UndirectedGraph(AbstractGraph):
         queue = Queue()
         queue.put(src_vtx)
 
-        findable_vtx_ids = []
+        findable_vtx_ids = [src_vtx_id]
 
         # 3. While Q is not empty
         while not queue.empty():
@@ -283,11 +283,11 @@ class UndirectedGraph(AbstractGraph):
                 if not neighbor.explored:
                     # Mark w as explored
                     neighbor.set_as_explored()
+
+                    findable_vtx_ids.append(neighbor.vtx_id)
+
                     # Push w to Q
                     queue.put(neighbor)
-
-            findable_vtx_ids.append(vtx.vtx_id)
-
         return findable_vtx_ids
 
     def shortest_path(self, src_vtx_id, dest_vtx_id):
