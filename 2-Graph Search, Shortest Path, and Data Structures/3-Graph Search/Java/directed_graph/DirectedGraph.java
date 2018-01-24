@@ -176,6 +176,7 @@ public class DirectedGraph implements GraphInterface {
         queue.offer(srcVtx);
 
         ArrayList<Integer> findableVtxIDs = new ArrayList<Integer>();
+        findableVtxIDs.add(srcVtxID);
 
         // 3. While Q is not empty
         while (!queue.isEmpty()) {
@@ -187,12 +188,13 @@ public class DirectedGraph implements GraphInterface {
                 if (!w.explored()) {
                     // Mark w as explored
                     w.setAsExplored();
+
+                    findableVtxIDs.add(w.id());
+
                     // Push w to Q
                     queue.offer(w);
                 }
             }
-
-            findableVtxIDs.add(vtx.id());
         }
 
         return findableVtxIDs;
@@ -225,7 +227,7 @@ public class DirectedGraph implements GraphInterface {
             // (2) For every edge (v, w)
             for (DirectedEdge edge : vtx.emissiveEdges()) {
                 Vertex w = edge.head();
-                // If w is not explored
+                // If w is unexplored
                 if (!w.explored()) {
                     // Mark w as explored
                     w.setAsExplored();
@@ -246,8 +248,196 @@ public class DirectedGraph implements GraphInterface {
 
     @Override
     public int numOfConnectedComponentsWithBFS() {
+        // Directed connectivity
         // TODO Auto-generated method stub
         return 0;
+    }
+
+    /*
+     * Iterative implementation of DFS ignored (simply replacing the queue with
+     * a stack in BFS).
+     */
+
+    @Override
+    public ArrayList<Integer> dfs(int srcVtxID) {
+        // Check whether the input source vertex exists
+        Vertex srcVtx = findVtx(srcVtxID);
+        if (srcVtx == null) {
+            throw new IllegalArgumentException("The source vertex doesn't exist.");
+        }
+
+        // Initialize G as s explored and other vertices unexplored
+        srcVtx.setAsExplored();
+
+        ArrayList<Integer> findableVtxIDs = new ArrayList<Integer>();
+        findableVtxIDs.add(srcVtxID);
+
+        dfsHelper(srcVtx, findableVtxIDs);
+
+        return findableVtxIDs;
+    }
+
+    /**
+     * Private helper method to do DFS and find all the findable vertices from
+     * the given vertex along directed edges recursively.
+     * @param vtx given vertex
+     * @param findableVtxIDs all the findable vertices
+     */
+    private void dfsHelper(Vertex vtx, ArrayList<Integer> findableVtxIDs) {
+        // For every directed edge (v, w)
+        for (DirectedEdge edge : vtx.emissiveEdges()) {
+            Vertex w = edge.head();
+            // If w is unexplored   (This itself serves as a base case: all the w's of s are explored.)
+            if (!w.explored()) {
+                // Mark w as explored
+                w.setAsExplored();
+
+                findableVtxIDs.add(w.id());
+
+                // Do DFS on (G, w) (Recursion)
+                dfsHelper(w, findableVtxIDs);
+            }
+        }
+    }
+
+    @Override
+    public int numOfConnectedComponentsWithDFS() {
+        // Directed connectivity
+        /*
+         * Strong Connected Component (SCC):
+         * A graph is strongly connected iff you can get from any vertex to any
+         * other vertex through directed edges.
+         * => An SCC of a directed graph is a part of the graph that is strongly
+         *    connected.
+         */
+        // 1. Run DFS-loop on G   [First pass]
+        ArrayList<Vertex> vtxsSortedByFinishTime = getVtxsSortedByFinishTime();
+        // Essentially, the vertices sorted by this finishing time is exactly the reversed topological ordering.
+
+        // 2. Clear explored and get ready for the second pass
+        clearExplored();
+
+        // 3. Run DFS-loop on G   [Second pass]
+        int count = 0;
+        // For every vertex v from finishing time n to 1   (i.e., reversed topological ordering)
+        for (Vertex vtx : vtxsSortedByFinishTime) {
+            // If v is unexplored (i.e., not explored from some previous DFS)
+            if (!vtx.explored()) {
+                // Mark v as explored
+                vtx.setAsExplored();
+                ++count;
+                // Do DFS towards v   (Discovers precisely v's SCC)
+                dfs(vtx.id());
+            }
+        }
+        return count;
+    }
+
+    /**
+     * Private helper method to get the vertices sorted by finishing time when
+     * using DFS.
+     * @return vertices sorted by finishing time
+     */
+    private ArrayList<Vertex> getVtxsSortedByFinishTime() {
+        ArrayList<Vertex> vtxsSortedByFinishTime = new ArrayList<Vertex>();
+        // For every vertex v
+        for (Vertex vtx : vtxList) {
+            // If v is unexplored
+            if (!vtx.explored()) {
+                // Mark v as explored
+                vtx.setAsExplored();
+                // Do DFS towards v
+                dfsHelperWithFinishTime(vtx, vtxsSortedByFinishTime);
+            }
+        }
+        return vtxsSortedByFinishTime;
+    }
+
+    /**
+     * Helper method to do DFS and set the finishing time of the given
+     * vertex recursively.
+     * @param vtx given vertex
+     * @param vtxsSortedByFinishTime vertices sorted by finishing time
+     */
+    private void dfsHelperWithFinishTime(Vertex vtx, ArrayList<Vertex> vtxsSortedByFinishTime) {
+        // For every edge (v, w)
+        for (DirectedEdge edge : vtx.emissiveEdges()) {
+            Vertex w = edge.head();
+            // If w is unexplored
+            if (!w.explored()) {
+                // Mark w as explored
+                w.setAsExplored();
+                // Do DFS towards w
+                dfsHelperWithFinishTime(w, vtxsSortedByFinishTime);
+            }
+        }
+        // Set v's finishing time
+        vtxsSortedByFinishTime.add(vtx);
+    }
+
+    /**
+     * Returns the topological ordering of the vertices of this directed graph
+     * using DFS.
+     * @return topological ordering of the vertices
+     */
+    public int[] topologicalSort() {
+        ArrayList<Vertex> vtxsSortdByFinishTime = getVtxsSortedByFinishTime();
+        // Essentially, the vertices sorted by this finishing time is exactly the reversed topological ordering.
+
+        int n = vtxList.size();
+        int[] topologicalOrdering = new int[n];
+        for (int i = 0; i < n; i++) {
+            topologicalOrdering[i] = vtxsSortdByFinishTime.get(n - 1 - i).id();
+        }
+        return topologicalOrdering;
+    }
+
+    /**
+     * Returns the topological ordering of the vertices of this directed graph
+     * using straightforward algorithm.
+     * @return topological ordering of the vertices
+     */
+    public int[] topologicalSortStraightforward() {
+        int[] topologicalOrdering = new int[vtxList.size()];
+        topologicalSortStraightforwardHelper(topologicalOrdering, vtxList.size());
+        return topologicalOrdering;
+    }
+
+    /**
+     * Private helper method to fill in the given order of the topological
+     * ordering using straightforward algorithm recursively.
+     * @param topologicalOrdering topological ordering of the vertices
+     * @param currOrder current order
+     */
+    private void topologicalSortStraightforwardHelper(int[] topologicalOrdering, int currOrder) {
+        // Base case 1: Finished ordering
+        if (currOrder == 0) {
+            return;
+        }
+        Vertex sinkVtx = getSinkVertex();
+        // Base case 2: No more sink vertices
+        if (sinkVtx == null) {
+            return;
+        }
+
+        // Recursive case
+        topologicalOrdering[currOrder - 1] = sinkVtx.id();
+        removeVtx(sinkVtx);
+        topologicalSortStraightforwardHelper(topologicalOrdering, currOrder - 1);
+    }
+
+    /**
+     * Helper method to get a sink vertex.
+     * @return sink vertex
+     */
+    private Vertex getSinkVertex() {
+        for (Vertex vtx : vtxList) {
+            if (vtx.emissiveEdges().isEmpty()) {
+                return vtx;
+            }
+        }
+        // No more sink vertices
+        return null;
     }
 
 }

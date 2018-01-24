@@ -194,3 +194,44 @@ class AbstractGraph(object):
         :return: int
         """
         pass
+
+    # Iterative implementation of DFS ignored (simply replacing the queue with a
+    # stack in BFS)
+
+    def dfs(self, src_vtx_id):
+        """
+        Finds all the findable vertices starting from the given source vertex
+        using BFS.
+        :param src_vtx_id: int
+        :return: list[int]
+        """
+        # Check whether the input source vertex exists
+        src_vtx = self._find_vtx(src_vtx_id)
+        if src_vtx is None:
+            raise IllegalArgumentError("The input source vertex doesn't exist.")
+
+        # Initialize G as s explored and other vertices unexplored
+        src_vtx.set_as_explored()
+
+        findable_vtx_ids = [src_vtx_id]
+
+        self._dfs_helper(vtx=src_vtx, findable_vtx_ids=findable_vtx_ids)
+
+        return findable_vtx_ids
+
+    def _dfs_helper(self, vtx, findable_vtx_ids):
+        """
+        Private helper function to do DFS and find all the findable vertices
+        from the given vertex recursively.
+        :param vtx: Vertex
+        :param findable_vtx_ids: list[int]
+        :return: None
+        """
+        pass
+
+    def num_of_connected_components_with_dfs(self):
+        """
+        Returns the number of connected components of this graph using DFS.
+        :return: int
+        """
+        pass

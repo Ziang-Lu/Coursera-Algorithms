@@ -279,7 +279,7 @@ class UndirectedGraph(AbstractGraph):
                     neighbor = edge.end2
                 else:  # endpoint1 is the neighbor.
                     neighbor = edge.end1
-                # If w is not explored
+                # If w is unexplored
                 if not neighbor.explored:
                     # Mark w as explored
                     neighbor.set_as_explored()
@@ -314,7 +314,7 @@ class UndirectedGraph(AbstractGraph):
                     neighbor = edge.end2
                 else:  # endpoint1 is the neighbor.
                     neighbor = edge.end1
-                # If w is not explored
+                # If w is unexplored
                 if not neighbor.explored:
                     # Mark w as explored
                     neighbor.set_as_explored()
@@ -330,9 +330,46 @@ class UndirectedGraph(AbstractGraph):
         return -1
 
     def num_of_connected_components_with_bfs(self):
+        # Undirected connectivity
         components = []
         for vtx in self._vtx_list:
+            # If v is unexplored (i.e., not explored from some previous BFS)
             if not vtx.explored:
+                # Do BFS towards v
+                # (Discovers precisely v's connected component)
                 component = self.bfs(src_vtx_id=vtx.vtx_id)
+                components.append(component)
+        return len(components)
+
+    def _dfs_helper(self, vtx, findable_vtx_ids):
+        # For every edge (v, w)
+        for edge in vtx.edges:
+            # Find the neighbor
+            if edge.end1 is vtx:  # endpoint2 is the neighbor.
+                neighbor = edge.end2
+            else:  # endpoint1 is the neighbor.
+                neighbor = edge.end1
+            # If w is unexplored
+            # (This itself serves as a base case: all the w's of s are
+            # explored.)
+            if not neighbor.explored:
+                # Mark w as explored
+                neighbor.set_as_explored()
+
+                findable_vtx_ids.append(neighbor.vtx_id)
+
+                # Do DFS on (G, w)   (Recursion)
+                self._dfs_helper(vtx=neighbor,
+                                 findable_vtx_ids=findable_vtx_ids)
+
+    def num_of_connected_components_with_dfs(self):
+        # Undirected connectivity
+        components = []
+        for vtx in self._vtx_list:
+            # If v is unexplored (i.e., not explored from some previous DFS)
+            if not vtx.explored:
+                # Do DFS towards v
+                # (Discovers precisely v's connected component)
+                component = self.dfs(src_vtx_id=vtx.vtx_id)
                 components.append(component)
         return len(components)

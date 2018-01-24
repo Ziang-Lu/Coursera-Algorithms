@@ -348,10 +348,10 @@ class DirectedGraph(AbstractGraph):
         while not queue.empty():
             # (1) Take out the first vertex v
             vtx = queue.get()
-            # (2) For every edge (v, w)
-            for edge in vtx.edges:
+            # (2) For every directed edge (v, w)
+            for edge in vtx.emissive_edges:
                 w = edge.head
-                # If w is not explored
+                # If w is unexplored
                 if not w.explored:
                     # Mark w as explored
                     w.set_as_explored()
@@ -379,10 +379,10 @@ class DirectedGraph(AbstractGraph):
         while not queue.empty():
             # (1) Take out the first vertex v
             vtx = queue.get()
-            # (2) For every edge (v, w)
-            for edge in vtx.edges:
+            # (2) For every directed edge (v, w)
+            for edge in vtx.emissive_edges:
                 w = edge.head
-                # If w is not explored
+                # If w is unexplored
                 if not w.explored:
                     # Mark w as explored
                     w.set_as_explored()
@@ -398,5 +398,149 @@ class DirectedGraph(AbstractGraph):
         return -1
 
     def num_of_connected_components_with_bfs(self):
+        # Directed connectivity
         # Not implemented
         return 0
+
+    def _dfs_helper(self, vtx, findable_vtx_ids):
+        # For every directed edge (v, w)
+        for edge in vtx.emissive_edges:
+            w = edge.head
+            # If w is unexplored
+            # (This itself serves as a base case: all the w's of s are
+            # explored.)
+            if not w.explored:
+                # Mark w as explored
+                w.set_as_explored()
+
+                findable_vtx_ids.append(w.vtx_id)
+
+                # Do DFS on (G, w)   (Recursion)
+                self._dfs_helper(vtx=w, findable_vtx_ids=findable_vtx_ids)
+
+    def num_of_connected_components_with_dfs(self):
+        # Directed connectivity
+        # Strong Connected Components (SCC):
+        # A graph is strongly connected iff you can get from any vertex to any
+        # other vertex through directed edges.
+        # => An SCC of a directed graph is a part of the graph that is strongly
+        #    connected.
+
+        # 1. Run DFS-loop on G   [First pass]
+        vtxs_sorted_by_finish_time = self._get_vtxs_sorted_by_finish_time()
+        # Essentially, the vertices sorted by this finishing time is exactly
+        # the reversed topological ordering.
+
+        # 2. Clear explored and get ready for the second pass
+        self.clear_explored()
+
+        # 3. Run DFS-loop on G   [Second pass]
+        count = 0
+        # For every vertex v from finishing time 1 to n
+        # (i.e., reverse topological ordering)
+        for vtx in vtxs_sorted_by_finish_time:
+            # If v is unexplored (i.e, not explored from some previous DFS)
+            if not vtx.explored:
+                # Mark v as explored
+                vtx.set_as_explored()
+                count += 1
+                # Do DFS towards v (Discovers precisely v's SCC)
+                self.dfs(src_vtx_id=vtx.vtx_id)
+        return count
+
+    def _get_vtxs_sorted_by_finish_time(self):
+        """
+        Private helper function to get the vertices sorted by finishing time
+        when using DFS
+        :return: list[Vertex]
+        """
+        vtxs_sorted_by_finish_time = []
+        # For every vertex v
+        for vtx in self._vtx_list:
+            # If v is unexplored
+            if not vtx.explored:
+                # Mark v as explored
+                vtx.set_as_explored()
+                # Do DFS towards v
+                self._dfs_helper_with_finish_time(vtx=vtx,
+                                                  vtxs_sorted_by_finish_time=
+                                                  vtxs_sorted_by_finish_time)
+        return vtxs_sorted_by_finish_time
+
+    def _dfs_helper_with_finish_time(self, vtx, vtxs_sorted_by_finish_time):
+        """
+        Helper function to do DFS and set the finishing time of the given
+        vertex.
+        :param vtx: Vertex
+        :param vtxs_sorted_by_finish_time: list[Vertex]
+        :return: None
+        """
+        # For every edge (v, w)
+        for edge in vtx.emissive_edges:
+            w = edge.head
+            # If w is unexplored
+            if not w.explored:
+                # Mark w as explored
+                w.set_as_explored()
+                # Do DFS towards w
+                self._dfs_helper_with_finish_time(vtx=w,
+                                                  vtxs_sorted_by_finish_time=
+                                                  vtxs_sorted_by_finish_time)
+        # Set v's finishing time
+        vtxs_sorted_by_finish_time.append(vtx)
+
+    def topological_sort(self):
+        """
+        Returns the topological ordering of the vertices of this directed graph
+        using DFS.
+        :return: list[int]
+        """
+        vtxs_sorted_by_finish_time = self._get_vtxs_sorted_by_finish_time()
+
+        return list(reversed(list(map(lambda vtx: vtx.vtx_id,
+                                      vtxs_sorted_by_finish_time))))
+
+    def topological_sort_straightforward(self):
+        """
+        Returns the topological ordering of the vertices of this directed graph
+        using straightforward algorithm.
+        :return: list[int]
+        """
+        topological_ordering = [0] * len(self._vtx_list)
+        self._topological_sort_straightforward_helper(topological_ordering,
+                                                      curr_order=
+                                                      len(self._vtx_list))
+        return topological_ordering
+
+    def _topological_sort_straightforward_helper(self, topological_ordering,
+                                                 curr_order):
+        """
+        Private helper function to fill in the given order of the topological
+        ordering using straightforward algorithm recursively.
+        :param topological_ordering: list[int]
+        :param curr_order: int
+        :return: None
+        """
+        # Base case 1: Finished ordering
+        if curr_order == 0:
+            return
+        sink_vtx = self._get_sink_vertex()
+        # Base case 2: No more sink vertices
+        if sink_vtx is None:
+            return
+
+        # Recursive case
+        topological_ordering[curr_order - 1] = sink_vtx.vtx_id
+        self._remove_vtx(sink_vtx)
+        self._topological_sort_straightforward_helper(topological_ordering,
+                                                      curr_order=curr_order - 1)
+
+    def _get_sink_vertex(self):
+        """
+        Helper function to get a sink vertex.
+        :return: Vertex
+        """
+        for vtx in self._vtx_list:
+            if not vtx.emissive_edges:
+                return vtx
+        return None

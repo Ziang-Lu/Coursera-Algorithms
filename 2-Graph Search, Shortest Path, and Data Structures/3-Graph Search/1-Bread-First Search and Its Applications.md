@@ -14,9 +14,9 @@
 
    2. For every edge ($v$, $w$) (an edge with one vertex explored and the other not),
 
-      ​	If $w$ is not explored
+      ​	If $w$ is unexplored
 
-      ​		Mark $w$ as explored
+      ​		Mark $w​$ as explored
 
       ​		Push it to $Q$ (to the back of $Q$)
 
@@ -36,4 +36,18 @@
 3. Undirected connectivity
 
    ​	Given a undirected graph $G$, find the number of connected components ("pieces") of $G$.
+
+   ​	
+
+   ​	**Algorithm:**
+
+    1.  Initialize $G$ as unexplored, count = 0
+
+   	2. For every vertex $v$,
+
+       ​	If $v$ is unexplored (i.e, not explored in some previous BFS)
+
+       ​		count++
+
+       ​		Do BFS towards $v​$   (Discovers precisely $v​$'s connected component')
 

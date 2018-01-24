@@ -176,6 +176,7 @@ public class UndirectedGraph implements GraphInterface {
         queue.offer(srcVtx);
 
         ArrayList<Integer> findableVtxIDs = new ArrayList<Integer>();
+        findableVtxIDs.add(srcVtxID);
 
         // 3. While Q is not empty
         while (!queue.isEmpty()) {
@@ -190,16 +191,17 @@ public class UndirectedGraph implements GraphInterface {
                 } else { // endpoint1 is the neighbor.
                     neighbor = edge.end1();
                 }
-                // If w is not explored
+                // If w is unexplored
                 if (!neighbor.explored()) {
                     // Mark w as explored
                     neighbor.setAsExplored();
+
+                    findableVtxIDs.add(neighbor.id());
+
                     // Push w to Q
                     queue.offer(neighbor);
                 }
             }
-
-            findableVtxIDs.add(vtx.id());
         }
 
         return findableVtxIDs;
@@ -238,7 +240,7 @@ public class UndirectedGraph implements GraphInterface {
                 } else { // endpoint1 is the neighbor.
                     neighbor = edge.end1();
                 }
-                // If w is not explored
+                // If w is unexplored
                 if (!neighbor.explored()) {
                     // Mark w as explored
                     neighbor.setAsExplored();
@@ -259,10 +261,81 @@ public class UndirectedGraph implements GraphInterface {
 
     @Override
     public int numOfConnectedComponentsWithBFS() {
+        // Undirected connectivity
         ArrayList<ArrayList<Integer>> components = new ArrayList<ArrayList<Integer>>();
         for (Vertex vtx : vtxList) {
+            // If v is unexplored (i.e., not explored from some previous BFS)
             if (!vtx.explored()) {
+                // Do BFS towards v   (Discovers precisely v's connected component)
                 ArrayList<Integer> component = bfs(vtx.id());
+                components.add(component);
+            }
+        }
+        return components.size();
+    }
+
+    /*
+     * Iterative implementation of DFS ignored (simply replacing the queue with
+     * a stack in BFS).
+     */
+
+    @Override
+    public ArrayList<Integer> dfs(int srcVtxID) {
+        // Check whether the input source vertex exists
+        Vertex srcVtx = findVtx(srcVtxID);
+        if (srcVtx == null) {
+            throw new IllegalArgumentException("The source vertex doesn't exist.");
+        }
+
+        // Initialize G as s explored and other vertices unexplored
+        srcVtx.setAsExplored();
+
+        ArrayList<Integer> findableVtxIDs = new ArrayList<Integer>();
+        findableVtxIDs.add(srcVtxID);
+
+        dfsHelper(srcVtx, findableVtxIDs);
+
+        return findableVtxIDs;
+    }
+
+    /**
+     * Private helper method to do DFS and find all the findable vertices from
+     * the given vertex recursively.
+     * @param vtx
+     * @param findableVtxIDs all the findable vertices
+     */
+    private void dfsHelper(Vertex vtx, ArrayList<Integer> findableVtxIDs) {
+        // For every edge (v, w)
+        for (UndirectedEdge edge : vtx.edges()) {
+            // Find the neighbor
+            Vertex neighbor = null;
+            if (edge.end1() == vtx) { // endpoint2 is the neighbor.
+                neighbor = edge.end2();
+            } else { // endpoint1 is the neighbor.
+                neighbor = edge.end1();
+            }
+            // If w is unexplored   (This itself serves as a base case: all the w's of s are explored.)
+            if (!neighbor.explored()) {
+                // Mark w as explored
+                neighbor.setAsExplored();
+
+                findableVtxIDs.add(neighbor.id());
+
+                // Do DFS on (G, w)   (Recursion)
+                dfsHelper(neighbor, findableVtxIDs);
+            }
+        }
+    }
+
+    @Override
+    public int numOfConnectedComponentsWithDFS() {
+        // Undirected connectivity
+        ArrayList<ArrayList<Integer>> components = new ArrayList<ArrayList<Integer>>();
+        for (Vertex vtx : vtxList) {
+            // If v is unexplored (i.e., not explored from some previous DFS)
+            if (!vtx.explored()) {
+                // Do DFS towards v   (Discovers precisely v's connected component)
+                ArrayList<Integer> component = dfs(vtx.id());
                 components.add(component);
             }
         }

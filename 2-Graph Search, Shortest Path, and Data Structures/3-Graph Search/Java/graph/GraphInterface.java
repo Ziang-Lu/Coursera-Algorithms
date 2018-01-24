@@ -67,4 +67,22 @@ public interface GraphInterface {
      */
     int numOfConnectedComponentsWithBFS();
 
+    /*
+     * Iterative implementation of DFS ignored (simply replacing the queue with
+     * a stack in BFS).
+     */
+
+    /**
+     * Finds all the findable vertices from the given source vertex using DFS.
+     * @param srcVtxID source vertex ID
+     * @return all the findable vertices
+     */
+    ArrayList<Integer> dfs(int srcVtxID);
+
+    /**
+     * Returns the number of connected components of this graph using DFS.
+     * @return number of connected components
+     */
+    int numOfConnectedComponentsWithDFS();
+
 }

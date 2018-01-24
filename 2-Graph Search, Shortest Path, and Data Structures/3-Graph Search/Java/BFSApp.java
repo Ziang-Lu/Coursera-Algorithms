@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Arrays;
 import java.util.Scanner;
 
 import directed_graph.DirectedGraph;
@@ -37,6 +38,8 @@ public class BFSApp {
         // Construct the graph
         GraphInterface graph = constructGraph(filename, true);
 
+        // BFS
+
         // Find all the findable vertices starting from vertex #1 using BFS
         System.out.println("Findable vertices from vertex #1 using BFS: " + graph.bfs(1)); // [1, 2, 3, 4, 5, 6]
         graph.clearExplored();
@@ -45,9 +48,21 @@ public class BFSApp {
         System.out.println("Length of the shortest path from vertex #1 to vertex #6: " + graph.shortestPath(1, 6)); // 3
         graph.clearExplored();
 
-        // Find the number of connected components of the undirected graph using BFS
-        System.out.println(
-                "Number of connected components of the graph using BFS: " + graph.numOfConnectedComponentsWithBFS()); // 1
+        // Find the number of connected components of the undirected graph using BFS (Undirected connectivity)
+        System.out.println("Number of connected components of the graph using BFS (Undirected connectivity): "
+                + graph.numOfConnectedComponentsWithBFS()); // 1
+        graph.clearExplored();
+
+        // DFS
+
+        // Find all the findable vertices starting from vertex #1 using DFS
+        System.out.println("Findable vertices from vertex #1 using DFS: " + graph.dfs(1)); // [1, 2, 3, 4, 5, 6]
+        graph.clearExplored();
+
+        // Find the number of connected components of the undirected graph using DFS (Undirected connectivity)
+        System.out.println("Number of connected components of the graph using DFS (Undirected connectivity): "
+                + graph.numOfConnectedComponentsWithDFS()); // 1
+        graph.clearExplored();
     }
 
     /**
@@ -56,15 +71,39 @@ public class BFSApp {
      */
     private static void testDirectedGraph(String filename) {
         // Construct the graph
-        GraphInterface graph = constructGraph(filename, false);
+        DirectedGraph graph = (DirectedGraph) constructGraph(filename, false);
 
         // Find all the findable vertices starting from vertex #1 using BFS
-        System.out.println("Findable vertices from vertex #1 using BFS: " + graph.bfs(1)); // [1, 2, 3]
+        System.out.println("Findable vertices from vertex #1 using BFS: " + graph.bfs(1)); // [1, 4, 7]
         graph.clearExplored();
 
-        // Find the length of the shortest path from vertex #1 to vertex #3
-        System.out.println("Length of the shortest path from vertex #1 to vertex #3: " + graph.shortestPath(1, 3)); // 1
+        // Find the length of the shortest path from vertex #1 to vertex #7
+        System.out.println("Length of the shortest path from vertex #1 to vertex #7: " + graph.shortestPath(1, 7)); // 2
         graph.clearExplored();
+
+        // DFS
+
+        // Find all the findable vertices starting from vertex #1 using DFS
+        System.out.println("Findable vertices from vertex #1 using DFS: " + graph.dfs(1)); // [1, 4, 7]
+        graph.clearExplored();
+
+        // Find the number of SCCs of the directed graph using DFS (Directed connectivity)
+        System.out.println("Number of SCCs of the graph using DFS (Directed connectivity): "
+                + graph.numOfConnectedComponentsWithDFS()); // 3
+        graph.clearExplored();
+
+        // Find the topological ordering of the vertices of the directed graph using DFS
+        System.out.println("Topological ordering of the vertices of the directed graph using DFS: "
+                + Arrays.toString(graph.topologicalSort())); // [2, 8, 5, 6, 9, 3, 1, 4, 7]
+        graph.clearExplored();
+        // The result might be wrong when there is no topological ordering of the directed graph.
+
+        // Find the topological ordering of the vertices of the directed graph using straightforward algorithm
+        System.out
+                .println("Topological ordering of the vertices of the directed graph using straightforward algorithm: "
+                        + Arrays.toString(graph.topologicalSortStraightforward())); // [0, 0, 0, 0, 0, 0, 0, 0, 0]
+        graph.clearExplored();
+        // The result is because that the graph doesn't have a topological ordering.
     }
 
     /**s
