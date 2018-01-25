@@ -198,15 +198,6 @@ class DirectedEdge(object):
         :param tail: Vertex
         :param head: Vertex
         """
-        # Check whether the input endpoints are None
-        if tail is None or head is None:
-            print('The endpoints should not be None.')
-            return
-        # Check whether the input endpoints are the same (self-loop)
-        if tail.vtx_id == head.vtx_id:
-            print('The endpoints are the same (self-loop).')
-            return
-
         self._tail = tail
         self._head = head
 

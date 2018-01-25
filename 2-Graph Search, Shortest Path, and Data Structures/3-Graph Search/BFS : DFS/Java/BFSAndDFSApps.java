@@ -7,15 +7,7 @@ import directed_graph.DirectedGraph;
 import graph.GraphInterface;
 import undirected_graph.UndirectedGraph;
 
-/**
- * BFS Applications.
- * 1. Naive BFS
- * 2. Shortest path (specific to BFS)
- * 3. Undirected connectivity
- *
- * @author Ziang Lu
- */
-public class BFSApp {
+public class BFSAndDFSApps {
 
     /**
      * Main driver.
@@ -106,8 +98,8 @@ public class BFSApp {
         // The result is because that the graph doesn't have a topological ordering.
     }
 
-    /**s
-     * Private helper method to construct a undirected graph from the given file.
+    /**
+     * Private helper method to construct a graph from the given file.
      * @param filename given filename
      * @param undirected whether the graph to construct is undirected
      * @return constructed undirected graph

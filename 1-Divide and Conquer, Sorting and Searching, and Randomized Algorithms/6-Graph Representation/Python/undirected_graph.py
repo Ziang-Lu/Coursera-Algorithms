@@ -123,15 +123,6 @@ class UndirectedEdge(object):
         :param end1: Vertex
         :param end2: Vertex
         """
-        # Check whether the input endpoints are None
-        if end1 is None or end2 is None:
-            print('The endpoints should not be None.')
-            return
-        # Check whether the input endpoints are the same (self-loop)
-        if end1.vtx_id == end2.vtx_id:
-            print('The endpoints are the same (self-loop).')
-            return
-
         self._end1 = end1
         self._end2 = end2
 
