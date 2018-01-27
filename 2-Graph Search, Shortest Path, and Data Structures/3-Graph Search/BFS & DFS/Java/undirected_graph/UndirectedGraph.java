@@ -331,6 +331,7 @@ public class UndirectedGraph implements GraphInterface {
     public int numOfConnectedComponentsWithDFS() {
         // Undirected connectivity
         ArrayList<ArrayList<Integer>> components = new ArrayList<ArrayList<Integer>>();
+        // For every vertex v
         for (Vertex vtx : vtxList) {
             // If v is unexplored (i.e., not explored from some previous DFS)
             if (!vtx.explored()) {

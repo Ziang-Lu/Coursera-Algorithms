@@ -356,6 +356,7 @@ class UndirectedGraph(AbstractGraph):
     def num_of_connected_components_with_dfs(self):
         # Undirected connectivity
         components = []
+        # For every vertex v
         for vtx in self._vtx_list:
             # If v is unexplored (i.e., not explored from some previous DFS)
             if not vtx.explored:
