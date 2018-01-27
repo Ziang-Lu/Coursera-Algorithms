@@ -385,11 +385,11 @@ public class DirectedGraph implements GraphInterface {
         // Essentially, the vertices sorted by this finishing time is exactly the reversed topological ordering.
 
         int n = vtxList.size();
-        int[] topologicalOrdering = new int[n];
+        int[] topologicalOrder = new int[n];
         for (int i = 0; i < n; i++) {
-            topologicalOrdering[i] = vtxsSortdByFinishTime.get(n - 1 - i).id();
+            topologicalOrder[i] = vtxsSortdByFinishTime.get(n - 1 - i).id();
         }
-        return topologicalOrdering;
+        return topologicalOrder;
     }
 
     /**
@@ -398,18 +398,18 @@ public class DirectedGraph implements GraphInterface {
      * @return topological ordering of the vertices
      */
     public int[] topologicalSortStraightforward() {
-        int[] topologicalOrdering = new int[vtxList.size()];
-        topologicalSortStraightforwardHelper(topologicalOrdering, vtxList.size());
-        return topologicalOrdering;
+        int[] topologicalOrder = new int[vtxList.size()];
+        topologicalSortStraightforwardHelper(topologicalOrder, vtxList.size());
+        return topologicalOrder;
     }
 
     /**
      * Private helper method to fill in the given order of the topological
      * ordering using straightforward algorithm recursively.
-     * @param topologicalOrdering topological ordering of the vertices
+     * @param topologicalOrder topological ordering of the vertices
      * @param currOrder current order
      */
-    private void topologicalSortStraightforwardHelper(int[] topologicalOrdering, int currOrder) {
+    private void topologicalSortStraightforwardHelper(int[] topologicalOrder, int currOrder) {
         // Base case 1: Finished ordering
         if (currOrder == 0) {
             return;
@@ -421,9 +421,9 @@ public class DirectedGraph implements GraphInterface {
         }
 
         // Recursive case
-        topologicalOrdering[currOrder - 1] = sinkVtx.id();
+        topologicalOrder[currOrder - 1] = sinkVtx.id();
         removeVtx(sinkVtx);
-        topologicalSortStraightforwardHelper(topologicalOrdering, currOrder - 1);
+        topologicalSortStraightforwardHelper(topologicalOrder, currOrder - 1);
     }
 
     /**
