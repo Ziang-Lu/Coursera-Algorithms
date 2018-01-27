@@ -314,7 +314,7 @@ public class UndirectedGraph implements GraphInterface {
             } else { // endpoint1 is the neighbor.
                 neighbor = edge.end1();
             }
-            // If w is unexplored   (This itself serves as a base case: all the w's of s are explored.)
+            // If w is unexplored   (This itself serves as a base case: all the w's of v are explored.)
             if (!neighbor.explored()) {
                 // Mark w as explored
                 neighbor.setAsExplored();

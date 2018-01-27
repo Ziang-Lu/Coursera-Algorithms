@@ -341,7 +341,7 @@ class UndirectedGraph(AbstractGraph):
             else:  # endpoint1 is the neighbor.
                 neighbor = edge.end1
             # If w is unexplored
-            # (This itself serves as a base case: all the w's of s are
+            # (This itself serves as a base case: all the w's of v are
             # explored.)
             if not neighbor.explored:
                 # Mark w as explored

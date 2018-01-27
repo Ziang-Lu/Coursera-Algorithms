@@ -287,7 +287,7 @@ public class DirectedGraph implements GraphInterface {
         // For every directed edge (v, w)
         for (DirectedEdge edge : vtx.emissiveEdges()) {
             Vertex w = edge.head();
-            // If w is unexplored   (This itself serves as a base case: all the w's of s are explored.)
+            // If w is unexplored   (This itself serves as a base case: all the w's of v are explored.)
             if (!w.explored()) {
                 // Mark w as explored
                 w.setAsExplored();

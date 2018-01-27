@@ -398,7 +398,7 @@ class DirectedGraph(AbstractGraph):
         for edge in vtx.emissive_edges:
             w = edge.head
             # If w is unexplored
-            # (This itself serves as a base case: all the w's of s are
+            # (This itself serves as a base case: all the w's of v are
             # explored.)
             if not w.explored:
                 # Mark w as explored
