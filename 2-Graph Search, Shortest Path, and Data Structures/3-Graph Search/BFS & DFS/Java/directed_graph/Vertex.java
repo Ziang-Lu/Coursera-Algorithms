@@ -16,19 +16,19 @@ class Vertex extends AbstractVertex {
     /**
      * Frequency of emissive neighbors.
      */
-    private HashMap<Integer, Integer> freqOfEmissiveNeighbors;
+    private final HashMap<Integer, Integer> freqOfEmissiveNeighbors;
     /**
      * Emissive edge of this vertex.
      */
-    private ArrayList<DirectedEdge> emissiveEdges;
+    private final ArrayList<DirectedEdge> emissiveEdges;
     /**
      * Frequency of incident neighbors.
      */
-    private HashMap<Integer, Integer> freqOfIncidentNeighbors;
+    private final HashMap<Integer, Integer> freqOfIncidentNeighbors;
     /**
      * Incident of this vertex.
      */
-    private ArrayList<DirectedEdge> incidentEdges;
+    private final ArrayList<DirectedEdge> incidentEdges;
 
     /**
      * Constructor with parameter.

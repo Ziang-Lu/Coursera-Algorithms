@@ -16,11 +16,11 @@ public class UndirectedGraph implements GraphInterface {
     /**
      * Vertex list.
      */
-    private ArrayList<Vertex> vtxList;
+    private final ArrayList<Vertex> vtxList;
     /**
      * Edge list.
      */
-    private ArrayList<UndirectedEdge> edgeList;
+    private final ArrayList<UndirectedEdge> edgeList;
 
     /**
      * Default constructor.

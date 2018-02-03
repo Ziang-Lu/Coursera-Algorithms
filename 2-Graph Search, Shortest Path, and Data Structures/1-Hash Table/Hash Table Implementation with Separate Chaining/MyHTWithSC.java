@@ -53,7 +53,7 @@ public class MyHTWithSC implements MyHTInterface {
     /**
      * Load factor.
      */
-    private static double LOAD_FACTOR = 5.0;
+    private static final double LOAD_FACTOR = 5.0;
 
     /**
      * Underlying data items.
@@ -239,7 +239,7 @@ public class MyHTWithSC implements MyHTInterface {
         }
         String removedData = chaining.remove(idxToRemove).data;
         --nItem;
-        return removedData
+        return removedData;
     }
 
     @Override

@@ -17,11 +17,11 @@ public class DirectedGraph implements GraphInterface {
     /**
      * Vertex list.
      */
-    private ArrayList<Vertex> vtxList;
+    private final ArrayList<Vertex> vtxList;
     /**
      * Edge list.
      */
-    private ArrayList<DirectedEdge> edgeList;
+    private final ArrayList<DirectedEdge> edgeList;
 
     /**
      * Default constructor.

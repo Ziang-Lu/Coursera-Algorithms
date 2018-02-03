@@ -16,11 +16,11 @@ class Vertex extends AbstractVertex {
     /**
      * Frequency of neighbors.
      */
-    private HashMap<Integer, Integer> freqOfNeighbors;
+    private final HashMap<Integer, Integer> freqOfNeighbors;
     /**
      * Edges of this vertex.
      */
-    private ArrayList<UndirectedEdge> edges;
+    private final ArrayList<UndirectedEdge> edges;
 
     /**
      * Constructor with parameter.

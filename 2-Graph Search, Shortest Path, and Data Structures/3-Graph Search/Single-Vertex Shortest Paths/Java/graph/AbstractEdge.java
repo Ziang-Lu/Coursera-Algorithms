@@ -10,7 +10,7 @@ public class AbstractEdge {
     /**
      * Length of the edge.
      */
-    protected double length;
+    protected final double length;
 
     /**
      * Constructor with parameter.
