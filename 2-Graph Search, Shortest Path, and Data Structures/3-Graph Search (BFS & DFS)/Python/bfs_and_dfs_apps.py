@@ -22,7 +22,6 @@ def _test_undirected_graph(filename):
     :param filename: str
     :return: None
     """
-    # Construct the graph
     graph = _construct_graph(filename=filename, undirected=True)
 
     # BFS

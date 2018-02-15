@@ -27,7 +27,6 @@ public class BFSAndDFSApps {
      * @param filename undirected graph filename
      */
     private static void testUndirectedGraph(String filename) {
-        // Construct the graph
         GraphInterface graph = constructGraph(filename, true);
 
         // BFS
@@ -62,7 +61,6 @@ public class BFSAndDFSApps {
      * @param filename directed graph filename
      */
     private static void testDirectedGraph(String filename) {
-        // Construct the graph
         DirectedGraph graph = (DirectedGraph) constructGraph(filename, false);
 
         // Find all the findable vertices starting from vertex #1 using BFS
