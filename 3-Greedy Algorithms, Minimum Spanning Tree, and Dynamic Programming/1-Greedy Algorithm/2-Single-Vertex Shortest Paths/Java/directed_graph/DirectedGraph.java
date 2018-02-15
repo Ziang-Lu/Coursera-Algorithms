@@ -177,7 +177,7 @@ public class DirectedGraph implements GraphInterface {
 
         // 2. Initialize the local minimum Dijkstra score of the source vertex to 0, and create a heap containing all
         //    the vertices not in X (V-X)
-        srcVtx.setLocalMinScore(0);
+        srcVtx.setLocalMinScore(0.0);
         PriorityQueue<Vertex> vtxsToProcess = new PriorityQueue<Vertex>(vtxList);
 
         // 3. While X is not equal to V
