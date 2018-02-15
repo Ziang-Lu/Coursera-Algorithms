@@ -51,9 +51,9 @@ public class Dijkstra {
             }
             // Add the edges
             while (scanner.hasNextLine()) {
-                String[] edge_info = scanner.nextLine().split(" ");
-                graph.addEdge(Integer.parseInt(edge_info[0]), Integer.parseInt(edge_info[1]),
-                        Double.parseDouble(edge_info[2]));
+                String[] edgeInfo = scanner.nextLine().split(" ");
+                graph.addEdge(Integer.parseInt(edgeInfo[0]), Integer.parseInt(edgeInfo[1]),
+                        Double.parseDouble(edgeInfo[2]));
             }
         } catch (FileNotFoundException ex) {
             System.out.println("Cannot found the file.");

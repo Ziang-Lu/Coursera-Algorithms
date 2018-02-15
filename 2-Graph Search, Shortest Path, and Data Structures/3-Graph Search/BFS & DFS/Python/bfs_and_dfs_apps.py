@@ -8,10 +8,6 @@ from undirected_graph import UndirectedGraph
 
 
 def main():
-    """
-    Main driver.
-    :return: None
-    """
     print('Testing undirected graph...')
     _test_undirected_graph(filename='undirected_graph_info.txt')
     print()
@@ -118,7 +114,6 @@ def _construct_graph(filename, undirected):
     :return: UndirectedGraph or DirectedGraph
     """
     with open(filename, 'rt') as f:
-        # Construct the graph
         if undirected:
             graph = UndirectedGraph()
         else:

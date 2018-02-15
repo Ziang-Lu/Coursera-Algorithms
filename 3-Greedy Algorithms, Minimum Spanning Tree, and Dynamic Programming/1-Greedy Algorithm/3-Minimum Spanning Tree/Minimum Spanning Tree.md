@@ -41,7 +41,7 @@ A spanning tree $T \subseteq E$ that spans the all the vertices with minimum cos
 
    *Grow a tree one edge at a time greedily.*
 
-   * Arbitrarily choose the source vertex $s \in V$
+   * Arbitrarily choose a source vertex $s \in V$
 
    * Initialize $X = \{s\}$, which contains the vertices we've spanned so far, and $T = \emptyset$, which is the current spanning tree
 

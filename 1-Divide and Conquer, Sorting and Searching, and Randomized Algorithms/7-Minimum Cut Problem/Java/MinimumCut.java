@@ -2,12 +2,6 @@
  * Minimum Cut Problem:
  * Given a graph, compute a cut with the fewest number of crossing edges.
  *
- * Format of the graph file:
- * [number of vertices]   (The vertex ID starts from 1.)
- * [end1ID end2ID]
- * [end1ID end2ID]
- * ...
- *
  * Algorithm:
  * What is the probability of success (outputs a specific minimum cut (A, B))?
  *
@@ -29,7 +23,7 @@
  * Let Si denote the event that an edge from F is contracted in iteration i
  * ("Screw up in iteration i").
  * ##############################
- * 
+ *
  * Thus, Pr[never contract an edge from F] = Pr[~S1 and ~S2 and ... and ~Sn-2]
  *
  * Pr[S1] = k/m
@@ -115,7 +109,8 @@ public class MinimumCut {
             }
         }
 
-        for (int i = 0; i < nTrial; ++i) {// Construct the graph
+        for (int i = 0; i < nTrial; ++i) {
+            // Construct the graph
             UndirectedGraph graph = constructUndirectedGraph("undirected_graph_info.txt");
 
             // Compute a minimum cut

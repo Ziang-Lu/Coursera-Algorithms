@@ -73,6 +73,10 @@ class Job(object):
         return other_score < score
 
     def __repr__(self):
+        """
+        String representation of this job.
+        :return: str
+        """
         return 'Job with weight %lf and length %lf' %\
                (self._weight, self._length)
 

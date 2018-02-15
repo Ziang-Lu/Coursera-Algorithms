@@ -5,11 +5,6 @@
 Minimum Cut Problem:
 Given a graph, compute a cut with the fewest number of crossing edges.
 
-Format of graph file:
-[number of edges]   (The vertex ID starts from 1.)
-[end1_id, end2_id]
-[end1_id, end2_id]
-
 Algorithm:
 What is the probability of success (outputs a specific minimum cut (A, B))?
 
@@ -91,10 +86,6 @@ from undirected_graph import UndirectedGraph
 
 
 def main():
-    """
-    Main driver.
-    :return: None
-    """
     # Calculate the number of trials (n^2ln n)
     with open('undirected_graph_info.txt', 'rt') as f:
         n_vtx = int(f.readline())
@@ -120,7 +111,6 @@ def _construct_undirected_graph(filename):
     :return: UndirectedGraph
     """
     with open(filename, 'rt') as f:
-        # Construct the graph
         graph = UndirectedGraph()
         # Add the vertices
         n_vtx = int(f.readline())
