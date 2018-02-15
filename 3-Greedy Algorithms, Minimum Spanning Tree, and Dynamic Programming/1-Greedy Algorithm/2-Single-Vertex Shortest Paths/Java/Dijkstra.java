@@ -27,10 +27,10 @@ public class Dijkstra {
     }
 
     /**
-     * Private helper method to construct a undirected graph from the given file.
+     * Private helper method to construct a graph from the given file.
      * @param filename given filename
      * @param undirected whether the graph to construct is undirected
-     * @return constructed undirected graph
+     * @return constructed graph
      */
     private static GraphInterface constructGraph(String filename, boolean undirected) {
         GraphInterface graph = null;

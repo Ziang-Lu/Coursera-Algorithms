@@ -180,7 +180,7 @@ public class UndirectedGraph implements GraphInterface {
         srcVtx.setLocalMinScore(0);
         PriorityQueue<Vertex> vtxsToProcess = new PriorityQueue<Vertex>(vtxList);
 
-        // 3. While X is not equal to V
+        // 3. While X != V
         while (shortestDistances.size() < vtxList.size()) {
             // Among all directed crossing edges (v, w) with v in X (the map) and w in (V-X) (the heap), pick the edge
             // that minimizes A[v] + l_vw ("Dijkstra's Greedy Criterion")
