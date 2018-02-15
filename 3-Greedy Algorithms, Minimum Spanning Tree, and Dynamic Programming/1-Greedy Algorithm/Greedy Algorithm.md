@@ -4,5 +4,5 @@
 
 ​	-Even with a **correct greedy algorithm**, it's often **hard to figure out why it's correct**.
 
-*DANGER: **Most greedy algorithms** are **not correct**, even if **your intuition says it's correct**!*
+*DANGER: Most greedy algorithms are **not correct**, even if your intuition says it's correct!*
 
