@@ -228,6 +228,8 @@ public class UndirectedGraph implements GraphInterface {
             }
         }
         return shortestDistances;
+        // Overall running time complexity: O((m + n)log n)
+        // Since usually m > n, it could be simplified to O(mlog n).
     }
 
 }
