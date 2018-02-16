@@ -179,7 +179,7 @@ public class UndirectedGraph implements GraphInterface {
         spanned.set(srcVtx.id());
         ArrayList<UndirectedEdge> currSpanningTree = new ArrayList<UndirectedEdge>();
 
-        // 3. Create a heap containing all the edges with one endpoint in X and the other in (V-X)
+        // 3. Create a heap containing all the edges with one endpoint in X (the set) and the other in (V-X)
         PriorityQueue<UndirectedEdge> crossingEdges = new PriorityQueue<UndirectedEdge>(srcVtx.edges());
 
         // 4. While X != V
@@ -249,8 +249,7 @@ public class UndirectedGraph implements GraphInterface {
         }
         ArrayList<UndirectedEdge> currSpanningTree = new ArrayList<UndirectedEdge>();
 
-        // 3. Initialize the minimum cost of the incident edges, and create a heap containing all the vertices not in X
-        //    (V-X)
+        // 3. Create a heap containing all the vertices not in X (V-X)
         PriorityQueue<Vertex> vtxsToProcess = new PriorityQueue<Vertex>(vtxList);
 
         // 4. While X != V

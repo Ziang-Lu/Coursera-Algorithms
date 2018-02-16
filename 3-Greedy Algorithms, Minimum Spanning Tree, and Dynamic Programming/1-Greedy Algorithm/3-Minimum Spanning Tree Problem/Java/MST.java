@@ -11,12 +11,11 @@ public class MST {
      * @param args arguments from command line
      */
     public static void main(String[] args) {
-        // Construct the undirected graph
         UndirectedGraph graph = constructUndirectedGraph("undirected_graph_info.txt");
-        // Find the cost of the Minimum Spanning Tree (MST) of the graph using straightforward Prim's MST Algorithm
-        System.out.println("Cost of Minimum Spanning Tree (MST): " + graph.primMSTStraightforward());
-        // Find the cost of the Minimum Spanning Tree (MST) of the graph using improved Prim's MST Algorithm
-        System.out.println("Cost of Minimum Spanning Tree (MST): " + graph.primMSTImproved());
+        System.out.println("Cost of Minimum Spanning Tree (MST) using straightforward Prim's MST Algorithm: "
+                + graph.primMSTStraightforward());
+        System.out.println(
+                "Cost of Minimum Spanning Tree (MST) using improved Prim's MST Algorithm: " + graph.primMSTImproved());
     }
 
     /**

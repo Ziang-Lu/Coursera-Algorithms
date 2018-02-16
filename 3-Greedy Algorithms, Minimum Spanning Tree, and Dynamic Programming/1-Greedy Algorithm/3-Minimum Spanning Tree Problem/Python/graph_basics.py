@@ -74,11 +74,12 @@ class AbstractGraph(object):
         """
         pass
 
-    def add_edge(self, end1_id, end2_id):
+    def add_edge(self, end1_id, end2_id, cost):
         """
         Adds a new edge to this graph.
         :param end1_id: int
         :param end2_id: int
+        :param cost: float
         :return: None
         """
         pass

@@ -8,8 +8,8 @@ from undirected_graph import UndirectedGraph
 
 def main():
     graph = _construct_undirected_graph('undirected_graph_info.txt')
-    print('Cost of the Minimum Spanning Tree (MST): %f' %
-          graph.prim_mst_straightforward())
+    print("Cost of the Minimum Spanning Tree (MST) using straightforward Prim's"
+          " MST Algorithm: %f" % graph.prim_mst_straightforward())
 
 
 def _construct_undirected_graph(filename):
@@ -28,7 +28,7 @@ def _construct_undirected_graph(filename):
         for line in f.readlines():
             edge_info = line.split(' ')
             graph.add_edge(end1_id=int(edge_info[0]), end2_id=int(edge_info[1]),
-                           length=float(edge_info[2]))
+                           cost=float(edge_info[2]))
         return graph
 
 

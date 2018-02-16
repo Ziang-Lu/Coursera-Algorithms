@@ -4,13 +4,14 @@
 """
 Adjacency list representation of undirected graph.
 
-Note that parallel edges are allowed, but not self-loops.
+Note that parallel edges and self-loops are not allowed.
 """
 
 __author__ = 'Ziang Lu'
 
 import heapq
 import random
+import sys
 from functools import total_ordering
 from graph_basics import AbstractVertex, AbstractGraph
 
@@ -19,7 +20,10 @@ class IllegalArgumentError(ValueError):
     pass
 
 
+@total_ordering
 class Vertex(AbstractVertex):
+    DEFAULT_MIN_INCIDENT_COST = sys.maxsize
+
     def __init__(self, vtx_id):
         """
         Constructor with parameter.
@@ -28,6 +32,8 @@ class Vertex(AbstractVertex):
         super().__init__(vtx_id)
         self._freq_of_neighbors = {}
         self._edges = []
+        self._min_cost_incident_edge = None
+        self._min_incident_cost = Vertex.DEFAULT_MIN_INCIDENT_COST
 
     def get_edge_with_neighbor(self, neighbor):
         """
@@ -53,6 +59,22 @@ class Vertex(AbstractVertex):
         :return: list[Edge]
         """
         return self._edges
+
+    @property
+    def min_cost_incident_edge(self):
+        """
+        Accessor of min_cost_incident_edge.
+        :return: UndirectedEdge
+        """
+        return self._min_cost_incident_edge
+
+    @property
+    def min_incident_cost(self):
+        """
+        Accessor of min_incident_edge.
+        :return: float
+        """
+        return self._min_incident_cost
 
     def add_edge(self, new_edge):
         """
@@ -110,6 +132,27 @@ class Vertex(AbstractVertex):
             freq -= 1
             self._freq_of_neighbors[neighbor.vtx_id] = freq
 
+    @min_cost_incident_edge.setter
+    def min_cost_incident_edge(self, min_cost_incident_edge):
+        """
+        Mutator of min_cost_incident_edge
+        :param min_cost_incident_edge: UndirectedEdge
+        :return: None
+        """
+        self._min_cost_incident_edge = min_cost_incident_edge
+
+    @min_incident_cost.setter
+    def min_incident_cost(self, min_incident_cost):
+        """
+        Mutator of min_incident_cost.
+        :param min_incident_cost: float
+        :return: None
+        """
+        self._min_incident_cost = min_incident_cost
+
+    def __lt__(self, other):
+        return self._min_incident_cost < other.min_incident_cost
+
     def __repr__(self):
         """
         String representation of this vertex.
@@ -121,16 +164,16 @@ class Vertex(AbstractVertex):
 
 @total_ordering
 class UndirectedEdge(object):
-    def __init__(self, end1, end2, length):
+    def __init__(self, end1, end2, cost):
         """
         Constructor with parameter.
         :param end1: Vertex
         :param end2: Vertex
-        :param length: float
+        :param cost: float
         """
         self._end1 = end1
         self._end2 = end2
-        self._length = length
+        self._cost = cost
 
     @property
     def end1(self):
@@ -149,12 +192,12 @@ class UndirectedEdge(object):
         return self._end2
 
     @property
-    def length(self):
+    def cost(self):
         """
-        Accessor of length.
+        Accessor of cost.
         :return: float
         """
-        return self._length
+        return self._cost
 
     @end1.setter
     def end1(self, end1):
@@ -175,7 +218,7 @@ class UndirectedEdge(object):
         self._end2 = end2
 
     def __lt__(self, other):
-        return self._length < other.length
+        return self._cost < other.cost
 
     def __repr__(self):
         """
@@ -210,7 +253,7 @@ class UndirectedGraph(AbstractGraph):
         # Remove the vertex
         self._vtx_list.remove(vtx_to_remove)
 
-    def add_edge(self, end1_id, end2_id, length):
+    def add_edge(self, end1_id, end2_id, cost):
         # Check whether the input endpoints both exist
         end1, end2 = self._find_vtx(end1_id), self._find_vtx(end2_id)
         if end1 is None or end2 is None:
@@ -220,7 +263,7 @@ class UndirectedGraph(AbstractGraph):
             raise IllegalArgumentError("The endpoints are the same "
                                        "(self-loop).")
 
-        new_edge = UndirectedEdge(end1, end2, length)
+        new_edge = UndirectedEdge(end1, end2, cost)
         self._add_edge(new_edge=new_edge)
 
     def _add_edge(self, new_edge):
@@ -265,31 +308,34 @@ class UndirectedGraph(AbstractGraph):
         """
         Finds the minimum spanning tree (MST) in this graph using
         straightforward Prim's MST Algorithm.
-        :return: cost of the MST
+        :return: float
         """
         # 1. Arbitrarily choose a source vertex s
         src_vtx = self._vtx_list[random.randint(0, len(self._vtx_list) - 1)]
+
         # 2. Initialize X = {s}, which contains the vertices we've spanned so
         #    far, and T = {empty}, which current spanning tree
         spanned = set()
         spanned.add(src_vtx.vtx_id)
         curr_spanning_tree = []
-        # 3. Create a heap containing all the edge with one endpoint in X and
-        #    the other in (V-X)
+
+        # 3. Create a heap containing all the edge with one endpoint in X (the
+        #    set) and the other in (V-X)
         crossing_edges = []
         for edge in src_vtx.edges:
             heapq.heappush(crossing_edges, edge)
+
         # 4. While X != V
-        while len(spanned) != len(self._vtx_list):
-            # Extract the cheapest crossing edge e = (v, w) with v in X and w in
-            # (V-X)
+        while len(spanned) < len(self._vtx_list):
+            # Among all crossing edges e = (v, w) with v in X (the set) and w in
+            # (V-X), pick up the cheapest crossing edge
             cheapest_crossing_edge = heapq.heappop(crossing_edges)
             # Add e to T
             curr_spanning_tree.append(cheapest_crossing_edge)
-            # Add w to X
-            if cheapest_crossing_edge.end1.vtx_id in spanned:
+            # Add w to X (the set)
+            if cheapest_crossing_edge.end1.vtx_id in spanned:  # endpoint2 is the w.
                 w = cheapest_crossing_edge.end2
-            else:
+            else:  # endpoint1 is the w.
                 w = cheapest_crossing_edge.end1
             spanned.add(w.vtx_id)
 
@@ -304,4 +350,6 @@ class UndirectedGraph(AbstractGraph):
                 if neighbor.vtx_id not in spanned:
                     heapq.heappush(crossing_edges, w_edge)
 
-        return sum(map(lambda edge: edge.length, curr_spanning_tree))
+        return sum(map(lambda edge: edge.cost, curr_spanning_tree))
+        # Overall running time complexity: O((m + n)log m)
+        # Since usually m >= n, it could be simplified to O(mlog m).
