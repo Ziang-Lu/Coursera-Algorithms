@@ -16,13 +16,13 @@ public class Dijkstra {
         // Test directed graph
         GraphInterface directedGraph = constructGraph("directed_graph_info.txt", false);
 
-        // Find the shortest distances from vertex #1 using Dijkstra's shortest-path algorithm
+        // Find the shortest distances from vertex #1 using Dijkstra's Shortest-Path Algorithm
         System.out.println("Shorest distances from vertex #1: " + directedGraph.dijkstraShortestPaths(1));
 
         // Test undirected graph
         GraphInterface undirectedGraph = constructGraph("undirected_graph_info.txt", true);
 
-        // Find the shortest distances from vertex #1 using Dijkstra's shortest-path algorithm
+        // Find the shortest distances from vertex #1 using Dijkstra's Shortest-Path Algorithm
         System.out.println("Shorest distances from vertex #1: " + undirectedGraph.dijkstraShortestPaths(1));
     }
 

@@ -8,8 +8,8 @@ from undirected_graph import UndirectedGraph
 
 def main():
     graph = _construct_undirected_graph('undirected_graph_info.txt')
-    print("Cost of the Minimum Spanning Tree (MST) using straightforward Prim's"
-          " MST Algorithm: %f" % graph.prim_mst_straightforward())
+    print("Cost of the Minimum Spanning Tree (MST): %f" %
+          graph.prim_mst_straightforward())
 
 
 def _construct_undirected_graph(filename):

@@ -222,7 +222,7 @@ public class UndirectedGraph implements GraphInterface {
     /**
      * Finds the minimum spanning tree (MST) in this graph using improved Prim's
      * MST Algorithm.
-     * The improvement comes from the idea of Dijkstra's Shortest Path
+     * The improvement comes from the idea of Dijkstra's Shortest-Path
      * Algorithm, especially the invariants of the algorithm and the proper
      * usage of the heap.
      * @return cost of the MST

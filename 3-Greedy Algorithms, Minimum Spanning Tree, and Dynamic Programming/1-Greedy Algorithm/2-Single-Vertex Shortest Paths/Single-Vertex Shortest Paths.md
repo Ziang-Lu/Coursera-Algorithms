@@ -2,7 +2,7 @@
 
 Input:
 
-* A directed graph $G$ = ($V$, $E$) with each edge having a **non-negative (assumption for Dijkstra's shortest-path algorithm)** length, $l_e$.
+* A directed graph $G$ = ($V$, $E$) with each edge having a **non-negative (assumption for Dijkstra's Shortest-Path Algorithm)** length, $l_e$.
 
   (即edge是weighted的了)
 
@@ -10,9 +10,9 @@ Input:
 
 Output:
 
-For each vertex $v$, compute the length of the shortest-path from $s$ to $v$, L($v$).
+For each vertex $v$, compute the length of the shortest path from $s$ to $v$, L($v$).
 
-(即不再是单纯的# of edges in the shortest path, 而是看各条path的length, 找到shortest-path)
+(即不再是单纯的# of edges in the shortest path, 而是看各条path的length, 找到shortest path)
 
 (有时候"绕路"反而是"捷径")
 
@@ -20,7 +20,7 @@ For each vertex $v$, compute the length of the shortest-path from $s$ to $v$, L(
 
 **Dijkstra's Shortest-Path Algorithm: (Given graph $G$, source vertex $s$)**
 
--> A slick generalization of BFS (When all edges lengths are 1, Dijkstra's shortest path algorithm => BFS)
+-> A slick generalization of BFS (When all edges lengths are 1, Dijkstra's Shortest-Path Algorithm => BFS)
 
 1. Initialize $X = \{ s \}$, vertices processsed so far; vertices that we have correctly computed the shortest distance from $s$
 
