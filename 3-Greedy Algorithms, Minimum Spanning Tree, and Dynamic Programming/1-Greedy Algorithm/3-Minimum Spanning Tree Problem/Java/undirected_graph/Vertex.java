@@ -16,7 +16,7 @@ class Vertex extends AbstractVertex implements Comparable<Vertex> {
     /**
      * Default minimum cost of the incident edge from the spanned vertices (X).
      */
-    private static final double DEFAULT_MIN_INCIDENT_COST = Integer.MAX_VALUE;
+    private static final int DEFAULT_MIN_INCIDENT_COST = Integer.MAX_VALUE;
 
     /**
      * Frequency of neighbors.

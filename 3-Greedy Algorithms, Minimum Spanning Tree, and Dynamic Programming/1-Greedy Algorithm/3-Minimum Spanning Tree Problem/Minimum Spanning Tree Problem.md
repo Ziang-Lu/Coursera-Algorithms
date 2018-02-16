@@ -1,8 +1,4 @@
-### Minimum Spanning Tree (MST)
-
-#### Informal Goal
-
-Connect a bunch of points together as cheaply as possible.
+### Minimum Spanning Tree (MST) Problem
 
 #### Problem Definition
 
