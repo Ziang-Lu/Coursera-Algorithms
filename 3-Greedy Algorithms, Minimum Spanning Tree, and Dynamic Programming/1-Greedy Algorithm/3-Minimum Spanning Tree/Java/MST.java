@@ -43,6 +43,10 @@ public class MST {
             }
         } catch (FileNotFoundException ex) {
             System.out.println("Cannot find the file.");
+        } finally {
+            if (scanner != null) {
+                scanner.close();
+            }
         }
 
         return graph;

@@ -11,7 +11,12 @@ import graph.AbstractVertex;
  * Note that parallel edges are allowed, but not self-loops.
  * @author Ziang Lu
  */
-class Vertex extends AbstractVertex {
+class Vertex extends AbstractVertex implements Comparable<Vertex> {
+
+    /**
+     * Default minimum cost of the incident edge from the spanned vertices (X).
+     */
+    private static final double DEFAULT_MIN_INCIDENT_COST = Integer.MAX_VALUE;
 
     /**
      * Frequency of neighbors.
@@ -21,6 +26,14 @@ class Vertex extends AbstractVertex {
      * Edges of this vertex.
      */
     private final ArrayList<UndirectedEdge> edges;
+    /**
+     * Reference to the incident edge with minimum cost from the spanned vertices (X).
+     */
+    private UndirectedEdge minCostIncidentEdge;
+    /**
+     * Minimum cost of the incident edges from the spanned vertices (X).
+     */
+    private double minIncidentCost;
 
     /**
      * Constructor with parameter.
@@ -30,6 +43,8 @@ class Vertex extends AbstractVertex {
         super(vtxID);
         freqOfNeighbors = new HashMap<Integer, Integer>();
         edges = new ArrayList<UndirectedEdge>();
+        minCostIncidentEdge = null;
+        minIncidentCost = DEFAULT_MIN_INCIDENT_COST;
     }
 
     /**
@@ -59,6 +74,22 @@ class Vertex extends AbstractVertex {
      */
     ArrayList<UndirectedEdge> edges() {
         return edges;
+    }
+
+    /**
+     * Accessor of minCostIncidentEdge.
+     * @return minCostIncidentEdge
+     */
+    UndirectedEdge minCostIncidentEdge() {
+        return minCostIncidentEdge;
+    }
+
+    /**
+     * Accessor of minIncidentCost.
+     * @return minIncidentCost
+     */
+    double minIncidentCost() {
+        return minIncidentCost;
     }
 
     /**
@@ -121,6 +152,27 @@ class Vertex extends AbstractVertex {
             --freq;
             freqOfNeighbors.put(neighbor.vtxID, freq);
         }
+    }
+
+    /**
+     * Mutator of minCostIncidentEdge
+     * @param minCostIncidentEdge minCostIncidentEdge
+     */
+    void setMinCostIncidentEdge(UndirectedEdge minCostIncidentEdge) {
+        this.minCostIncidentEdge = minCostIncidentEdge;
+    }
+
+    /**
+     * Mutator of minIncidentCost.
+     * @param minIncidentCost minIncidentCost
+     */
+    void setMinIncidentCost(double minIncidentCost) {
+        this.minIncidentCost = minIncidentCost;
+    }
+
+    @Override
+    public int compareTo(Vertex o) {
+        return Double.compare(minIncidentCost, o.minIncidentCost);
     }
 
     @Override

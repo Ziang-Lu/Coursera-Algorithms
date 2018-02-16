@@ -10,7 +10,7 @@ import graph.GraphInterface;
 /**
  * Adjacency list representation of a undirected graph.
  *
- * Note that parallel edges are allowed, but not self-loops.
+ * Note that parallel edges and self-loops are not allowed.
  * @author Ziang Lu
  */
 public class UndirectedGraph implements GraphInterface {
@@ -172,20 +172,24 @@ public class UndirectedGraph implements GraphInterface {
         // 1. Arbitrarily choose a source vertex s
         Random randomGenerator = new Random();
         Vertex srcVtx = vtxList.get(randomGenerator.nextInt(vtxList.size()));
+
         // 2. Initialize X = {s}, which contains the vertices we've spanned so far, and T = {empty}, which is the
         //    current spanning tree
         BitSet spanned = new BitSet();
         spanned.set(srcVtx.id());
         ArrayList<UndirectedEdge> currSpanningTree = new ArrayList<UndirectedEdge>();
+
         // 3. Create a heap containing all the edges with one endpoint in X and the other in (V-X)
         PriorityQueue<UndirectedEdge> crossingEdges = new PriorityQueue<UndirectedEdge>(srcVtx.edges());
-        // 3. While X != V
+
+        // 4. While X != V
         while (spanned.cardinality() < vtxList.size()) {
-            // Extract the cheapest crossing edge e = (v, w) with v in X and w in (V-X)
+            // Among all crossing edges e = (v, w) with v in X (the set) and w in (V-X), pick up the cheapest crossing
+            // edge
             UndirectedEdge cheapestCrossingEdge = crossingEdges.poll();
             // Add e to T
             currSpanningTree.add(cheapestCrossingEdge);
-            // Add w to X
+            // Add w to X (the set)
             Vertex w = null;
             if (spanned.get(cheapestCrossingEdge.end1().id())) { // endpoint2 is the w.
                 w = cheapestCrossingEdge.end2();
@@ -210,17 +214,90 @@ public class UndirectedGraph implements GraphInterface {
             }
         }
 
-        return currSpanningTree.stream().mapToDouble(edge -> edge.length()).sum();
+        return currSpanningTree.stream().mapToDouble(edge -> edge.cost()).sum();
+        // Overall running time complexity: O((m + n)log m)
+        // Since usually m >= n, it could be simplified to O(mlog m).
     }
 
     /**
      * Finds the minimum spanning tree (MST) in this graph using improved Prim's
      * MST Algorithm.
+     * The improvement comes from the idea of Dijkstra's Shortest Path
+     * Algorithm, especially the invariants of the algorithm and the proper
+     * usage of the heap.
      * @return cost of the MST
      */
     public double primMSTImproved() {
-        // TODO implementation
-        return 0.0;
+        // 1. Arbitrarily choose a source vertex s
+        Random randomGenerator = new Random();
+        Vertex srcVtx = vtxList.get(randomGenerator.nextInt(vtxList.size()));
+
+        // 2. Initialize X = {s}, which contains the vertices we've spanned so far, and T = {empty}, which is the
+        //    current spanning tree
+        BitSet spanned = new BitSet();
+        spanned.set(srcVtx.id());
+        for (UndirectedEdge edge : srcVtx.edges()) {
+            // Find the neighbor
+            Vertex neighbor = null;
+            if (edge.end1().id() == srcVtx.id()) { // endpoint2 is the neighbor.
+                neighbor = edge.end2();
+            } else { // endpoint1 is the neighbor.
+                neighbor = edge.end1();
+            }
+            neighbor.setMinCostIncidentEdge(edge);
+            neighbor.setMinIncidentCost(edge.cost());
+        }
+        ArrayList<UndirectedEdge> currSpanningTree = new ArrayList<UndirectedEdge>();
+
+        // 3. Initialize the minimum cost of the incident edges, and create a heap containing all the vertices not in X
+        //    (V-X)
+        PriorityQueue<Vertex> vtxsToProcess = new PriorityQueue<Vertex>(vtxList);
+
+        // 4. While X != V
+        while (spanned.cardinality() < vtxList.size()) {
+            // Among all crossing edges e = (v, w) with v in X (the set) and w in (V-X) (the heap), pick up the cheapest
+            // crossing edge
+            Vertex w = vtxsToProcess.poll();
+            // Add e to T
+            currSpanningTree.add(w.minCostIncidentEdge());
+            // Add w to X (the set)
+            spanned.set(w.id());
+
+            // Extracting one vertex from the heap (V-X) may influence some minimum cost of the incident edges from X
+            // (the set) of the vertices that are still in the heap (V-X).
+            // Vertices that are not connected to w and are still in the heap (V-X) won't be influenced.
+            // => The minimum cost of the incident edges from X (the set) of vertices that are connected to w and are
+            //    still in the heap (V-X) may drop down.
+
+            // Update the minimum cost of the incident edges from X (the set) for the vertices if necessary
+            for (UndirectedEdge wEdge : w.edges()) {
+                // Find the neighbor
+                Vertex neighbor = null;
+                if (wEdge.end1().id() == w.id()) { // endpoint2 is the neighbor.
+                    neighbor = wEdge.end2();
+                } else { // endpoint1 is the neighbor.
+                    neighbor = wEdge.end1();
+                }
+                // Check whether the neighbor of w has been spanned
+                if (!spanned.get(neighbor.id())) {
+                    // Check whether the minimum cost of the incident edges from X (the set) needs to be updated
+                    double newCost = wEdge.cost();
+                    if (newCost < neighbor.minIncidentCost()) {
+                        // Remove this neighbor from the heap (V-X)
+                        vtxsToProcess.remove(neighbor);
+                        // Update its minimum cost of the incident edges from X (the set)
+                        neighbor.setMinCostIncidentEdge(wEdge);
+                        neighbor.setMinIncidentCost(newCost);
+                        // Put this neighbor back to the heap (V-X)
+                        vtxsToProcess.offer(neighbor);
+                    }
+                }
+            }
+        }
+
+        return currSpanningTree.stream().mapToDouble(edge -> edge.cost()).sum();
+        // Overall running time complexity: O((m + n)log n)
+        // Since usually m >= n, it could be simplified to O(mlog n).
     }
 
 }

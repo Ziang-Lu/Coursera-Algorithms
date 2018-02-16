@@ -9,7 +9,7 @@ import graph.GraphInterface;
 /**
  * Adjacency list representation of a undirected graph.
  *
- * Note that parallel edges are allowed, but not self-loops.
+ * Note that parallel edges and self-loops are not allowed.
  * @author Ziang Lu
  */
 public class UndirectedGraph implements GraphInterface {
@@ -199,7 +199,7 @@ public class UndirectedGraph implements GraphInterface {
             // Vertices that are not connected to w* and are still in the heap (V-X) won't be influenced.
             // => The local minimum Dijkstra scores of vertices that are connected to w* and are still in the heap (V-X)
             //    may drop down.
-
+p
             // Update the local minimum Dijkstra scores for the vertices if necessary
             for (UndirectedEdge edgeFromWStar : wStar.edges()) {
                 // Find the neighbor
@@ -229,7 +229,7 @@ public class UndirectedGraph implements GraphInterface {
         }
         return shortestDistances;
         // Overall running time complexity: O((m + n)log n)
-        // Since usually m > n, it could be simplified to O(mlog n).
+        // Since usually m >= n, it could be simplified to O(mlog n).
     }
 
 }

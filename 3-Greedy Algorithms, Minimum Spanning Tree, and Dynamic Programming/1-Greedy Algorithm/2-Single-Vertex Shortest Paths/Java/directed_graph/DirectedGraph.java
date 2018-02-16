@@ -9,7 +9,7 @@ import graph.GraphInterface;
 /**
  * Adjacency list representation of a directed graph.
  *
- * Note that parallel edges are allowed, but not self-loops.
+ * Note that parallel edges and self-loops are not allowed.
  * @author Ziang Lu
  */
 public class DirectedGraph implements GraphInterface {
@@ -223,7 +223,7 @@ public class DirectedGraph implements GraphInterface {
         }
         return shortestDistances;
         // Overall running time complexity: O((m + n)log n)
-        // Since usually m > n, it could be simplified to O(mlog n).
+        // Since usually m >= n, it could be simplified to O(mlog n).
     }
 
 }

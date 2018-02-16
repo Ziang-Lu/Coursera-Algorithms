@@ -16,20 +16,20 @@ class UndirectedEdge implements Comparable<UndirectedEdge> {
      */
     private Vertex end2;
     /**
-     * Length of the edge.
+     * Cost of the edge.
      */
-    private final double length;
+    private final double cost;
 
     /**
      * Constructor with parameter.
      * @param end1 endpoint1
      * @param end2 endpoint2
-     * @param length length of the edge
+     * @param cost cost of the edge
      */
-    UndirectedEdge(Vertex end1, Vertex end2, double length) {
+    UndirectedEdge(Vertex end1, Vertex end2, double cost) {
         this.end1 = end1;
         this.end2 = end2;
-        this.length = length;
+        this.cost = cost;
     }
 
     /**
@@ -49,11 +49,11 @@ class UndirectedEdge implements Comparable<UndirectedEdge> {
     }
 
     /**
-     * Accessor of length.
-     * @return length
+     * Accessor of cost.
+     * @return cost
      */
-    double length() {
-        return length;
+    double cost() {
+        return cost;
     }
 
     /**
@@ -74,7 +74,7 @@ class UndirectedEdge implements Comparable<UndirectedEdge> {
 
     @Override
     public int compareTo(UndirectedEdge o) {
-        return Double.compare(length, o.length);
+        return Double.compare(cost, o.cost);
     }
 
     @Override
