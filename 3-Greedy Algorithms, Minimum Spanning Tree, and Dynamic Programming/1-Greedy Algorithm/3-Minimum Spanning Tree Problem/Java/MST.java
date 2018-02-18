@@ -12,8 +12,14 @@ public class MST {
      */
     public static void main(String[] args) {
         UndirectedGraph graph = constructUndirectedGraph("undirected_graph_info.txt");
-        System.out.println("Cost of Minimum Spanning Tree (MST): " + graph.primMSTStraightforward());
-        System.out.println("Cost of Minimum Spanning Tree (MST): " + graph.primMSTImproved());
+        System.out.println("Cost of minimum spanning tree (MST) using straightforward Prim's algorithm: "
+                + graph.primMSTStraightforward());
+        System.out.println(
+                "Cost of minimum spanning tree (MST) using improved Prim's algorithm: " + graph.primMSTImproved());
+        System.out.println("Cost of minimum spanning tree (MST) using straightforward Kruskal's algorithm: "
+                + graph.kruskalMSTStraightforward());
+        System.out.println("Cost of minimum spanning tree (MST) using improved Kruskal's algorithm: "
+                + graph.kruskalMSTImproved());
     }
 
     /**

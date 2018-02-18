@@ -2,10 +2,13 @@ package undirected_graph;
 
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.PriorityQueue;
 import java.util.Random;
 
 import graph.GraphInterface;
+import union_find.UnionFind;
 
 /**
  * Adjacency list representation of a undirected graph.
@@ -297,6 +300,137 @@ public class UndirectedGraph implements GraphInterface {
         return currSpanningTree.stream().mapToDouble(edge -> edge.cost()).sum();
         // Overall running time complexity: O((m + n)log n)
         // Since usually m >= n, it could be simplified to O(mlog n).
+    }
+
+    /**
+     * Finds the minimum spanning tree (MST) in this graph using straightforward
+     * Kruskal's MST Algorithm.
+     * @return cost of the MST
+     */
+    public double kruskalMSTStraightforward() {
+        // 1. Sort the edges in order of increasing cost   [O(mlog m)]
+        ArrayList<UndirectedEdge> edges = new ArrayList<UndirectedEdge>(edgeList);
+        Collections.sort(edges);
+
+        // 2. Initialize T = {empty}, which is the current spanning tree
+        ArrayList<UndirectedEdge> currSpanningTree = new ArrayList<UndirectedEdge>();
+
+        // 3. For each edge e = (v, w) in the sorted edge list   [O(mn)]
+        for (UndirectedEdge edge : edges) {
+            // Check whether adding e to T causes cycles in T
+            // This is equivalent to checking whether there exists a v-w path in T before adding e.
+            if (dfsAndCheckPath(currSpanningTree, edge.end1(), edge.end2()) == false) {
+                currSpanningTree.add(edge);
+            }
+        }
+
+        return currSpanningTree.stream().mapToDouble(edge -> edge.cost()).sum();
+        // Overall running time complexity: O(mn)
+    }
+
+    /**
+     * Private helper method to check whether there exists a v-w path in the
+     * given spanning tree.
+     * @param spanningTree given spanning tree
+     * @param v vertex v
+     * @param w vertex w
+     * @return whether v-w path exists in the given spanning tree
+     */
+    private boolean dfsAndCheckPath(ArrayList<UndirectedEdge> spanningTree, Vertex v, Vertex w) {
+        // Create a map between vertices and its neighbors
+        HashMap<Integer, ArrayList<Vertex>> connections = constructConnections(spanningTree);
+        if (!connections.containsKey(v.id()) || !connections.containsKey(w.id())) {
+            return false;
+        }
+        return dfsAndCheckPathHelper(connections, v, w);
+        // Running time complexity: O(n)
+    }
+
+    /**
+     * Helper method to construct the connection map from the given edges.
+     * @param edges given edges
+     * @return constructed connected map
+     */
+    private HashMap<Integer, ArrayList<Vertex>> constructConnections(ArrayList<UndirectedEdge> edges) {
+        HashMap<Integer, ArrayList<Vertex>> connections = new HashMap<Integer, ArrayList<Vertex>>();
+        for (UndirectedEdge edge : edges) {
+            addNeighbor(connections, edge.end1(), edge.end2());
+            addNeighbor(connections, edge.end2(), edge.end1());
+        }
+        return connections;
+        // Running time complexity: O(n)
+    }
+
+    /**
+     * Helper method to add the given neighbor of the given vertex to the given
+     * connection map.
+     * @param connections given connection map
+     * @param v given vertex
+     * @param neighbor given neighbor
+     */
+    private void addNeighbor(HashMap<Integer, ArrayList<Vertex>> connections, Vertex v, Vertex neighbor) {
+        ArrayList<Vertex> neighbors = connections.getOrDefault(v.id(), new ArrayList<Vertex>());
+        neighbors.add(neighbor);
+        connections.put(v.id(), neighbors);
+        // Running time complexity: O(1)
+    }
+
+    /**
+     * Helper method to check whether there exists a curr-target path in the
+     * given connection map recursively.
+     * @param spanningTree given spanning tree
+     * @param curr current vertex
+     * @param target target vertex
+     * @return whether curr-target path exists in the given spanning tree
+     */
+    private boolean dfsAndCheckPathHelper(HashMap<Integer, ArrayList<Vertex>> connections, Vertex curr, Vertex target) {
+        curr.setAsExplored();
+        for (Vertex neighbor : connections.get(curr.id())) {
+            if (neighbor.id() == target.id()) {
+                return true;
+            }
+            if (!neighbor.explored()) {
+                if (dfsAndCheckPathHelper(connections, neighbor, target) == true) {
+                    return true;
+                }
+            }
+        }
+        return false;
+        // Running time complexity: O(n)
+    }
+
+    /**
+     * Finds the minimum spanning tree (MST) in this graph using improved
+     * Kruskal's MST Algorithm.
+     * @return cost of the MST
+     */
+    public double kruskalMSTImproved() {
+        // 1. Sort the edges in order of increasing cost   [O(mlog m)]
+        ArrayList<UndirectedEdge> edges = new ArrayList<UndirectedEdge>(edgeList);
+        Collections.sort(edges);
+
+        // 2. Initialize T = {empty}, which is the current spanning tree
+        ArrayList<UndirectedEdge> currSpanningTree = new ArrayList<UndirectedEdge>();
+
+        // 3. Create a UnionFind of vertices
+        //    Each of the vertex is on its own isolated connected component.
+        UnionFind<Vertex> unionFind = new UnionFind<Vertex>(vtxList);
+
+        // 4. For each edge e = (v, w) in the sorted edge list   [O(nlog n)]
+        for (UndirectedEdge edge : edges) {
+            // Check whether adding e to T causes cycles in T
+            // This is equivalent to checking whether there exists a v-w path in T before adding e.
+            // This is equivalent to checking whether the leaders of v and w are the same.
+            if (edge.end1().leader() != edge.end2().leader()) {
+                currSpanningTree.add(edge);
+                // Fuse the two connected components to a single one
+                String groupNameV = edge.end1().leader().name(), groupNameW = edge.end2().leader().name();
+                unionFind.union(groupNameV, groupNameW);
+            }
+        }
+
+        return currSpanningTree.stream().mapToDouble(edge -> edge.cost()).sum();
+        // Overall running time complexity: O(mlog m)
     }
 
 }

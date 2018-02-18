@@ -1,14 +1,16 @@
+package union_find;
+
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Simple implementation of UnionFind data structure.
  * Maintain a partition of a set of objects.
  *
- * @author Ziang_Lu
+ * @param T object type that implements UnionFindObj interface
+ * @author Ziang Lu
  */
-public class UnionFind {
+public class UnionFind <T> {
 
     /**
      * Groups of the entire set.
@@ -21,12 +23,13 @@ public class UnionFind {
      * Constructor with parameter.
      * @param objs list of sole objects
      */
-    public UnionFind(List<UnionFindObj> objs) {
+    public UnionFind(ArrayList<T> objs) {
         groups = new HashMap<String, ArrayList<UnionFindObj>>();
-        for (UnionFindObj obj : objs) {
+        for (T obj : objs) {
+            UnionFindObj o = (UnionFindObj) obj;
             ArrayList<UnionFindObj> group = new ArrayList<UnionFindObj>();
-            group.add(obj);
-            groups.put(obj.name(), group);
+            group.add(o);
+            groups.put(o.name(), group);
         }
     }
 

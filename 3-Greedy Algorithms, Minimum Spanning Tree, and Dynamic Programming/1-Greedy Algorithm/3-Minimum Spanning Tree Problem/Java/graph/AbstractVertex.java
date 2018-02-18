@@ -12,6 +12,10 @@ public abstract class AbstractVertex {
      * Vertex ID.
      */
     protected final int vtxID;
+    /**
+     * Whether this vertex is explored by the BFS/DFS.
+     */
+    protected boolean explored;
 
     /**
      * Constructor with parameter.
@@ -19,6 +23,7 @@ public abstract class AbstractVertex {
      */
     public AbstractVertex(int vtxID) {
         this.vtxID = vtxID;
+        explored = false;
     }
 
     /**
@@ -27,6 +32,21 @@ public abstract class AbstractVertex {
      */
     public int id() {
         return vtxID;
+    }
+
+    /**
+     * Accessor of explored.
+     * @return explored
+     */
+    public boolean explored() {
+        return explored;
+    }
+
+    /**
+     * Sets this vertex to explored.
+     */
+    public void setAsExplored() {
+        explored = true;
     }
 
 }

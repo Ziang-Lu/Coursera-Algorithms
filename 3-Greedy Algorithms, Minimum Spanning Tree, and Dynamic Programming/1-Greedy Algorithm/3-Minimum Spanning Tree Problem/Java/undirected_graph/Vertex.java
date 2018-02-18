@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import graph.AbstractVertex;
+import union_find.UnionFindObj;
 
 /**
  * Vertex class.
@@ -11,7 +12,7 @@ import graph.AbstractVertex;
  * Note that parallel edges are allowed, but not self-loops.
  * @author Ziang Lu
  */
-class Vertex extends AbstractVertex implements Comparable<Vertex> {
+class Vertex extends AbstractVertex implements Comparable<Vertex>, UnionFindObj {
 
     /**
      * Default minimum cost of the incident edge from the spanned vertices (X).
@@ -34,6 +35,10 @@ class Vertex extends AbstractVertex implements Comparable<Vertex> {
      * Minimum cost of the incident edges from the spanned vertices (X).
      */
     private double minIncidentCost;
+    /**
+     * Leader of this object.
+     */
+    private UnionFindObj leader;
 
     /**
      * Constructor with parameter.
@@ -45,6 +50,7 @@ class Vertex extends AbstractVertex implements Comparable<Vertex> {
         edges = new ArrayList<UndirectedEdge>();
         minCostIncidentEdge = null;
         minIncidentCost = DEFAULT_MIN_INCIDENT_COST;
+        leader = this;
     }
 
     /**
@@ -90,6 +96,16 @@ class Vertex extends AbstractVertex implements Comparable<Vertex> {
      */
     double minIncidentCost() {
         return minIncidentCost;
+    }
+
+    @Override
+    public String name() {
+        return String.valueOf(vtxID);
+    }
+
+    @Override
+    public UnionFindObj leader() {
+        return leader;
     }
 
     /**
@@ -168,6 +184,11 @@ class Vertex extends AbstractVertex implements Comparable<Vertex> {
      */
     void setMinIncidentCost(double minIncidentCost) {
         this.minIncidentCost = minIncidentCost;
+    }
+
+    @Override
+    public void setLeader(UnionFindObj leader) {
+        this.leader = leader;
     }
 
     @Override
