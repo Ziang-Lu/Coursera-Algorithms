@@ -51,6 +51,21 @@ A spanning tree $T \subseteq E$ that spans the all the vertices with minimum cos
 
 2. Kruskal's MST Algorithm
 
+   *Contrast to Prim's algorithm, Kruskal's algorithm throws out the desire to have a connected subgraph at each step of the iteration, and it will totally content to grow a tree in parallel with lots of simultaneous little pieces, only having them coalesce at the very end of the algorithm.*
+
+   *=> Pick the cheapest remaining edge greedily as long as it does not create cycles.*
+
+   * Sort the edges in order of increasing cost
+
+     *Notation: Rename the edges to 1, 2, …, $m$ s.t. $c_1 \lt c_2 \lt … \lt c_m$*
+
+   * Initialize $T = \emptyset$, which is the current spanning tree
+
+   * For **$i$ = 1 to $m$ (greedy)**
+
+     * If adding $i$ to $T$ doesn't cause cycles in $T$   *[This can be done by BFS/DFS towards T.]*
+       * Add $i$ to $T$
+
 <br>
 
 #### Application
