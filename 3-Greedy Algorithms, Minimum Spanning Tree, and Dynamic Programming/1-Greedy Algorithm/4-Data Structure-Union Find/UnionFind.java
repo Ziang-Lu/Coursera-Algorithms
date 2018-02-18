@@ -12,10 +12,8 @@ public class UnionFind {
 
     /**
      * Groups of the entire set.
-     * 
-     * 
-     * 
-     * Maintain a linked structure, and each subset has an arbitrary leader (representative of the group) object.
+     * Maintain a linked structure, and each subset has an arbitrary leader
+     * (representative of the group) object.
      */
     HashMap<String, ArrayList<UnionFindObj>> groups;
 
