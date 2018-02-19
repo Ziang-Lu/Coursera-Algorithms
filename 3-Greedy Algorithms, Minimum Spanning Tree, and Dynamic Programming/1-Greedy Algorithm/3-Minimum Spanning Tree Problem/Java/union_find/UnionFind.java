@@ -13,11 +13,12 @@ import java.util.HashMap;
 public class UnionFind <T> {
 
     /**
-     * Groups of the entire set.
+     * Mapping between group names and the corresponding group.
      * Maintain a linked structure, and each subset has an arbitrary leader
-     * (representative of the group) object.
+     * (representative of the group) object, and the group name is exactly the
+     * name of the leader.
      */
-    HashMap<String, ArrayList<UnionFindObj>> groups;
+    private HashMap<String, ArrayList<UnionFindObj>> groups;
 
     /**
      * Constructor with parameter.
@@ -29,17 +30,26 @@ public class UnionFind <T> {
             UnionFindObj o = (UnionFindObj) obj;
             ArrayList<UnionFindObj> group = new ArrayList<UnionFindObj>();
             group.add(o);
-            groups.put(o.name(), group);
+            groups.put(o.objName(), group);
         }
     }
 
     /**
-     * Returns the name of the group that the given object belongs to.
+     * Returns the number of groups.
+     * @return number of groups
+     */
+    public int numOfGroups() {
+        return groups.size();
+    }
+
+    /**
+     * Returns the name of the group, which is exactly the name of the group
+     * leader, that the given object belongs to.
      * @param obj given object
-     * @return name of the group
+     * @return name of the group, which is exactly the name of the group leader
      */
     public String find(UnionFindObj obj) {
-        return obj.leader().name();
+        return obj.leader().objName();
         // Running time complexity: O(1)
     }
 
@@ -69,7 +79,7 @@ public class UnionFind <T> {
             larger = groupB; smaller = groupA;
         }
         UnionFindObj largerLeader = larger.get(0).leader();
-        String smallerName = smaller.get(0).name();
+        String smallerName = smaller.get(0).objName();
         updateLeader(smaller, largerLeader);
         larger.addAll(smaller);
         groups.remove(smallerName);

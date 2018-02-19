@@ -8,12 +8,6 @@ package union_find;
 public interface UnionFindObj {
 
     /**
-     * Accessor of name.
-     * @return name
-     */
-    public String name();
-
-    /**
      * Accessor of leader.
      * @return leader
      */
@@ -24,5 +18,11 @@ public interface UnionFindObj {
      * @param leader leader
      */
     public void setLeader(UnionFindObj leader);
+
+    /**
+     * Returns the name of the object.
+     * @return name
+     */
+    public String objName();
 
 }

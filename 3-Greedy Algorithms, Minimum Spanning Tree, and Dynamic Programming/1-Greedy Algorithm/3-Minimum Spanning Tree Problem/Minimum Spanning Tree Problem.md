@@ -94,3 +94,4 @@ Since as a greedy algorithm, we want to maximize $min_{separated \ p, q} d(p, q)
   * Merge the clusters containing $p$ and$q$ into a single cluster
 
 **=> Exactly the same as Kruskal's MST Algorithm !!!** (except aborting early, i.e., when the number of connected components drops down to $k$)
+

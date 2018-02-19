@@ -426,7 +426,7 @@ public class UndirectedGraph implements GraphInterface {
             if (edge.end1().leader() != edge.end2().leader()) {
                 currSpanningTree.add(edge);
                 // Fuse the two connected components to a single one
-                String groupNameV = edge.end1().leader().name(), groupNameW = edge.end2().leader().name();
+                String groupNameV = edge.end1().leader().objName(), groupNameW = edge.end2().leader().objName();
                 unionFind.union(groupNameV, groupNameW);
             }
         }
@@ -444,6 +444,48 @@ public class UndirectedGraph implements GraphInterface {
          */
 
         return currSpanningTree.stream().mapToDouble(edge -> edge.cost()).sum();
+        // Overall running time complexity: O(mlog m)
+    }
+
+    /**
+     * Clusters the graph into the given number of clusters using maximum
+     * spacing as the objective function, which is to maximize the minimum
+     * distance between a pair of separated points, using Single-link Algorithm,
+     * which is exactly the same as Kruskal's MST algorithm.
+     * @param k number of clusters
+     * @return maximum spacing of the clustering
+     */
+    public double clusteringWithMaxSpacing(int k) {
+        // Check whether the input k is greater than 1
+        if (k <= 1) {
+            throw new IllegalArgumentException("The number of clusters must be at least 2.");
+        }
+
+        ArrayList<UndirectedEdge> edges = new ArrayList<UndirectedEdge>(edgeList);
+        Collections.sort(edges);
+
+        // Initially, each point is in a separate cluster.
+        UnionFind<Vertex> unionFind = new UnionFind<Vertex>(vtxList);
+
+        boolean stopped = false;
+        for (UndirectedEdge edge : edges) {
+            if (edge.end1().leader() != edge.end2().leader()) {
+                if (stopped) {
+                    return edge.cost();
+                }
+                // Let p, q = closest pair of separated points, which determines current the spacing
+                // Merge the clusters containing p and q into a single cluster
+                String groupNameV = edge.end1().leader().objName(), groupNameW = edge.end2().leader().objName();
+                unionFind.union(groupNameV, groupNameW);
+                if (unionFind.numOfGroups() == k) { // Repeat until only k clusters
+                    // The maximum spacing is simply the cost of the next cheapest crossing edge among different
+                    // connected components.
+                    stopped = true;
+                }
+            }
+        }
+        // Codes should never reach here.
+        return 0.0;
         // Overall running time complexity: O(mlog m)
     }
 

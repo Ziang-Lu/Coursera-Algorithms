@@ -99,11 +99,6 @@ class Vertex extends AbstractVertex implements Comparable<Vertex>, UnionFindObj 
     }
 
     @Override
-    public String name() {
-        return String.valueOf(vtxID);
-    }
-
-    @Override
     public UnionFindObj leader() {
         return leader;
     }
@@ -189,6 +184,11 @@ class Vertex extends AbstractVertex implements Comparable<Vertex>, UnionFindObj 
     @Override
     public void setLeader(UnionFindObj leader) {
         this.leader = leader;
+    }
+
+    @Override
+    public String objName() {
+        return String.valueOf(vtxID);
     }
 
     @Override

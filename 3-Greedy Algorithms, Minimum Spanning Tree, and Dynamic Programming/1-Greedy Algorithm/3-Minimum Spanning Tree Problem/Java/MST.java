@@ -12,14 +12,18 @@ public class MST {
      */
     public static void main(String[] args) {
         UndirectedGraph graph = constructUndirectedGraph("undirected_graph_info.txt");
+        // Find the minimum spanning tree (MST) using Prim's and Kruskal's algorithms with some variations
         System.out.println("Cost of minimum spanning tree (MST) using straightforward Prim's algorithm: "
                 + graph.primMSTStraightforward());
         System.out.println(
                 "Cost of minimum spanning tree (MST) using improved Prim's algorithm: " + graph.primMSTImproved());
         System.out.println("Cost of minimum spanning tree (MST) using straightforward Kruskal's algorithm: "
                 + graph.kruskalMSTStraightforward());
-        System.out.println("Cost of minimum spanning tree (MST) using improved Kruskal's algorithm: "
-                + graph.kruskalMSTImproved());
+//        System.out.println("Cost of minimum spanning tree (MST) using improved Kruskal's algorithm: "
+//                + graph.kruskalMSTImproved());
+        // Cluster the graph into 2 clusters using maximum spacing as the objective function, using Single-link
+        // Algorithm
+        System.out.println("Maximum spacing of 2-clustering: " + graph.clusteringWithMaxSpacing(2));
     }
 
     /**
