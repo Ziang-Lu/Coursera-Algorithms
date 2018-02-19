@@ -78,12 +78,14 @@ class UnionFind(object):
         # In order to reduce the number of leader updates, let the smaller group
         # inherit the leader of the larger one.
         if len(group_a) >= len(group_b):
-            group_a_leader = group_a[0].leader
-            self._update_leader(group=group_b, new_leader=group_a_leader)
+            larger, smaller = group_a, group_b
         else:
-            group_b_leader = group_b[0].leader
-            self._update_leader(group=group_a, new_leader=group_b_leader)
-        # Running time complexity: O(n)
+            larger, smaller = group_b, group_a
+        larger_leader = larger[0].leader
+        smaller_name = smaller[0].leader.name
+        self._update_leader(group=smaller, new_leader=larger_leader)
+        larger.extend(smaller)
+        self._groups.pop(smaller_name)
 
     def _update_leader(self, group, new_leader):
         """

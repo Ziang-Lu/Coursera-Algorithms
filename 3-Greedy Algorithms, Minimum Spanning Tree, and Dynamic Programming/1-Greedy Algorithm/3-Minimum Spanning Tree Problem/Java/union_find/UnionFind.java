@@ -62,13 +62,17 @@ public class UnionFind <T> {
 
         ArrayList<UnionFindObj> groupA = groups.get(groupNameA), groupB = groups.get(groupNameB);
         // In order to reduce the number of leader updates, let the smaller group inherit the leader of the larger one.
+        ArrayList<UnionFindObj> larger = null, smaller = null;
         if (groupA.size() >= groupB.size()) {
-            UnionFindObj groupALeader = groupA.get(0).leader();
-            updateLeader(groupB, groupALeader);
+            larger = groupA; smaller = groupB;
         } else {
-            UnionFindObj groupBLeader = groupB.get(0).leader();
-            updateLeader(groupA, groupBLeader);
+            larger = groupB; smaller = groupA;
         }
+        UnionFindObj largerLeader = larger.get(0).leader();
+        String smallerName = smaller.get(0).name();
+        updateLeader(smaller, largerLeader);
+        larger.addAll(smaller);
+        groups.remove(smallerName);
         // Running time complexity: O(n)
     }
 
