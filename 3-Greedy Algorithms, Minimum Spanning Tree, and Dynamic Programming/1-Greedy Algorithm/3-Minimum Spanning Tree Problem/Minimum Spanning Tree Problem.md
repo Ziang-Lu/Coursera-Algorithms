@@ -68,7 +68,29 @@ A spanning tree $T \subseteq E$ that spans the all the vertices with minimum cos
 
 <br>
 
-#### Application
+#### Application: Clustering
 
-1. Clustering
-2. Networking
+**Problem Statement:**
+
+Given $N$ points, a distance measure $d$ (symmetrical, i.e., $d(p, q) = d(q, p)$), and the number of clustering $k$.
+
+*Two points $p$ and $q$ are called **separated** if they are assigned to **different clusterings**.*
+
+*=> Objective function (variable): the **spacing of a clustering** is the **distance between the closest pair of separated points**.*
+
+Compute the k-clustering with maximum spacing, i.e, $O(c^*) = min_{separated \ p, q}d(p, q)$.
+
+<br>
+
+**Algorithm: Single-link Cluster (单链聚类)**
+
+Since as a greedy algorithm, we want to maximize $min_{separated \ p, q} d(p, q)$ (spacing) as much as possible.
+
+=> We just need to make $p$ and $q$ **not separated** by **fusing the two clusters** containing $p$ and $q$, respectively.
+
+* Inittially, each point is in a separate cluster.
+* Repeat until only $k$ clusters:
+  * Let $p$, $q$ = closest pair of separated points, which determines the current spacing
+  * Merge the clusters containing $p$ and$q$ into a single cluster
+
+**=> Exactly the same as Kruskal's MST Algorithm !!!** (except aborting early, i.e., when the number of connected components drops down to $k$)
