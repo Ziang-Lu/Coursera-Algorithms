@@ -15,6 +15,7 @@ class AbstractVertex(object):
         :param vtx_id: int
         """
         self._vtx_id = vtx_id
+        self._explored = False
 
     @property
     def vtx_id(self):
@@ -23,6 +24,21 @@ class AbstractVertex(object):
         :return: int
         """
         return self._vtx_id
+
+    @property
+    def explored(self):
+        """
+        Accessor of explored.
+        :return: bool
+        """
+        return self._explored
+
+    def set_as_explored(self):
+        """
+        Sets this vertex to explored.
+        :return:
+        """
+        self._explored = True
 
 
 class AbstractGraph(object):

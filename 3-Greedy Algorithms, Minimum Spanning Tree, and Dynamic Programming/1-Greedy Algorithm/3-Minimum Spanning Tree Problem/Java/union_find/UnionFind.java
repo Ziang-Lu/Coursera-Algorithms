@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 /**
  * Simple implementation of UnionFind data structure.
- * Maintain a partition of a set of objects.
+ * Maintain a partition of a set of objects
  *
  * @param T object type that implements UnionFindObj interface
  * @author Ziang Lu
@@ -35,11 +35,11 @@ public class UnionFind <T> {
 
     /**
      * Returns the name of the group that the given object belongs to.
-     * @param o given object
+     * @param obj given object
      * @return name of the group
      */
-    public String find(UnionFindObj o) {
-        return o.leader().name();
+    public String find(UnionFindObj obj) {
+        return obj.leader().name();
         // Running time complexity: O(1)
     }
 
@@ -61,7 +61,7 @@ public class UnionFind <T> {
         }
 
         ArrayList<UnionFindObj> groupA = groups.get(groupNameA), groupB = groups.get(groupNameB);
-        // In order to reduce the number of leader update, let the smaller group inherit the leader of the larger one.
+        // In order to reduce the number of leader updates, let the smaller group inherit the leader of the larger one.
         if (groupA.size() >= groupB.size()) {
             UnionFindObj groupALeader = groupA.get(0).leader();
             updateLeader(groupB, groupALeader);

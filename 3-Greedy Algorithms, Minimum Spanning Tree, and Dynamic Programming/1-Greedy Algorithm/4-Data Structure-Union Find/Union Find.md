@@ -49,7 +49,7 @@ Maintain a ``size`` field for each subset.
 
 If we merge the sole subsets one by one to the single entire set, like in Kruskal's MST Algorithm, orignally we would think it involves **O(mn)** leader updates; however, we can change to a **"vertex-centric view"**:
 
-Consider the number of updates for a single vertex:
+Consider the number of leader updates for a single vertex:
 
 Every time the leader of this vertex gets updated, the size of its connected components at least doubles, so suppose it experiences $x$ leader updates in total, we have
 $$

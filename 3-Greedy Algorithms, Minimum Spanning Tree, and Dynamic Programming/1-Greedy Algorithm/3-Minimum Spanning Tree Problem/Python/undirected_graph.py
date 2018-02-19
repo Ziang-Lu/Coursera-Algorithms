@@ -14,6 +14,7 @@ import random
 import sys
 from functools import total_ordering
 from graph_basics import AbstractVertex, AbstractGraph
+from union_find import UnionFindObj, UnionFind
 
 
 class IllegalArgumentError(ValueError):
@@ -21,7 +22,7 @@ class IllegalArgumentError(ValueError):
 
 
 @total_ordering
-class Vertex(AbstractVertex):
+class Vertex(AbstractVertex, UnionFindObj):
     DEFAULT_MIN_INCIDENT_COST = sys.maxsize
 
     def __init__(self, vtx_id):
@@ -29,7 +30,8 @@ class Vertex(AbstractVertex):
         Constructor with parameter.
         :param vtx_id: int
         """
-        super().__init__(vtx_id)
+        AbstractVertex.__init__(self, vtx_id)
+        UnionFindObj.__init__(self)
         self._freq_of_neighbors = {}
         self._edges = []
         self._min_cost_incident_edge = None
@@ -75,6 +77,10 @@ class Vertex(AbstractVertex):
         :return: float
         """
         return self._min_incident_cost
+
+    @property
+    def name(self):
+        return str(self._vtx_id)
 
     def add_edge(self, new_edge):
         """
@@ -353,3 +359,135 @@ class UndirectedGraph(AbstractGraph):
         return sum(map(lambda edge: edge.cost, curr_spanning_tree))
         # Overall running time complexity: O((m + n)log m)
         # Since usually m >= n, it could be simplified to O(mlog m).
+
+    def kruskal_mst_straightforward(self):
+        """
+        Finds the minimum spanning tree (MST) using straightforward Kruskal's
+        MST Algorithm.
+        :return: float
+        """
+        # 1. Sort the edges in order of increasing cost   [O(mlog m)]
+        edges = sorted(self._edge_list)
+
+        # 2. Initialize T = {empty}, which is the current spanning tree
+        curr_spanning_tree = []
+
+        # 3. For each edge e = (v, w) in the sorted edge list   [O(mn)]
+        for edge in edges:
+            # Check whether adding e to T causes cycles in T
+            # This is equivalent to checking whether there exists a v-w path in
+            # T before adding e.
+            if not self._dfs_and_check_path(curr_spanning_tree, edge.end1,
+                                            edge.end2):
+                curr_spanning_tree.append(edge)
+
+        return sum(map(lambda edge: edge.cost, curr_spanning_tree))
+        # Overall running time complexity: O(mn)
+
+    def _dfs_and_check_path(self, spanning_tree, v, w):
+        """
+        Private helper function to check whether there exists a v-w path in the
+        given spanning tree.
+        :param spanning_tree: list[UndirectedEdge]
+        :param v: Vertex
+        :param w: Vertex
+        :return: bool
+        """
+        # Create a map between vertices and its neighbors
+        connections = self._construct_connections(edges=spanning_tree)
+        if v.vtx_id not in connections or w.vtx_id not in connections:
+            return False
+        return self._dfs_and_check_path_helper(connections, curr=v, target=w)
+        # Running time complexity: O(n)
+
+    def _construct_connections(self, edges):
+        """
+        Helper function to construct the connection map from the given edges.
+        :param edges: list[UndirectedEdge]
+        :return: dict{int: list[Vertex]}
+        """
+        connections = {}
+        for edge in edges:
+            self._add_neighbor(connections, v=edge.end1, neighbor=edge.end2)
+            self._add_neighbor(connections, v=edge.end2, neighbor=edge.end1)
+        return connections
+        # Running time complexity: O(n)
+
+    def _add_neighbor(self, connections, v, neighbor):
+        """
+        Helper function to add the given neighbor of the given vertex to the
+        given connection map.
+        :param connections: dict[int: list[Vertex]]
+        :param v: Vertex
+        :param neighbor: Vertex
+        :return: None
+        """
+        neighbors = connections.get(v.vtx_id, [])
+        neighbors.append(neighbor)
+        connections[v.vtx_id] = neighbors
+        # Running time complexity: O(1)
+
+    def _dfs_and_check_path_helper(self, connections, curr, target):
+        """
+        Helper function to check whether there exists a curr-target path in the
+        given connection map recursively.
+        :param connections: dict[int: list[Vertex]]
+        :param curr: Vertex
+        :param target: Vertex
+        :return: bool
+        """
+        curr.set_as_explored()
+        for neighbor in connections[curr.vtx_id]:
+            if neighbor.vtx_id == target.vtx_id:
+                return True
+            if not neighbor.explored:
+                if self._dfs_and_check_path_helper(connections, curr=neighbor,
+                                                   target=target):
+                    return True
+        return False
+        # Running time complexity: O(n)
+
+    def kruskal_mst_improved(self):
+        """
+        Finds the minimum spanning tree (MST) using improved Kruskal's MST
+        Algorithm.
+        :return: float
+        """
+        # 1. Sort the edges in order of increasing cost   [O(mlog m)]
+        edges = sorted(self._edge_list)
+
+        # 2. Initialize T = {empty}, which is the current spanning tree
+        curr_spanning_tree = []
+
+        # 3. Create a Union Find of vertices
+        # object -> vertex
+        # group -> connected component w.r.t. the edges in T
+        # Each of the vertex is on its own isolated connected component.
+        union_find = UnionFind(self._vtx_list)
+
+        # 4. For each edge e = (v, w) in the sorted edge list   [O(nlog n)]
+        for edge in edges:
+            # Check whether adding e to T causes cycles in T
+            # This is equivalent to checking whether there exists a v-w path in
+            # T before adding e.
+            # This is equivalent to checking whether the leaders of v and w in
+            # the UnionFind are the same.
+            if edge.end1.leader is not edge.end2.leader:
+                curr_spanning_tree.append(edge)
+                # Fuse the two connected components to a single one
+                group_name_v, group_name_w = \
+                    edge.end1.leader.name, edge.end2.leader.name
+                union_find.union(group_name_v, group_name_w)
+        # Originally we would think it involves O(mn) leader updates; however,
+        # we can change to a "vertex-centric" view:
+        # Consider the number of leader updates for a single vertex:
+        # Every time the leader of this vertex gets updated, the size of its
+        # connected components at least doubles, so suppose it experiences x
+        # leader updates in total, we have
+        #     2^x <= n
+        #     x <= log2 n
+        # Thus, each vertex experiences O(log n) leader updates, leading to a
+        # O(nlog n) leader updates in total.
+
+        return sum(map(lambda edge: edge.cost, curr_spanning_tree))
+        # Overall running time complexity: O(mlog m)

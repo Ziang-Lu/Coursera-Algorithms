@@ -413,14 +413,16 @@ public class UndirectedGraph implements GraphInterface {
         ArrayList<UndirectedEdge> currSpanningTree = new ArrayList<UndirectedEdge>();
 
         // 3. Create a UnionFind of vertices
-        //    Each of the vertex is on its own isolated connected component.
+        // object -> vertex
+        // group -> connected component w.r.t. the edges in T
+        // Each of the vertex is on its own isolated connected component.
         UnionFind<Vertex> unionFind = new UnionFind<Vertex>(vtxList);
 
         // 4. For each edge e = (v, w) in the sorted edge list   [O(nlog n)]
         for (UndirectedEdge edge : edges) {
             // Check whether adding e to T causes cycles in T
             // This is equivalent to checking whether there exists a v-w path in T before adding e.
-            // This is equivalent to checking whether the leaders of v and w are the same.
+            // This is equivalent to checking whether the leaders of v and w in the UnionFind are the same.
             if (edge.end1().leader() != edge.end2().leader()) {
                 currSpanningTree.add(edge);
                 // Fuse the two connected components to a single one
@@ -428,6 +430,18 @@ public class UndirectedGraph implements GraphInterface {
                 unionFind.union(groupNameV, groupNameW);
             }
         }
+        /*
+         * Originally we would think it involves O(mn) leader updates; however,
+         * we can change to a "vertex-centric" view:
+         * Consider the number of leader updates for a single vertex:
+         * Every time the leader of this vertex gets updated, the size of its
+         * connected components at least doubles, so suppose it experiences x
+         * leader updates in total, we have
+         *     2^x <= n
+         *     x <= log2 n
+         * Thus, each vertex experiences O(log n) leader updates, leading to a
+         * O(nlog n) leader updates in total.
+         */
 
         return currSpanningTree.stream().mapToDouble(edge -> edge.cost()).sum();
         // Overall running time complexity: O(mlog m)
