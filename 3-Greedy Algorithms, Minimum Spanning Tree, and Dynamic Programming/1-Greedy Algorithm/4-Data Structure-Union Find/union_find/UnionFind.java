@@ -35,14 +35,6 @@ public class UnionFind <T> {
     }
 
     /**
-     * Returns the number of groups.
-     * @return number of groups
-     */
-    public int numOfGroups() {
-        return groups.size();
-    }
-
-    /**
      * Returns the name of the group, which is exactly the name of the group
      * leader, that the given object belongs to.
      * @param obj given object

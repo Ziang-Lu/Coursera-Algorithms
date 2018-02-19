@@ -4,6 +4,9 @@
 """
 A simple implementation of UnionFind data structure.
 Maintain a partition of a set of objects
+=> Maintain a linked structure, and each subset has an arbitrary leader
+   (representative of the group) object, and the group name is exactly the name
+   of the leader.
 """
 
 __author__ = 'Ziang Lu'
@@ -16,14 +19,6 @@ class IllegalArgumentError(ValueError):
 class UnionFindObj(object):
     def __init__(self):
         self._leader = self
-
-    @property
-    def name(self):
-        """
-        Accessor of name.
-        :return: str
-        """
-        pass
 
     @property
     def leader(self):
@@ -42,6 +37,14 @@ class UnionFindObj(object):
         """
         self._leader = leader
 
+    @property
+    def obj_name(self):
+        """
+        Returns the name of this object.
+        :return: str
+        """
+        pass
+
 
 class UnionFind(object):
     def __init__(self, objs):
@@ -51,23 +54,39 @@ class UnionFind(object):
         """
         self._groups = {}
         for obj in objs:
-            self._groups[obj.name] = [obj]
+            self._groups[obj.obj_name] = [obj]
+
+    def num_of_groups(self):
+        """
+        Returns the number of groups.
+        :return: int
+        """
+        return len(self._groups)
 
     def find(self, obj):
         """
-        Returns the name of the group that the given object belongs to.
+        Returns the name of the group, which is exactly the name of the group
+        leader that the given object belongs to.
         :param obj: UnionFindObj
         :return: str
         """
-        return obj.leader.name
+        return obj.leader.obj_name
         # Running time complexity: O(1)
 
     def union(self, group_name_a, group_name_b):
+        """
+        Fuses the given two groups together.
+        Objects in the first group and objects in the second group should all
+        coalesce, and be now in one single group.
+        :param group_name_a: str
+        :param group_name_b: str
+        :return: None
+        """
         # Check whether the input strings are null or empty
         if group_name_a is None or len(group_name_a) == 0 or \
                 group_name_b is None or len(group_name_b) == 0:
-            raise IllegalArgumentError('The input strings should not be None or'
-                                       ' empty.')
+            raise IllegalArgumentError('The input group names should not be '
+                                       'None or empty.')
         # Check whether the input group names exist
         if group_name_a not in self._groups or group_name_b not in self._groups:
             raise IllegalArgumentError("The input group names don't both "
@@ -82,7 +101,7 @@ class UnionFind(object):
         else:
             larger, smaller = group_b, group_a
         larger_leader = larger[0].leader
-        smaller_name = smaller[0].leader.name
+        smaller_name = smaller[0].leader.obj_name
         self._update_leader(group=smaller, new_leader=larger_leader)
         larger.extend(smaller)
         self._groups.pop(smaller_name)

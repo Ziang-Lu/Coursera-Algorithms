@@ -79,7 +79,7 @@ class Vertex(AbstractVertex, UnionFindObj):
         return self._min_incident_cost
 
     @property
-    def name(self):
+    def obj_name(self):
         return str(self._vtx_id)
 
     def add_edge(self, new_edge):
@@ -476,7 +476,7 @@ class UndirectedGraph(AbstractGraph):
                 curr_spanning_tree.append(edge)
                 # Fuse the two connected components to a single one
                 group_name_v, group_name_w = \
-                    edge.end1.leader.name, edge.end2.leader.name
+                    edge.end1.leader.obj_name, edge.end2.leader.obj_name
                 union_find.union(group_name_v, group_name_w)
         # Originally we would think it involves O(mn) leader updates; however,
         # we can change to a "vertex-centric" view:
@@ -490,4 +490,42 @@ class UndirectedGraph(AbstractGraph):
         # O(nlog n) leader updates in total.
 
         return sum(map(lambda edge: edge.cost, curr_spanning_tree))
+        # Overall running time complexity: O(mlog m)
+
+    def clustering_with_max_spacing(self, k):
+        """
+        Clusters the graph into the given number of cluster using maximum
+        spacing as the objective function, which is to maximize the minimum
+        distance between a pair of separated points, using Single-link
+        Algorithm, which is exactly the same as Kruskal's MST Algorithm.
+        :param k: int
+        :return: float
+        """
+        # Check whether the input k is greater than 1
+        if k <= 1:
+            raise IllegalArgumentError('The number of clusters must be greater '
+                                       'than 1.')
+
+        edges = sorted(self._edge_list)
+
+        # Initially, each point is in a separate cluster.
+        union_find = UnionFind(self._vtx_list)
+
+        stopped = False
+        for edge in edges:
+            if edge.end1.leader is not edge.end2.leader:
+                if stopped:
+                    return edge.cost
+                # Let p, q = closest pair of separated points, which determines
+                # the current spacing
+                # Merge the clusters containing p and q into a single cluster
+                group_name_p, group_name_q = \
+                    edge.end1.leader.obj_name, edge.end2.leader.obj_name
+                union_find.union(group_name_p, group_name_q)
+                if union_find.num_of_groups() == k:  # Repeat until only k clusters
+                    # The maximum spacing is simply the cost of the next
+                    # cheapest crossing edge among different connected
+                    # components.
+                    stopped = True
+        return 0.0
         # Overall running time complexity: O(mlog m)

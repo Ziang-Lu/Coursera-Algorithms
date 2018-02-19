@@ -473,10 +473,10 @@ public class UndirectedGraph implements GraphInterface {
                 if (stopped) {
                     return edge.cost();
                 }
-                // Let p, q = closest pair of separated points, which determines current the spacing
+                // Let p, q = closest pair of separated points, which determines the current spacing
                 // Merge the clusters containing p and q into a single cluster
-                String groupNameV = edge.end1().leader().objName(), groupNameW = edge.end2().leader().objName();
-                unionFind.union(groupNameV, groupNameW);
+                String groupNameP = edge.end1().leader().objName(), groupNameQ = edge.end2().leader().objName();
+                unionFind.union(groupNameP, groupNameQ);
                 if (unionFind.numOfGroups() == k) { // Repeat until only k clusters
                     // The maximum spacing is simply the cost of the next cheapest crossing edge among different
                     // connected components.
@@ -484,8 +484,7 @@ public class UndirectedGraph implements GraphInterface {
                 }
             }
         }
-        // Codes should never reach here.
-        return 0.0;
+        return 0.0; // Codes should never reach here.
         // Overall running time complexity: O(mlog m)
     }
 

@@ -8,12 +8,18 @@ from undirected_graph import UndirectedGraph
 
 def main():
     graph = _construct_undirected_graph('undirected_graph_info.txt')
+    # Find the minimum spanning tree (MST) using Prim's and Kruskal's algorithms
+    # with some variations
     print("Cost of the Minimum Spanning Tree (MST) using straightforward Prim's"
           " algorithm: %f" % graph.prim_mst_straightforward())
     print("Cost of the Minimum Spanning Tree (MST) using straightforward "
           "Kruskal's algorithm: %f" % graph.kruskal_mst_straightforward())
-    print("Cost of the Minimum Spanning Tree (MST) using improved Kruskal's "
-          "algorithm: %f" % graph.kruskal_mst_improved())
+    # print("Cost of the Minimum Spanning Tree (MST) using improved Kruskal's "
+    #       "algorithm: %f" % graph.kruskal_mst_improved())
+    # Cluster the graph into 2 clusters using maximum spacing as the objective
+    # function, using Single-link Algorithm
+    print('Maximum spacing of 2-clustering: %f' %
+          graph.clustering_with_max_spacing(k=2))
 
 
 def _construct_undirected_graph(filename):
