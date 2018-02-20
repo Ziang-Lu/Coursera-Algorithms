@@ -1,4 +1,4 @@
-### Data Structure - Union Find
+### Data Structure - Union-Find
 
 Maintain a **partition** of a set of objects
 
@@ -58,3 +58,8 @@ x \le log_2n
 $$
 Thus, each vertex experiences O(log n) leader updates, leading to a **O(nlog n)** leader updates in total.
 
+<br>
+
+### Advanced Union-Find
+
+#### Lazy Union
