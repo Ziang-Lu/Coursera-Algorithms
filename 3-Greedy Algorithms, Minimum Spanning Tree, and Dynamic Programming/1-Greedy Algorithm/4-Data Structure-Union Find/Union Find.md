@@ -62,4 +62,21 @@ Thus, each vertex experiences O(log n) leader updates, leading to a **O(nlog n)*
 
 ### Advanced Union-Find
 
-#### Lazy Union
+#### 1. Lazy Unions
+
+Goal: Only update a single pointer in each ``union()`` operation
+
+=> When two groups merge, make one group's leader (i.e., root of the tree) point to the other leader (to be a child of the root of the other tree).
+
+Pros:
+
+``union()`` operation reduces to two ``find()`` operations and one link operation:
+
+```
+rx, ry = find(x), find(y)
+Link rx and ry in O(1) time
+```
+
+Cons:
+
+``find()`` operation needs to follow a path of leader pointers until the real leader, which is pointing to itself.

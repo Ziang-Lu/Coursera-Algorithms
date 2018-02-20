@@ -96,6 +96,7 @@ class UnionFind(object):
         larger_leader = larger[0].leader
         smaller_name = smaller[0].leader.obj_name
         self._update_leader(group=smaller, new_leader=larger_leader)
+
         larger.extend(smaller)
         self._groups.pop(smaller_name)
 

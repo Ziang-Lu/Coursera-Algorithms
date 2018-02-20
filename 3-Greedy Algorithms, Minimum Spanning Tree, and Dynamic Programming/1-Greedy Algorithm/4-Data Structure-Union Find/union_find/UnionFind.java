@@ -73,6 +73,7 @@ public class UnionFind <T> {
         UnionFindObj largerLeader = larger.get(0).leader();
         String smallerName = smaller.get(0).objName();
         updateLeader(smaller, largerLeader);
+
         larger.addAll(smaller);
         groups.remove(smallerName);
         // Running time complexity: O(n)
