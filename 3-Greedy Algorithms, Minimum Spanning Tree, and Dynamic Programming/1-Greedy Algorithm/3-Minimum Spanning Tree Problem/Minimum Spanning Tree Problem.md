@@ -78,7 +78,7 @@ Given $N$ points, a distance measure $d$ (symmetrical, i.e., $d(p, q) = d(q, p)$
 
 *=> Objective function (variable): the **spacing of a clustering** is the **distance between the closest pair of separated points**.*
 
-Compute the k-clustering with maximum spacing, i.e, $O(c^*) = min_{separated \ p, q}d(p, q)$.
+Compute the k-clustering with maximum spacing, i.e, $O(c^*) = max\{min_{separated \ p, q}d(p, q)\}$.
 
 <br>
 
