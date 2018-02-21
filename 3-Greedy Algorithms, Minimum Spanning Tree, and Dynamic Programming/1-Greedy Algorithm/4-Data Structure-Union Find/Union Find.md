@@ -60,11 +60,9 @@ Thus, each vertex experiences O(log n) leader updates, leading to a **O(nlog n)*
 
 <br>
 
-### Advanced Union-Find
+### Advanced Union-Find -> "Lazy Union"
 
-#### 1. Lazy Unions
-
-Goal: Only update a single pointer in each ``union()`` operation
+**Goal: Only update a single pointer in each ``union()`` operation**
 
 => When two groups merge, make one group's leader (i.e., root of the tree) point to the other leader (to be a child of the root of the other tree).
 
@@ -79,4 +77,18 @@ Link rx and ry in O(1) time
 
 Cons:
 
-``find()`` operation needs to follow a path of leader pointers until the real leader, which is pointing to itself.
+``find()`` operation needs to follow a path of parent pointers until the root, which is pointing to itself.
+
+<br>
+
+**Problem: Which group to change the leader?**
+
+<br>
+
+#### Optimization 1: Union-by-Rank (from the idea of the previous practical optimization)
+
+Look at which of the two trees is already deeper, and we want to keep the root of that deeper tree, so we install the root of the shallower tree as the child of the deeper one.
+
+=> For each object, maintain a ``rank`` field, which is the maximum number of hops from some leaf of this object's tree to this object.
+
+=> The rank of an object is 1 + max rank of its children.

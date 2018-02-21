@@ -1,7 +1,7 @@
 package union_find;
 
 /**
- * A simple interface for objects to be stored in UnionFind data structure.
+ * A simple interface for objects to be stored in Union-Find data structure.
  *
  * @author Ziang Lu
  */

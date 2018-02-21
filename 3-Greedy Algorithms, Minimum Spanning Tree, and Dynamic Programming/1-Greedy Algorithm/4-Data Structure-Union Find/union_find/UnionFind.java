@@ -18,19 +18,18 @@ public class UnionFind <T> {
      * (representative of the group) object, and the group name is exactly the
      * name of the leader.
      */
-    private HashMap<String, ArrayList<UnionFindObj>> groups;
+    private HashMap<String, ArrayList<T>> groups;
 
     /**
      * Constructor with parameter.
      * @param objs list of sole objects
      */
     public UnionFind(ArrayList<T> objs) {
-        groups = new HashMap<String, ArrayList<UnionFindObj>>();
+        groups = new HashMap<String, ArrayList<T>>();
         for (T obj : objs) {
-            UnionFindObj o = (UnionFindObj) obj;
-            ArrayList<UnionFindObj> group = new ArrayList<UnionFindObj>();
-            group.add(o);
-            groups.put(o.objName(), group);
+            ArrayList<T> group = new ArrayList<T>();
+            group.add(obj);
+            groups.put(obj.objName(), group);
         }
     }
 

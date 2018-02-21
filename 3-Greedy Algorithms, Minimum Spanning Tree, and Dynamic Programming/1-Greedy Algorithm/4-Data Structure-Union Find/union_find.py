@@ -56,6 +56,13 @@ class UnionFind(object):
         for obj in objs:
             self._groups[obj.obj_name] = [obj]
 
+    def num_of_groups(self):
+        """
+        Returns the number of groups.
+        :return: int
+        """
+        return len(self._groups)
+
     def find(self, obj):
         """
         Returns the name of the group, which is exactly the name of the group
@@ -98,6 +105,7 @@ class UnionFind(object):
         self._update_leader(group=smaller, new_leader=larger_leader)
 
         larger.extend(smaller)
+        self._groups[larger_leader.obj_name] = larger
         self._groups.pop(smaller_name)
 
     def _update_leader(self, group, new_leader):

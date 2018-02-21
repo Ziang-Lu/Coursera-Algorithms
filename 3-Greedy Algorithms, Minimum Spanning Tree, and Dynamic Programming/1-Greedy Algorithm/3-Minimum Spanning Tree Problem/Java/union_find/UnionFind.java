@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Simple implementation of Union-Find data structure.
+ * Eager Union implementation of Union-Find data structure.
  * Maintain a partition of a set of objects
  *
  * @param T object type that implements UnionFindObj interface
