@@ -83,6 +83,7 @@ public class UnionFind <T> {
         updateLeader(smaller, largerLeader);
 
         larger.addAll(smaller);
+        groups.put(largerLeader.objName(), larger);
         groups.remove(smallerName);
         // Running time complexity: O(n)
     }
