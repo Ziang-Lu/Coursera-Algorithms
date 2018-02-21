@@ -33,7 +33,7 @@ Each object points to the leader of its subset, i.e., each object "remembers" wh
 
   Simply return the leader of $x$.
 
-  O(1)
+  **O(1)**
 
 ##### Keypoint #2 (Practical optimization)
 
@@ -66,18 +66,18 @@ Thus, each vertex experiences O(log n) leader updates, leading to a **O(nlog n)*
 
 => When two groups merge, make one group's leader (i.e., root of the tree) point to the other leader (to be a child of the root of the other tree).
 
-Pros:
+**Pros:**
 
-``union()`` operation reduces to two ``find()`` operations and one link operation:
+``union()`` operation reduces to two ``find()`` operations and one link operation: (**O(n)**)
 
 ```
 rx, ry = find(x), find(y)
 Link rx and ry in O(1) time
 ```
 
-Cons:
+**Cons:**
 
-``find()`` operation needs to follow a path of parent pointers until the root, which is pointing to itself.
+``find()`` operation needs to follow a path of parent pointers until the root, which points to itself. (**O(n)**)
 
 <br>
 
@@ -91,4 +91,36 @@ Look at which of the two trees is already deeper, and we want to keep the root o
 
 => For each object, maintain a ``rank`` field, which is the maximum number of hops from some leaf of this object's tree to this object.
 
-=> The rank of an object is 1 + max rank of its children.
+=> The rank of an object is 1 + maximum rank of its children.
+
+=> Both ``find()`` and ``union()`` operations: O(r), where r is the rank of the root of the tree that the object belongs to
+
+<br>
+
+**Claim: With Union-by-Rank optimization, the maximum rank for any object is O(log n).**
+
+Proof:
+
+***
+
+Claim: The subtree of a rank-$r$ object has size $\ge 2^r$.
+
+Proof: by induction on the number of ``union()`` operations
+
+<u>Base case:</u> Initially all ranks are 0, and all subtree sizes are 1 ($2^0$).
+
+<u>Inductive hypothesis:</u> same as the claim.
+
+<u>Inductive step:</u>
+
+Nothing to prove when the ranks of all obejcts don't change. (Subtree sizes only go up.)
+
+When one of the ranks changes (i.e., when the two groups has roots of the same rank $r$), the new rank is $r + 1$, and the new subtree size is $\ge 2^r + 2^r = 2 * 2^r = 2^{r+1} = 2^{new \ rank}$.
+
+***
+
+Thus, the maximum possible rank $r_{max} = log_2 n$.
+
+<br>
+
+=> Both ``find()`` and ``union()`` operations: **O(log n)**, where r is the rank of the root of the tree that the object belongs to

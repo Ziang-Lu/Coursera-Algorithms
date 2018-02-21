@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Simple implementation of Union-Find data structure.
+ * Eager Union implementation of Union-Find data structure.
  * Maintain a partition of a set of objects
  *
  * @param T object type that implements UnionFindObj interface
  * @author Ziang Lu
  */
-public class UnionFind <T> {
+public class UnionFind <T extends UnionFindObj> {
 
     /**
      * Mapping between group names and the corresponding group.
@@ -39,7 +39,7 @@ public class UnionFind <T> {
      * @param obj given object
      * @return name of the group, which is exactly the name of the group leader
      */
-    public String find(UnionFindObj obj) {
+    public String find(T obj) {
         return obj.leader().objName();
         // Running time complexity: O(1)
     }
@@ -61,9 +61,9 @@ public class UnionFind <T> {
             throw new IllegalArgumentException("The input group names don't both exist.");
         }
 
-        ArrayList<UnionFindObj> groupA = groups.get(groupNameA), groupB = groups.get(groupNameB);
+        ArrayList<T> groupA = groups.get(groupNameA), groupB = groups.get(groupNameB);
         // In order to reduce the number of leader updates, let the smaller group inherit the leader of the larger one.
-        ArrayList<UnionFindObj> larger = null, smaller = null;
+        ArrayList<T> larger = null, smaller = null;
         if (groupA.size() >= groupB.size()) {
             larger = groupA; smaller = groupB;
         } else {
@@ -83,8 +83,8 @@ public class UnionFind <T> {
      * @param group given group
      * @param newLeader given new leader
      */
-    private void updateLeader(ArrayList<UnionFindObj> group, UnionFindObj newLeader) {
-        for (UnionFindObj obj : group) {
+    private void updateLeader(ArrayList<T> group, UnionFindObj newLeader) {
+        for (T obj : group) {
             obj.setLeader(newLeader);
         }
         // Running time complexity: O(n)

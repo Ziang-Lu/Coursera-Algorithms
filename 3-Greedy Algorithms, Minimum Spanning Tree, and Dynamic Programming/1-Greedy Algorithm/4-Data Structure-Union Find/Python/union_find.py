@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-A simple implementation of Union-Find data structure.
+Eager Union implementation of Union-Find data structure.
 Maintain a partition of a set of objects
 => Maintain a linked structure, and each subset has an arbitrary leader
    (representative of the group) object, and the group name is exactly the name
