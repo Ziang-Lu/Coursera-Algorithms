@@ -123,4 +123,24 @@ Thus, the maximum possible rank $r_{max} = log_2 n$.
 
 <br>
 
-=> Both ``find()`` and ``union()`` operations: **O(log n)**, where r is the rank of the root of the tree that the object belongs to
+=> **Both ``find()`` and ``union()`` operations: O(log n), where r is the rank of the root of the tree that the object belongs to**
+
+<br>
+
+**Problem: Why bother traversing a leaf-root path multiple times?**
+
+<br>
+
+#### Optimization 2: Path Compression
+
+After a ``find(x)`` operation, install shortcuts (i.e., rewire parent pointers) to $x$'s root all along the $x$~root path.
+
+=> In effect, path compression makes the tree shallower and more bushy.   *(=> 最终回到了Eager Union的效果)*
+
+=> **Speed up subsequent ``find(x)`` operations towards $x$**
+
+<br>
+
+<u>Important: Maintain all ranks EXACTLY as WITHOUT path compression!</u>
+
+=> Now the rank of an object only serves as an upper bound of the maximum number of hops on a path from a leaf to that object, rather than the previous equality.

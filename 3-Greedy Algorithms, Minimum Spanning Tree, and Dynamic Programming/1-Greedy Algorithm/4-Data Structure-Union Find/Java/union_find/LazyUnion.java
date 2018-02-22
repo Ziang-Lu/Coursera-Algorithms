@@ -43,6 +43,20 @@ package union_find;
  *
  * => Both find() and union() operations: O(log n)
  *
+ * Problem: Why bother traversing an object-root path multiple times?
+ *
+ * Optimization 2: Path Compression
+ * After a find(x) operation, install shortcuts (i.e., rewire parent pointers)
+ * to x's root all along the x~root path.
+ *
+ * => In effect, path compression makes the tree shallower and more bushy.
+ * (=> 最终回到了Eager Union的效果)
+ *
+ * Important: Maintain all ranks EXACTLY as WITHOUT path compression!
+ * => Now the rank of an object only serves as an upper bound of the maximum
+ *    number of hops on a path from a leaf to that object, rather than the
+ *    previous equality.
+ *
  * @param T object type that implements UnionFindObj interface
  * @author Ziang Lu
  */
@@ -55,7 +69,9 @@ public class LazyUnion <T extends LazyUnionObj> {
      * @return name of the group, which is exactly the name of the group root
      */
     public String find(T obj) {
-        return findRoot(obj).objName();
+        LazyUnionObj root = findRoot(obj);
+        pathCompression(obj, root);
+        return root.objName();
         // Running time complexity: O(log n)
     }
 
@@ -81,6 +97,21 @@ public class LazyUnion <T extends LazyUnionObj> {
     private boolean isRoot(LazyUnionObj obj) {
         return obj.parent() == obj;
         // Running time complexity: O(1)
+    }
+
+    /**
+     * Private helper method to do path compression for the given object.
+     * @param obj given object
+     * @param root root of the given object
+     */
+    private void pathCompression(T obj, LazyUnionObj root) {
+        LazyUnionObj curr = obj;
+        while (!isRoot(curr)) {
+            LazyUnionObj parent = curr.parent();
+            curr.setParent(root);
+            curr = parent;
+        }
+        // Running time complexity: O(log n)
     }
 
     /**

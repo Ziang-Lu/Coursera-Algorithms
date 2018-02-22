@@ -42,6 +42,20 @@ rank r), the new rank is r + 1, and the new subtree size is
 Thus, the maximum possible rank r_max = log2 n.
 
 => Both find and union operations: O(log n)
+
+Problem: Why bother traversing an object-root path multiple times?
+
+Optimization 2: Path Compression
+After a find(x) operation, install shortcuts (i.e., rewire parent pointers) to
+x's root all along the x~root path.
+
+=> In effect, path compression makes the tree shallower and more bushy.
+(=> 最终回到了Eager Union的效果)
+
+Important: Maintain all ranks EXACTLY as WITHOUT path compression!
+=> Now the rank of an object only serves as an upper bound of the maximum number
+   of hops on a path from a leaf to that object, rather than the previous
+   equality.
 """
 
 __author__ = 'Ziang Lu'
@@ -112,7 +126,9 @@ class LazyUnion(object):
         :param obj: LazyUnionObj
         :return: str
         """
-        return LazyUnion._find_root(obj).obj_name
+        root = LazyUnion._find_root(obj)
+        LazyUnion._path_compression(obj=obj, root=root)
+        return root.obj_name
         # Running time complexity: O(log n)
 
     @staticmethod
@@ -137,6 +153,20 @@ class LazyUnion(object):
         """
         return obj.parent is obj
         # Running time complexity: O(1)
+
+    @staticmethod
+    def _path_compression(obj, root):
+        """
+        Private helper function to do path compression for the given object.
+        :param obj: LazyUnionObj
+        :param root: LazyUnionObj
+        """
+        curr = obj
+        while not LazyUnion._is_root(curr):
+            parent = curr.parent
+            curr.parent = root
+            curr = parent
+        # Running time complexity: O(log n)
 
     @staticmethod
     def union(x, y):
