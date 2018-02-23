@@ -1,8 +1,7 @@
 /**
  * Given n items, each item with a non-negative value v and a non-negative
  * integral size (weight) w, and a non-negative and integral capacity W, select
- * a subset of the items, that maximize sum(v), subject to sum(w) <= W.
- *
+ * a subset of the items, that maximizes sum(v), subject to sum(w) <= W.
  *
  * Algorithm: (Dynamic programming)
  * Denote S to be the optimal solution, i.e., and item-n to be the last item.
@@ -16,9 +15,8 @@
  *       [CONTRADICTION])
  *    => S = the optimal solution among the first (n - 1) items and capacity W
  * 2. item-n is in S:
- *    => {S - item-n} must be optimal among only the first (n - 1) items and
- *       the residual capacity (W - w_n) (i.e., the space is "reserved" for
- *       item-n).
+ *    => {S - item-n} must be optimal among only the first (n - 1) items and the
+ *       residual capacity (W - w_n) (i.e., the space is "reserved" for item-n).
  *       (Proof:
  *       Assume S* is the optimal solution among the first (n - 1) items and
  *       the residual capacity (W - w_n) (S* > S - item-n), then among n items
@@ -47,7 +45,7 @@ public class Knapsack {
      * a subproblem, we can cache its solution in a global take for O(1) lookup
      * time later on.
      */
-    private int[][] subproblemSols; 
+    private int[][] subproblemSols;
 
     /**
      * Solves the knapsack problem of the items with the given values and
@@ -91,7 +89,7 @@ public class Knapsack {
 
     /**
      * Private helper method to solve the knapsack subproblem with the given
-     * first vertices and the given capacity recursively.
+     * first items and the given capacity recursively.
      * @param vals values of the items
      * @param weights weights of the items
      * @param lastItem last item of the subproblem
@@ -198,12 +196,6 @@ public class Knapsack {
             }
         }
         return reconstruct(vals, weights, capacity);
-    }
-
-    public static void main(String[] args) {
-        Knapsack knapsackSolver = new Knapsack();
-        System.out
-                .println(knapsackSolver.knapsackStraightforward(new int[] { 3, 2, 4, 4 }, new int[] { 4, 3, 2, 3 }, 6));
     }
 
 }
