@@ -51,7 +51,7 @@ public class Knapsack {
 
     /**
      * Solves the knapsack problem of the items with the given values and
-     * weights, and the given capacity.
+     * weights, and the given capacity, in a straightforward way.
      * @param vals values of the items
      * @param weights weights of the items
      * @param capacity capacity of the knapsack
@@ -156,6 +156,48 @@ public class Knapsack {
         }
         return includedItems;
         // Running time complexity: O(n)
+    }
+
+    /**
+     * Solves the knapsack problem of the items with the given values and
+     * weights, and the given capacity, in an improved bottom-up way.
+     * @param vals values of the items
+     * @param weights weights of the items
+     * @param capacity capacity of the knapsack
+     * @return included items
+     */
+    public HashSet<Integer> knapsack(int[] vals, int[] weights, int capacity) {
+        // Check whether the input arrays are null or empty
+        if ((vals == null) || (vals.length == 0) || (weights == null) || (weights.length == 0)) {
+            throw new IllegalArgumentException("The input values and weights should not be null or empty.");
+        }
+        // Check whether the input capacity is non-negative
+        if (capacity < 0) {
+            throw new IllegalArgumentException("The input capacity should be non-negative.");
+        }
+
+        int n = vals.length;
+        // Initialization
+        subproblemSols = new int[n][capacity + 1];
+        for (int x = 0; x <= capacity; ++x) {
+            if (weights[0] > x) {
+                subproblemSols[0][x] = 0;
+            } else {
+                subproblemSols[0][x] = vals[0];
+            }
+        }
+        // Bottom-up calculation
+        for (int item = 1; item < n; ++item) {
+            for (int x = 0; x <= capacity; ++x) {
+                if (weights[item] > x) {
+                    subproblemSols[item][x] = subproblemSols[item - 1][x];
+                } else {
+                    subproblemSols[item][x] = Math.max(subproblemSols[item - 1][x],
+                            subproblemSols[item - 1][x - weights[item]] + vals[item]);
+                }
+            }
+        }
+        return reconstruct(vals, weights, capacity);
     }
 
     public static void main(String[] args) {
