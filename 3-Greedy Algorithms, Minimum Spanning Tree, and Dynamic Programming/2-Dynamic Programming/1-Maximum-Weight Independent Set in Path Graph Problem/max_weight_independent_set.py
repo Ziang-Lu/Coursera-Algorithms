@@ -94,8 +94,8 @@ def _find_mwis_helper(weights, last_vtx, subproblem_sols):
 
 def _reconstruct_mwis(weights, subproblem_sols):
     """
-    Private helper function to reconstruct MWIS from the solutions of the
-    subproblems.
+    Private helper function to reconstruct MWIS according to the optimal
+    solution using backtracking.
     :param weights: list[int]
     :param subproblem_sols: list[int]
     :return: set{int}

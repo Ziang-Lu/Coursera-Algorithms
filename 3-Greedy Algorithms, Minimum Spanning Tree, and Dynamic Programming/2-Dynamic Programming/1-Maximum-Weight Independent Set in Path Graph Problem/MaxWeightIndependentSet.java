@@ -39,7 +39,7 @@ public class MaxWeightIndependentSet {
      */
     private static final int DEFAULT_SUBPROBLEM_SOL = -1;
     /**
-     * Solutions for the subproblems.
+     * Subproblem solutions.
      * Since there are only O(n) distinct subproblems, the first time we solve a
      * subproblem, we can cache its solution in a global take for O(1) lookup
      * time later on.
@@ -102,8 +102,8 @@ public class MaxWeightIndependentSet {
     }
 
     /**
-     * Private helper method to reconstruct MWIS from the solutions of the
-     * subproblems.
+     * Private helper method to reconstruct MWIS according to the optimal
+     * solution using backtracking.
      * @param weights weights of the path graph
      * @return MWIS of the given path graph
      */
@@ -112,9 +112,12 @@ public class MaxWeightIndependentSet {
         int currVtx = subproblemSols.length - 1;
         while (currVtx >= 2) {
             if (subproblemSols[currVtx - 1] >= (subproblemSols[currVtx - 2] + weights[currVtx])) {
-                currVtx--;
+                // Case 1: The current vertex is not included.
+                --currVtx;
             } else {
+                // Case 2: The current vertex is included.
                 mwis.add(currVtx);
+                // So the previous vertex must not be included.
                 currVtx -= 2;
             }
         }
