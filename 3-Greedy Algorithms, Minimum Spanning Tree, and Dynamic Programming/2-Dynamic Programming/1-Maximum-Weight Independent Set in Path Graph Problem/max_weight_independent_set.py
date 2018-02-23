@@ -103,7 +103,8 @@ def _reconstruct_mwis(weights, subproblem_sols):
     mwis = set()
     curr_vtx = len(subproblem_sols) - 1
     while curr_vtx >= 2:
-        if subproblem_sols[curr_vtx - 1] >= subproblem_sols[curr_vtx - 2] + weights[curr_vtx]:
+        if subproblem_sols[curr_vtx - 1] >= \
+                subproblem_sols[curr_vtx - 2] + weights[curr_vtx]:
             curr_vtx -= 1
         else:
             mwis.add(curr_vtx)
@@ -136,8 +137,9 @@ def find_mwis(weights):
 
     subproblem_sols = [weights[0], max(weights[0], weights[1])]
     for curr_vtx in range(2, len(weights)):
-        subproblem_sols[curr_vtx] = max(subproblem_sols[curr_vtx - 1],
-                                        subproblem_sols[curr_vtx - 2] +
-                                        weights[curr_vtx])
+        subproblem_sols.append(
+            max(
+                subproblem_sols[curr_vtx - 1],
+                subproblem_sols[curr_vtx - 2] + weights[curr_vtx]))
     return _reconstruct_mwis(weights=weights, subproblem_sols=subproblem_sols)
     # Overall running time complexity: O(n)
