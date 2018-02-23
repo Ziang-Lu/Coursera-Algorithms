@@ -152,9 +152,11 @@ public class MaxWeightIndependentSet {
             return mwis;
         }
 
+        // Initialization
         subproblemSols = new int[weights.length];
         subproblemSols[0] = weights[0];
         subproblemSols[1] = Math.max(weights[0], weights[1]);
+        // Bottom-up calculation
         for (int currVtx = 2; currVtx < weights.length; ++currVtx) {
             subproblemSols[currVtx] = Math.max(subproblemSols[currVtx - 1],
                     subproblemSols[currVtx - 2] + weights[currVtx]);

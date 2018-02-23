@@ -135,7 +135,9 @@ def find_mwis(weights):
     if len(weights) == 1:
         return set([0])
 
+    # Initialization
     subproblem_sols = [weights[0], max(weights[0], weights[1])]
+    # Bottom-up calculation
     for curr_vtx in range(2, len(weights)):
         subproblem_sols.append(
             max(
