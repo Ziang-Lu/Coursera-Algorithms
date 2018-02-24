@@ -69,7 +69,7 @@ public class Knapsack {
         initializeSubproblemSols(n, capacity);
         knapsackHelper(vals, weights, n - 1, capacity);
         return reconstruct(vals, weights, capacity);
-        // Overall running time complexity: O(nW)
+        // With memoization, the overall running time complexity is O(nW).
     }
 
     /**
@@ -80,8 +80,8 @@ public class Knapsack {
     private void initializeSubproblemSols(int n, int capacity) {
         subproblemSols = new int[n][capacity + 1];
         for (int i = 0; i < n; ++i) {
-            for (int j = 0; j <= capacity; ++j) {
-                subproblemSols[i][j] = DEFAULT_SUBPROBLEM_SOL;
+            for (int x = 0; x <= capacity; ++x) {
+                subproblemSols[i][x] = DEFAULT_SUBPROBLEM_SOL;
             }
         }
         // Running time complexity: O(nW)
@@ -100,7 +100,7 @@ public class Knapsack {
             return;
         }
 
-        // Base case 1: Only the first item
+        // Base case
         if (lastItem == 0) {
             if (weights[0] > currCapacity) {
                 subproblemSols[0][currCapacity] = 0;
@@ -109,12 +109,6 @@ public class Knapsack {
             }
             return;
         }
-        // Base case 2: No capacity available
-        if (currCapacity == 0) {
-            subproblemSols[lastItem][0] = 0;
-            return;
-        }
-
         // Recursive case
         if (weights[lastItem] > currCapacity) {
             knapsackHelper(vals, weights, lastItem - 1, currCapacity);

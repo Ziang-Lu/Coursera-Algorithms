@@ -59,12 +59,12 @@ def knapsack_straightforward(vals, weights, capacity):
         raise IllegalArgumentError('The input capacity should be non-negative.')
 
     n = len(vals)
-    subproblem_sols = [[-1 for j in range(capacity + 1)] for i in range(n)]
+    subproblem_sols = [[-1 for x in range(capacity + 1)] for i in range(n)]
     _knapsack_helper(vals, weights, last_item=n - 1, curr_capacity=capacity,
                      subproblem_sols=subproblem_sols)
     return _reconstruct(vals, weights, capacity,
                         subproblem_sols=subproblem_sols)
-    # Overall running time complexity: O(nW)
+    # With memoization, the overall running time complexity is O(nW).
 
 
 def _knapsack_helper(vals, weights, last_item, curr_capacity, subproblem_sols):
@@ -81,18 +81,13 @@ def _knapsack_helper(vals, weights, last_item, curr_capacity, subproblem_sols):
     if subproblem_sols[last_item][curr_capacity] != -1:
         return
 
-    # Base case 1: Only the first item
+    # Base case
     if last_item == 0:
         if weights[0] > curr_capacity:
             subproblem_sols[0][curr_capacity] = 0
         else:
             subproblem_sols[0][curr_capacity] = vals[0]
         return
-    # Base case 2: No capacity available
-    if curr_capacity == 0:
-        subproblem_sols[last_item][0] = 0
-        return
-
     # Recursive case
     if weights[last_item] > curr_capacity:
         _knapsack_helper(vals, weights, last_item=last_item - 1,
