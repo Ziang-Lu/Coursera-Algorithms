@@ -59,7 +59,7 @@ public class Knapsack {
         initializeSubproblemSols(n, capacity);
         knapsackHelper(vals, weights, n - 1, capacity);
         return reconstruct(vals, weights, capacity);
-        // With memoization, the overall running time complexity is O(nW).
+        // With memoization, the overall running time complexity is O(nW), where W is the knapsack capacity.
     }
 
     /**
@@ -74,7 +74,7 @@ public class Knapsack {
                 subproblemSols[i][x] = DEFAULT_SUBPROBLEM_SOL;
             }
         }
-        // Running time complexity: O(nW)
+        // Running time complexity: O(nW), where W is the knapsack capacity
     }
 
     /**
@@ -180,6 +180,7 @@ public class Knapsack {
             }
         }
         return reconstruct(vals, weights, capacity);
+        // Overall running time complexity: O(nW), where W is the knapsack capacity
     }
 
 }

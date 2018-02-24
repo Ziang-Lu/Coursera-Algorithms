@@ -54,7 +54,8 @@ def knapsack_straightforward(vals, weights, capacity):
                      subproblem_sols=subproblem_sols)
     return _reconstruct(vals, weights, capacity,
                         subproblem_sols=subproblem_sols)
-    # With memoization, the overall running time complexity is O(nW).
+    # With memoization, the overall running time complexity is O(nW), where W is
+    # the knapsack capacity
 
 
 def _knapsack_helper(vals, weights, last_item, curr_capacity, subproblem_sols):
