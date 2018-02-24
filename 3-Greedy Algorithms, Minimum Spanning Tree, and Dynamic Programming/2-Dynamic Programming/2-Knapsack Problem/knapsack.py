@@ -127,3 +127,41 @@ def _reconstruct(vals, weights, capacity, subproblem_sols):
         included_items.add(0)
     return included_items
     # Running time complexity: O(n)
+
+
+def knapsack(vals, weights, capacity):
+    """
+    Solves the knapsack problem of the items with the given values and weights,
+    and the given capacity, in an improved bottom-up way.
+    :param vals: list[int]
+    :param weights: list[int]
+    :param capacity: int
+    :return: set{int}
+    """
+    # Check whether the input arrays are None or empty
+    if vals is None or len(weights) == 0 or weights is None or len(weights) == 0:
+        raise IllegalArgumentError('The input values and weights should not be '
+                                   'null or empty.')
+    # Check whether the input capacity is non-negative
+    if capacity < 0:
+        raise IllegalArgumentError('The input capacity should be non-negative.')
+
+    n = len(vals)
+    # Initialization
+    subproblem_sols = [[0 for x in range(capacity + 1)] for i in range(n)]
+    for x in range(0, capacity + 1):
+        if weights[0] <= x:
+            subproblem_sols[0][x] = vals[0]
+    # Bottom-up calculation
+    for item in range(1, n):
+        for x in range(0, capacity + 1):
+            if weights[item] > x:
+                subproblem_sols[item][x] = subproblem_sols[item - 1][x]
+            else:
+                result_without_curr = subproblem_sols[item - 1][x]
+                result_with_curr = \
+                    subproblem_sols[item - 1][x - weights[item]] + vals[item]
+                subproblem_sols[item][x] = max(result_without_curr,
+                                               result_with_curr)
+    return _reconstruct(vals, weights, capacity,
+                        subproblem_sols=subproblem_sols)
