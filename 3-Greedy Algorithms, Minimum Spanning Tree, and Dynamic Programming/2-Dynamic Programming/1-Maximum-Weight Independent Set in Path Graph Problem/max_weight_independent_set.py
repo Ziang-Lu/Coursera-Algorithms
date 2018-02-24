@@ -13,17 +13,11 @@ Consider whether v_n is in S:
 1. v_n is NOT in S:
    Let G' = G - v_n
    => S is the MWIS in G'.
-      (Proof:
-      Assume S* is the MWIS in G' (S* > S), then in G, we still have S* > S, so
-      S is not the optimal solution in G. [CONTRADICTION])
    => S = the MWIS in G'
 2. v_n is in S:
    => v_n-1 is NOT in S.
    Let G'' = G - v_n - v_n-1
    => {S - v_n} is the MWIS in G''.
-      (Proof:
-      Assume S* is the MWIS in G'' (S* > {S - v_n}), then in G, we have
-      S* + v_n > S, so S is not the optimal solution in G. [CONTRADICTION])
    => S = the MWIS in G'' + v_n
 
 i.e.,

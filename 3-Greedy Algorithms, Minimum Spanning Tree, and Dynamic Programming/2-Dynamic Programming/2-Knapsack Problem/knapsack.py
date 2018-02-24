@@ -11,20 +11,10 @@ Denote S to be the optimal solution, i.e., and item-n to be the last item.
 Consider whether item-n is in S:
 1. item-n is NOT in S:
    => S must be optimal among only the first (n - 1) items and capacity W.
-      (Proof:
-      Assume S* is the optimal solution among the first (n - 1) items and
-      capacity W (S* > S), then among n items and capacity W, we still have
-      S* > S, so S is not the optimal solution among n items and capacity W.
-      [CONTRADICTION])
    => S = the optimal solution among the first (n - 1) items and capacity W
 2. item-n is in S:
    => {S - item-n} must be optimal among only the first (n - 1) items and the
       residual capacity (W - w_n) (i.e., the space is "reserved" for item-n).
-      (Proof:
-      Assume S* is the optimal solution among the first (n - 1) items and the
-      residual capacity (W - w_n) (S* > S - item-n), then among n items and
-      capacity W, we have S* + item-n > S, so S is not the optimal solution
-      among n items and capacity W. [CONTRADICTION])
    => S = the optimal solution among the first (n - 1) items and the residual
           capacity (W - w_n) + item-n
 
