@@ -72,7 +72,7 @@ public class SequenceAlignment {
         }
         // Check whether the input map is null
         if (penMap == null) {
-            throw new IllegalArgumentException("The input penalty map should not be null.");
+            throw new NullPointerException("The input penalty map should not be null.");
         }
 
         initializeSubproblemSols(x.length(), y.length());
@@ -97,8 +97,8 @@ public class SequenceAlignment {
     }
 
     /**
-     * Private helper method to solve the sequence alignment with the given
-     * prefix of the original strings and the given penalties recursively.
+     * Private helper method to solve the sequence alignment problem with the
+     * given prefix of the original strings and the given penalties recursively.
      * @param xPrefix prefix of the first string
      * @param yPrefix prefix of the second string
      * @param gapPen penalty for gap
