@@ -2,8 +2,6 @@
 
 Principles of Dynamic Programming:
 
-Key ingredients of dynamic programming:
-
 * Identify a **small** number of subproblems
 
 * Can quickly + correctly **solve "larger" subproblems given the solutions to "smaller" subproblems** (Usually via recusion)
