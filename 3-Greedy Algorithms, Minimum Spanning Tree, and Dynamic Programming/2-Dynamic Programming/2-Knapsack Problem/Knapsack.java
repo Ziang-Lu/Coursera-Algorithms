@@ -29,6 +29,7 @@ public class Knapsack {
      * Default negative value for subproblem solutions.
      */
     private static final int DEFAULT_SUBPROBLEM_SOL = -1;
+
     /**
      * Subproblem solutions.
      * Since there are only O(nW) distinct subproblems, the first time we solve

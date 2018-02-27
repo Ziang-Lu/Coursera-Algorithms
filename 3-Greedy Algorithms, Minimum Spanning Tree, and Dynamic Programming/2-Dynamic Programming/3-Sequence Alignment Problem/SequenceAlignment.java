@@ -40,9 +40,10 @@ import java.util.HashMap;
 public class SequenceAlignment {
 
     /**
-     * Default negative values for subproblem solutions.
+     * Default negative value for subproblem solutions.
      */
     private static final int DEFAULT_SUBPROBLEM_SOL = -1;
+
     /**
      * Subproblem solutions.
      * Since there are only O(mn) subproblems, the first time we solve a
