@@ -6,7 +6,6 @@ __author__ = 'Ziang Lu'
 import heapq
 from collections import Counter
 from functools import total_ordering
-from queue import Queue
 
 
 @total_ordering
@@ -68,8 +67,7 @@ class HuffmanTree(object):
         """
         self._root = None
         self._encoding_map = {}
-        # self.construct_huffman_tree_with_heap(s)
-        self.construct_huffman_tree_with_two_queues(s)
+        self.construct_huffman_tree_with_heap(s)
 
     def construct_huffman_tree_with_heap(self, s):
         """
@@ -125,68 +123,6 @@ class HuffmanTree(object):
         # T(n) = 2T(n/2) + O(1)
         # a = 2, b = 2, d = 0
         # According to Master Method, the running time complexity is O(n).
-
-    def construct_huffman_tree_with_two_queues(self, s):
-        """
-        Constructs the Huffman tree using the given string with two queues.
-        :param s: s
-        :return: None
-        """
-        # Check whether the input string is None or empty
-        if s is None or len(s) == 0:
-            self._root = Node(None, 0)
-            return
-
-        # Create a map between characters and their frequencies   [O(n)]
-        freq_of_chars = Counter(s)
-
-        # Create a Node array and sort it   [O(nlog n)]
-        nodes = [Node(c, freq, left=None, right=None)
-                 for c, freq in freq_of_chars.items()]
-        nodes.sort()
-
-        # Construct the Huffman tree using two queues   [O(n)]
-        # "primitives" contains the nodes with the original character keys,
-        # while "merged" contains the merged nodes
-        # According to the implementation, both of the queues are kept sorted.
-        primitives, merged = Queue(), Queue()
-        for node in nodes:
-            primitives.put(node)
-        while primitives.qsize() != 0 or merged.qsize() != 1:
-            # Take out two node with minimum frequency from the two queues
-            min_node1 = self._get_min_node(primitives, merged)
-            min_node2 = self._get_min_node(primitives, merged)
-            # Combine the two nodes
-            combined = Node(None, min_node1.freq + min_node2.freq,
-                            left=min_node1, right=min_node2)
-            # Put the combined node to the merged queue
-            merged.put(combined)
-        # By now there is only one node int he merged queue
-        self._root = merged.get()
-
-        # Create the encoding   [O(n)]
-        self._create_encoding(self._root, encoding_so_far='')
-        # Overall running time complexity: O(nlog n)
-
-    def _get_min_node(self, primitives, merged):
-        """
-        Private helper function to get a node with minimum frequency from the
-        given two queues.
-        :param primitives: Queue
-        :param merged: Queue
-        :return: Node
-        """
-        if primitives.empty():
-            return merged.get()
-        elif merged.empty():
-            return primitives.get()
-
-        primitives_front, merged_front = primitives[0], merged[0]
-        if primitives_front < merged_front:
-            return primitives.get()
-        else:
-            return merged.get()
-        # Running time complexity: O(1)
 
     def encode(self, msg):
         """
