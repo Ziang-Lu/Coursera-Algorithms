@@ -1,10 +1,10 @@
 /**
  * Given n items, each item with a non-negative value v and a non-negative
- * integral size (weight) w, and a non-negative and integral capacity W, select
- * a subset of the items, that maximizes sum(v), subject to sum(w) <= W.
+ * integral size (weight) w, and a non-negative integral capacity W, select a
+ * subset of the items, that maximizes sum(v), subject to sum(w) <= W.
  *
  * Algorithm: (Dynamic programming)
- * Denote S to be the optimal solution, i.e., and item-n to be the last item.
+ * Denote S to be the optimal solution and item-n to be the last item.
  * Consider whether item-n is in S:
  * 1. item-n is NOT in S:
  *    => S must be optimal among only the first (n - 1) items and capacity W.
@@ -18,7 +18,7 @@
  * i.e.,
  * Let S(i, x) be the optimal solution for the subproblem among the first i
  * items and capacity x, then
- * S(i, x) = max(S(i - 1, x), S(i - 1, x - w_i) + item-i)
+ * S(i, x) = max(S(i - 1, x), S(i - 1, x - w_i) + v_i)
  */
 
 import java.util.HashSet;
