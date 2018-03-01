@@ -65,17 +65,15 @@ def sequence_alignment_straightforward(x, y, gap_pen, pen_map):
     if pen_map is None:
         raise IllegalArgumentError('The input penalty map should not be None.')
 
-    subproblem_sols = [[-1 for j in range(len(y) + 1)]
-                       for i in range(len(x) + 1)]
-    _sequence_alignment_helper(x, y, gap_pen, pen_map,
-                               subproblem_sols=subproblem_sols)
+    subproblems = [[-1 for j in range(len(y) + 1)] for i in range(len(x) + 1)]
+    _sequence_alignment_helper(x, y, gap_pen, pen_map, subproblems=subproblems)
     return _reconstruct_optimal_alignment(x, y, gap_pen, pen_map,
-                                          subproblem_sols=subproblem_sols)
+                                          subproblems=subproblems)
     # With memoization, the overall running time complexity is O(mn).
 
 
 def _sequence_alignment_helper(x_prefix, y_prefix, gap_pen, pen_map,
-                               subproblem_sols):
+                               subproblems):
     """
     Private helper function to solve the sequence alignment problem with the
     given prefix of the original strings and the given penalties.
@@ -83,32 +81,32 @@ def _sequence_alignment_helper(x_prefix, y_prefix, gap_pen, pen_map,
     :param y_prefix: str
     :param gap_pen: int
     :param pen_map: dict{char: dict{char: int}}
-    :param subproblem_sols: list[list[int]]
+    :param subproblems: list[list[int]]
     :return: list[str]
     """
     i, j = len(x_prefix), len(y_prefix)
-    if subproblem_sols[i][j] != -1:
+    if subproblems[i][j] != -1:
         return
 
     # Base case
     if i == 0 or j == 0:
-        subproblem_sols[i][j] = max(i, j) * gap_pen
+        subproblems[i][j] = max(i, j) * gap_pen
         return
     # Recursive case
     _sequence_alignment_helper(x_prefix[:-1], y_prefix[:-1], gap_pen, pen_map,
-                               subproblem_sols=subproblem_sols)
+                               subproblems=subproblems)
     x_final, y_final = x_prefix[-1], y_prefix[-1]
-    result1 = subproblem_sols[i - 1][j - 1] + pen_map[x_final][y_final]
+    result1 = subproblems[i - 1][j - 1] + pen_map[x_final][y_final]
     _sequence_alignment_helper(x_prefix[:-1], y_prefix, gap_pen, pen_map,
-                               subproblem_sols=subproblem_sols)
-    result2 = subproblem_sols[i - 1][j] + gap_pen
+                               subproblems=subproblems)
+    result2 = subproblems[i - 1][j] + gap_pen
     _sequence_alignment_helper(x_prefix, y_prefix[:-1], gap_pen, pen_map,
-                               subproblem_sols=subproblem_sols)
-    result3 = subproblem_sols[i][j - 1] + gap_pen
-    subproblem_sols[i][j] = min(result1, result2, result3)
+                               subproblems=subproblems)
+    result3 = subproblems[i][j - 1] + gap_pen
+    subproblems[i][j] = min(result1, result2, result3)
 
 
-def _reconstruct_optimal_alignment(x, y, gap_pen, pen_map, subproblem_sols):
+def _reconstruct_optimal_alignment(x, y, gap_pen, pen_map, subproblems):
     """
     Private helper function to reconstruct the optimal alignment according to
     the optimal solution using backtracking.
@@ -122,9 +120,9 @@ def _reconstruct_optimal_alignment(x, y, gap_pen, pen_map, subproblem_sols):
     i, j = len(x), len(y)
     while i >= 1 and j >= 1:
         x_final, y_final = x[i - 1], y[j - 1]
-        result1 = subproblem_sols[i - 1][j - 1] + pen_map[x_final][y_final]
-        result2 = subproblem_sols[i - 1][j] + gap_pen
-        result = subproblem_sols[i][j]
+        result1 = subproblems[i - 1][j - 1] + pen_map[x_final][y_final]
+        result2 = subproblems[i - 1][j] + gap_pen
+        result = subproblems[i][j]
         if result == result1:
             # Case 1: The final positions are x_i and y_j.
             sx = x_final + sx
@@ -173,19 +171,19 @@ def sequence_alignment(x, y, gap_pen, pen_map):
 
     m, n = len(x), len(y)
     # Initialization
-    subproblem_sols = [[0 for j in range(n + 1)] for i in range(m + 1)]
+    subproblems = [[0 for j in range(n + 1)] for i in range(m + 1)]
     for i in range(m + 1):
-        subproblem_sols[i][0] = i * gap_pen
+        subproblems[i][0] = i * gap_pen
     for j in range(n + 1):
-        subproblem_sols[0][j] = j * gap_pen
+        subproblems[0][j] = j * gap_pen
     # Bottom-up calculation
     for i in range(1, m + 1):
         for j in range(1, n + 1):
             x_curr, y_curr = x[i - 1], y[j - 1]
-            result1 = subproblem_sols[i - 1][j - 1] + pen_map[x_curr][y_curr]
-            result2 = subproblem_sols[i - 1][j] + gap_pen
-            result3 = subproblem_sols[i][j - 1] + gap_pen
-            subproblem_sols[i][j] = min(result1, result2, result3)
+            result1 = subproblems[i - 1][j - 1] + pen_map[x_curr][y_curr]
+            result2 = subproblems[i - 1][j] + gap_pen
+            result3 = subproblems[i][j - 1] + gap_pen
+            subproblems[i][j] = min(result1, result2, result3)
     return _reconstruct_optimal_alignment(x, y, gap_pen, pen_map,
-                                          subproblem_sols=subproblem_sols)
+                                          subproblems=subproblems)
     # Overall running time complexity: O(mn)

@@ -40,7 +40,7 @@ public class OptimalBSTFinder {
      * subproblem, we can cache its solution in a global take for O(1) lookup
      * time later on.
      */
-    private int[][] subproblemSols;
+    private int[][] subproblems;
 
     /**
      * Finds the optimal BST for items with the given weight distribution, and
@@ -65,10 +65,10 @@ public class OptimalBSTFinder {
      * @param n number of items
      */
     private void initializeSubproblemSols(int n) {
-        subproblemSols = new int[n][n];
+        subproblems = new int[n][n];
         for (int i = 0; i < n; ++i) {
             for (int j = 0; j < n; ++j) {
-                subproblemSols[i][j] = DEFAULT_SUBPROBLEM_SOL;
+                subproblems[i][j] = DEFAULT_SUBPROBLEM_SOL;
             }
         }
         // Running time complexity: O(n^2)
@@ -89,8 +89,8 @@ public class OptimalBSTFinder {
             return 0;
         }
         // Recursive case
-        if (subproblemSols[start][end] != DEFAULT_SUBPROBLEM_SOL) {
-            return subproblemSols[start][end];
+        if (subproblems[start][end] != DEFAULT_SUBPROBLEM_SOL) {
+            return subproblems[start][end];
         }
         int minWST = Integer.MAX_VALUE;
         int weightSum = 0;
@@ -104,7 +104,7 @@ public class OptimalBSTFinder {
                 minWST  = currWST;
             }
         }
-        subproblemSols[start][end] = minWST;
+        subproblems[start][end] = minWST;
         return minWST;
     }
 
@@ -122,10 +122,10 @@ public class OptimalBSTFinder {
 
         int n = weights.length;
         // Initialization
-        subproblemSols = new int[n][n];
+        subproblems = new int[n][n];
         int nItem = 1;
         for (int i = 0; i < n; ++i) {
-            subproblemSols[i][i] = weights[i];
+            subproblems[i][i] = weights[i];
         }
         // Bottom-up calculation
         for (nItem = 2; nItem <= n; ++nItem) {
@@ -139,20 +139,20 @@ public class OptimalBSTFinder {
                 for (int r = start; r <= end; ++r) {
                     int leftSubtreeWST = 0, rightSubtreeWST = 0;
                     if (start <= (r - 1)) {
-                        leftSubtreeWST = subproblemSols[start][r - 1];
+                        leftSubtreeWST = subproblems[start][r - 1];
                     }
                     if ((r + 1) <= end) {
-                        rightSubtreeWST = subproblemSols[r + 1][end];
+                        rightSubtreeWST = subproblems[r + 1][end];
                     }
                     int currWST = leftSubtreeWST + rightSubtreeWST + weightSum;
                     if (currWST < minWST) {
                         minWST = currWST;
                     }
                 }
-                subproblemSols[start][end] = minWST;
+                subproblems[start][end] = minWST;
             }
         }
-        return subproblemSols[0][n - 1];
+        return subproblems[0][n - 1];
         // Overall running time complexity: O(n^3)
     }
 

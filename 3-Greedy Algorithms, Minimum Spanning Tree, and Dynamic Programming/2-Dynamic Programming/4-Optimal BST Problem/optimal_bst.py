@@ -52,13 +52,13 @@ def find_optimal_bst_straightforward(weights):
                                    'None or empty.')
 
     n = len(weights)
-    subproblem_sols = [[-1 for j in range(n)] for i in range(n)]
+    subproblems = [[-1 for j in range(n)] for i in range(n)]
     return _find_optimal_bst_helper(weights, start=0, end=n - 1,
-                                    subproblem_sols=subproblem_sols)
+                                    subproblems=subproblems)
     # With memoization, the overall running time complexity is O(n^3).
 
 
-def _find_optimal_bst_helper(weights, start, end, subproblem_sols):
+def _find_optimal_bst_helper(weights, start, end, subproblems):
     """
     Private helper function to find the optimal BST for the given contiguous
     items with the given weight distribution, and calculates its WST,
@@ -66,28 +66,28 @@ def _find_optimal_bst_helper(weights, start, end, subproblem_sols):
     :param weights: list[int]
     :param start: int
     :param end: int
-    :param subproblem_sols: list[list[int]]
+    :param subproblems: list[list[int]]
     :return:
     """
     # Base case
     if start > end:
         return 0
     # Recursive case
-    if subproblem_sols[start][end] != -1:
-        return subproblem_sols[start][end]
+    if subproblems[start][end] != -1:
+        return subproblems[start][end]
     min_wst = sys.maxsize
     weight_sum = 0
     for k in range(start, end + 1):
         weight_sum += weights[k]
     for r in range(start, end + 1):
         curr_wst = _find_optimal_bst_helper(weights, start=start, end=r - 1,
-                                            subproblem_sols=subproblem_sols) + \
+                                            subproblems=subproblems) + \
                    _find_optimal_bst_helper(weights, start=r + 1, end=end,
-                                            subproblem_sols=subproblem_sols) + \
+                                            subproblems=subproblems) + \
                    weight_sum
         if curr_wst < min_wst:
             min_wst = curr_wst
-    subproblem_sols[start][end] = min_wst
+    subproblems[start][end] = min_wst
     return min_wst
 
 

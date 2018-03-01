@@ -48,47 +48,47 @@ public class TwoKnapsack {
      * solve a subproblem, we can cache its solution in a global take for O(1)
      * lookup time later on.
      */
-    private int[][][] subproblemSols;
+    private int[][][] subproblems;
 
     /**
      * Solves the two-knapsack problem of the items with the given values and
      * weights, and the given capacities, in a straightforward way.
      * @param vals values of the items
      * @param weights weights of the items
-     * @param capacity1 capacity of knapsack-1
-     * @param capacity2 capacity of knapsack-2
+     * @param cap1 capacity of knapsack-1
+     * @param cap2 capacity of knapsack-2
      * @return included items in knapsack-1 and knapsack-2
      */
-    public ArrayList<HashSet<Integer>> twoKnapsackStraightforward(int[] vals, int[] weights, int capacity1,
-            int capacity2) {
+    public ArrayList<HashSet<Integer>> twoKnapsackStraightforward(int[] vals, int[] weights, int cap1, int cap2) {
         // Check whether the input arrays are null or empty
         if ((vals == null) || (vals.length == 0) || (weights == null) || (weights.length == 0)) {
             throw new IllegalArgumentException("The input values and weights should not be null or empty.");
         }
         // Check whether the input capacities are non-negative
-        if ((capacity1 < 0) || (capacity2 < 0)) {
+        if ((cap1 < 0) || (cap2 < 0)) {
             throw new IllegalArgumentException("The input capacities should be non-negative.");
         }
 
         int n = vals.length;
-        initializeSubproblemSols(n, capacity1, capacity2);
-        twoKnapsackHelper(vals, weights, n - 1, capacity1, capacity2);
-        return reconstruct(vals, weights, capacity1, capacity2);
-        // With memoization, the overall running time complexity is O(n*W1*W2).
+        initializeSubproblemSols(n, cap1, cap2);
+        twoKnapsackHelper(vals, weights, n - 1, cap1, cap2);
+        return reconstruct(vals, weights, cap1, cap2);
+        // With memoization, the overall running time complexity is O(n*W1*W2), where W1 and W2 are the knapsack
+        // capacities.
     }
 
     /**
      * Private helper method to initialize the subproblem solutions.
      * @param n number of items
-     * @param capacity1 capacity of knapsack-1
-     * @param capacity2 capacity of knapsack-2
+     * @param cap1 capacity of knapsack-1
+     * @param cap2 capacity of knapsack-2
      */
-    private void initializeSubproblemSols(int n, int capacity1, int capacity2) {
-        subproblemSols = new int[n][capacity1 + 1][capacity2 + 1];
+    private void initializeSubproblemSols(int n, int cap1, int cap2) {
+        subproblems = new int[n][cap1 + 1][cap2 + 1];
         for (int i = 0; i < n; ++i) {
-            for (int x1 = 0; x1 <= capacity1; ++x1) {
-                for (int x2 = 0; x2 <= capacity2; ++x2) {
-                    subproblemSols[i][x1][x2] = DEFAULT_SUBPROBLEM_SOL;
+            for (int x1 = 0; x1 <= cap1; ++x1) {
+                for (int x2 = 0; x2 <= cap2; ++x2) {
+                    subproblems[i][x1][x2] = DEFAULT_SUBPROBLEM_SOL;
                 }
             }
         }
@@ -101,45 +101,41 @@ public class TwoKnapsack {
      * @param vals values of the items
      * @param weights weights of the items
      * @param lastItem last item of the subproblem
-     * @param currCapacity1 capacity 1 of the subproblem
-     * @param currCapacity2 capacity 2 of the subproblem
+     * @param currCap1 capacity 1 of the subproblem
+     * @param currCap2 capacity 2 of the subproblem
      */
-    private void twoKnapsackHelper(int[] vals, int[] weights, int lastItem, int currCapacity1, int currCapacity2) {
-        if (subproblemSols[lastItem][currCapacity1][currCapacity2] != DEFAULT_SUBPROBLEM_SOL) {
+    private void twoKnapsackHelper(int[] vals, int[] weights, int lastItem, int currCap1, int currCap2) {
+        if (subproblems[lastItem][currCap1][currCap2] != DEFAULT_SUBPROBLEM_SOL) {
             return;
         }
 
         // Base case
         if (lastItem == 0) {
-            if ((weights[0] > currCapacity1) && (weights[0] > currCapacity2)) {
-                subproblemSols[0][currCapacity1][currCapacity2] = 0;
+            if ((weights[0] > currCap1) && (weights[0] > currCap2)) {
+                subproblems[0][currCap1][currCap2] = 0;
             } else {
-                subproblemSols[0][currCapacity1][currCapacity2] = vals[0];
+                subproblems[0][currCap1][currCap2] = vals[0];
             }
             return;
         }
         // Recursive case
-        twoKnapsacksHelper(vals, weights, lastItem - 1, currCapacity1, currCapacity2);
-        int resultWithoutLast = subproblemSols[lastItem - 1][currCapacity1][currCapacity2];
-        if (weights[lastItem] > currCapacity1) {
-            twoKnapsacksHelper(vals, weights, lastItem - 1, currCapacity1, currCapacity2 - weights[lastItem]);
-            int resultWithLastIn2 = subproblemSols[lastItem - 1][currCapacity1][currCapacity2 - weights[lastItem]]
-                    + vals[lastItem];
-            subproblemSols[lastItem][currCapacity1][currCapacity2] = Math.max(resultWithoutLast, resultWithLastIn2);
-        } else if (weights[lastItem] > currCapacity2) {
-            twoKnapsacksHelper(vals, weights, lastItem - 1, currCapacity1 - weights[lastItem], currCapacity2);
-            int resultWithLastIn1 = subproblemSols[lastItem - 1][currCapacity1 - weights[lastItem]][currCapacity2]
-                    + vals[lastItem];
-            subproblemSols[lastItem][currCapacity1][currCapacity2] = Math.max(resultWithoutLast, resultWithLastIn1);
+        twoKnapsackHelper(vals, weights, lastItem - 1, currCap1, currCap2);
+        int resultWithoutLast = subproblems[lastItem - 1][currCap1][currCap2];
+        if (weights[lastItem] > currCap1) {
+            twoKnapsackHelper(vals, weights, lastItem - 1, currCap1, currCap2 - weights[lastItem]);
+            int resultWithLastIn2 = subproblems[lastItem - 1][currCap1][currCap2 - weights[lastItem]] + vals[lastItem];
+            subproblems[lastItem][currCap1][currCap2] = Math.max(resultWithoutLast, resultWithLastIn2);
+        } else if (weights[lastItem] > currCap2) {
+            twoKnapsackHelper(vals, weights, lastItem - 1, currCap1 - weights[lastItem], currCap2);
+            int resultWithLastIn1 = subproblems[lastItem - 1][currCap1 - weights[lastItem]][currCap2] + vals[lastItem];
+            subproblems[lastItem][currCap1][currCap2] = Math.max(resultWithoutLast, resultWithLastIn1);
         } else {
-            twoKnapsacksHelper(vals, weights, lastItem - 1, currCapacity1 - weights[lastItem], currCapacity2);
-            int resultWithLastIn1 = subproblemSols[lastItem - 1][currCapacity1 - weights[lastItem]][currCapacity2]
-                    + vals[lastItem];
-            twoKnapsacksHelper(vals, weights, lastItem - 1, currCapacity1, currCapacity2 - weights[lastItem]);
-            int resultWithLastIn2 = subproblemSols[lastItem - 1][currCapacity1][currCapacity2 - weights[lastItem]]
-                    + vals[lastItem];
-            subproblemSols[lastItem][currCapacity1][currCapacity2] = Math
-                    .max(Math.max(resultWithoutLast, resultWithLastIn1), resultWithLastIn2);
+            twoKnapsackHelper(vals, weights, lastItem - 1, currCap1 - weights[lastItem], currCap2);
+            int resultWithLastIn1 = subproblems[lastItem - 1][currCap1 - weights[lastItem]][currCap2] + vals[lastItem];
+            twoKnapsackHelper(vals, weights, lastItem - 1, currCap1, currCap2 - weights[lastItem]);
+            int resultWithLastIn2 = subproblems[lastItem - 1][currCap1][currCap2 - weights[lastItem]] + vals[lastItem];
+            subproblems[lastItem][currCap1][currCap2] = Math.max(Math.max(resultWithoutLast, resultWithLastIn1),
+                    resultWithLastIn2);
         }
     }
 
@@ -148,33 +144,33 @@ public class TwoKnapsack {
      * knapsack-2 according to the optimal solution using backtracking.
      * @param vals values of the items
      * @param weights weights of the items
-     * @param capacity1 capacity of knapsack-1
-     * @param capacity2 capacity of knapsack-2
+     * @param cap1 capacity of knapsack-1
+     * @param cap2 capacity of knapsack-2
      * @return included items in knapsack-1 and knapsack-2
      */
-    private ArrayList<HashSet<Integer>> reconstruct(int[] vals, int[] weights, int capacity1, int capacity2) {
+    private ArrayList<HashSet<Integer>> reconstruct(int[] vals, int[] weights, int cap1, int cap2) {
         HashSet<Integer> includedItems1 = new HashSet<Integer>(), includedItems2 = new HashSet<Integer>();
-        int currItem = vals.length - 1, currCapacity1 = capacity1, currCapacity2 = capacity2;
+        int currItem = vals.length - 1, currCap1 = cap1, currCap2 = cap2;
         while (currItem >= 1) {
-            int resultWithoutCurr = subproblemSols[currItem - 1][currCapacity1][currCapacity2];
-            if (weights[currItem] > currCapacity1) {
-                int resultWithCurrIn2 = subproblemSols[currItem - 1][currCapacity1][currCapacity2 - weights[currItem]]
+            int resultWithoutCurr = subproblems[currItem - 1][currCap1][currCap2];
+            if (weights[currItem] > currCap1) {
+                int resultWithCurrIn2 = subproblems[currItem - 1][currCap1][currCap2 - weights[currItem]]
                         + vals[currItem];
                 if (resultWithoutCurr < resultWithCurrIn2) {
                     // Case 3: The current item is included in S2.
                     includedItems2.add(currItem);
                 }
-            } else if (weights[currItem] > currCapacity2) {
-                int resultWithCurrIn1 = subproblemSols[currItem - 1][currCapacity1 - weights[currItem]][currCapacity2]
+            } else if (weights[currItem] > currCap2) {
+                int resultWithCurrIn1 = subproblems[currItem - 1][currCap1 - weights[currItem]][currCap2]
                         + vals[currItem];
                 if (resultWithoutCurr < resultWithCurrIn1) {
                     // Case 2: The current item is included in S1.
                     includedItems1.add(currItem);
                 }
             } else {
-                int resultWithCurrIn1 = subproblemSols[currItem - 1][currCapacity1 - weights[currItem]][currCapacity2]
+                int resultWithCurrIn1 = subproblems[currItem - 1][currCap1 - weights[currItem]][currCap2]
                         + vals[currItem];
-                int resultWithCurrIn2 = subproblemSols[currItem - 1][currCapacity1][currCapacity2 - weights[currItem]]
+                int resultWithCurrIn2 = subproblems[currItem - 1][currCap1][currCap2 - weights[currItem]]
                         + vals[currItem];
                 int result = Math.max(Math.max(resultWithoutCurr, resultWithCurrIn1), resultWithCurrIn2);
                 if (result == resultWithoutCurr) {
@@ -182,18 +178,18 @@ public class TwoKnapsack {
                 } else if (result == resultWithCurrIn1) {
                     // Case 2: The current item is included in S1.
                     includedItems1.add(currItem);
-                    currCapacity1 -= weights[currItem];
+                    currCap1 -= weights[currItem];
                 } else if (result == resultWithCurrIn2) {
                     // Case 3: The current item is included in S2.
                     includedItems2.add(currItem);
-                    currCapacity2 -= weights[currItem];
+                    currCap2 -= weights[currItem];
                 }
             }
             --currItem;
         }
-        if (weights[0] <= currCapacity1) {
+        if (weights[0] <= currCap1) {
             includedItems1.add(0);
-        } else if (weights[0] <= currCapacity2) {
+        } else if (weights[0] <= currCap2) {
             includedItems2.add(0);
         }
         ArrayList<HashSet<Integer>> knapsacks = new ArrayList<HashSet<Integer>>();
@@ -208,53 +204,54 @@ public class TwoKnapsack {
      * weights, and the given capacities, in an improved bottom-up way.
      * @param vals values of the items
      * @param weights weights of the items
-     * @param capacity1 capacity of knapsack-1
-     * @param capacity2 capacity of knapsack-2
+     * @param cap1 capacity of knapsack-1
+     * @param cap2 capacity of knapsack-2
      * @return included items in knapsack-1 and knapsack-2
      */
-    public ArrayList<HashSet<Integer>> twoKnapsack(int[] vals, int[] weights, int capacity1, int capacity2) {
+    public ArrayList<HashSet<Integer>> twoKnapsack(int[] vals, int[] weights, int cap1, int cap2) {
         // Check whether the input arrays are null or empty
         if ((vals == null) || (vals.length == 0) || (weights == null) || (weights.length == 0)) {
             throw new IllegalArgumentException("The input values and weights should not be null or empty.");
         }
         // Check whether the input capacities are non-negative
-        if ((capacity1 < 0) || (capacity2 < 0)) {
+        if ((cap1 < 0) || (cap2 < 0)) {
             throw new IllegalArgumentException("The input capacities should be non-negative.");
         }
 
         int n = vals.length;
         // Initialization
-        subproblemSols = new int[n][capacity1 + 1][capacity2 + 1];
-        for (int x1 = 0; x1 <= capacity1; ++x1) {
-            for (int x2 = 0; x2 <= capacity2; ++x2) {
+        subproblems = new int[n][cap1 + 1][cap2 + 1];
+        for (int x1 = 0; x1 <= cap1; ++x1) {
+            for (int x2 = 0; x2 <= cap2; ++x2) {
                 if ((weights[0] > x1) && (weights[0] > x2)) {
-                    subproblemSols[0][x1][x2] = 0;
+                    subproblems[0][x1][x2] = 0;
                 } else {
-                    subproblemSols[0][x1][x2] = vals[0];
+                    subproblems[0][x1][x2] = vals[0];
                 }
             }
         }
         // Bottom-up calculation
         for (int item = 1; item < n; ++item) {
-            for (int x1 = 0; x1 <= capacity1; ++x1) {
-                for (int x2 = 0; x2 <= capacity2; ++x2) {
-                    int resultWithoutCurr = subproblemSols[item - 1][x1][x2];
+            for (int x1 = 0; x1 <= cap1; ++x1) {
+                for (int x2 = 0; x2 <= cap2; ++x2) {
+                    int resultWithoutCurr = subproblems[item - 1][x1][x2];
                     if ((weights[item] <= x1) && (weights[item] <= x2)) {
-                        int resultWithCurrIn1 = subproblemSols[item - 1][x1 - weights[item]][x2] + vals[item];
-                        int resultWithCurrIn2 = subproblemSols[item - 1][x1][x2 - weights[item]] + vals[item];
-                        subproblemSols[item][x1][x2] = Math.max(Math.max(resultWithoutCurr, resultWithCurrIn1),
+                        int resultWithCurrIn1 = subproblems[item - 1][x1 - weights[item]][x2] + vals[item];
+                        int resultWithCurrIn2 = subproblems[item - 1][x1][x2 - weights[item]] + vals[item];
+                        subproblems[item][x1][x2] = Math.max(Math.max(resultWithoutCurr, resultWithCurrIn1),
                                 resultWithCurrIn2);
                     } else if (weights[item] <= x1) {
-                        int resultWithCurrIn1 = subproblemSols[item - 1][x1 - weights[item]][x2] + vals[item];
-                        subproblemSols[item][x1][x2] = Math.max(resultWithoutCurr, resultWithCurrIn1);
+                        int resultWithCurrIn1 = subproblems[item - 1][x1 - weights[item]][x2] + vals[item];
+                        subproblems[item][x1][x2] = Math.max(resultWithoutCurr, resultWithCurrIn1);
                     } else if (weights[item] <= x2) {
-                        int resultWithCurrIn2 = subproblemSols[item - 1][x1][x2 - weights[item]] + vals[item];
-                        subproblemSols[item][x1][x2] = Math.max(resultWithoutCurr, resultWithCurrIn2);
+                        int resultWithCurrIn2 = subproblems[item - 1][x1][x2 - weights[item]] + vals[item];
+                        subproblems[item][x1][x2] = Math.max(resultWithoutCurr, resultWithCurrIn2);
                     }
                 }
             }
         }
-        return reconstruct(vals, weights, capacity1, capacity2);
+        return reconstruct(vals, weights, cap1, cap2);
+        // Overall running time complexity: O(n*W1*W2), where W1 and W2 are the knapsack capacities
     }
 
 }

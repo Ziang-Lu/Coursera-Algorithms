@@ -48,20 +48,20 @@ def find_mwis_straightforward(weights):
     if len(weights) == 1:
         return set([0])
 
-    subproblem_sols = [-1 for i in range(len(weights))]
+    subproblems = [-1 for i in range(len(weights))]
     _find_mwis_helper(weights, last_vtx=len(weights) - 1,
-                      subproblem_sols=subproblem_sols)
-    return _reconstruct_mwis(weights=weights, subproblem_sols=subproblem_sols)
+                      subproblems=subproblems)
+    return _reconstruct_mwis(weights=weights, subproblems=subproblems)
     # With memoization, the overall running time complexity is O(n).
 
 
-def _find_mwis_helper(weights, last_vtx, subproblem_sols):
+def _find_mwis_helper(weights, last_vtx, subproblems):
     """
     Private helper function to find the MWIS in the given sub path graph with
     the given weights recursively.
     :param weights: list[int]
     :param last_vtx: int
-    :param subproblem_sols: list[int]
+    :param subproblems: list[int]
     :return: None
     """
     if weights[last_vtx] != -1:
@@ -69,36 +69,34 @@ def _find_mwis_helper(weights, last_vtx, subproblem_sols):
 
     # Base case 1: Only the left-most vertex
     if last_vtx == 0:
-        subproblem_sols[0] = weights[0]
+        subproblems[0] = weights[0]
         return
     # Base case 2: Only the left-most two vertices
     if last_vtx == 1:
-        subproblem_sols[1] = max(weights[0], weights[1])
+        subproblems[1] = max(weights[0], weights[1])
         return
 
     # Recursive case
-    _find_mwis_helper(weights, last_vtx=last_vtx - 1,
-                      subproblem_sols=subproblem_sols)
-    result_without_last = subproblem_sols[last_vtx - 1]
-    _find_mwis_helper(weights, last_vtx=last_vtx - 2,
-                      subproblem_sols=subproblem_sols)
-    result_with_last = subproblem_sols[last_vtx - 2] + weights[last_vtx]
-    subproblem_sols[last_vtx] = max(result_without_last, result_with_last)
+    _find_mwis_helper(weights, last_vtx=last_vtx - 1, subproblems=subproblems)
+    result_without_last = subproblems[last_vtx - 1]
+    _find_mwis_helper(weights, last_vtx=last_vtx - 2, subproblems=subproblems)
+    result_with_last = subproblems[last_vtx - 2] + weights[last_vtx]
+    subproblems[last_vtx] = max(result_without_last, result_with_last)
 
 
-def _reconstruct_mwis(weights, subproblem_sols):
+def _reconstruct_mwis(weights, subproblems):
     """
     Private helper function to reconstruct MWIS according to the optimal
     solution using backtracking.
     :param weights: list[int]
-    :param subproblem_sols: list[int]
+    :param subproblems: list[int]
     :return: set{int}
     """
     mwis = set()
-    curr_vtx = len(subproblem_sols) - 1
+    curr_vtx = len(subproblems) - 1
     while curr_vtx >= 2:
-        if subproblem_sols[curr_vtx - 1] >= \
-                subproblem_sols[curr_vtx - 2] + weights[curr_vtx]:
+        if subproblems[curr_vtx - 1] >= \
+                subproblems[curr_vtx - 2] + weights[curr_vtx]:
             curr_vtx -= 1
         else:
             mwis.add(curr_vtx)
@@ -130,12 +128,11 @@ def find_mwis(weights):
         return set([0])
 
     # Initialization
-    subproblem_sols = [weights[0], max(weights[0], weights[1])]
+    subproblems = [weights[0], max(weights[0], weights[1])]
     # Bottom-up calculation
     for curr_vtx in range(2, len(weights)):
-        subproblem_sols.append(
-            max(
-                subproblem_sols[curr_vtx - 1],
-                subproblem_sols[curr_vtx - 2] + weights[curr_vtx]))
-    return _reconstruct_mwis(weights=weights, subproblem_sols=subproblem_sols)
+        subproblems.append(
+            max(subproblems[curr_vtx - 1],
+                subproblems[curr_vtx - 2] + weights[curr_vtx]))
+    return _reconstruct_mwis(weights=weights, subproblems=subproblems)
     # Overall running time complexity: O(n)

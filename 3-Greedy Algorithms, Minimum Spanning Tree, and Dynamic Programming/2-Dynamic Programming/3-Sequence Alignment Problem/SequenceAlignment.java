@@ -50,7 +50,7 @@ public class SequenceAlignment {
      * subproblem, we can cache its solution in a global take for O(1) lookup
      * time later on.
      */
-    private int[][] subproblemSols;
+    private int[][] subproblems;
 
     /**
      * Solves the sequence alignment of the given two strings with the given
@@ -88,10 +88,10 @@ public class SequenceAlignment {
      * @param n length of the second string
      */
     private void initializeSubproblemSols(int m, int n) {
-        subproblemSols = new int[m + 1][n + 1];
+        subproblems = new int[m + 1][n + 1];
         for (int i = 0; i <= m; ++i) {
             for (int j = 0; j <= n; ++j) {
-                subproblemSols[i][j] = DEFAULT_SUBPROBLEM_SOL;
+                subproblems[i][j] = DEFAULT_SUBPROBLEM_SOL;
             }
         }
         // Running time complexity: O(mn)
@@ -108,24 +108,24 @@ public class SequenceAlignment {
     private void sequenceAlignmentHelper(String xPrefix, String yPrefix, int gapPen,
             HashMap<Character, HashMap<Character, Integer>> penMap) {
         int i = xPrefix.length(), j = yPrefix.length();
-        if (subproblemSols[i][j] != DEFAULT_SUBPROBLEM_SOL) {
+        if (subproblems[i][j] != DEFAULT_SUBPROBLEM_SOL) {
             return;
         }
 
         // Base case
         if ((i == 0) || (j == 0)) {
-            subproblemSols[i][j] = Math.max(i, j) * gapPen;
+            subproblems[i][j] = Math.max(i, j) * gapPen;
             return;
         }
         // Recursive case
         sequenceAlignmentHelper(xPrefix.substring(0, i - 1), yPrefix.substring(0, j - 1), gapPen, penMap);
         char xFinal = xPrefix.charAt(i - 1), yFinal = yPrefix.charAt(j - 1);
-        int result1 = subproblemSols[i - 1][j - 1] + penMap.get(xFinal).get(yFinal);
+        int result1 = subproblems[i - 1][j - 1] + penMap.get(xFinal).get(yFinal);
         sequenceAlignmentHelper(xPrefix.substring(0, i - 1), yPrefix, gapPen, penMap);
-        int result2 = subproblemSols[i - 1][j] + gapPen;
+        int result2 = subproblems[i - 1][j] + gapPen;
         sequenceAlignmentHelper(xPrefix, yPrefix.substring(0, j - 1), gapPen, penMap);
-        int result3 = subproblemSols[i][j - 1] + gapPen;
-        subproblemSols[i][j] = Math.min(Math.min(result1, result2), result3);
+        int result3 = subproblems[i][j - 1] + gapPen;
+        subproblems[i][j] = Math.min(Math.min(result1, result2), result3);
     }
 
     /**
@@ -143,9 +143,9 @@ public class SequenceAlignment {
         int i = x.length(), j = y.length();
         while ((i >= 1) && (j >= 1)) {
             char xFinal = x.charAt(i - 1), yFinal = y.charAt(j - 1);
-            int result1 = subproblemSols[i - 1][j - 1] + penMap.get(xFinal).get(yFinal);
-            int result2 = subproblemSols[i - 1][j] + gapPen;
-            int result = subproblemSols[i][j];
+            int result1 = subproblems[i - 1][j - 1] + penMap.get(xFinal).get(yFinal);
+            int result2 = subproblems[i - 1][j] + gapPen;
+            int result = subproblems[i][j];
             if (result == result1) {
                 // Case 1: The final positions are x_i and y_j.
                 sx.insert(0, xFinal);
@@ -211,21 +211,21 @@ public class SequenceAlignment {
 
         int m = x.length(), n = y.length();
         // Initialization
-        subproblemSols = new int[m + 1][n + 1];
+        subproblems = new int[m + 1][n + 1];
         for (int i = 0; i <= m; ++i) {
-            subproblemSols[i][0] = i * gapPen;
+            subproblems[i][0] = i * gapPen;
         }
         for (int j = 0; j <= n; ++j) {
-            subproblemSols[0][j] = j * gapPen;
+            subproblems[0][j] = j * gapPen;
         }
         // Bottom-up calculation
         for (int i = 1; i <= m; ++i) {
             for (int j = 1; j <= n; ++j) {
                 char xCurr = x.charAt(i - 1), yCurr = y.charAt(j - 1);
-                int result1 = subproblemSols[i - 1][j - 1] + penMap.get(xCurr).get(yCurr);
-                int result2 = subproblemSols[i - 1][j] + gapPen;
-                int result3 = subproblemSols[i][j - 1] + gapPen;
-                subproblemSols[i][j] = Math.min(Math.min(result1, result2), result3);
+                int result1 = subproblems[i - 1][j - 1] + penMap.get(xCurr).get(yCurr);
+                int result2 = subproblems[i - 1][j] + gapPen;
+                int result3 = subproblems[i][j - 1] + gapPen;
+                subproblems[i][j] = Math.min(Math.min(result1, result2), result3);
             }
         }
         return reconstructOptimalAlignment(x, y, gapPen, penMap);
