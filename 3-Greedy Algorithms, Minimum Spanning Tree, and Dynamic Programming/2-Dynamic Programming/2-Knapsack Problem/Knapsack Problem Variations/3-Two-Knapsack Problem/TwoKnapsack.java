@@ -92,7 +92,7 @@ public class TwoKnapsack {
                 }
             }
         }
-        // Running time complexity: O(n*W1*W2)
+        // Running time complexity: O(n*W1*W2), where W1 and W2 are the knapsack capacities
     }
 
     /**

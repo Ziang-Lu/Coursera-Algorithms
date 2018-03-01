@@ -100,12 +100,11 @@ def _reconstruct(vals, weights, cap, subproblems):
     curr_item, curr_cap = len(vals) - 1, cap
     while curr_item >= 1:
         result_without_curr = subproblems[curr_item - 1][curr_cap]
-        result_with_curr = \
-            subproblems[curr_item - 1][curr_cap - weights[curr_item]] + \
-            vals[curr_item]
         if weights[curr_item] <= curr_cap \
                 and subproblems[curr_item - 1][curr_cap - weights[curr_item]] \
-                and result_without_curr < result_with_curr:
+                and result_without_curr \
+                < (subproblems[curr_item - 1][curr_cap - weights[curr_item]] +
+                   vals[curr_item]):
             # Case 2: The current item is included.
             included_items.add(curr_item)
             curr_cap -= weights[curr_item]
