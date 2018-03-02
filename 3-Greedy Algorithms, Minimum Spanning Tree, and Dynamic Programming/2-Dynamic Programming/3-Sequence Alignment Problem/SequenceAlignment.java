@@ -142,25 +142,25 @@ public class SequenceAlignment {
         StringBuilder sx = new StringBuilder(), sy = new StringBuilder();
         int i = x.length(), j = y.length();
         while ((i >= 1) && (j >= 1)) {
-            char xFinal = x.charAt(i - 1), yFinal = y.charAt(j - 1);
-            int result1 = subproblems[i - 1][j - 1] + penMap.get(xFinal).get(yFinal);
+            char xCurr = x.charAt(i - 1), yCurr = y.charAt(j - 1);
+            int result1 = subproblems[i - 1][j - 1] + penMap.get(xCurr).get(yCurr);
             int result2 = subproblems[i - 1][j] + gapPen;
             int result = subproblems[i][j];
             if (result == result1) {
                 // Case 1: The final positions are x_i and y_j.
-                sx.insert(0, xFinal);
-                sy.insert(0, yFinal);
+                sx.insert(0, xCurr);
+                sy.insert(0, yCurr);
                 --i;
                 --j;
             } else if (result == result2) {
                 // Case 2: The final positions are x_i and a gap.
-                sx.insert(0, xFinal);
+                sx.insert(0, xCurr);
                 sy.insert(0, ' ');
                 --i;
             } else {
                 // Case 3: The final positions are a gap and y_j.
                 sx.insert(0, ' ');
-                sy.insert(0, yFinal);
+                sy.insert(0, yCurr);
                 --j;
             }
         }
@@ -183,6 +183,7 @@ public class SequenceAlignment {
         for (int k = 0; k < n; ++k) {
             s.insert(0, ' ');
         }
+        // Running time complexity: O(n)
     }
 
     /**

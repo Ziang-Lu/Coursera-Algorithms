@@ -42,8 +42,8 @@ def find_longest_common_substring(x, y):
     # Bottom-up calculation
     for i in range(1, m + 1):
         for j in range(1, n + 1):
-            x_final, y_final = x[i - 1], y[j - 1]
-            if x_final != y_final:
+            x_curr, y_curr = x[i - 1], y[j - 1]
+            if x_curr != y_curr:
                 subproblems[i][j] = 0
             else:
                 subproblems[i][j] = subproblems[i - 1][j - 1] + 1

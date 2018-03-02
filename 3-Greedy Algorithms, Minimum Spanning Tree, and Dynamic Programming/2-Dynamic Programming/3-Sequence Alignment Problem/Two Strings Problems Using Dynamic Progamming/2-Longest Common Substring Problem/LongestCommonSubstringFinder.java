@@ -51,8 +51,8 @@ public class LongestCommonSubstringFinder {
         // Bottom-up calculation
         for (int i = 1; i <= m; ++i) {
             for (int j = 1; j <= n; ++j) {
-                char xFinal = x.charAt(i - 1), yFinal = y.charAt(j - 1);
-                if (xFinal != yFinal) {
+                char xCurr = x.charAt(i - 1), yCurr = y.charAt(j - 1);
+                if (xCurr != yCurr) {
                     subproblems[i][j] = 0;
                 } else {
                     subproblems[i][j] = subproblems[i - 1][j - 1] + 1;

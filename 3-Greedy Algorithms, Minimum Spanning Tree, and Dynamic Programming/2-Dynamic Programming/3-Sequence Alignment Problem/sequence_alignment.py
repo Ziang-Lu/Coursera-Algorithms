@@ -119,25 +119,25 @@ def _reconstruct_optimal_alignment(x, y, gap_pen, pen_map, subproblems):
     sx, sy = '', ''
     i, j = len(x), len(y)
     while i >= 1 and j >= 1:
-        x_final, y_final = x[i - 1], y[j - 1]
-        result1 = subproblems[i - 1][j - 1] + pen_map[x_final][y_final]
+        x_curr, y_curr = x[i - 1], y[j - 1]
+        result1 = subproblems[i - 1][j - 1] + pen_map[x_curr][y_curr]
         result2 = subproblems[i - 1][j] + gap_pen
         result = subproblems[i][j]
         if result == result1:
             # Case 1: The final positions are x_i and y_j.
-            sx = x_final + sx
-            sy = y_final + sy
+            sx = x_curr + sx
+            sy = y_curr + sy
             i -= 1
             y -= 1
         elif result == result2:
             # Case 2: The final positions are x_i and a gap.
-            sx = x_final + sx
+            sx = x_curr + sx
             sy = ' ' + sy
             i -= 1
         else:
             # Case 3: The final positions are a gap and y_j.
             sx = ' ' + sx
-            sy = y_final + sy
+            sy = y_curr + sy
             j -= 1
     if i:
         sy = ' ' * i + sy
