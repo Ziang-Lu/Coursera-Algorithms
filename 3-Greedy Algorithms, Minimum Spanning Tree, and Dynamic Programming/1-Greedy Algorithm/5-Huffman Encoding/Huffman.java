@@ -19,7 +19,7 @@ public class Huffman {
         /**
          * Character stored in this Node.
          */
-        private Character c;
+        private final Character c;
         /**
          * Frequency of the character.
          */

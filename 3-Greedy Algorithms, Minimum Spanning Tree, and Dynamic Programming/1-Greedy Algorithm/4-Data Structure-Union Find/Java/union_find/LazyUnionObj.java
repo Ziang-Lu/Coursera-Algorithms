@@ -10,7 +10,7 @@ public class LazyUnionObj {
     /**
      * Name of this object.
      */
-    private String name;
+    private final String name;
     /**
      * Parent of this object.
      */

@@ -19,7 +19,7 @@ public class KnapsackWithExactSize {
      * a subproblem, we can cache its solution in a global take for O(1) lookup
      * time later on.
      */
-    private int[][] subproblems;
+    private final int[][] subproblems;
 
     /**
      * Solves the knapsack problem (with exact size) of the items with the given

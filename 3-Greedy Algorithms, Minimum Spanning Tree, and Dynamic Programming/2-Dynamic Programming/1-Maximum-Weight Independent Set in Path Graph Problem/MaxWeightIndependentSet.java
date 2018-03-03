@@ -39,7 +39,7 @@ public class MaxWeightIndependentSet {
      * subproblem, we can cache its solution in a global take for O(1) lookup
      * time later on.
      */
-    private int[] subproblems;
+    private final int[] subproblems;
 
     /**
      * Finds the maximum-weight independent set (MWIS) in a path graph with the

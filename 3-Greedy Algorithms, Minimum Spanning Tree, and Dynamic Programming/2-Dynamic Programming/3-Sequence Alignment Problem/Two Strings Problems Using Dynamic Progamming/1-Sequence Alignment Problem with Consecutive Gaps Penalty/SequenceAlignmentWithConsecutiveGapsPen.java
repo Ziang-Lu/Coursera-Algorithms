@@ -21,15 +21,15 @@ public class SequenceAlignmentWithConsecutiveGapsPen {
      * subproblem, we can cache its solution in a global take for O(1) lookup
      * time later on.
      */
-    private int[][] subproblems;
+    private final int[][] subproblems;
     /**
      * Whether each subproblem solution Sx ends with a gap.
      */
-    private boolean[][] sxEndsWithGap;
+    private final boolean[][] sxEndsWithGap;
     /**
      * Whether each subproblem solution Sy ends with a gap.
      */
-    private boolean[][] syEndsWithGap;
+    private final boolean[][] syEndsWithGap;
 
     /**
      * Solves the sequence alignment (with consecutive gaps penalty) of the

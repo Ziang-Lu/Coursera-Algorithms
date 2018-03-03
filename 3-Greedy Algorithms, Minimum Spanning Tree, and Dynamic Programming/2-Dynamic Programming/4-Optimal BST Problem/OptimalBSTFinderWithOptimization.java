@@ -27,7 +27,7 @@ public class OptimalBSTFinderWithOptimization {
      * subproblem, we can cache its solution in a global take for O(1) lookup
      * time later on.
      */
-    private int[][] subproblems;
+    private final int[][] subproblems;
 
     /**
      * Finds the optimal BST for items with the given weight distribution, and
