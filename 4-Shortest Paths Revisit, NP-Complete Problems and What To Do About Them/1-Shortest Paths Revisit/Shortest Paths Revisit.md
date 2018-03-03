@@ -42,9 +42,9 @@ Let $P(s, v, i)$ be the optimal solution (shortest path with minimum total lengt
 
   => $P(s, v, i) \ = \ P(s, v, i-1)$
 
-* Case 2: If $P(s, v, i)$ has exactly $i$ edges, (i.e., $P$ uses up all of its budget $i$.), with final edge ($w$, $v$)
+* Case 2: If $P(s, v, i)$ has exactly $i$ edges, (i.e., $P$ uses up all of its budget $i$.), with final hop ($w$, $v$)
 
-  => By plucking off the final edge ($w$, $v$) from $P$, we form $P'(s, w, i-1)$.
+  => By plucking off the final hop ($w$, $v$) from $P$, we form $P'(s, w, i-1)$.
 
   => $P(s, v, i) \ = \ min_{(w, v)} {P'(s, w, i-1)}$ + $c_{(w, v)}$   (in-degree($v$) candidates)
 
@@ -57,11 +57,16 @@ Let $P(s, v, i)$ be the optimal solution (shortest path with minimum total lengt
 **Pseudo code: (Bottom-up calculation)**
 
 * Let $L[v, i]$ = 2D array indexed by $v$ and $i$
-* Initialization:
+* Initialization: ($i$ = 0)
+  * For $v \in V$:
+    * If $v$ == $s$:
+      * $L[v, 0] = 0$
+    * Else:
+      * $L[v, 0] = +\infty$
 * For $i$ = 1, 2, …, $n$ - 1
   * For $v \in V$:
     * $L[v, i] \ = \ min\{L[v, i-1], min_{(w, v)}L(w, i-1)\}$
-* The final solution lies in $L[v, n-1]$ for $v \in V$.
+* The final solution lies in exactly $L[v, n-1]$ for $v \in V$.
 
 **Optimization 1: Early stopping**
 
