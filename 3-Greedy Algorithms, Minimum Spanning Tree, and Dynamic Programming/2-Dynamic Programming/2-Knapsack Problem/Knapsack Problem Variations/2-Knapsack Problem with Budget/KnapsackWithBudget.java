@@ -38,7 +38,7 @@ public class KnapsackWithBudget {
      * solve a subproblem, we can cache its solution in a global take for O(1)
      * lookup time later on.
      */
-    private final int[][][] subproblems;
+    private int[][][] subproblems;
 
     /**
      * Solves the knapsack problem (with budget) of the items with the given

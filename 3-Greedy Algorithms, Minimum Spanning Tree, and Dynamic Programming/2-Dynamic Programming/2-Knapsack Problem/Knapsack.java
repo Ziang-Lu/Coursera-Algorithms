@@ -36,7 +36,7 @@ public class Knapsack {
      * a subproblem, we can cache its solution in a global take for O(1) lookup
      * time later on.
      */
-    private final int[][] subproblems;
+    private int[][] subproblems;
 
     /**
      * Solves the knapsack problem of the items with the given values and

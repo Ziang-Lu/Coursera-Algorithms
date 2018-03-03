@@ -50,7 +50,7 @@ public class SequenceAlignment {
      * subproblem, we can cache its solution in a global take for O(1) lookup
      * time later on.
      */
-    private final int[][] subproblems;
+    private int[][] subproblems;
 
     /**
      * Solves the sequence alignment of the given two strings with the given
