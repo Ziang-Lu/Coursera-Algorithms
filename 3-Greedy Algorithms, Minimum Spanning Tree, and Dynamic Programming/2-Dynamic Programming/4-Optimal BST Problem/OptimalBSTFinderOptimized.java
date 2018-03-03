@@ -10,7 +10,7 @@
  * of brute-force searches when searching for the root of a subproblem.
  */
 
-public class OptimalBSTFinderWithOptimization {
+public class OptimalBSTFinderOptimized {
 
     /**
      * Default value for subproblem solutions.
