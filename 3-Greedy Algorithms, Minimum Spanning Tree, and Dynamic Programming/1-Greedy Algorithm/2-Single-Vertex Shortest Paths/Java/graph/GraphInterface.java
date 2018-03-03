@@ -44,6 +44,7 @@ public interface GraphInterface {
     /**
      * Returns the mapping between the vertices and the shortest distances from
      * the given vertex using Dijkstra's Shortest-Path Algorithm.
+     * Assumption: This graph has no n edge with negative length.
      * @param srcVtxID source vertex ID
      * @return mapping between vertices and shortest distances
      */

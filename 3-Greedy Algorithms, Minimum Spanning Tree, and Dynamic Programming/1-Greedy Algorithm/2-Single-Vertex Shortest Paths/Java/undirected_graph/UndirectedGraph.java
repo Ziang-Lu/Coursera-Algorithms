@@ -199,7 +199,7 @@ public class UndirectedGraph implements GraphInterface {
             // Vertices that are not connected to w* and are still in the heap (V-X) won't be influenced.
             // => The local minimum Dijkstra scores of vertices that are connected to w* and are still in the heap (V-X)
             //    may drop down.
-p
+
             // Update the local minimum Dijkstra scores for the vertices if necessary
             for (UndirectedEdge edgeFromWStar : wStar.edges()) {
                 // Find the neighbor
