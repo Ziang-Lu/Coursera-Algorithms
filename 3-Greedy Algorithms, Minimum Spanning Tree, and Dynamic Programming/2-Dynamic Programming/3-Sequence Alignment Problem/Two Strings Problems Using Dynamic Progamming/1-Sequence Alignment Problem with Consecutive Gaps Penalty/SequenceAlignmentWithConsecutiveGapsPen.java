@@ -60,15 +60,13 @@ public class SequenceAlignmentWithConsecutiveGapsPen {
         // Initialization
         subproblems = new int[m + 1][n + 1];
         sxEndsWithGap = new boolean[m + 1][n + 1]; syEndsWithGap = new boolean[m + 1][n + 1];
-        subproblems[0][0] = 0;
-        sxEndsWithGap[0][0] = false; syEndsWithGap[0][0] = false;
         for (int i = 1; i <= m; ++i) {
             subproblems[i][0] = a * i + b;
-            sxEndsWithGap[i][0] = false; syEndsWithGap[i][0] = true;
+            syEndsWithGap[i][0] = true;
         }
         for (int j = 1; j <= n; ++j) {
             subproblems[0][j] = a * j + b;
-            sxEndsWithGap[0][j] = true; syEndsWithGap[0][j] = false;
+            sxEndsWithGap[0][j] = true;
         }
         // Bottom-up calculation
         for (int i = 1; i <= m; ++i) {
@@ -86,14 +84,11 @@ public class SequenceAlignmentWithConsecutiveGapsPen {
                 int result = Math.min(Math.min(result1, result2), result3);
                 subproblems[i][j] = result;
                 if (result == result1) {
-                    sxEndsWithGap[i][j] = false;
-                    syEndsWithGap[i][j] = false;
+
                 } else if (result == result2) {
-                    sxEndsWithGap[i][j] = false;
                     syEndsWithGap[i][j] = true;
                 } else {
                     sxEndsWithGap[i][j] = true;
-                    syEndsWithGap[i][j] = false;
                 }
             }
         }

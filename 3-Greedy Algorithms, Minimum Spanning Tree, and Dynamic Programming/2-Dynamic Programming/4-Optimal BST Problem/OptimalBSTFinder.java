@@ -30,11 +30,6 @@
 public class OptimalBSTFinder {
 
     /**
-     * Default value for subproblem solutions.
-     */
-    private static final int DEFAULT_SUBPROBLEM_SOL = 0;
-
-    /**
      * Subproblem solutions.
      * Since there are only O(n^2) subproblems, the first time we solve a
      * subproblem, we can cache its solution in a global take for O(1) lookup
@@ -55,23 +50,9 @@ public class OptimalBSTFinder {
         }
 
         int n = weights.length;
-        initializeSubproblemSols(n);
+        subproblems = new int[n][n];
         return findOptimalBSTHelper(weights, 0, n - 1);
         // With memoization, the overall running time complexity is O(n^3).
-    }
-
-    /**
-     * Private helper method to initialize the subproblem solutions.
-     * @param n number of items
-     */
-    private void initializeSubproblemSols(int n) {
-        subproblems = new int[n][n];
-        for (int i = 0; i < n; ++i) {
-            for (int j = 0; j < n; ++j) {
-                subproblems[i][j] = DEFAULT_SUBPROBLEM_SOL;
-            }
-        }
-        // Running time complexity: O(n^2)
     }
 
     /**
@@ -89,7 +70,7 @@ public class OptimalBSTFinder {
             return 0;
         }
         // Recursive case
-        if (subproblems[start][end] != DEFAULT_SUBPROBLEM_SOL) {
+        if (subproblems[start][end] != 0) {
             return subproblems[start][end];
         }
         int minWST = Integer.MAX_VALUE;

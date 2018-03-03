@@ -93,9 +93,7 @@ public class Knapsack {
 
         // Base case
         if (lastItem == 0) {
-            if (weights[0] > currCap) {
-                subproblems[0][currCap] = 0;
-            } else {
+            if (weights[0] <= currCap) {
                 subproblems[0][currCap] = vals[0];
             }
             return;
@@ -163,9 +161,7 @@ public class Knapsack {
         // Initialization
         subproblems = new int[n][cap + 1];
         for (int x = 0; x <= cap; ++x) {
-            if (weights[0] > x) {
-                subproblems[0][x] = 0;
-            } else {
+            if (weights[0] <= x) {
                 subproblems[0][x] = vals[0];
             }
         }

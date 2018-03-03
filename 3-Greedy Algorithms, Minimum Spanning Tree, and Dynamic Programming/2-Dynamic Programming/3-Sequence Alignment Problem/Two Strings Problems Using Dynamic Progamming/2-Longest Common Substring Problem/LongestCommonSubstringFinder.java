@@ -42,19 +42,11 @@ public class LongestCommonSubstringFinder {
         int m = x.length(), n = y.length();
         // Initialization
         subproblems = new int[m + 1][n + 1];
-        for (int i = 0; i <= m; ++i) {
-            subproblems[i][0] = 0;
-        }
-        for (int j = 0; j <= n; ++j) {
-            subproblems[0][j] = 0;
-        }
         // Bottom-up calculation
         for (int i = 1; i <= m; ++i) {
             for (int j = 1; j <= n; ++j) {
                 char xCurr = x.charAt(i - 1), yCurr = y.charAt(j - 1);
-                if (xCurr != yCurr) {
-                    subproblems[i][j] = 0;
-                } else {
+                if (xCurr == yCurr) {
                     subproblems[i][j] = subproblems[i - 1][j - 1] + 1;
                 }
             }

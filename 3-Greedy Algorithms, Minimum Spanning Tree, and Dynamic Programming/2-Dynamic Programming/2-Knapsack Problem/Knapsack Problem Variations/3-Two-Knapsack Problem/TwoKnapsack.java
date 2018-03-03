@@ -111,9 +111,7 @@ public class TwoKnapsack {
 
         // Base case
         if (lastItem == 0) {
-            if ((weights[0] > currCap1) && (weights[0] > currCap2)) {
-                subproblems[0][currCap1][currCap2] = 0;
-            } else {
+            if ((weights[0] <= currCap1) || (weights[0] <= currCap2)) {
                 subproblems[0][currCap1][currCap2] = vals[0];
             }
             return;
@@ -223,9 +221,7 @@ public class TwoKnapsack {
         subproblems = new int[n][cap1 + 1][cap2 + 1];
         for (int x1 = 0; x1 <= cap1; ++x1) {
             for (int x2 = 0; x2 <= cap2; ++x2) {
-                if ((weights[0] > x1) && (weights[0] > x2)) {
-                    subproblems[0][x1][x2] = 0;
-                } else {
+                if ((weights[0] <= x1) || (weights[0] <= x2)) {
                     subproblems[0][x1][x2] = vals[0];
                 }
             }

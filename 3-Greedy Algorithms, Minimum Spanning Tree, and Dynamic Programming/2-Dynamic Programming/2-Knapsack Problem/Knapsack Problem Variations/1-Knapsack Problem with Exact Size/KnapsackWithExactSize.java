@@ -78,8 +78,6 @@ public class KnapsackWithExactSize {
         if (lastItem == 0) {
             if (weights[0] == currCap) {
                 subproblems[0][currCap] = vals[0];
-            } else {
-                subproblems[0][currCap] = 0;
             }
             return;
         }
@@ -154,8 +152,6 @@ public class KnapsackWithExactSize {
         for (int x = 0; x <= cap; ++x) {
             if (weights[0] == x) {
                 subproblems[0][x] = vals[0];
-            } else {
-                subproblems[0][x] = 0;
             }
         }
         // Bottom-up calculation

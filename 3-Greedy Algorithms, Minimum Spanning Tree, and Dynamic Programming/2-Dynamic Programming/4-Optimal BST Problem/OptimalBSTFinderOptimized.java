@@ -13,11 +13,6 @@
 public class OptimalBSTFinderOptimized {
 
     /**
-     * Default value for subproblem solutions.
-     */
-    private static final int DEFAULT_SUBPROBLEM_SOL = 0;
-
-    /**
      * Roots of the subproblems.
      */
     private int[][] roots;
@@ -42,23 +37,9 @@ public class OptimalBSTFinderOptimized {
         }
 
         int n = weights.length;
-        initializeSubproblemSols(n);
+        subproblems = new int[n][n];
         return findOptimalBSTHelper(weights, 0, n - 1);
         // With memoization, the overall running time complexity is O(n^3).
-    }
-
-    /**
-     * Private helper method to initialize the subproblem solutions.
-     * @param n number of items
-     */
-    private void initializeSubproblemSols(int n) {
-        subproblems = new int[n][n];
-        for (int i = 0; i < n; ++i) {
-            for (int j = 0; j < n; ++j) {
-                subproblems[i][j] = DEFAULT_SUBPROBLEM_SOL;
-            }
-        }
-        // Running time complexity: O(n^2)
     }
 
     /**
@@ -76,7 +57,7 @@ public class OptimalBSTFinderOptimized {
             return 0;
         }
         // Recursive case
-        if (subproblems[start][end] != DEFAULT_SUBPROBLEM_SOL) {
+        if (subproblems[start][end] != 0) {
             return subproblems[start][end];
         }
         int minWST = Integer.MAX_VALUE;
