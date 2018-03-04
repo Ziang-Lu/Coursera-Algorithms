@@ -25,7 +25,22 @@ class AbstractVertex(object):
         return self._vtx_id
 
 
+class AbstractEdge(object):
+    def __init__(self, length):
+        """
+        Constructor with parameter.
+        :param length: int
+        """
+        self._length = length
+
+    @property
+    def length(self):
+        return self._length
+
+
 class AbstractGraph(object):
+    INFINITY = 1000000
+
     def __init__(self):
         """
         Default constructor.
@@ -74,11 +89,12 @@ class AbstractGraph(object):
         """
         pass
 
-    def add_edge(self, end1_id, end2_id):
+    def add_edge(self, end1_id, end2_id, length):
         """
         Adds a new edge to this graph.
         :param end1_id: int
         :param end2_id: int
+        :param length: int
         :return: None
         """
         pass
@@ -119,3 +135,56 @@ class AbstractGraph(object):
         print('The edges are:')
         for edge in self._edge_list:
             print(edge)
+
+    def bellman_ford_shortest_paths(self, src_vtx_id):
+        """
+        Returns the mapping between the vertices and the shortest distances from
+        the given vertex using Bellman-Ford Shortest-Path Algorithm in an
+        improved bottom-up way.
+        Note that in this application, the vertex IDs are exactly from 0 to
+        (n - 1).
+        :param src_vtx_id: int
+        :return: list[list[int]]
+        """
+        pass
+
+    def _reconstruct_shortest_paths(self, src_vtx_id, subproblems):
+        """
+        Private helper function to reconstruct the shortest paths according to
+        the optimal solution using backtracking.
+        :param src_vtx_id: int
+        :param subproblems: list[list[int]]
+        :return: list[list[int]]
+        """
+        pass
+
+    def bellman_ford_shortest_paths_optimized(self, src_vtx_id):
+        """
+        Returns the mapping between the vertices and the shortest distances from
+        the given vertex using Bellman-Ford Shortest-Path Algorithm in an
+        improved bottom-up way with early-stopping and space optimization.
+        Note that in this application, the vertex IDs are exactly from 0 to
+        (n - 1).
+        :param src_vtx_id: int
+        :return: list[list[int]]
+        """
+        pass
+
+    def _reconstruct_shortest_paths_optimized(self, penultimate_vtxs):
+        """
+        Private helper function to reconstruct the shortest paths according to
+        the penultimate vertices in the shortest paths using backtracking.
+        :param penultimate_vtxs: list[Vertex]
+        :return: list[list[int]]
+        """
+        shortest_paths = []
+        for vtx in self._vtx_list:
+            shortest_path = []
+            curr_vtx = vtx
+            while curr_vtx is not None:
+                shortest_path.insert(0, curr_vtx.vtx_id)
+                prev_vtx = penultimate_vtxs[curr_vtx.vtx_id]
+                curr_vtx = prev_vtx
+            shortest_paths.append(shortest_path)
+        return shortest_paths
+        # Running time complexity: O(n^2)

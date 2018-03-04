@@ -31,10 +31,10 @@ class IllegalArgumentError(ValueError):
     pass
 
 
-def knapsack_straightforward(vals, weights, cap):
+def knapsack(vals, weights, cap):
     """
     Solves the knapsack problem of the items with the given values and weights,
-    and the given capacity, in a straightforward way.
+    and the given capacity, in an improved bottom-up way.
     :param vals: list[int]
     :param weights: list[int]
     :param cap: int
@@ -50,53 +50,23 @@ def knapsack_straightforward(vals, weights, cap):
         raise IllegalArgumentError('The input capacity should be non-negative.')
 
     n = len(vals)
-    subproblems = [[-1 for x in range(cap + 1)] for i in range(n)]
-    _knapsack_helper(vals, weights, last_item=n - 1, curr_cap=cap,
-                     subproblems=subproblems)
+    # Initialization
+    subproblems = [[0] * (cap + 1) for i in range(n)]
+    for x in range(0, cap + 1):
+        if weights[0] <= x:
+            subproblems[0][x] = vals[0]
+    # Bottom-up calculation
+    for item in range(1, n):
+        for x in range(0, cap + 1):
+            if weights[item] > x:
+                subproblems[item][x] = subproblems[item - 1][x]
+            else:
+                result_without_curr = subproblems[item - 1][x]
+                result_with_curr = \
+                    subproblems[item - 1][x - weights[item]] + vals[item]
+                subproblems[item][x] = max(result_without_curr,
+                                           result_with_curr)
     return _reconstruct(vals, weights, cap, subproblems=subproblems)
-    # With memoization, the overall running time complexity is O(nW), where W is
-    # the knapsack capacity.
-
-
-def _knapsack_helper(vals, weights, last_item, curr_cap, subproblems):
-    """
-    Private helper function to solve the knapsack subproblem with the given
-    first items and the given capacity recursively.
-    :param vals: list[int]
-    :param weights: list[int]
-    :param last_item: int
-    :param curr_cap: int
-    :param subproblems: list[list[int]]
-    :return: None
-    """
-    if subproblems[last_item][curr_cap] != -1:
-        return
-
-    # Base case
-    if last_item == 0:
-        if weights[0] > curr_cap:
-            subproblems[0][curr_cap] = 0
-        else:
-            subproblems[0][curr_cap] = vals[0]
-        return
-    # Recursive case
-    if weights[last_item] > curr_cap:
-        _knapsack_helper(vals, weights, last_item=last_item - 1,
-                         curr_cap=curr_cap,
-                         subproblems=subproblems)
-        subproblems[last_item][curr_cap] = subproblems[last_item - 1][curr_cap]
-    else:
-        _knapsack_helper(vals, weights, last_item=last_item - 1,
-                         curr_cap=curr_cap, subproblems=subproblems)
-        result_without_last = subproblems[last_item - 1][curr_cap]
-        _knapsack_helper(vals, weights, last_item=last_item - 1,
-                         curr_cap=curr_cap - weights[last_item],
-                         subproblems=subproblems)
-        result_with_last = \
-            subproblems[last_item - 1][curr_cap - weights[last_item]] + \
-            vals[last_item]
-        subproblems[last_item][curr_cap] = max(result_without_last,
-                                               result_with_last)
 
 
 def _reconstruct(vals, weights, cap, subproblems):
@@ -125,41 +95,3 @@ def _reconstruct(vals, weights, cap, subproblems):
         included_items.add(0)
     return included_items
     # Running time complexity: O(n)
-
-
-def knapsack(vals, weights, cap):
-    """
-    Solves the knapsack problem of the items with the given values and weights,
-    and the given capacity, in an improved bottom-up way.
-    :param vals: list[int]
-    :param weights: list[int]
-    :param cap: int
-    :return: set{int}
-    """
-    # Check whether the input arrays are None or empty
-    if vals is None or len(weights) == 0 \
-            or weights is None or len(weights) == 0:
-        raise IllegalArgumentError('The input values and weights should not be '
-                                   'null or empty.')
-    # Check whether the input capacity is non-negative
-    if cap < 0:
-        raise IllegalArgumentError('The input capacity should be non-negative.')
-
-    n = len(vals)
-    # Initialization
-    subproblems = [[0 for x in range(cap + 1)] for i in range(n)]
-    for x in range(0, cap + 1):
-        if weights[0] <= x:
-            subproblems[0][x] = vals[0]
-    # Bottom-up calculation
-    for item in range(1, n):
-        for x in range(0, cap + 1):
-            if weights[item] > x:
-                subproblems[item][x] = subproblems[item - 1][x]
-            else:
-                result_without_curr = subproblems[item - 1][x]
-                result_with_curr = \
-                    subproblems[item - 1][x - weights[item]] + vals[item]
-                subproblems[item][x] = max(result_without_curr,
-                                           result_with_curr)
-    return _reconstruct(vals, weights, cap, subproblems=subproblems)

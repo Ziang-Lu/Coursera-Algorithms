@@ -40,11 +40,6 @@ import java.util.HashMap;
 public class SequenceAlignment {
 
     /**
-     * Default negative value for subproblem solutions.
-     */
-    private static final int DEFAULT_SUBPROBLEM_SOL = -1;
-
-    /**
      * Subproblem solutions.
      * Since there are only O(mn) subproblems, the first time we solve a
      * subproblem, we can cache its solution in a global take for O(1) lookup
@@ -54,14 +49,14 @@ public class SequenceAlignment {
 
     /**
      * Solves the sequence alignment of the given two strings with the given
-     * penalties in a straightforward way.
+     * penalties in an improved bottom-up way.
      * @param x first string
      * @param y second string
      * @param gapPen penalty for gap
      * @param penMap penalty between each character pair
      * @return optimal alignment
      */
-    public String[] sequenceAlignmentStraightforward(String x, String y, int gapPen,
+    public String[] sequenceAlignment(String x, String y, int gapPen,
             HashMap<Character, HashMap<Character, Integer>> penMap) {
         // Check whether the input strings are null or empty
         if ((x == null) || (x.length() == 0) || (y == null) || (y.length() == 0)) {
@@ -73,59 +68,30 @@ public class SequenceAlignment {
         }
         // Check whether the input map is null
         if (penMap == null) {
-            throw new NullPointerException("The input penalty map should not be null.");
+            throw new IllegalArgumentException("The input penalty map should not be null.");
         }
 
-        initializeSubproblemSols(x.length(), y.length());
-        sequenceAlignmentHelper(x, y, gapPen, penMap);
-        return reconstructOptimalAlignment(x, y, gapPen, penMap);
-        // With memoization, the overall running time complexity is O(mn).
-    }
-
-    /**
-     * Private helper method to initialize the subproblem solutions.
-     * @param m length of the first string
-     * @param n length of the second string
-     */
-    private void initializeSubproblemSols(int m, int n) {
+        int m = x.length(), n = y.length();
+        // Initialization
         subproblems = new int[m + 1][n + 1];
         for (int i = 0; i <= m; ++i) {
-            for (int j = 0; j <= n; ++j) {
-                subproblems[i][j] = DEFAULT_SUBPROBLEM_SOL;
+            subproblems[i][0] = i * gapPen;
+        }
+        for (int j = 0; j <= n; ++j) {
+            subproblems[0][j] = j * gapPen;
+        }
+        // Bottom-up calculation
+        for (int i = 1; i <= m; ++i) {
+            for (int j = 1; j <= n; ++j) {
+                char xCurr = x.charAt(i - 1), yCurr = y.charAt(j - 1);
+                int result1 = subproblems[i - 1][j - 1] + penMap.get(xCurr).get(yCurr);
+                int result2 = subproblems[i - 1][j] + gapPen;
+                int result3 = subproblems[i][j - 1] + gapPen;
+                subproblems[i][j] = Math.min(Math.min(result1, result2), result3);
             }
         }
-        // Running time complexity: O(mn)
-    }
-
-    /**
-     * Private helper method to solve the sequence alignment problem with the
-     * given prefix of the original strings and the given penalties recursively.
-     * @param xPrefix prefix of the first string
-     * @param yPrefix prefix of the second string
-     * @param gapPen penalty for gap
-     * @param penMap penalty between each character pair
-     */
-    private void sequenceAlignmentHelper(String xPrefix, String yPrefix, int gapPen,
-            HashMap<Character, HashMap<Character, Integer>> penMap) {
-        int i = xPrefix.length(), j = yPrefix.length();
-        if (subproblems[i][j] != DEFAULT_SUBPROBLEM_SOL) {
-            return;
-        }
-
-        // Base case
-        if ((i == 0) || (j == 0)) {
-            subproblems[i][j] = Math.max(i, j) * gapPen;
-            return;
-        }
-        // Recursive case
-        sequenceAlignmentHelper(xPrefix.substring(0, i - 1), yPrefix.substring(0, j - 1), gapPen, penMap);
-        char xFinal = xPrefix.charAt(i - 1), yFinal = yPrefix.charAt(j - 1);
-        int result1 = subproblems[i - 1][j - 1] + penMap.get(xFinal).get(yFinal);
-        sequenceAlignmentHelper(xPrefix.substring(0, i - 1), yPrefix, gapPen, penMap);
-        int result2 = subproblems[i - 1][j] + gapPen;
-        sequenceAlignmentHelper(xPrefix, yPrefix.substring(0, j - 1), gapPen, penMap);
-        int result3 = subproblems[i][j - 1] + gapPen;
-        subproblems[i][j] = Math.min(Math.min(result1, result2), result3);
+        return reconstructOptimalAlignment(x, y, gapPen, penMap);
+        // Overall running time complexity: O(mn)
     }
 
     /**
@@ -184,53 +150,6 @@ public class SequenceAlignment {
             s.insert(0, ' ');
         }
         // Running time complexity: O(n)
-    }
-
-    /**
-     * Solves the sequence alignment of the given two strings with the given
-     * penalties in an improved bottom-up way.
-     * @param x first string
-     * @param y second string
-     * @param gapPen penalty for gap
-     * @param penMap penalty between each character pair
-     * @return optimal alignment
-     */
-    public String[] sequenceAlignment(String x, String y, int gapPen,
-            HashMap<Character, HashMap<Character, Integer>> penMap) {
-        // Check whether the input strings are null or empty
-        if ((x == null) || (x.length() == 0) || (y == null) || (y.length() == 0)) {
-            throw new IllegalArgumentException("The input sequences should not be null or empty.");
-        }
-        // Check whether the input gap penalty is non-negative
-        if (gapPen < 0) {
-            throw new IllegalArgumentException("The input gap penalty should be non-negative.");
-        }
-        // Check whether the input map is null
-        if (penMap == null) {
-            throw new IllegalArgumentException("The input penalty map should not be null.");
-        }
-
-        int m = x.length(), n = y.length();
-        // Initialization
-        subproblems = new int[m + 1][n + 1];
-        for (int i = 0; i <= m; ++i) {
-            subproblems[i][0] = i * gapPen;
-        }
-        for (int j = 0; j <= n; ++j) {
-            subproblems[0][j] = j * gapPen;
-        }
-        // Bottom-up calculation
-        for (int i = 1; i <= m; ++i) {
-            for (int j = 1; j <= n; ++j) {
-                char xCurr = x.charAt(i - 1), yCurr = y.charAt(j - 1);
-                int result1 = subproblems[i - 1][j - 1] + penMap.get(xCurr).get(yCurr);
-                int result2 = subproblems[i - 1][j] + gapPen;
-                int result3 = subproblems[i][j - 1] + gapPen;
-                subproblems[i][j] = Math.min(Math.min(result1, result2), result3);
-            }
-        }
-        return reconstructOptimalAlignment(x, y, gapPen, penMap);
-        // Overall running time complexity: O(mn)
     }
 
 }

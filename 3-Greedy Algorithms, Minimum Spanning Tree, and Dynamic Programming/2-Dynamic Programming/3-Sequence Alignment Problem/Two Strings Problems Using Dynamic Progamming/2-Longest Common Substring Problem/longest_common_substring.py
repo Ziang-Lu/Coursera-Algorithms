@@ -34,18 +34,12 @@ def find_longest_common_substring(x, y):
 
     m, n = len(x), len(y)
     # Initialization
-    subproblems = [[0 for j in range(n + 1)] for i in range(m + 1)]
-    for i in range(m + 1):
-        subproblems[i][0] = 0
-    for j in range(n + 1):
-        subproblems[0][j] = 0
+    subproblems = [[0] * (n + 1) for i in range(m + 1)]
     # Bottom-up calculation
     for i in range(1, m + 1):
         for j in range(1, n + 1):
             x_curr, y_curr = x[i - 1], y[j - 1]
-            if x_curr != y_curr:
-                subproblems[i][j] = 0
-            else:
+            if x_curr == y_curr:
                 subproblems[i][j] = subproblems[i - 1][j - 1] + 1
 
     # Find the maximum of the longest common suffix of possible prefixes, which

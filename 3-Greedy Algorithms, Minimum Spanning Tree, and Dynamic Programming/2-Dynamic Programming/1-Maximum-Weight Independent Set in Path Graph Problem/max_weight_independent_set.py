@@ -33,10 +33,10 @@ class IllegalArgumentError(ValueError):
     pass
 
 
-def find_mwis_straightforward(weights):
+def find_mwis(weights):
     """
     Finds the maximum-weight independent set (MWIS) in a path graph with the
-    given weights in a straightforward way.
+    given weights in an improved bottom-up way.
     :param weights: list[int]
     :return: set{int}
     """
@@ -48,40 +48,15 @@ def find_mwis_straightforward(weights):
     if len(weights) == 1:
         return set([0])
 
-    subproblems = [-1 for i in range(len(weights))]
-    _find_mwis_helper(weights, last_vtx=len(weights) - 1,
-                      subproblems=subproblems)
+    # Initialization
+    subproblems = [weights[0], max(weights[0], weights[1])]
+    # Bottom-up calculation
+    for curr_vtx in range(2, len(weights)):
+        subproblems.append(
+            max(subproblems[curr_vtx - 1],
+                subproblems[curr_vtx - 2] + weights[curr_vtx]))
     return _reconstruct_mwis(weights=weights, subproblems=subproblems)
-    # With memoization, the overall running time complexity is O(n).
-
-
-def _find_mwis_helper(weights, last_vtx, subproblems):
-    """
-    Private helper function to find the MWIS in the given sub path graph with
-    the given weights recursively.
-    :param weights: list[int]
-    :param last_vtx: int
-    :param subproblems: list[int]
-    :return: None
-    """
-    if weights[last_vtx] != -1:
-        return
-
-    # Base case 1: Only the left-most vertex
-    if last_vtx == 0:
-        subproblems[0] = weights[0]
-        return
-    # Base case 2: Only the left-most two vertices
-    if last_vtx == 1:
-        subproblems[1] = max(weights[0], weights[1])
-        return
-
-    # Recursive case
-    _find_mwis_helper(weights, last_vtx=last_vtx - 1, subproblems=subproblems)
-    result_without_last = subproblems[last_vtx - 1]
-    _find_mwis_helper(weights, last_vtx=last_vtx - 2, subproblems=subproblems)
-    result_with_last = subproblems[last_vtx - 2] + weights[last_vtx]
-    subproblems[last_vtx] = max(result_without_last, result_with_last)
+    # Overall running time complexity: O(n)
 
 
 def _reconstruct_mwis(weights, subproblems):
@@ -110,29 +85,3 @@ def _reconstruct_mwis(weights, subproblems):
         mwis.add(0)
     return mwis
     # Running time complexity: O(n)
-
-
-def find_mwis(weights):
-    """
-    Finds the maximum-weight independent set (MWIS) in a path graph with the
-    given weights in an improved bottom-up way.
-    :param weights: list[int]
-    :return: set{int}
-    """
-    # Check whether the input array is None or empty
-    if weights is None or len(weights) == 0:
-        raise IllegalArgumentError('The input weights should not be None or '
-                                   'empty.')
-
-    if len(weights) == 1:
-        return set([0])
-
-    # Initialization
-    subproblems = [weights[0], max(weights[0], weights[1])]
-    # Bottom-up calculation
-    for curr_vtx in range(2, len(weights)):
-        subproblems.append(
-            max(subproblems[curr_vtx - 1],
-                subproblems[curr_vtx - 2] + weights[curr_vtx]))
-    return _reconstruct_mwis(weights=weights, subproblems=subproblems)
-    # Overall running time complexity: O(n)

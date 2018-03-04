@@ -240,16 +240,15 @@ public class DirectedGraph implements GraphInterface {
      * Private helper method to reconstruct the shortest paths according to the
      * optimal solution using backtracking.
      * @param srcVtxID source vertex ID
-     * @param finalBudget final budget when all shortest paths are found
      * @return shortest paths
      */
-    private ArrayList<LinkedList<Integer>> reconstructShortestPaths(int srcVtxID, int finalBudget) {
+    private ArrayList<LinkedList<Integer>> reconstructShortestPaths(int srcVtxID) {
         ArrayList<LinkedList<Integer>> shortestPaths = new ArrayList<LinkedList<Integer>>();
         for (Vertex vtx : vtxList) {
             LinkedList<Integer> shortestPath = new LinkedList<Integer>();
             shortestPath.add(vtx.id());
             Vertex currVtx = vtx;
-            int budget = finalBudget;
+            int budget = vtxList.size() - 1;
             while (budget >= 1) {
                 // Find the previous vertex to backtrack
                 Vertex prevVtx = currVtx;
@@ -347,11 +346,10 @@ public class DirectedGraph implements GraphInterface {
     /**
      * Private helper method to reconstruct the shortest paths according to the
      * penultimate vertices in the shortest paths using backtracking.
-     * @param srcVtxID source vertex ID
      * @param penultimateVtxs penultimate vertices in the shortest paths
      * @return shortest paths
      */
-    private ArrayList<LinkedList<Integer>> reconstructShortestPathsOptimized(int srcVtxID, Vertex[] penultimateVtxs) {
+    private ArrayList<LinkedList<Integer>> reconstructShortestPathsOptimized(Vertex[] penultimateVtxs) {
         ArrayList<LinkedList<Integer>> shortestPaths = new ArrayList<LinkedList<Integer>>();
         for (Vertex vtx : vtxList) {
             LinkedList<Integer> shortestPath = new LinkedList<Integer>();

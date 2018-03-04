@@ -26,60 +26,6 @@ public class OptimalBSTFinderOptimized {
 
     /**
      * Finds the optimal BST for items with the given weight distribution, and
-     * calculates its weighted search time (WST), in a straightforward way.
-     * @param weights weight distribution of the items
-     * @return optimal WST
-     */
-    public int findOptimalBSTStraightforward(int[] weights) {
-        // Check whether the input array is null or empty
-        if ((weights == null) || (weights.length == 0)) {
-            throw new IllegalArgumentException("The input weight distribution should not be null or empty.");
-        }
-
-        int n = weights.length;
-        subproblems = new int[n][n];
-        return findOptimalBSTHelper(weights, 0, n - 1);
-        // With memoization, the overall running time complexity is O(n^3).
-    }
-
-    /**
-     * Private helper method to find the optimal BST for the given contiguous
-     * items with the given weight distribution, and calculates its WST,
-     * recursively.
-     * @param weights weights of the items
-     * @param start starting item of the contiguous items
-     * @param end ending item of the contiguous items
-     * @return optimal WST of the given continuous items
-     */
-    private int findOptimalBSTHelper(int[] weights, int start, int end) {
-        // Base case 1: start > end
-        if (start > end) {
-            return 0;
-        }
-        // Recursive case
-        if (subproblems[start][end] != 0) {
-            return subproblems[start][end];
-        }
-        int minWST = Integer.MAX_VALUE;
-        int weightSum = 0;
-        for (int k = start; k <= end; ++k) {
-            weightSum += weights[k];
-        }
-        // Use Knuth's optimization:
-        // root(i, j-1) <= root(i, j) <= root(i+1, j)
-        for (int r = start; r <= end; ++r) {
-            int currWST = findOptimalBSTHelper(weights, start, r - 1) + findOptimalBSTHelper(weights, r + 1, end)
-                    + weightSum;
-            if (currWST < minWST) {
-                minWST  = currWST;
-            }
-        }
-        subproblems[start][end] = minWST;
-        return minWST;
-    }
-
-    /**
-     * Finds the optimal BST for items with the given weight distribution, and
      * calculates its weighted search time (WST), in an improved bottom-up way.
      * @param weights weight distribution of the items
      * @return optimal WST

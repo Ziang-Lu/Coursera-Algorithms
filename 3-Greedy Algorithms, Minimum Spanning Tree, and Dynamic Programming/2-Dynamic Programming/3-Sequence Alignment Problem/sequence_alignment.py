@@ -43,10 +43,10 @@ class IllegalArgumentError(ValueError):
     pass
 
 
-def sequence_alignment_straightforward(x, y, gap_pen, pen_map):
+def sequence_alignment(x, y, gap_pen, pen_map):
     """
     Solves the sequence alignment problem of the given two strings with the
-    given penalties in a straightforward way.
+    given penalties in an improved bottom-up way.
     :param x: str
     :param y: str
     :param gap_pen: int
@@ -65,45 +65,24 @@ def sequence_alignment_straightforward(x, y, gap_pen, pen_map):
     if pen_map is None:
         raise IllegalArgumentError('The input penalty map should not be None.')
 
-    subproblems = [[-1 for j in range(len(y) + 1)] for i in range(len(x) + 1)]
-    _sequence_alignment_helper(x, y, gap_pen, pen_map, subproblems=subproblems)
+    m, n = len(x), len(y)
+    # Initialization
+    subproblems = [[0] * (n + 1) for i in range(m + 1)]
+    for i in range(m + 1):
+        subproblems[i][0] = i * gap_pen
+    for j in range(n + 1):
+        subproblems[0][j] = j * gap_pen
+    # Bottom-up calculation
+    for i in range(1, m + 1):
+        for j in range(1, n + 1):
+            x_curr, y_curr = x[i - 1], y[j - 1]
+            result1 = subproblems[i - 1][j - 1] + pen_map[x_curr][y_curr]
+            result2 = subproblems[i - 1][j] + gap_pen
+            result3 = subproblems[i][j - 1] + gap_pen
+            subproblems[i][j] = min(result1, result2, result3)
     return _reconstruct_optimal_alignment(x, y, gap_pen, pen_map,
                                           subproblems=subproblems)
-    # With memoization, the overall running time complexity is O(mn).
-
-
-def _sequence_alignment_helper(x_prefix, y_prefix, gap_pen, pen_map,
-                               subproblems):
-    """
-    Private helper function to solve the sequence alignment problem with the
-    given prefix of the original strings and the given penalties.
-    :param x_prefix: str
-    :param y_prefix: str
-    :param gap_pen: int
-    :param pen_map: dict{char: dict{char: int}}
-    :param subproblems: list[list[int]]
-    :return: list[str]
-    """
-    i, j = len(x_prefix), len(y_prefix)
-    if subproblems[i][j] != -1:
-        return
-
-    # Base case
-    if i == 0 or j == 0:
-        subproblems[i][j] = max(i, j) * gap_pen
-        return
-    # Recursive case
-    _sequence_alignment_helper(x_prefix[:-1], y_prefix[:-1], gap_pen, pen_map,
-                               subproblems=subproblems)
-    x_final, y_final = x_prefix[-1], y_prefix[-1]
-    result1 = subproblems[i - 1][j - 1] + pen_map[x_final][y_final]
-    _sequence_alignment_helper(x_prefix[:-1], y_prefix, gap_pen, pen_map,
-                               subproblems=subproblems)
-    result2 = subproblems[i - 1][j] + gap_pen
-    _sequence_alignment_helper(x_prefix, y_prefix[:-1], gap_pen, pen_map,
-                               subproblems=subproblems)
-    result3 = subproblems[i][j - 1] + gap_pen
-    subproblems[i][j] = min(result1, result2, result3)
+    # Overall running time complexity: O(mn)
 
 
 def _reconstruct_optimal_alignment(x, y, gap_pen, pen_map, subproblems):
@@ -145,45 +124,3 @@ def _reconstruct_optimal_alignment(x, y, gap_pen, pen_map, subproblems):
         sx = ' ' * j + sx
     return [sx, sy]
     # Running time complexity: O(m + n)
-
-
-def sequence_alignment(x, y, gap_pen, pen_map):
-    """
-    Solves the sequence alignment problem of the given two strings with the
-    given penalties in an improved bottom-up way.
-    :param x: str
-    :param y: str
-    :param gap_pen: int
-    :param pen_map: dict{char: dict{char: int}}
-    :return: list[str]
-    """
-    # Check whether the input strings are None or empty
-    if x is None or len(x) == 0 or y is None or len(y) == 0:
-        raise IllegalArgumentError('The input sequences should not be None or '
-                                   'empty.')
-    # Check whether the input gap penalty is non-negative
-    if gap_pen < 0:
-        raise IllegalArgumentError('The input gap penalty should be '
-                                   'non-negative.')
-    # Check whether the input penalty map is None
-    if pen_map is None:
-        raise IllegalArgumentError('The input penalty map should not be None.')
-
-    m, n = len(x), len(y)
-    # Initialization
-    subproblems = [[0 for j in range(n + 1)] for i in range(m + 1)]
-    for i in range(m + 1):
-        subproblems[i][0] = i * gap_pen
-    for j in range(n + 1):
-        subproblems[0][j] = j * gap_pen
-    # Bottom-up calculation
-    for i in range(1, m + 1):
-        for j in range(1, n + 1):
-            x_curr, y_curr = x[i - 1], y[j - 1]
-            result1 = subproblems[i - 1][j - 1] + pen_map[x_curr][y_curr]
-            result2 = subproblems[i - 1][j] + gap_pen
-            result3 = subproblems[i][j - 1] + gap_pen
-            subproblems[i][j] = min(result1, result2, result3)
-    return _reconstruct_optimal_alignment(x, y, gap_pen, pen_map,
-                                          subproblems=subproblems)
-    # Overall running time complexity: O(mn)

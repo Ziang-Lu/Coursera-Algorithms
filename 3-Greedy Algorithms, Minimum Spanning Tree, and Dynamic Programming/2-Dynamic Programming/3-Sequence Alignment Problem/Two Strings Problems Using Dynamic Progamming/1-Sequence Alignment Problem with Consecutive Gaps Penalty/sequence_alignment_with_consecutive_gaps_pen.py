@@ -47,20 +47,15 @@ def sequence_alignment_with_consecutive_gaps_pen(x, y, a, b, pen_map):
 
     m, n = len(x), len(y)
     # Initialization
-    subproblems = [[0 for j in range(n + 1)] for i in range(m + 1)]
-    sx_ends_with_gap = [[False for j in range(n + 1)] for i in range(m + 1)]
-    sy_ends_with_gap = [[False for j in range(n + 1)] for i in range(m + 1)]
-    subproblems[0][0] = 0
-    sx_ends_with_gap[0][0] = False
-    sy_ends_with_gap[0][0] = False
+    subproblems = [[0] * (n + 1) for i in range(m + 1)]
+    sx_ends_with_gap = [[False] * (n + 1) for i in range(m + 1)]
+    sy_ends_with_gap = [[False] * (n + 1) for i in range(m + 1)]
     for i in range(1, m + 1):
         subproblems[i][0] = a * i + b
-        sx_ends_with_gap[i][0] = False
         sy_ends_with_gap[i][0] = True
     for j in range(1, n + 1):
         subproblems[0][j] = a * j + b
         sx_ends_with_gap[0][j] = True
-        sy_ends_with_gap[0][j] = False
     # Bottom-up calculation
     for i in range(m + 1):
         for j in range(n + 1):
@@ -75,14 +70,11 @@ def sequence_alignment_with_consecutive_gaps_pen(x, y, a, b, pen_map):
             result = min(result1, result2, result3)
             subproblems[i][j] = result
             if result == result1:
-                sx_ends_with_gap[i][j] = False
-                sy_ends_with_gap[i][j] = False
+                pass
             elif result == result2:
-                sx_ends_with_gap[i][j] = False
                 sy_ends_with_gap[i][j] = True
             else:
                 sx_ends_with_gap[i][j] = True
-                sy_ends_with_gap[i][j] = False
     return _reconstruct_optimal_alignment(x, y, a, b, pen_map,
                                           subproblems=subproblems,
                                           sx_ends_with_gap=sx_ends_with_gap,

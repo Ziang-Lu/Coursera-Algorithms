@@ -42,10 +42,10 @@ class IllegalArgumentError(ValueError):
     pass
 
 
-def two_knapsack_straightforward(vals, weights, cap1, cap2):
+def two_knapsack(vals, weights, cap1, cap2):
     """
     Solves the two-knapsack problem of the items with the given values and
-    weights, and the given capacities, in a straightforward way.
+    weights, and the given capacities, in an improved bottom-up way.
     :param vals: list[int]
     :param weights: list[int]
     :param cap1: int
@@ -62,76 +62,39 @@ def two_knapsack_straightforward(vals, weights, cap1, cap2):
                                    'non-negative.')
 
     n = len(vals)
-    subproblems = [[[-1 for x2 in range(cap2 + 1)] for x1 in range(cap1 + 1)]
+    # Initialization
+    subproblems = [[[0] * (cap2 + 1) for x1 in range(cap1 + 1)]
                    for i in range(n)]
-    _two_knapsack_helper(vals, weights, last_item=n - 1, curr_cap1=cap1,
-                         curr_cap2=cap2, subproblems=subproblems)
+    for x1 in range(cap1 + 1):
+        for x2 in range(cap2 + 1):
+            if weights[0] <= x1 or weights[0] <= x2:
+                subproblems[0][x1][x2] = vals[0]
+    # Bottom-up calculation
+    for item in range(1, n):
+        for x1 in range(cap1 + 1):
+            for x2 in range(cap2 + 1):
+                result_without_curr = subproblems[item - 1][x1][x2]
+                if weights[item] <= x1 and weights[item] <= x2:
+                    result_with_curr_in_1 = \
+                        subproblems[item - 1][x1 - weights[item]][x2]
+                    result_with_curr_in_2 = \
+                        subproblems[item - 1][x1][x2 - weights[item]]
+                    subproblems[item][x1][x2] = max(result_without_curr,
+                                                    result_with_curr_in_1,
+                                                    result_with_curr_in_2)
+                elif weights[item] <= x1:
+                    result_with_curr_in_1 = \
+                        subproblems[item - 1][x1 - weights[item]][x2]
+                    subproblems[item][x1][x2] = max(result_without_curr,
+                                                    result_with_curr_in_1)
+                elif weights[item] <= x2:
+                    result_with_curr_in_2 = \
+                        subproblems[item - 1][x1][x2 - weights[item]]
+                    subproblems[item][x1][x2] = max(result_without_curr,
+                                                    result_with_curr_in_2)
     return _reconstruct(vals, weights, cap1, cap2, subproblems=subproblems)
-    # With memoization, the overall running time complexity is O(n*W1*W2), where
-    # W1 and W2 are the knapsack capacities
-
-
-def _two_knapsack_helper(vals, weights, last_item, curr_cap1, curr_cap2,
-                         subproblems):
-    """
-    Private helper function to solve the two-knapsack subproblem with the given
-    first items and the given capacities recursively.
-    :param vals: list[int]
-    :param weights: list[int]
-    :param last_item: int
-    :param curr_cap1: int
-    :param curr_cap2: int
-    :param subproblems: list[list[list[int]]]
-    :return: None
-    """
-    if subproblems[last_item][curr_cap1][curr_cap2] != -1:
-        return
-
-    # Base case
-    if last_item == 0:
-        if weights[0] > curr_cap1 and weights[0] > curr_cap2:
-            subproblems[0][curr_cap1][curr_cap2] = 0
-        else:
-            subproblems[0][curr_cap1][curr_cap2] = vals[0]
-        return
-    # Recursive case
-    _two_knapsack_helper(vals, weights, last_item=last_item - 1,
-                         curr_cap1=curr_cap1, curr_cap2=curr_cap2,
-                         subproblems=subproblems)
-    result_without_last = \
-        subproblems[last_item - 1][curr_cap1][curr_cap2]
-    if weights[last_item] > curr_cap1:
-        _two_knapsack_helper(vals, weights, last_item=last_item - 1,
-                             curr_cap1=curr_cap1,
-                             curr_cap2=curr_cap2 - weights[last_item],
-                             subproblems=subproblems)
-        result_with_last_in_2 = \
-            subproblems[last_item - 1][curr_cap1][curr_cap2 - weights[last_item]] + vals[last_item]
-        subproblems[last_item][curr_cap1][curr_cap2] = \
-            max(result_without_last, result_with_last_in_2)
-    elif weights[last_item] > curr_cap2:
-        _two_knapsack_helper(vals, weights, last_item=last_item - 1,
-                             curr_cap1=curr_cap1 - weights[last_item],
-                             curr_cap2=curr_cap2, subproblems=subproblems)
-        result_with_last_in_1 = \
-            subproblems[last_item - 1][curr_cap1 - weights[last_item]][curr_cap2] + vals[last_item]
-        subproblems[last_item][curr_cap1][curr_cap2] = \
-            max(result_without_last, result_with_last_in_1)
-    else:
-        _two_knapsack_helper(vals, weights, last_item=last_item - 1,
-                             curr_cap1=curr_cap1 - weights[last_item],
-                             curr_cap2=curr_cap2, subproblems=subproblems)
-        result_with_last_in_1 = \
-            subproblems[last_item - 1][curr_cap1 - weights[last_item]][curr_cap2] + vals[last_item]
-        _two_knapsack_helper(vals, weights, last_item=last_item - 1,
-                             curr_cap1=curr_cap1,
-                             curr_cap2=curr_cap2 - weights[last_item],
-                             subproblems=subproblems)
-        result_with_last_in_2 = \
-            subproblems[last_item - 1][curr_cap1][curr_cap2 - weights[last_item]] + vals[last_item]
-        subproblems[last_item][curr_cap1][curr_cap2] = \
-            max(result_without_last, result_with_last_in_1,
-                result_with_last_in_2)
+    # Overall running time complexity: O(n*W1*W2), where W1 and W2 are the
+    # knapsack capacities
 
 
 def _reconstruct(vals, weights, cap1, cap2, subproblems):
@@ -186,60 +149,3 @@ def _reconstruct(vals, weights, cap1, cap2, subproblems):
         included_items2.add(0)
     return [included_items1, included_items2]
     # Running time complexity: O(n)
-
-
-def two_knapsack(vals, weights, cap1, cap2):
-    """
-    Solves the two-knapsack problem of the items with the given values and
-    weights, and the given capacities, in an improved bottom-up way.
-    :param vals: list[int]
-    :param weights: list[int]
-    :param cap1: int
-    :param cap2: int
-    :return: list[set{int}]
-    """
-    # Check whether the input arrays are None or empty
-    if vals is None or len(vals) == 0 or weights is None or len(weights) == 0:
-        raise IllegalArgumentError('The input values and weights should not be '
-                                   'None or empty.')
-    # Check whether the input capacities are non-negative
-    if cap1 < 0 or cap2 < 0:
-        raise IllegalArgumentError('The input capacities should be '
-                                   'non-negative.')
-
-    n = len(vals)
-    # Initialization
-    subproblems = [[[0 for x2 in range(cap2 + 1)] for x1 in range(cap1 + 1)]
-                   for i in range(n)]
-    for x1 in range(cap1 + 1):
-        for x2 in range(cap2 + 1):
-            if weights[0] > x1 and weights[0] > x2:
-                subproblems[0][x1][x2] = 0
-            else:
-                subproblems[0][x1][x2] = vals[0]
-    # Bottom-up calculation
-    for item in range(1, n):
-        for x1 in range(cap1 + 1):
-            for x2 in range(cap2 + 1):
-                result_without_curr = subproblems[item - 1][x1][x2]
-                if weights[item] <= x1 and weights[item] <= x2:
-                    result_with_curr_in_1 = \
-                        subproblems[item - 1][x1 - weights[item]][x2]
-                    result_with_curr_in_2 = \
-                        subproblems[item - 1][x1][x2 - weights[item]]
-                    subproblems[item][x1][x2] = max(result_without_curr,
-                                                    result_with_curr_in_1,
-                                                    result_with_curr_in_2)
-                elif weights[item] <= x1:
-                    result_with_curr_in_1 = \
-                        subproblems[item - 1][x1 - weights[item]][x2]
-                    subproblems[item][x1][x2] = max(result_without_curr,
-                                                    result_with_curr_in_1)
-                elif weights[item] <= x2:
-                    result_with_curr_in_2 = \
-                        subproblems[item - 1][x1][x2 - weights[item]]
-                    subproblems[item][x1][x2] = max(result_without_curr,
-                                                    result_with_curr_in_2)
-    return _reconstruct(vals, weights, cap1, cap2, subproblems=subproblems)
-    # Overall running time complexity: O(n*W1*W2), where W1 and W2 are the
-    # knapsack capacities

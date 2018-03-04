@@ -29,11 +29,6 @@ import java.util.HashSet;
 public class MaxWeightIndependentSet {
 
     /**
-     * Default negative value for subproblem solutions.
-     */
-    private static final int DEFAULT_SUBPROBLEM_SOL = -1;
-
-    /**
      * Subproblem solutions.
      * Since there are only O(n) distinct subproblems, the first time we solve a
      * subproblem, we can cache its solution in a global take for O(1) lookup
@@ -43,11 +38,11 @@ public class MaxWeightIndependentSet {
 
     /**
      * Finds the maximum-weight independent set (MWIS) in a path graph with the
-     * given weights in a straightforward way.
+     * given weights in an improved bottom-up way.
      * @param weights weights of the path graph
      * @return MWIS in the given path graph
      */
-    public HashSet<Integer> findMWISStraightforward(int[] weights) {
+    public HashSet<Integer> findMWIS(int[] weights) {
         // Check whether the input array is null or empty
         if ((weights == null) || (weights.length == 0)) {
             throw new IllegalArgumentException("The input weights should not be null or empty.");
@@ -55,45 +50,21 @@ public class MaxWeightIndependentSet {
 
         if (weights.length == 1) {
             HashSet<Integer> mwis = new HashSet<Integer>();
-            mwis.add(0);
+            mwis.add(1);
             return mwis;
         }
 
+        // Initialization
         subproblems = new int[weights.length];
-        Arrays.fill(subproblems, DEFAULT_SUBPROBLEM_SOL);
-        findMWISHelper(weights, weights.length - 1);
+        subproblems[0] = weights[0];
+        subproblems[1] = Math.max(weights[0], weights[1]);
+        // Bottom-up calculation
+        for (int currVtx = 2; currVtx < weights.length; ++currVtx) {
+            subproblems[currVtx] = Math.max(subproblems[currVtx - 1],
+                    subproblems[currVtx - 2] + weights[currVtx]);
+        }
         return reconstructMWIS(weights);
-        // With memoization, the overall running time complexity is O(n), since there are only n distinct subproblems.
-    }
-
-    /**
-     * Private helper method to find the MWIS in the given sub path graph with
-     * the given weights recursively.
-     * @param weights weights of the path graph
-     * @param lastVtx last vertex of the sub path graph
-     */
-    private void findMWISHelper(int[] weights, int lastVtx) {
-        if (subproblems[lastVtx] != DEFAULT_SUBPROBLEM_SOL) {
-            return;
-        }
-
-        // Base case 1: Only the left-most vertex
-        if (lastVtx == 0) {
-            subproblems[0] = weights[0];
-            return;
-        }
-        // Base case 2: Only the left-most two vertices
-        if (lastVtx == 1) {
-            subproblems[1] = Math.max(weights[0], weights[1]);
-            return;
-        }
-
-        // Recursive case
-        findMWISHelper(weights, lastVtx - 1);
-        int resultWithoutLast = subproblems[lastVtx - 1];
-        findMWISHelper(weights, lastVtx - 2);
-        int resultWithLast = subproblems[lastVtx - 1] + weights[lastVtx];
-        subproblems[lastVtx] = Math.max(resultWithoutLast, resultWithLast);
+        // Overall running time complexity: O(n)
     }
 
     /**
@@ -127,37 +98,6 @@ public class MaxWeightIndependentSet {
         }
         return mwis;
         // Running time complexity: O(n)
-    }
-
-    /**
-     * Finds the maximum-weight independent set (MWIS) in a path graph with the
-     * given weights in an improved bottom-up way.
-     * @param weights weights of the path graph
-     * @return MWIS in the given path graph
-     */
-    public HashSet<Integer> findMWIS(int[] weights) {
-        // Check whether the input array is null or empty
-        if ((weights == null) || (weights.length == 0)) {
-            throw new IllegalArgumentException("The input weights should not be null or empty.");
-        }
-
-        if (weights.length == 1) {
-            HashSet<Integer> mwis = new HashSet<Integer>();
-            mwis.add(1);
-            return mwis;
-        }
-
-        // Initialization
-        subproblems = new int[weights.length];
-        subproblems[0] = weights[0];
-        subproblems[1] = Math.max(weights[0], weights[1]);
-        // Bottom-up calculation
-        for (int currVtx = 2; currVtx < weights.length; ++currVtx) {
-            subproblems[currVtx] = Math.max(subproblems[currVtx - 1],
-                    subproblems[currVtx - 2] + weights[currVtx]);
-        }
-        return reconstructMWIS(weights);
-        // Overall running time complexity: O(n)
     }
 
 }

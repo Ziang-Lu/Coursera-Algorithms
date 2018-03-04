@@ -49,7 +49,7 @@ public interface GraphInterface {
      * Note that in this application, the vertex IDs are exactly from 0 to
      * (n - 1).
      * @param srcVtxID source vertex ID
-     * @return mapping between vertices and shortest distances
+     * @return shortest paths
      */
     ArrayList<LinkedList<Integer>> bellmanFordShortestPaths(int srcVtxID);
 
@@ -60,7 +60,7 @@ public interface GraphInterface {
      * Note that in this application, the vertex IDs are exactly from 0 to
      * (n - 1).
      * @param srcVtxID source vertex ID
-     * @return mapping between vertices and shortest distances
+     * @return shortest paths
      */
     ArrayList<LinkedList<Integer>> bellmanFordShortestPathsOptimized(int srcVtxID);
 
