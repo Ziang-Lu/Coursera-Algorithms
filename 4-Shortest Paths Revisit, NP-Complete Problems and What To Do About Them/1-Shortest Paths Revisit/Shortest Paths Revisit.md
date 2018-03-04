@@ -22,11 +22,11 @@ Each vertex uses only **local** computation, i.e., communicates with only the **
 
 #### Bellman-Ford Shortest-Path Algorithm: (Dynamic programming)
 
-*Though we may assume that the input graph doesn't have negative directed cycles (directed cycles with negative overall length), the Bellman-Ford Shortest-Path Algorithm is still able to discover this anyway, i.e., finds an excuse that why the shorest paths cannot be computed.*
+*Though we may assume that the input graph doesn't have negative directed cycles (directed cycles with negative overall length) reachable from the source vertex, the Bellman-Ford Shortest-Path Algorithm is still able to discover this anyway, i.e., finds an excuse that why the shorest paths cannot be computed.*
 
 =>
 
-GIven a directed graph $G=(V,E)$ with each edge lengths $c_e$ could possibly be negative, and a source vertex $s$, the Bellman-Ford Shortest-Path Algorithm will either computes the shortest paths from $s$ to any other vertices, or discovers negative cycles.
+GIven a directed graph $G=(V,E)$ with each edge lengths $c_e$ could possibly be negative, and a source vertex $s$, the Bellman-Ford Shortest-Path Algorithm will either computes the shortest paths from $s$ to any other vertices, or discovers negative cycles reachable from $s$.
 
 <br>
 
@@ -50,7 +50,7 @@ Let $P(s, v, i)$ be the optimal solution (shortest path with minimum total lengt
 
 => $P(s, v, i)$ is the minimum among the above (1 + in-degree(v)) candidates.
 
-*(Assume the input graph doesn't have negative cycles, then for each path, removing cycles only makes the total length go down, so each shortest path must not contain cycles; therefore, each shortest path has at most ($n$ - 1) edges.)*
+*(Assume the input graph doesn't have negative cycles reachable from $s$, then for each path, removing cycles only makes the total length go down, so each shortest path must not contain cycles; therefore, each shortest path has at most ($n$ - 1) edges.)*
 
 *=> $i$ can be restricted to be $\le (n-1)$, i.e., $i$ = {1, 2, …, $n$ - 1}.*
 
@@ -68,9 +68,21 @@ Let $P(s, v, i)$ be the optimal solution (shortest path with minimum total lengt
     * $L[v, i] \ = \ min\{L[v, i-1], min_{(w, v)}L(w, i-1)\}$
 * The final solution lies in exactly $L[v, n-1]$ for $v \in V$.
 
-**Optimization 1: Early stopping**
+**Optimization 1: Early-stopping**
 
 The algorithm may stop early when in the current iteration, no update is made for any vertex.
 
 **Optimization 2: Space optimization**
+
+In basic implementation, we need O($n^2$) space. However, since we only need $L[v, i-1]$ to compute $L[v, i]$, we only need to keep track of the subproblem solutions in the previous outer iteration, so the space needed is reduced to $O(n)$.
+
+However, in this way, we lose the ability to reconstruct the shortest paths. Thus, we may at the same time keep the penultimate vertex $B(s, v, i)$ for the shortest path from $s$ to $v$ using at most $i$ edges.
+
+***
+
+*Extension to detect negative cycles reachable from $s$:*
+
+*If the input graph has negative cycles reachable from $s$, then we just run the outer loop for one extra iteration, and check if there is still an improvement on some vertex. If so, then the input graph must have negative cycles reachable from $s$.*
+
+***
 
