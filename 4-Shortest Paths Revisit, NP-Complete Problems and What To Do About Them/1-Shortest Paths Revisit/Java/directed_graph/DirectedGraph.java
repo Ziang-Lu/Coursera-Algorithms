@@ -229,7 +229,7 @@ public class DirectedGraph implements GraphInterface {
             throw new IllegalArgumentException("The graph has negative cycles reachable from the source vertex.");
         }
         // The final solution lies in exactly subproblems[v][n - 1].
-        return reconstructShortestPaths(srcVtxID, n - 1);
+        return reconstructShortestPaths(srcVtxID);
         // Outer for-loop: n iterations
         // Inner for-loop: sum(in-degree(v)) = m
         // => Overall running time complexity: O(mn)
@@ -338,7 +338,7 @@ public class DirectedGraph implements GraphInterface {
         // The final solution lies in exactly prevIterSubproblems.
 
         // We can reconstruct the shortest paths from these penultimate vertices.
-        return reconstructShortestPathsOptimized(srcVtxID, prevIterPenultimateVtxs);
+        return reconstructShortestPathsOptimized(prevIterPenultimateVtxs);
         // Overall running time complexity: O(mn)
         // Overall space complexity: O(n)
     }

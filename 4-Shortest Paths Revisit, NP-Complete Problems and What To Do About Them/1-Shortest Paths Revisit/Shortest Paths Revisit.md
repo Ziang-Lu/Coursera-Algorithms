@@ -86,3 +86,32 @@ However, in this way, we lose the ability to reconstruct the shortest paths. Thu
 
 ***
 
+<br>
+
+"Distributed":
+
+In each round, each vertex only "communicate" with the vertices it is connected to.
+
+<br>
+
+#### Application: Internet rounting
+
+Modifications to Bellman-Ford Shortest-Path Algorithm towards a routing protocol:
+
+1. Internet protocols are **destination-driven** rather than source-driven.
+
+   => *Reverse all directions in the Bellman-Ford algorithm, to compute the shortest paths from any vertex to a given destination vertex*
+
+   => *At the same time, just like previously we need to keep track of penultimate vertices, now for each vertex we need to keep track of the next hop.*
+
+   "Distance vector protocol" (距离矢量协议)
+
+2. Since different computers on the Internet run in different speeds, we can't assume all $P(s, v, i - 1)$ get computed before $P(s, v, i)$, so we need a **asynchronous** Bellman-Ford algorithm implementation.
+
+   => *Change from pull-base to push-based, i.e., as soon as $P(s, v, i) \lt P(s, v, i - 1)$, $v$ notifies all of its neighbors.*
+
+3. Routers and links may **fail**.
+
+   => *Each vertex maintains the entire shortest path to the destination vertex, not just the next hop.*
+
+   "Path vector protocol" (路径矢量协议)
