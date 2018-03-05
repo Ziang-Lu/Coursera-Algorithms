@@ -138,9 +138,9 @@ class AbstractGraph(object):
 
     def bellman_ford_shortest_paths(self, src_vtx_id):
         """
-        Returns the mapping between the vertices and the shortest distances from
-        the given vertex using Bellman-Ford Shortest-Path Algorithm in an
-        improved bottom-up way.
+        Returns the mapping between the vertices and the shortest paths from the
+        given vertex using Bellman-Ford Shortest-Path Algorithm in an improved
+        bottom-up way.
         Note that in this application, the vertex IDs are exactly from 0 to
         (n - 1).
         :param src_vtx_id: int
@@ -148,11 +148,10 @@ class AbstractGraph(object):
         """
         pass
 
-    def _reconstruct_shortest_paths(self, src_vtx_id, subproblems):
+    def _reconstruct_shortest_paths(self, subproblems):
         """
         Private helper function to reconstruct the shortest paths according to
         the optimal solution using backtracking.
-        :param src_vtx_id: int
         :param subproblems: list[list[int]]
         :return: list[list[int]]
         """
@@ -160,9 +159,9 @@ class AbstractGraph(object):
 
     def bellman_ford_shortest_paths_optimized(self, src_vtx_id):
         """
-        Returns the mapping between the vertices and the shortest distances from
-        the given vertex using Bellman-Ford Shortest-Path Algorithm in an
-        improved bottom-up way with early-stopping and space optimization.
+        Returns the mapping between the vertices and the shortest paths from the
+        given vertex using Bellman-Ford Shortest-Path Algorithm in an improved
+        bottom-up way with early-stopping and space optimization.
         Note that in this application, the vertex IDs are exactly from 0 to
         (n - 1).
         :param src_vtx_id: int
@@ -188,3 +187,63 @@ class AbstractGraph(object):
             shortest_paths.append(shortest_path)
         return shortest_paths
         # Running time complexity: O(n^2)
+
+    def bellman_ford_shortest_paths_dest_driven(self, dest_vtx_id):
+        """
+        Returns the mapping between the vertices and the shortest paths to the
+        given vertex using Bellman-Ford Shortest-Path Algorithm in an improved
+        bottom-up way.
+        Note that in this application, the vertex IDs are exactly from 0 to
+        (n - 1).
+        :param dest_vtx_id: int
+        :return: list[list[int]]
+        """
+        pass
+
+    def _reconstruct_shortest_paths_dest_driven(self, subproblems):
+        """
+        Private helper function to reconstruct the destination-driven shortest
+        paths according to the optimal solution using backtracking.
+        :param subproblems: list[list[int]]
+        :return: list[list[int]]
+        """
+        pass
+
+    def bellman_ford_shortest_paths_dest_driven_optimized(self, dest_vtx_id):
+        """
+        Returns the mapping between the vertices and the shortest paths to the
+        given vertex using Bellman-Ford Shortest-Path Algorithm in an improved
+        bottom-up way with early stopping and space optimization.
+        :param dest_vtx_id: int
+        :return: list[list[int]]
+        """
+        pass
+
+    def _reconstruct_shortest_paths_dest_driven_optimized(self, next_vtxs):
+        """
+        Private heloer function to reconstruct the destination-driven shortest
+        paths according to the next vertices in the shortest paths using
+        backtracking.
+        :param next_vtxs: list[Vertex]
+        :return: list[list[int]]
+        """
+        shortest_paths = []
+        for vtx in self._vtx_list:
+            shortest_path = []
+            curr_vtx = vtx
+            while curr_vtx is not None:
+                shortest_path.append(curr_vtx.vtx_id)
+                next_vtx = next_vtxs[curr_vtx.vtx_id]
+                curr_vtx = next_vtx
+            shortest_paths.append(shortest_path)
+        return shortest_paths
+        # Running time complexity: O(n^2)
+
+    def shortest_paths_dest_driven_push_based(self, dest_vtx_id):
+        """
+        Returns the mapping between the vertices and the shortest paths to the
+        given vertex in a push-based way.
+        :param dest_vtx_id: int
+        :return: list[list[int]]
+        """
+        pass

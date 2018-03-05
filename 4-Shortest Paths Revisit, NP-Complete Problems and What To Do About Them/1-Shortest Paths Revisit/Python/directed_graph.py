@@ -371,14 +371,13 @@ class DirectedGraph(AbstractGraph):
             raise IllegalArgumentError('The graph has negative cycles reachable'
                                        ' from the source vertex.')
         # The final solution lies in exactly subproblems[v][n - 1].
-        return self._reconstruct_shortest_paths(src_vtx_id,
-                                                subproblems=subproblems)
+        return self._reconstruct_shortest_paths(subproblems=subproblems)
         # Outer for-loop: n iterations
         # Inner for-loop: sum(in-degree(v)) = m
         # => Overall running time complexity: O(mn)
         # Overall space complexity: O(n^2)
 
-    def _reconstruct_shortest_paths(self, src_vtx_id, subproblems):
+    def _reconstruct_shortest_paths(self, subproblems):
         shortest_paths = []
         for vtx in self._vtx_list:
             shortest_path = [vtx.vtx_id]
@@ -413,14 +412,14 @@ class DirectedGraph(AbstractGraph):
         # Space optimization: We only keep track of the subproblem solutions in
         # the previous outer iteration.
         prev_iter_subproblems, curr_iter_subproblems = [0] * n, [0] * n
+        for vtx in self._vtx_list:
+            if vtx is not src_vtx:
+                prev_iter_subproblems[vtx.vtx_id] = super().INFINITY
         # In order to recover the ability to reconstruct the shortest paths, we
         # also keep track of the penultimate vertices in the previous outer
         # iteration.
         prev_iter_penultimate_vtxs, curr_iter_penultimate_vtxs = \
             [None] * n, [None] * n
-        for vtx in self._vtx_list:
-            if vtx is not src_vtx:
-                prev_iter_subproblems[vtx.vtx_id] = super().INFINITY
         # Bottom-up calculation
         budget = 1
         # Optimization: Early-stopping
@@ -465,3 +464,186 @@ class DirectedGraph(AbstractGraph):
             penultimate_vtxs=prev_iter_penultimate_vtxs)
         # Overall running time complexity: O(mn)
         # Overall space complexity: O(n)
+
+    def bellman_ford_shortest_paths_dest_driven(self, dest_vtx_id):
+        # Check whether the input destination vertex exists
+        dest_vtx = self._find_vtx(dest_vtx_id)
+        if dest_vtx is None:
+            raise IllegalArgumentError("The destination vertex doesn't exist.")
+
+        n = len(self._vtx_list)
+        # Initialization
+        subproblems = [[0] * n for i in range(n)]
+        for vtx in self._vtx_list:
+            if vtx is not dest_vtx:
+                subproblems[vtx.vtx_id][0] = super().INFINITY
+        # Bottom-up calculation
+        for budget in range(1, n):
+            for vtx in self._vtx_list:
+                # Case 1: P(v, d, i) has <= (i - 1) edges (i.e., P doesn't use
+                # all of its budget i.)
+                min_path_length = subproblems[vtx.vtx_id][budget - 1]
+                # Case 2: P(v, d, i) has exactly i edges (i.e., P uses up all of
+                # its budget i.), with first hop (v, w)
+                for emissive_edge in vtx.emissive_edges:
+                    w = emissive_edge.head
+                    # By plucking off the first hop (v, w), we form
+                    # P'(w, d, i - 1).
+                    path_length = subproblems[w.vtx_id][budget - 1] + \
+                        emissive_edge.length
+                    if path_length < min_path_length:
+                        min_path_length = path_length
+                # P(v, d, i) is the minimum among the above (1 + out-degree(v))
+                # candidates.
+                subproblems[vtx.vtx_id][budget] = min_path_length
+        # Extension to detect negative cycles reachable from d:
+        # If the input graph has negative cycles reachable from d, then we just
+        # run the outer loop for one extra iteration, and check if there is
+        # still an improvement on some vertex. If so, then the input graph has
+        # negative cycles reachable from d.
+        made_update_in_extra_iter = False
+        for vtx in self._vtx_list:
+            min_path_length = subproblems[vtx.vtx_id][n - 1]
+            for emissive_edge in vtx.emissive_edges:
+                w = emissive_edge.head
+                path_length = subproblems[w.vtx_id][n - 1] + \
+                    emissive_edge.length
+                if path_length < min_path_length:
+                    min_path_length = path_length
+                    made_update_in_extra_iter = True
+        if made_update_in_extra_iter:
+            raise IllegalArgumentError('The graph has negative cycles reachable'
+                                       ' from the destination vertex.')
+        # The final solution lies in exactly subproblems[v][n - 1].
+        return self._reconstruct_shortest_paths_dest_driven(
+            subproblems=subproblems)
+        # Outer for-loop: n iterations
+        # Inner for-loop: sum(out-degree(v)) = m
+        # Overall running time complexity: O(mn)
+        # Overall space complexity: O(n^2)
+
+    def _reconstruct_shortest_paths_dest_driven(self, subproblems):
+        shortest_paths = []
+        for vtx in self._vtx_list:
+            shortest_path = [vtx.vtx_id]
+            curr_vtx, budget = vtx, len(self._vtx_list) - 1
+            while budget >= 1:
+                # Find the next vertex
+                next_vtx = curr_vtx
+                min_path_length = subproblems[curr_vtx.vtx_id][budget - 1]
+                for emissive_edge in curr_vtx.emissive_edges:
+                    w = emissive_edge.head
+                    path_length = subproblems[w.vtx_id][budget - 1] + \
+                        emissive_edge.length
+                    if path_length < min_path_length:
+                        next_vtx = w
+                        min_path_length = path_length
+                if next_vtx is not curr_vtx:
+                    shortest_path.append(next_vtx.vtx_id)
+                curr_vtx = next_vtx
+                budget -= 1
+            shortest_paths.append(shortest_path)
+        return shortest_paths
+        # Running time complexity: O(mn)
+
+    def bellman_ford_shortest_paths_dest_driven_optimized(self, dest_vtx_id):
+        # Check whether the input destination vertex exists
+        dest_vtx = self._find_vtx(dest_vtx_id)
+        if dest_vtx is None:
+            raise IllegalArgumentError("The destination vertex doesn't exist.")
+
+        n = len(self._vtx_list)
+        # Initialization
+        # Space optimization: We only keep track of the subproblem solutions in
+        # the previous outer iteration.
+        prev_iter_subproblems, curr_iter_subproblems = [0] * n, [0] * n
+        for vtx in self._vtx_list:
+            if vtx is not dest_vtx:
+                prev_iter_subproblems[vtx.vtx_id] = super().INFINITY
+        # In order to recover the ability to reconstruct the shortest paths, we
+        # also keep track of the next vertices in the previous outer iteration.
+        prev_iter_next_vtxs, curr_iter_next_vtxs = [None] * n, [None] * n
+        # Bottom-up calculation
+        budget = 1
+        # Optimization: Early-stopping
+        # The algorithm may stop early when in the current iteration, no update
+        # is made for any vertex.
+        made_update_in_iter = True
+        while budget <= n - 1 and made_update_in_iter:
+            made_update_in_iter = False
+            for vtx in self._vtx_list:
+                min_path_length = prev_iter_subproblems[vtx.vtx_id]
+                next_vtx = prev_iter_next_vtxs[vtx.vtx_id]
+                for emissive_edge in vtx.emissive_edges:
+                    w = emissive_edge.head
+                    path_length = prev_iter_subproblems[w.vtx_id] + \
+                        emissive_edge.length
+                    if path_length < min_path_length:
+                        min_path_length = path_length
+                        made_update_in_iter = True
+                        next_vtx = w
+                curr_iter_subproblems[vtx.vtx_id] = min_path_length
+                curr_iter_next_vtxs[vtx.vtx_id] = next_vtx
+            budget += 1
+            prev_iter_subproblems = curr_iter_subproblems.copy()
+            prev_iter_next_vtxs = curr_iter_next_vtxs.copy()
+        made_update_in_iter = False
+        for vtx in self._vtx_list:
+            min_path_length = prev_iter_subproblems[vtx.vtx_id]
+            for emissive_edge in vtx.emissive_edges:
+                w = emissive_edge.head
+                path_length = prev_iter_subproblems[w.vtx_id] + \
+                    emissive_edge.length
+                if path_length < min_path_length:
+                    path_length = min_path_length
+                    made_update_in_iter = True
+            curr_iter_subproblems[vtx.vtx_id] = min_path_length
+        if made_update_in_iter:
+            raise IllegalArgumentError('The graph has negative cycles reachable'
+                                       ' from the destination vertex.')
+        # The final solution lies in exactly in prev_iter_subproblems.
+        return self._reconstruct_shortest_paths_dest_driven_optimized(
+            next_vtxs=prev_iter_next_vtxs)
+        # Overall running time complexity: O(mn)
+        # Overall space complexity: O(n)
+
+    def shortest_paths_dest_driven_push_based(self, dest_vtx_id):
+        # Check whether the input destination vertex exists
+        dest_vtx = self._find_vtx(dest_vtx_id)
+        if dest_vtx is None:
+            raise IllegalArgumentError("The destination vertex doesn't exist.")
+
+        n = len(self._vtx_list)
+        # Initialization
+        min_path_lengths, next_vtxs = [0] * n, [None] * n
+        for vtx in self._vtx_list:
+            if vtx is not dest_vtx:
+                min_path_lengths[vtx.vtx_id] = super().INFINITY
+        # Start the notifications from the destination vertex
+        for incident_edge in dest_vtx.incident_edges:
+            self._notify_tail(incident_edge, min_path_lengths=min_path_lengths,
+                              next_vtxs=next_vtxs)
+        return self._reconstruct_shortest_paths_dest_driven_optimized(
+            next_vtxs=next_vtxs)
+        # Overall running time complexity: O(2^n)
+
+    def _notify_tail(self, edge, min_path_lengths, next_vtxs):
+        """
+        Private helper function to notify the tail of the given edge with an
+        updated minimum path length of the head of the given edge recursively.
+        :param edge: DirectedEdge
+        :param min_path_lengths: list[int]
+        :param next_vtxs: list[Vertex]
+        :return: None
+        """
+        next_vtx, curr_vtx = edge.head, edge.tail
+        updated_path_length = min_path_lengths[next_vtx.vtx_id]
+        new_path_length = updated_path_length + edge.length
+        if new_path_length < min_path_lengths[curr_vtx.vtx_id]:
+            min_path_lengths[curr_vtx.vtx_id] = new_path_length
+            next_vtxs[curr_vtx.vtx_id] = next_vtx
+            # Notify all incident neighbors
+            for incident_edge in curr_vtx.incident_edges:
+                self._notify_tail(incident_edge,
+                                  min_path_lengths=min_path_lengths,
+                                  next_vtxs=next_vtxs)

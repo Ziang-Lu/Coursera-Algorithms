@@ -185,7 +185,9 @@ public class UndirectedGraph implements GraphInterface {
         // Initialization
         bellmanFordSubproblems = new Integer[n][n];
         for (Vertex vtx : vtxList) {
-            if (vtx != srcVtx) {
+            if (vtx == srcVtx) {
+                bellmanFordSubproblems[vtx.id()][0] = 0;
+            } else {
                 bellmanFordSubproblems[vtx.id()][0] = INFINITY;
             }
         }
@@ -241,7 +243,7 @@ public class UndirectedGraph implements GraphInterface {
             throw new IllegalArgumentException("The graph has negative cycles reachable from the source vertex.");
         }
         // The final solution lies in exactly subproblems[v][n - 1].
-        return reconstructShortestPaths(srcVtxID, n - 1);
+        return reconstructShortestPaths();
         // Outer for-loop: n iterations
         // Inner for-loop: sum(in-degree(v)) = m
         // => Overall running time complexity: O(mn)
@@ -251,10 +253,9 @@ public class UndirectedGraph implements GraphInterface {
     /**
      * Private helper method to reconstruct the shortest paths according to the
      * optimal solution using backtracking.
-     * @param srcVtxID source vertex ID
      * @return shortest paths
      */
-    private ArrayList<LinkedList<Integer>> reconstructShortestPaths(int srcVtxID) {
+    private ArrayList<LinkedList<Integer>> reconstructShortestPaths() {
         ArrayList<LinkedList<Integer>> shortestPaths = new ArrayList<LinkedList<Integer>>();
         for (Vertex vtx : vtxList) {
             LinkedList<Integer> shortestPath = new LinkedList<Integer>();
@@ -303,14 +304,14 @@ public class UndirectedGraph implements GraphInterface {
         // Initialization
         // Space optimization: We only keep track of the subproblem solutions in the previous outer iteration.
         int[] prevIterSubproblems = new int[n], currIterSubproblems = new int[n];
-        // In order to recover the ability to reconstruct the shortest paths, we also keep track of the penultimate
-        // vertices in the previous outer iteration.
-        Vertex[] prevIterPenultimateVtxs = new Vertex[n], currIterPenultimateVtxs = new Vertex[n];
         for (Vertex vtx : vtxList) {
             if (vtx != srcVtx) {
                 prevIterSubproblems[vtx.id()] = INFINITY;
             }
         }
+        // In order to recover the ability to reconstruct the shortest paths, we also keep track of the penultimate
+        // vertices in the previous outer iteration.
+        Vertex[] prevIterPenultimateVtxs = new Vertex[n], currIterPenultimateVtxs = new Vertex[n];
         // Bottom-up calculation
         int budget = 1;
         // Optimization: Early-stopping
@@ -368,7 +369,7 @@ public class UndirectedGraph implements GraphInterface {
         // The final solution lies in exactly prevIterSubproblems.
 
         // We can reconstruct the shortest paths from these penultimate vertices.
-        return reconstructShortestPathsOptimized(srcVtxID, prevIterPenultimateVtxs);
+        return reconstructShortestPathsOptimized(prevIterPenultimateVtxs);
         // Overall running time complexity: O(mn)
         // Overall space complexity: O(n)
     }
@@ -393,6 +394,281 @@ public class UndirectedGraph implements GraphInterface {
         }
         return shortestPaths;
         // Running time complexity: O(n^2)
+    }
+
+    @Override
+    public ArrayList<LinkedList<Integer>> bellmanFordShortestPathsDestDriven(int destVtxID) {
+        // Check whether the input destination vertex exists
+        Vertex destVtx = findVtx(destVtxID);
+        if (destVtx == null) {
+            throw new IllegalArgumentException("The destination vertex doesn't exist.");
+        }
+
+        int n = vtxList.size();
+        // Initialization
+        bellmanFordSubproblems = new Integer[n][n];
+        for (Vertex vtx : vtxList) {
+            if (vtx == destVtx) {
+                bellmanFordSubproblems[vtx.id()][0] = 0;
+            } else {
+                bellmanFordSubproblems[vtx.id()][0] = INFINITY;
+            }
+        }
+        // Bottom-up calculation
+        for (int budget = 1; budget <= (n - 1); ++budget) {
+            for (Vertex vtx : vtxList) {
+                // Case 1: P(v, d, i) has <= (i - 1) edges (i.e., P doesn't use up all of its budget i.)
+                Integer minPathLength = bellmanFordSubproblems[vtx.id()][budget - 1];
+                // Case 2: P(v, d, i) has exactly i edges (i.e., P uses up all of its budget i.), with first hop (v, w)
+                for (UndirectedEdge edge : vtx.edges()) {
+                    // Find the neighbor
+                    Vertex neighbor = null;
+                    if (edge.end1() == vtx) { // endpoint2 is the neighbor.
+                        neighbor = edge.end2();
+                    } else { // endpoint1 is the neighbor.
+                        neighbor = edge.end1();
+                    }
+                    // By plucking off the first hop (v, w), we form P'(w, d, i - 1).
+                    int pathLength = bellmanFordSubproblems[neighbor.id()][budget - 1] + edge.length();
+                    if (pathLength < minPathLength) {
+                        minPathLength = pathLength;
+                    }
+                }
+                // P(v, d, i) is the minimum among the above (1 + out-degree(v)) candidates.
+                bellmanFordSubproblems[vtx.id()][budget] = minPathLength;
+            }
+        }
+        /*
+         * Extension to detect negative cycles reachable from d:
+         * If the input graph has negative cycles reachable from d, then we just run the outer loop for one extra
+         * iteration, and check if there is still an improvement on some vertex. If so, then the input graph must have
+         * negative cycles reachable from d.
+         */
+        boolean madeUpdateInExtraIter = false;
+        for (Vertex vtx : vtxList) {
+            Integer minPathLength = bellmanFordSubproblems[vtx.id()][n - 1];
+            for (UndirectedEdge edge : vtx.edges()) {
+                // Find the neighbor
+                Vertex neighbor = null;
+                if (edge.end1() == vtx) { // endpoint2 is the neighbor.
+                    neighbor = edge.end2();
+                } else { // endpoint1 is the neighbor.
+                    neighbor = edge.end1();
+                }
+                int pathLength = bellmanFordSubproblems[neighbor.id()][n - 1] + edge.length();
+                if (pathLength < minPathLength) {
+                    minPathLength = pathLength;
+                    madeUpdateInExtraIter = true;
+                }
+            }
+        }
+        if (madeUpdateInExtraIter) {
+            throw new IllegalArgumentException("The graph has negative cycles reachable from the destination vertex.");
+        }
+        // The final solution lies in exactly subproblems[v][n - 1].
+        return reconstructShortestPathsDestDriven();
+        // Outer for-loop: n iterations
+        // Inner for-loop: sum(out-degree(v)) = m
+        // Overall running time complexity: O(mn)
+        // Overall space complexity: O(n^2)
+    }
+
+    /**
+     * Private helper method to reconstruct the destination-driven shortest
+     * paths according to the optimal solution using backtracking.
+     * @return destination-driven shortest paths
+     */
+    private ArrayList<LinkedList<Integer>> reconstructShortestPathsDestDriven() {
+        ArrayList<LinkedList<Integer>> shortestPaths = new ArrayList<LinkedList<Integer>>();
+        for (Vertex vtx : vtxList) {
+            LinkedList<Integer> shortestPath = new LinkedList<Integer>();
+            shortestPath.add(vtx.id());
+            Vertex currVtx = vtx;
+            int budget = vtxList.size() - 1;
+            while (budget >= 1) {
+                // Find the next vertex
+                Vertex nextVtx = currVtx;
+                Integer minPathLength = bellmanFordSubproblems[vtx.id()][budget - 1];
+                for (UndirectedEdge edge : currVtx.edges()) {
+                    // Find the neighbor
+                    Vertex neighbor = null;
+                    if (edge.end1() == vtx) { // endpoint2 is the neighbor.
+                        neighbor = edge.end2();
+                    } else { // endpoint1 is the neighbor.
+                        neighbor = edge.end1();
+                    }
+                    int pathLength = bellmanFordSubproblems[neighbor.id()][budget - 1] + edge.length();
+                    if (pathLength < minPathLength) {
+                        nextVtx = neighbor;
+                        minPathLength = pathLength;
+                    }
+                }
+                if (nextVtx != currVtx) {
+                    shortestPath.add(nextVtx.id());
+                }
+                currVtx = nextVtx;
+                --budget;
+            }
+            shortestPaths.add(shortestPath);
+        }
+        return shortestPaths;
+        // Running time complexity: O(mn)
+    }
+
+    @Override
+    public ArrayList<LinkedList<Integer>> bellmanFordShortestPathsDestDrivenOptimized(int destVtxID) {
+        // Check whether the input destination vertex exists
+        Vertex destVtx = findVtx(destVtxID);
+        if (destVtx == null) {
+            throw new IllegalArgumentException("The destination vertex doesn't exist.");
+        }
+
+        int n = vtxList.size();
+        // Initialization
+        // Space optimization: We only keep track of the subproblem solutions in the previous outer iteration.
+        int[] prevIterSubproblems = new int[n], currIterSubproblems = new int[n];
+        for (Vertex vtx : vtxList) {
+            if (vtx != destVtx) {
+                prevIterSubproblems[vtx.id()] = INFINITY;
+            }
+        }
+        // In order to recover the ability to reconstruct the shortest paths, we also keep track of the next vertices in
+        // the previous outer iteration.
+        Vertex[] prevIterNextVtxs = new Vertex[n], currIterNextVtxs = new Vertex[n];
+        // Bottom-up calculation
+        int budget = 1;
+        // Optimization: Early-stopping
+        // The algorithm may stop early when in the current iteration, no update is made for any vertex.
+        boolean madeUpdateInIter = true;
+        while ((budget <= (n - 1)) && madeUpdateInIter) {
+            madeUpdateInIter = false;
+            for (Vertex vtx : vtxList) {
+                Integer minPathLength = prevIterSubproblems[vtx.id()];
+                Vertex nextVtx = prevIterNextVtxs[vtx.id()];
+                for (UndirectedEdge edge : vtx.edges()) {
+                    // Find the neighbor
+                    Vertex neighbor = null;
+                    if (edge.end1() == vtx) { // endpoint2 is the neighbor.
+                        neighbor = edge.end2();
+                    } else { // endpoint1 is the neighbor.
+                        neighbor = edge.end1();
+                    }
+                    int pathLength = prevIterSubproblems[neighbor.id()] + edge.length();
+                    if (pathLength < minPathLength) {
+                        minPathLength = pathLength;
+                        madeUpdateInIter = true;
+                        nextVtx = neighbor;
+                    }
+                }
+                currIterSubproblems[vtx.id()] = minPathLength;
+                currIterNextVtxs[vtx.id()] = nextVtx;
+            }
+            ++budget;
+            System.arraycopy(currIterSubproblems, 0, prevIterSubproblems, 0, n);
+            System.arraycopy(currIterNextVtxs, 0, prevIterNextVtxs, 0, n);
+        }
+        madeUpdateInIter = false;
+        for (Vertex vtx : vtxList) {
+            Integer minPathLength = prevIterSubproblems[vtx.id()];
+            for (UndirectedEdge edge : vtx.edges()) {
+                // Find the neighbor
+                Vertex neighbor = null;
+                if (edge.end1() == vtx) { // endpoint2 is the neighbor.
+                    neighbor = edge.end2();
+                } else { // endpoint1 is the neighbor.
+                    neighbor = edge.end1();
+                }
+                int pathLength = prevIterSubproblems[neighbor.id()] + edge.length();
+                if (pathLength < minPathLength) {
+                    minPathLength = pathLength;
+                    madeUpdateInIter = true;
+                }
+            }
+            currIterSubproblems[vtx.id()] = minPathLength;
+        }
+        if (madeUpdateInIter) {
+            throw new IllegalArgumentException("The graph has negative cycles reachable from the destination vertex.");
+        }
+        // The final solution lies in exactly in prevIterSubprblems.
+        return reconstructShortestPathsDestDrivenOptimized(prevIterNextVtxs);
+        // Overall running time complexity: O(mn)
+        // Overall space complexity: O(n)
+    }
+
+    /**
+     * Private helper method to reconstruct the destination-driven shortest
+     * paths according to the next vertices in the shortest paths using
+     * backtracking.
+     * @param nextVtxs next vertices in the shortest paths
+     * @return destination-driven shortest paths
+     */
+    private ArrayList<LinkedList<Integer>> reconstructShortestPathsDestDrivenOptimized(Vertex[] nextVtxs) {
+        ArrayList<LinkedList<Integer>> shortestPaths = new ArrayList<LinkedList<Integer>>();
+        for (Vertex vtx : vtxList) {
+            LinkedList<Integer> shortestPath = new LinkedList<Integer>();
+            Vertex currVtx = vtx;
+            while (currVtx != null) {
+                shortestPath.add(currVtx.id());
+                Vertex nextVtx = nextVtxs[currVtx.id()];
+                currVtx = nextVtx;
+            }
+            shortestPaths.add(shortestPath);
+        }
+        return shortestPaths;
+        // Running time complexity: O(n^2)
+    }
+
+    @Override
+    public ArrayList<LinkedList<Integer>> shortestPathsDestDrivenPushBased(int destVtxID) {
+        // Check whether the input destination vertex exists
+        Vertex destVtx = findVtx(destVtxID);
+        if (destVtx == null) {
+            throw new IllegalArgumentException("The destination vertex doesn't exist.");
+        }
+
+        int n = vtxList.size();
+        // Initialization
+        int[] minPathLengths = new int[n];
+        for (Vertex vtx : vtxList) {
+            if (vtx != destVtx) {
+                minPathLengths[vtx.id()] = INFINITY;
+            }
+        }
+        Vertex[] nextVtxs = new Vertex[n];
+        // Start the notifications from the destination vertex
+        for (UndirectedEdge edge : destVtx.edges()) {
+            notifyNeighbor(destVtx, edge, minPathLengths, nextVtxs);
+        }
+        return reconstructShortestPathsDestDrivenOptimized(nextVtxs);
+        // Overall running time complexity: O(2^n)
+    }
+
+    /**
+     * Private helper method to notify the neighbor of the given edge with an
+     * updated minimum path length of the original vertex of the given edge
+     * recursively.
+     * @param edge given edge
+     * @param minPathLengths destination-driven shortest distances
+     * @param nextVtxs next vertices in the shortest paths
+     */
+    private void notifyNeighbor(Vertex nextVtx, UndirectedEdge edge, int[] minPathLengths, Vertex[] nextVtxs) {
+        // Find the current vertex
+        Vertex currVtx = null;
+        if (edge.end1() == nextVtx) { // endpoint2 is the current vertex.
+            currVtx = edge.end2();
+        } else { // endpoint1 is the current vertex.
+            currVtx = edge.end1();
+        }
+        int updatedPathLength = minPathLengths[nextVtx.id()];
+        int newPathLength = updatedPathLength + edge.length();
+        if (newPathLength < minPathLengths[currVtx.id()]) {
+            minPathLengths[currVtx.id()] = newPathLength;
+            nextVtxs[currVtx.id()] = nextVtx;
+            // Notify all neighbors
+            for (UndirectedEdge e : currVtx.edges()) {
+                notifyNeighbor(currVtx, e, minPathLengths, nextVtxs);
+            }
+        }
     }
 
 }

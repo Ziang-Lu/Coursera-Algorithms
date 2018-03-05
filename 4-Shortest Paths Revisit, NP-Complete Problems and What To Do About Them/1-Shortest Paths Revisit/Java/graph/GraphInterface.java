@@ -43,9 +43,9 @@ public interface GraphInterface {
     void showGraph();
 
     /**
-     * Returns the mapping between the vertices and the shortest distances from
-     * the given vertex using Bellman-Ford Shortest-Path Algorithm in an
-     * improved bottom-up way.
+     * Returns the mapping between the vertices and the shortest paths from the
+     * given vertex using Bellman-Ford Shortest-Path Algorithm in an improved
+     * bottom-up way.
      * Note that in this application, the vertex IDs are exactly from 0 to
      * (n - 1).
      * @param srcVtxID source vertex ID
@@ -54,14 +54,44 @@ public interface GraphInterface {
     ArrayList<LinkedList<Integer>> bellmanFordShortestPaths(int srcVtxID);
 
     /**
-     * Returns the mapping between the vertices and the shortest distances from
-     * the given vertex using Bellman-Ford Shortest-Path Algorithm in an
-     * improved bottom-up way with early-stopping and space optimization.
+     * Returns the mapping between the vertices and the shortest paths from the
+     * given vertex using Bellman-Ford Shortest-Path Algorithm in an improved
+     * bottom-up way with early-stopping and space optimization.
      * Note that in this application, the vertex IDs are exactly from 0 to
      * (n - 1).
      * @param srcVtxID source vertex ID
      * @return shortest paths
      */
     ArrayList<LinkedList<Integer>> bellmanFordShortestPathsOptimized(int srcVtxID);
+
+    /**
+     * Returns the mapping between the vertices and the shortest paths to the
+     * given vertex using Bellman-Ford Shortest-Path Algorithm in an improved
+     * bottom-up way.
+     * Note that in this application, the vertex IDs are exactly from 0 to
+     * (n - 1).
+     * @param destVtxID destination vertex ID
+     * @return destination-driven shortest paths
+     */
+    ArrayList<LinkedList<Integer>> bellmanFordShortestPathsDestDriven(int destVtxID);
+
+    /**
+     * Returns the mapping between the vertices and the shortest paths to the
+     * given vertex using Bellman-Ford Shortest-Path Algorithm in an improved
+     * bottom-up way with early-stopping and space optimization.
+     * Note that in this application, the vertex IDs are exactly from 0 to
+     * (n - 1).
+     * @param destVtxID destination vertex ID
+     * @return destination-driven shortest paths
+     */
+    ArrayList<LinkedList<Integer>> bellmanFordShortestPathsDestDrivenOptimized(int destVtxID);
+
+    /**
+     * Returns the mapping between the vertices and the shortest paths to the
+     * given vertex in a push-based way.
+     * @param destVtxID destination vertex ID
+     * @return destination-driven shortest paths
+     */
+    ArrayList<LinkedList<Integer>> shortestPathsDestDrivenPushBased(int destVtxID);
 
 }
