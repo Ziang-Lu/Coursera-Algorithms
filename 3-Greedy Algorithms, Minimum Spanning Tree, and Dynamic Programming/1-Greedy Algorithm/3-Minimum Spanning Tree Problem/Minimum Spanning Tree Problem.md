@@ -4,7 +4,7 @@
 
 **Input:**
 
-A **undirected** graph $G(V, E)$, and a cost $c_e$ for each edge $e \in E$, which could be negative.
+A **undirected** graph $G=(V,E)$, and a cost $c_e$ for each edge $e \in E$, which could be negative.
 
 *For directed graphs, this is called "Optimal Branching Problem".*
 
