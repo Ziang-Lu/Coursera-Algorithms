@@ -26,15 +26,15 @@ Each vertex uses only **local** computation, i.e., communicates with only the **
 
 =>
 
-GIven a directed graph $G=(V,E)$ with each edge lengths $c_e$ could possibly be negative, and a source vertex $s$, the Bellman-Ford Shortest-Path Algorithm will either computes the shortest paths from $s$ to any other vertices, or discovers negative cycles reachable from $s$.
+GIven a directed graph $G=(V,E)$ with each edge length $c_e$ could possibly be negative, and a source vertex $s$, the Bellman-Ford Shortest-Path Algorithm will either computes the shortest paths from $s$ to any other vertices, or discovers negative cycles reachable from $s$.
 
 <br>
 
 *Fix a destination $v$, we introduce an extra parameter $i$ to describe the maximum allowed number of edges from $s$ to $v$ (like a "budget"), and this "budget" will be used to represent the subproblem size.*
 
-**Optimal substructure lemma:**
+**Optimal Substructure Lemma:**
 
-Let $P(s, v, i)$ be the optimal solution (shortest path with minimum total length) from $s$ to some destination $v$, using at most $i$ edges
+Let $P(s, v, i)$ be the optimal solution (shortest path with minimum total length) from $s$ to some destination $v$, using at most $i$ edges.
 
 *注意: 由于有了budget $i$的限制, 我们可以允许$P(s, v, i)$中有negative cycle, 而不用担心使用无限次该negative cycle导致产生负无穷的shortest path*
 
@@ -57,34 +57,35 @@ Let $P(s, v, i)$ be the optimal solution (shortest path with minimum total lengt
 **Pseudo code: (Bottom-up calculation)**
 
 * Let $L[v, i]$ = 2D array indexed by $v$ and $i$
-* Initialization: ($i$ = 0)
-  * For $v \in V$:
-    * If $v$ == $s$:
-      * $L[v, 0] = 0$
-    * Else:
-      * $L[v, 0] = +\infty$
+* Initialization ($i = 0$): For $v \in V$:
+  * If $v$ == $s$:
+    * $L[v, 0] = 0$
+  * Else:
+    * $L[v, 0] = +\infty$
 * For $i$ = 1, 2, …, $n$ - 1
   * For $v \in V$:
     * $L[v, i] \ = \ min\{L[v, i-1], min_{(w, v)}L(w, i-1)\}$
 * The final solution lies in exactly $L[v, n-1]$ for $v \in V$.
 
-**Optimization 1: Early-stopping**
+The algorithm runs in **O($m$$n$)** time, which is worse than Dijkstra's algorithm (O($m$log $n$)) as a drawback, and **O($n^2$)** memory.
 
-The algorithm may stop early when in the current iteration, no update is made for any vertex.
-
-**Optimization 2: Space optimization**
-
-In basic implementation, we need O($n^2$) space. However, since we only need $L[v, i-1]$ to compute $L[v, i]$, we only need to keep track of the subproblem solutions in the previous outer iteration, so the space needed is reduced to $O(n)$.
-
-However, in this way, we lose the ability to reconstruct the shortest paths. Thus, we may at the same time keep the penultimate vertex $B(s, v, i)$ for the shortest path from $s$ to $v$ using at most $i$ edges.
-
-***
+------
 
 *Extension to detect negative cycles reachable from $s$:*
 
 *If the input graph has negative cycles reachable from $s$, then we just run the outer loop for one extra iteration, and check if there is still an improvement on some vertex. If so, then the input graph must have negative cycles reachable from $s$.*
 
-***
+------
+
+<br>**Optimization 1: Early-stopping**
+
+The algorithm may stop early when in the current iteration, no update is made for any vertex.
+
+**Optimization 2: Space optimization**
+
+In basic implementation, we need O($n^2$) space. However, since we only need $L[v, i-1]$ to compute $L[v, i]$, we only need to keep track of the subproblem solutions in the previous outer iteration, so the space needed is reduced to O($n$).
+
+However, in this way, we lose the ability to reconstruct the shortest paths. Thus, we may at the same time keep the penultimate vertex $B(s, v, i)​$ for the shortest path from $s​$ to $v​$ using at most $i​$ edges.
 
 <br>
 
