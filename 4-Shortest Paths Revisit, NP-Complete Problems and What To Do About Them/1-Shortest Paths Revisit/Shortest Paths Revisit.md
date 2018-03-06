@@ -22,7 +22,7 @@ Each vertex uses only **local** computation, i.e., communicates with only the **
 
 #### Bellman-Ford Shortest-Path Algorithm: (Dynamic programming)
 
-*Though we may assume that the input graph doesn't have negative directed cycles (directed cycles with negative overall length) reachable from the source vertex, the Bellman-Ford Shortest-Path Algorithm is still able to discover this anyway, i.e., finds an excuse that why the shorest paths cannot be computed.*
+*Though we may assume that the input graph doesn't have negative directed cycles (directed cycles with negative overall length) reachable from the source vertex, Bellman-Ford Shortest-Path Algorithm is still able to discover this anyway, i.e., finds an excuse that why the shorest paths cannot be computed.*
 
 =>
 
@@ -101,7 +101,7 @@ Modifications to Bellman-Ford Shortest-Path Algorithm towards a routing protocol
 
 1. Internet protocols are **destination-driven** rather than source-driven.
 
-   => *Reverse all directions in the Bellman-Ford algorithm, to compute the shortest paths from any vertex to a given destination vertex*
+   => *Reverse all directions in Bellman-Ford algorithm, to compute the shortest paths from any vertex to a given destination vertex*
 
    => *At the same time, just like previously we need to keep track of penultimate vertices, now for each vertex we need to keep track of the next hop.*
 
