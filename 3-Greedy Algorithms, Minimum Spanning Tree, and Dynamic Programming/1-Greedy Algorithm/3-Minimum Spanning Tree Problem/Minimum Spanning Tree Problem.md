@@ -61,9 +61,9 @@ A spanning tree $T \subseteq E$ that spans the all the vertices with minimum cos
 
    * Initialize $T = \emptyset$, which is the current spanning tree
 
-   * For **$i$ = 1 to $m$ (greedy)**
+   * For **$i$ = 1 to $m$ (greedy)**:
 
-     * If adding $i$ to $T$ doesn't cause cycles in $T$   *[This can be done by BFS/DFS towards T.]*
+     * If adding $i$ to $T$ doesn't cause cycles in $T$:   *[This can be done by BFS/DFS towards T.]*
        * Add $i$ to $T$
 
 <br>
@@ -88,7 +88,7 @@ Since as a greedy algorithm, we want to maximize $min_{separated \ p, q} d(p, q)
 
 => We just need to make $p$ and $q$ **not separated** by **fusing the two clusters** containing $p$ and $q$, respectively.
 
-* Inittially, each point is in a separate cluster.
+* Initially, each point is in a separate cluster.
 * Repeat until only $k$ clusters:
   * Let $p$, $q$ = closest pair of separated points, which determines the current spacing
   * Merge the clusters containing $p$ and$q$ into a single cluster

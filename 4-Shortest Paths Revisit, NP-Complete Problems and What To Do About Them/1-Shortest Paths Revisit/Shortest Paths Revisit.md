@@ -62,7 +62,7 @@ Let $P(s, v, i)$ be the optimal solution (shortest path with minimum total lengt
     * $L[v, 0] = 0$
   * Else:
     * $L[v, 0] = +\infty$
-* For $i$ = 1, 2, …, $n$ - 1
+* For $i$ = 1, 2, …, $n$ - 1:
   * For $v \in V$:
     * $L[v, i] \ = \ min\{L[v, i-1], min_{(w, v)}L(w, i-1)\}$
 * The final solution lies in exactly $L[v, n-1]$ for $v \in V$.

@@ -78,7 +78,7 @@ Let $P(s, d, k)$ be the cycle-free optimal solution (cycle-free shortest path wi
     * $A[0, s, d] = c_{(s, d)}$
   * Else:
     * $A[0, s, d] = +\infty$
-* For $k$ = 1, 2, …, $n$
+* For $k$ = 1, 2, …, $n$:
   * For $s \in V$:
     * For $d \in V:$
       * $A[k, s, d] \ = \ min\{A[k-1, s, d], \ A[k-1, s, k] + A[k-1, k-1, d]\}$

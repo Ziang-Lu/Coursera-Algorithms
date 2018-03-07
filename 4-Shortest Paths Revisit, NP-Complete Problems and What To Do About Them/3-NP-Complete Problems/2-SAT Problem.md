@@ -1,6 +1,6 @@
 Application of *"Focus on some computationally tractable special cases"* to deal with NP-complete problems
 
-### 2-Set Problem
+### 2-SAT Problem
 
 #### Problem Definition
 
@@ -10,7 +10,7 @@ Classical problem; problem definition omitted
 
 A special form of "constraint satisfaction problem (约束补偿问题 / 约束满足问题)".
 
-Generally, **3-set problem** is **NP-complete**.
+Generally, **3-SAT problem** is **NP-complete**.
 
-However, by simplifying the problem to **2-set problem**, it **can be solved in polynomial-time ($\in P$)** using a <u>local search algorithm (局部搜索算法)</u>.
+However, by simplifying the problem to **2-SAT problem**, it **can be solved in polynomial-time ($\in P$)** using a <u>local search algorithm (局部搜索算法)</u>.
 

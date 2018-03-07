@@ -56,7 +56,7 @@ $G$ has a vertex cover of at most $k$ vertices.   <=>   $G_u$ or $G_v$ (or both)
 
 <br>
 
-**Algorithm: (Dynamic programming)**
+**Algorithm: (Backtracking)**
 
 1. Pick an edge $(u, v) \in E$
 
