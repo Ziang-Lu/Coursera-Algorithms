@@ -124,8 +124,6 @@ L' \ = \ L + w_s - w_{v_1} + w_{v_1} - w_{v_2} + ... +w_{v_{n-1}} - w-{v_n} + w_
 $$
 *Thus this guarantees that after re-weighting, between each pair of vertices, the ranking of the path lengths remains unchanged, so the **shortest path preserves**.*
 
-*
-
 **As long as we can find a group of $w_v$, making all edge lengths $c_e$ (which could be possibly negative, and thus requires Bellman-Ford algorithm) to be non-negative $c_e'$ (which enables Dijkstra's algorithm), we can solve the APSP problem as fast as running Dijkstra's algorithm $n$ times on graphs with non-negative edges.**
 
 **=> HOW DO WE FIND THESE $w_v$?**
