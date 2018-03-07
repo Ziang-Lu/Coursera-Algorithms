@@ -8,11 +8,11 @@ Given a undirected graph $G=(V,E)$, find a minimum-size vertex cover, which is a
 
 *(Choose a minimum-size subset of the vertices that cover all the edges)*
 
+**In general graphs, this problem is NP-complete.**
+
 <br>
 
 #### * Focus on some computationally tractable special cases
-
-**In general graphs, this problem is NP-complete.**
 
 However, we can restrict the graph to be some **special graph (path graph, tree graph, or bipartite graph (两偶图))**.
 
@@ -30,13 +30,13 @@ i.e., There exists a cut that slices every single edge.
 
 <br>
 
-#### * Solve in exponential-time, but faster than brute-force way
-
-**Problem variation:**
+#### Problem variation
 
 Consider except for the graph, we are also given as an input of a positive integer $k$, and the goal is to check whether there exists a vertex cover that uses at most $k$ vertices.
 
 *($k$ is like a "budget".)*
+
+#### * Solve in exponential-time, but faster than brute-force way
 
 <br>
 
