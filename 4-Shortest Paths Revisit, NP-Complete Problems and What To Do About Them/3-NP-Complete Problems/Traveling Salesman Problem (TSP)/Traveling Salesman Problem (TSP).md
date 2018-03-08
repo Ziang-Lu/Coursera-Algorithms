@@ -8,7 +8,7 @@ Classical problem; problem definition omitted
 
 <br>
 
-This problem can be solved in a **brute-force** way, namely **$n!$ permutations of the destinations**.
+This problem can be solved in a **brute-force** way, namely **$n!$ permutations of the vertices**.
 
 However, it can be solved smarter and faster.
 
@@ -18,13 +18,15 @@ However, it can be solved smarter and faster.
 
 **Optimal Substructure Lemma**
 
-Let $P(v, S)$ to be the shortest-path from $s$ to $v$ that visits the vertices in $S \subset V$, containing $s$ and $v$, exactly once for each.
+Let $P(v, S)$ be the shortest path from $s$ to $v$ that visits the vertices in $S \subset V$, containing $s$ and $v$, exactly once for each.
 
-Then by plucking off the final hop ($w$, $v$), we form $P'(w, S - v)$ that is the shortest-path from $s$ to $w$ that vists the vertices in $(S - v) \subset V$, containing $s$ and $w$, exactly once for each. Therefore, the recurrence is
+Then by plucking off the final hop ($w$, $v$), we form $P'(w, S - v)$ that is the shortest path from $s$ to $w$ that vists the vertices in $(S - v) \subset V$, containing $s$ and $w$, exactly once for each. Therefore, the recurrence is
 
 $P(v, S) \ = \ min_{w \in S, w \ne v} \{P'(w, S - v) \ + c_{(w, v)}\}$
 
 *(w即为shortest path中的倒数第二个vertex)*
+
+<br>
 
 **Pseudo Code: (Bottom-up calculation)**
 
@@ -39,7 +41,7 @@ $P(v, S) \ = \ min_{w \in S, w \ne v} \{P'(w, S - v) \ + c_{(w, v)}\}$
   * If $v = s$:
     * $A[s][\{s\}] = 0$
   * Else:
-    * $A[v][{s}] = +\infty$
+    * $A[v][\{s\}] = +\infty$
 
 * For $m$ = {2, 3, …, n}:
 
@@ -47,13 +49,20 @@ $P(v, S) \ = \ min_{w \in S, w \ne v} \{P'(w, S - v) \ + c_{(w, v)}\}$
 
     * For each $v \in V$:
 
+      * (Make sure $S$ contains $v$)
+
+      * If $v = s$:
+
+        * $A[s][S] = +\infty$
+        * ``continue``
+
       * $A[v][S] \ = \ min_{w \in S, w \ne v} \ \{A[w][S - v] \ + \ c_{(w, v)}\}$
 
         *($w$即为shortest path中的倒数第二个vertex)*
 
-* (By now the algorithm only computes the shortes paths from $s$ to each $v \in V$ that visit all the vertices exactly once for each. Hoewever to complete TSP, we still need to go back to $s$.)
+* (By now the algorithm only computes the shortest paths from $s$ to each $v \in V$ that visit all the vertices exactly once for each. However to complete TSP, we still need to go back to $s$.)
 
-  TSP = $min_{w \in V, w \ne s} \{A[w][V] + c_{w, s}\}$
+  TSP solution = $min_{w \in V, w \ne s} \{A[w][V] + c_{w, s}\}$
 
   *($w$即为TSP min-cost tour中的最后一站)*
 
