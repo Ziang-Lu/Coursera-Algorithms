@@ -77,5 +77,5 @@ $G$ has a vertex cover of at most $k$ vertices.   <=>   $G_u$ or $G_v$ (or both)
 
 Thus, the overall running time complexity is **O($m \cdot 2^k$)**.
 
-Note that the running time complexity is till exponential in $k$, but it's better than brute-force way (O($n^k$)): even if $k$ is in O(log $V$), the overall running time complexity is **O($m \cdot 2^{log \ n} \ = \ mn$)**, which is polynomial-time, and thus the  problem becomes $\in P$.
+Note that the running time complexity is still exponential in $k$, but it's better than brute-force way (O($n^k$)): even if $k$ is in O(log $V$), the overall running time complexity is **O($m \cdot 2^{log \ n} \ = \ mn$)**, which is polynomial-time, and thus the  problem becomes $\in P$.
 
