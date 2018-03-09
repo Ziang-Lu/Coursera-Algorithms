@@ -87,7 +87,7 @@ def knapsack_greedy(vals, weights, cap):
     n = len(vals)
     items = []
     for idx in range(n):
-        items.append(idx, vals[idx], weights[idx])
+        items.append(Item(idx, vals[idx], weights[idx]))
 
     included_items1, total_val1 = _greedy_packing(
         items, cap, key_func=lambda item: item.val / item.weight)
