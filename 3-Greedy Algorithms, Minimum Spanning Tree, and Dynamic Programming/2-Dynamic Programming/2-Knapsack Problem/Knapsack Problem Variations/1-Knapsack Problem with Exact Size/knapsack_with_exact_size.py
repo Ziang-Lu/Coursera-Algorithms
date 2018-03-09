@@ -18,7 +18,7 @@ def knapsack_with_exact_size(vals, weights, cap):
     """
     Solves the knapsack problem (with exact size) of the items with the given
     values and weights, and the given capacity, in an improved bottom-up way.
-    :param vals: list[int]
+    :param vals: list[float]
     :param weights: list[int]
     :param cap: int
     :return: set{int}
@@ -57,7 +57,7 @@ def _reconstruct(vals, weights, cap, subproblems):
     """
     Private helper function to reconstruct the included items according to
     the optimal solution using backtracking.
-    :param vals: list[int]
+    :param vals: list[float]
     :param weights: list[int]
     :param cap: int
     :param subproblems: list[list[int]]

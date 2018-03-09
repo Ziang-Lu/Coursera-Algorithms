@@ -46,7 +46,7 @@ def two_knapsack(vals, weights, cap1, cap2):
     """
     Solves the two-knapsack problem of the items with the given values and
     weights, and the given capacities, in an improved bottom-up way.
-    :param vals: list[int]
+    :param vals: list[float]
     :param weights: list[int]
     :param cap1: int
     :param cap2: int
@@ -101,7 +101,7 @@ def _reconstruct(vals, weights, cap1, cap2, subproblems):
     """
     Private helper function to reconstruct the included items in knapsack-1 and
     knapsack-2 according to the optimal solution using backtracking.
-    :param vals: list[int]
+    :param vals: list[float]
     :param weights: list[int]
     :param cap1: int
     :param cap2: int

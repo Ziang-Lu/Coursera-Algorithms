@@ -35,7 +35,7 @@ def knapsack_with_budget(vals, weights, budget, cap):
     """
     Solves the knapsack problem (with budget) of the items with the given values
     and weights, with the given budget and capacity, in an bottom-up way.
-    :param vals: list[int]
+    :param vals: list[float]
     :param weights: list[int]
     :param budget: int
     :param cap: int
@@ -82,7 +82,7 @@ def _reconstruct(vals, weights, budget, cap, subproblems):
     """
     Private helper function to reconstruct the included items according to the
     optimal solution using backtracking.
-    :param vals: list[int]
+    :param vals: list[float]
     :param weights: list[int]
     :param budget: int
     :param cap: int

@@ -4,7 +4,9 @@ Application of "*Use heuristics (efficient algorithms that are not always correc
 
 ***
 
-**Another Algorithm: (Dynamic progamming)**
+*Assume all the values are integer.*
+
+**Another Dynamic Programming Algorithm**
 
 Let $S(i, x)$ be the optimal solution for the subproblem among the first $i$ items and target value we are striving for $x$, i.e., the minimum total weight subject to getting a total value $\ge x$.
 
@@ -24,7 +26,11 @@ Consider whether item-$i$ is in $S$:
 
 i.e.,
 
-$S(i, x) \ = \ max\{\}$
+$S(i, x) \ = \ max\{S(i - 1, x), \ S(i - 1, x - v_i)\}$
+
+**Running time complexity:**
+
+Since there are O($n \cdot \Sigma v_i$) $\le$ O($n \cdot n v_{max}$) = $O(n^2 v_{max})$ subproblems, and for each problem, we only do constant amout of work, the overall running time complexity is O($n^2 v_{max}$).
 
 ***
 
