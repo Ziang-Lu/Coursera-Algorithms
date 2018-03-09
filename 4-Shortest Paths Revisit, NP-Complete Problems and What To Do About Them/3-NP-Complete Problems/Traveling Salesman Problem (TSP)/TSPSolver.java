@@ -16,9 +16,12 @@
  */
 
 import java.awt.geom.Point2D;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Scanner;
 
 public class TSPSolver {
 
@@ -52,7 +55,7 @@ public class TSPSolver {
         for (int v = 0; v < n; ++v) {
             HashMap<String, Float> shortestPathLenths = new HashMap<String, Float>();
             if (v == s) {
-                shortestPathLenths.put(srcS.toString(), 0.0);
+                shortestPathLenths.put(srcS.toString(), (float) 0.0);
             } else {
                 shortestPathLenths.put(srcS.toString(), (float) INFINITY);
             }
@@ -91,7 +94,7 @@ public class TSPSolver {
                     float minPathLength = (float) INFINITY;
                     for (int w = 0; w < n; ++w) {
                         if (bitIsSet(S, w) && (w != v)) {
-                            float pathLength = A.get(w).get(S.toString()) + cities[w].distance(cities[v]);
+                            float pathLength = A.get(w).get(S.toString()) + (float) cities[w].distance(cities[v]);
                             if (pathLength < minPathLength) {
                                 minPathLength = pathLength;
                             }
@@ -115,7 +118,7 @@ public class TSPSolver {
         float minTourLength = (float) INFINITY;
         for (int w = 0; w < n; ++w) {
             if (w != s) {
-                float tourLength = A.get(w).get(S.toString()) + cities[w].distance(cities[s]);
+                float tourLength = A.get(w).get(S.toString()) + (float) cities[w].distance(cities[s]);
                 if (tourLength < minTourLength) {
                     minTourLength = tourLength;
                 }
@@ -248,7 +251,7 @@ public class TSPSolver {
         for (int v = 0; v < n; ++v) {
             HashMap<String, Float> shortestPathLenths = new HashMap<String, Float>();
             if (v == s) {
-                shortestPathLenths.put(srcS.toString(), 0.0);
+                shortestPathLenths.put(srcS.toString(), (float) 0.0);
             } else {
                 shortestPathLenths.put(srcS.toString(), (float) INFINITY);
             }
@@ -285,7 +288,7 @@ public class TSPSolver {
                     for (int w = 0; w < n; ++w) {
                         if (bitIsSet(S, w) && (w != v)) {
                             float pathLength = prevMSubproblems.get(w).get(S.toString())
-                                    + cities[w].distance(cities[v]);
+                                    + (float) cities[w].distance(cities[v]);
                             if (pathLength < minPathLength) {
                                 minPathLength = pathLength;
                             }
@@ -312,7 +315,7 @@ public class TSPSolver {
         float minTourLength = (float) INFINITY;
         for (int w = 0; w < n; ++w) {
             if (w != s) {
-                float tourLength = prevMSubproblems.get(w).get(S.toString()) + cities[w].distance(cities[s]);
+                float tourLength = prevMSubproblems.get(w).get(S.toString()) + (float) cities[w].distance(cities[s]);
                 if (tourLength < minTourLength) {
                     minTourLength = tourLength;
                 }
