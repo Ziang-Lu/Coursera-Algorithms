@@ -20,7 +20,7 @@
  * i.e.,
  * Let S(i, b, x) be the optimal solution for the subproblem among the first i
  * items with budget b and capacity x, then
- * S(i, b, x) = max(S(i - 1, b, x), S(i - 1, b - 1, x - w_i) + v_i)
+ * S(i, b, x) = max{S(i - 1, b, x), S(i - 1, b - 1, x - w_i) + v_i}
  */
 
 import java.util.HashSet;

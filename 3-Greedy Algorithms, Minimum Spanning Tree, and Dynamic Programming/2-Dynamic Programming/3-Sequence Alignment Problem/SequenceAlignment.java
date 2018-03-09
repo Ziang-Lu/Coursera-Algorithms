@@ -30,9 +30,9 @@
  * i.e.,
  * Let S(X_i, Y_j) be the optimal solution for the subproblem with the prefix
  * of i characters of X and j characters of Y, respectively, then
- * S(X_i, Y_j) = min(S(X_i - x_i, Y_j - y_j) + pen_{x_i,y_j},
+ * S(X_i, Y_j) = min{S(X_i - x_i, Y_j - y_j) + pen_{x_i,y_j},
  *                   S(X_i - x_i, Y_j) + pen_gap,
- *                   S(X_i, Y_j - y_j) + pen_gap)
+ *                   S(X_i, Y_j - y_j) + pen_gap}
  */
 
 import java.util.HashMap;

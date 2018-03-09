@@ -27,7 +27,7 @@ Thus by proof by contradiction, T_L must be optimal for items 1, 2, ..., r-1.
 
 Algorithm: (Dynamic programming)
 Suppose 1<=i<=j<=n,
-C(T_{i,j}) = min_r (i<=r<=j) (C(T_L) + C(T_R) + sum(p_k) for i<=k<=j)
+C(T_{i,j}) = min_(i<=r<=j) {C(T_L) + C(T_R) + sum(p_k) for i<=k<=j}
 """
 
 __author__ = 'Ziang Lu'

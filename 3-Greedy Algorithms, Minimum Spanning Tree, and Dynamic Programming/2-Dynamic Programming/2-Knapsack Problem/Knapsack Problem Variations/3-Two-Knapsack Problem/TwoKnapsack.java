@@ -27,9 +27,9 @@
  * i.e.,
  * Let S(i, x1, x2) be the optimal solution for the subproblem among the first i
  * items and capacities x1 and x2, then
- * S(i, x1, x2) = max(S(i - 1, x1, x2),
+ * S(i, x1, x2) = max{S(i - 1, x1, x2),
  *                    S(i - 1, x1 - w_i, x2) + v_i,
- *                    S(i - 1, x1, x2 - w_i) + v_i)
+ *                    S(i - 1, x1, x2 - w_i) + v_i}
  */
 
 import java.util.ArrayList;

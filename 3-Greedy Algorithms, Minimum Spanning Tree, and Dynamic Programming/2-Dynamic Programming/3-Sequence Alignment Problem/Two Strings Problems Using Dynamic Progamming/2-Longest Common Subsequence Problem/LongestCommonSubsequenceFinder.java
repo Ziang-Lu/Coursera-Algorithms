@@ -20,7 +20,7 @@
  * If x_i == y_j:
  *     LCS(X_i, Y_j) = LCS(X_i - x_i, Y_j - y_j) + 1
  * Else:
- *     LCS(X_i, Y_j) = max(LCS(X_i - x_i, Y_j), LCS(X_i, Y_j - y_j))
+ *     LCS(X_i, Y_j) = max{LCS(X_i - x_i, Y_j), LCS(X_i, Y_j - y_j)}
  */
 
 import java.util.LinkedList;
@@ -52,7 +52,7 @@ public class LongestCommonSubsequenceFinder {
         // Initialization
         subproblems = new int[m + 1][n + 1];
         // Bottom-up calculation
-        for (int i = 1; i <= m; ++i) { 
+        for (int i = 1; i <= m; ++i) {
             for (int j = 1; j <= n; ++j) {
                 char xCurr = x.charAt(i - 1), yCurr = y.charAt(j - 1);
                 if (xCurr == yCurr) {

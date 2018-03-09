@@ -23,7 +23,7 @@ X and j characters of Y, respectively, then
 If x_i == y_j:
    LCS(X_i, Y_j) = LCS(X_i - x_i, Y_j - y_j) + 1
 Else:
-   LCS(X_i, Y_j) = max(LCS(X_i - x_i, Y_j), LCS(X_i, Y_j - y_j))
+   LCS(X_i, Y_j) = max{LCS(X_i - x_i, Y_j), LCS(X_i, Y_j - y_j)}
 """
 
 __author__ = 'Ziang Lu'

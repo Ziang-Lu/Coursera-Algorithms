@@ -21,7 +21,7 @@ Consider whether item-n is in S:
 i.e.,
 Let S(i, x) be the optimal solution for the subproblem among the first i items
 and capacity x, then
-S(i, x) = max(S(i - 1, x), S(i - 1, x - w_i) + v_i)
+S(i, x) = max{S(i - 1, x), S(i - 1, x - w_i) + v_i}
 """
 
 __author__ = 'Ziang Lu'

@@ -20,7 +20,7 @@
  * i.e.,
  * Let S(i) be the optimal solution for the subproblem with the first i vertices
  * in the given path graph, then
- * S(i) = max(S(i - 1), S(i - 2) + v_i)
+ * S(i) = max{S(i - 1), S(i - 2) + v_i}
  */
 
 import java.util.Arrays;
