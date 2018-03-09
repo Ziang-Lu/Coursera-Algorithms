@@ -1,5 +1,3 @@
-Application of *"Solve in exponential time, but faster than brute-force way"* to deal with NP-complete problems
-
 ### Traveling Salesman Problem (TSP)
 
 #### Problem Definition

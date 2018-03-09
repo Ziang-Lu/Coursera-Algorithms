@@ -1,5 +1,3 @@
-Application of *"Focus on some computationally tractable special cases"* to deal with NP-complete problems
-
 ### 2-SAT Problem
 
 #### Problem Definition
