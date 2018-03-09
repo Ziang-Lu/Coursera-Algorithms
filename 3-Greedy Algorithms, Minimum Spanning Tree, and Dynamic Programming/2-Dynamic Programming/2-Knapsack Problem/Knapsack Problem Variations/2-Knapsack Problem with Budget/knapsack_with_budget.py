@@ -86,7 +86,7 @@ def _reconstruct(vals, weights, budget, cap, subproblems):
     :param weights: list[int]
     :param budget: int
     :param cap: int
-    :param subproblems: list[list[list[int]]]
+    :param subproblems: list[list[list[float]]]
     :return: set{int}
     """
     included_item = set()

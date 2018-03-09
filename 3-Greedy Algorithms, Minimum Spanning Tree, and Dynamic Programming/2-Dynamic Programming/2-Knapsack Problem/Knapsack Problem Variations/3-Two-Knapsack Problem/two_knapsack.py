@@ -105,7 +105,7 @@ def _reconstruct(vals, weights, cap1, cap2, subproblems):
     :param weights: list[int]
     :param cap1: int
     :param cap2: int
-    :param subproblems: list[list[list[int]]]
+    :param subproblems: list[list[list[float]]]
     :return: list[set{int}]
     """
     included_items1, included_items2 = set(), set()

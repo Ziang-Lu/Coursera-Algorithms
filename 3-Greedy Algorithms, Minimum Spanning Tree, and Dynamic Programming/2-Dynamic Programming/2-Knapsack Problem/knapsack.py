@@ -52,12 +52,12 @@ def knapsack(vals, weights, cap):
     n = len(vals)
     # Initialization
     subproblems = [[0] * (cap + 1) for i in range(n)]
-    for x in range(0, cap + 1):
+    for x in range(cap + 1):
         if weights[0] <= x:
             subproblems[0][x] = vals[0]
     # Bottom-up calculation
     for item in range(1, n):
-        for x in range(0, cap + 1):
+        for x in range(cap + 1):
             if weights[item] > x:
                 subproblems[item][x] = subproblems[item - 1][x]
             else:
@@ -76,7 +76,7 @@ def _reconstruct(vals, weights, cap, subproblems):
     :param vals: list[float]
     :param weights: list[int]
     :param cap: int
-    :param subproblems: list[list[int]]
+    :param subproblems: list[list[float]]
     :return: set{int}
     """
     included_items = set()
