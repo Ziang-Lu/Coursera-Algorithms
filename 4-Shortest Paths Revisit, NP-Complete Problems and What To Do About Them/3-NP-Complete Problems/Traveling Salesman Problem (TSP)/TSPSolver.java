@@ -33,7 +33,7 @@ public class TSPSolver {
      * @param cities cities to solve TSP
      * @return minimum tour length
      */
-    public double tsp(Point2D.Double[] cities) {
+    public float tsp(Point2D.Float[] cities) {
         // Check whether the input array is null or empty
         if ((cities == null) || (cities.length == 0)) {
             throw new IllegalArgumentException("The input cities should not be null or empty.");
@@ -42,7 +42,7 @@ public class TSPSolver {
         int n = cities.length, s = 0;
 
         // Initialization
-        ArrayList<HashMap<String, Double>> A = new ArrayList<HashMap<String, Double>>();
+        ArrayList<HashMap<String, Float>> A = new ArrayList<HashMap<String, Float>>();
         // Convert the city subset that contains only the source city to a BitSet
         StringBuilder srcS = new StringBuilder();
         for (int v = 0; v < n; ++v) {
@@ -50,11 +50,11 @@ public class TSPSolver {
         }
         srcS.setCharAt(s, '1');
         for (int v = 0; v < n; ++v) {
-            HashMap<String, Double> shortestPathLenths = new HashMap<String, Double>();
+            HashMap<String, Float> shortestPathLenths = new HashMap<String, Float>();
             if (v == s) {
                 shortestPathLenths.put(srcS.toString(), 0.0);
             } else {
-                shortestPathLenths.put(srcS.toString(), (double) INFINITY);
+                shortestPathLenths.put(srcS.toString(), (float) INFINITY);
             }
             A.add(shortestPathLenths);
         }
@@ -78,8 +78,8 @@ public class TSPSolver {
                     }
 
                     if (v == s) {
-                        HashMap<String, Double> shortestPathLengths = A.get(s);
-                        shortestPathLengths.put(S.toString(), (double) INFINITY);
+                        HashMap<String, Float> shortestPathLengths = A.get(s);
+                        shortestPathLengths.put(S.toString(), (float) INFINITY);
                         A.set(s, shortestPathLengths);
                         continue;
                     }
@@ -88,17 +88,17 @@ public class TSPSolver {
                     // that visits the vertices in {S - v}, containing s and w, exactly once for each.
                     // P(v, S) is the minimum among the possible choices of w in S, w != v.
                     changeBit(S, v, false);
-                    double minPathLength = (double) INFINITY;
+                    float minPathLength = (float) INFINITY;
                     for (int w = 0; w < n; ++w) {
                         if (bitIsSet(S, w) && (w != v)) {
-                            double pathLength = A.get(w).get(S.toString()) + cities[w].distance(cities[v]);
+                            float pathLength = A.get(w).get(S.toString()) + cities[w].distance(cities[v]);
                             if (pathLength < minPathLength) {
                                 minPathLength = pathLength;
                             }
                         }
                     }
                     changeBit(S, v, true);
-                    HashMap<String, Double> shortestPathLengths = A.get(v);
+                    HashMap<String, Float> shortestPathLengths = A.get(v);
                     shortestPathLengths.put(S.toString(), minPathLength);
                     A.set(v, shortestPathLengths);
                 }
@@ -112,10 +112,10 @@ public class TSPSolver {
         for (int v = 0; v < n; ++v) {
             S.append('1');
         }
-        double minTourLength = (double) INFINITY;
+        float minTourLength = (float) INFINITY;
         for (int w = 0; w < n; ++w) {
             if (w != s) {
-                double tourLength = A.get(w).get(S.toString()) + cities[w].distance(cities[s]);
+                float tourLength = A.get(w).get(S.toString()) + cities[w].distance(cities[s]);
                 if (tourLength < minTourLength) {
                     minTourLength = tourLength;
                 }
@@ -229,7 +229,7 @@ public class TSPSolver {
      * @param cities cities to solve TSP
      * @return minimum tour length
      */
-    public double tspOptimized(Point2D.Double[] cities) {
+    public float tspOptimized(Point2D.Float[] cities) {
         // Check whether the input array is null or empty
         if ((cities == null) || (cities.length == 0)) {
             throw new IllegalArgumentException("The input cities should not be null or empty.");
@@ -239,18 +239,18 @@ public class TSPSolver {
 
         // Initialization
         // Space optimization: We only keep track of the subproblem solutions in the previous out-most iteration.
-        ArrayList<HashMap<String, Double>> prevMSubproblems = new ArrayList<HashMap<String, Double>>();
+        ArrayList<HashMap<String, Float>> prevMSubproblems = new ArrayList<HashMap<String, Float>>();
         StringBuilder srcS = new StringBuilder();
         for (int v = 0; v < n; ++v) {
             srcS.append('0');
         }
         srcS.setCharAt(s, '1');
         for (int v = 0; v < n; ++v) {
-            HashMap<String, Double> shortestPathLenths = new HashMap<String, Double>();
+            HashMap<String, Float> shortestPathLenths = new HashMap<String, Float>();
             if (v == s) {
                 shortestPathLenths.put(srcS.toString(), 0.0);
             } else {
-                shortestPathLenths.put(srcS.toString(), (double) INFINITY);
+                shortestPathLenths.put(srcS.toString(), (float) INFINITY);
             }
             prevMSubproblems.add(shortestPathLenths);
         }
@@ -258,9 +258,9 @@ public class TSPSolver {
         // Bottom-up calculation
         for (int m = 2; m <= n; ++m) {
             // Initialize the subproblems of size-m subsets
-            ArrayList<HashMap<String, Double>> currMSubproblems = new ArrayList<HashMap<String, Double>>();
+            ArrayList<HashMap<String, Float>> currMSubproblems = new ArrayList<HashMap<String, Float>>();
             for (int v = 0; v < n; ++v) {
-                currMSubproblems.add(new HashMap<String, Double>());
+                currMSubproblems.add(new HashMap<String, Float>());
             }
 
             for (HashSet<Integer> subset : combinations(n, m)) {
@@ -274,17 +274,17 @@ public class TSPSolver {
                     }
 
                     if (v == s) {
-                        HashMap<String, Double> shortestPathLengths = prevMSubproblems.get(s);
-                        shortestPathLengths.put(S.toString(), (double) INFINITY);
+                        HashMap<String, Float> shortestPathLengths = prevMSubproblems.get(s);
+                        shortestPathLengths.put(S.toString(), (float) INFINITY);
                         currMSubproblems.set(s, shortestPathLengths);
                         continue;
                     }
 
                     changeBit(S, v, false);
-                    double minPathLength = (double) INFINITY;
+                    float minPathLength = (float) INFINITY;
                     for (int w = 0; w < n; ++w) {
                         if (bitIsSet(S, w) && (w != v)) {
-                            double pathLength = prevMSubproblems.get(w).get(S.toString())
+                            float pathLength = prevMSubproblems.get(w).get(S.toString())
                                     + cities[w].distance(cities[v]);
                             if (pathLength < minPathLength) {
                                 minPathLength = pathLength;
@@ -292,7 +292,7 @@ public class TSPSolver {
                         }
                     }
                     changeBit(S, v, true);
-                    HashMap<String, Double> shortestPathLengths = prevMSubproblems.get(v);
+                    HashMap<String, Float> shortestPathLengths = prevMSubproblems.get(v);
                     shortestPathLengths.put(S.toString(), minPathLength);
                     currMSubproblems.set(v, shortestPathLengths);
                 }
@@ -309,10 +309,10 @@ public class TSPSolver {
         for (int v = 0; v < n; ++v) {
             S.append('1');
         }
-        double minTourLength = (double) INFINITY;
+        float minTourLength = (float) INFINITY;
         for (int w = 0; w < n; ++w) {
             if (w != s) {
-                double tourLength = prevMSubproblems.get(w).get(S.toString()) + cities[w].distance(cities[s]);
+                float tourLength = prevMSubproblems.get(w).get(S.toString()) + cities[w].distance(cities[s]);
                 if (tourLength < minTourLength) {
                     minTourLength = tourLength;
                 }
