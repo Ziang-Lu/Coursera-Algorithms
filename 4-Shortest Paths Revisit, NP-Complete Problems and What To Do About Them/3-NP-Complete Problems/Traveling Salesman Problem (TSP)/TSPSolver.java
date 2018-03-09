@@ -298,7 +298,7 @@ public class TSPSolver {
                 }
             }
             prevMSubproblems = currMSubproblems;
-            // Explicitly call garbage collection
+            // Explicitly run garbage collection
             System.gc();
         }
 

@@ -242,6 +242,8 @@ def tsp_optimized(cities):
                             min_path_length = path_length
                 curr_m_subproblems[v][S] = min_path_length
         prev_m_subproblems = curr_m_subproblems
+        # Explicitly run garbage collection
+        gc.collect()
 
     # By now the algorithm only computes the shortest paths from s to each v
     # that visit all the vertices exactly once for each.
