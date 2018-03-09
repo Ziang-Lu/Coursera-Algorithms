@@ -14,7 +14,7 @@ public class KnapsackWithExactSize {
      * a subproblem, we can cache its solution in a global take for O(1) lookup
      * time later on.
      */
-    private int[][] subproblems;
+    private double[][] subproblems;
 
     /**
      * Solves the knapsack problem (with exact size) of the items with the given
@@ -24,7 +24,7 @@ public class KnapsackWithExactSize {
      * @param cap capacity of the knapsack
      * @return included items
      */
-    public HashSet<Integer> knapsackWithExactSize(int[] vals, int[] weights, int cap) {
+    public HashSet<Integer> knapsackWithExactSize(double[] vals, int[] weights, int cap) {
         // Check whether the input arrays are null or empty
         if ((vals == null) || (vals.length == 0) || (weights == null) || (weights.length == 0)) {
             throw new IllegalArgumentException("The input values and weights should not be null or empty.");
@@ -36,7 +36,7 @@ public class KnapsackWithExactSize {
 
         int n = vals.length;
         // Initialization
-        subproblems = new int[n][cap + 1];
+        subproblems = new double[n][cap + 1];
         for (int x = 0; x <= cap; ++x) {
             if (weights[0] == x) {
                 subproblems[0][x] = vals[0];
@@ -49,7 +49,7 @@ public class KnapsackWithExactSize {
                     subproblems[item][x] = subproblems[item - 1][x];
                 } else {
                     // Note that if subproblem has no solution, the current item should not be included either.
-                    int resultWithCurr = 0;
+                    double resultWithCurr = 0;
                     if (subproblems[item - 1][x - weights[item]] != 0) {
                         resultWithCurr = subproblems[item - 1][x - weights[item]] + vals[item];
                     }
@@ -69,7 +69,7 @@ public class KnapsackWithExactSize {
      * @param cap capacity of the knapsack
      * @return included items
      */
-    private HashSet<Integer> reconstruct(int[] vals, int[] weights, int cap) {
+    private HashSet<Integer> reconstruct(double[] vals, int[] weights, int cap) {
         HashSet<Integer> includedItems = new HashSet<Integer>();
         int currItem = vals.length - 1, currCap = cap;
         while (currItem >= 1) {

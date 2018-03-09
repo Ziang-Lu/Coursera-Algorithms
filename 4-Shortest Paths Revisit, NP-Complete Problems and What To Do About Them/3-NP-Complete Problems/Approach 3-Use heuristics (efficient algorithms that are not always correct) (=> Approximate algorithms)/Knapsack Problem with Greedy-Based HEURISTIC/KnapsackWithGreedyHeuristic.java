@@ -36,7 +36,7 @@ public class KnapsackWithGreedyHeuristic {
         /**
          * Value of this item.
          */
-        private final int val;
+        private final double val;
         /**
          * Weight of this item.
          */
@@ -48,7 +48,7 @@ public class KnapsackWithGreedyHeuristic {
          * @param val value of the item
          * @param weight weight of the item
          */
-        Item(int idx, int val, int weight) {
+        Item(int idx, dobule val, int weight) {
             this.idx = idx;
             this.val = val;
             this.weight = weight;
@@ -66,7 +66,7 @@ public class KnapsackWithGreedyHeuristic {
          * Accessor of val.
          * @return val
          */
-        int getVal() {
+        double getVal() {
             return val;
         }
 
@@ -87,7 +87,7 @@ public class KnapsackWithGreedyHeuristic {
      * @param cap capacity of the knapsack
      * @return included items
      */
-    public HashSet<Integer> knapsackGreedy(int[] vals, int[] weights, int cap) {
+    public HashSet<Integer> knapsackGreedy(double[] vals, int[] weights, int cap) {
         // Check whether the input arrays are null or empty
         if ((vals == null) || (vals.length == 0) || (weights == null) || (weights.length == 0)) {
             throw new IllegalArgumentException("The input values and weights should not be null or empty.");
@@ -106,7 +106,7 @@ public class KnapsackWithGreedyHeuristic {
         HashSet<Integer> includedItems1 = greedyPacking(items, cap, new Comparator<Item>() {
             @Override
             public int compare(Item o1, Item o2) {
-                double ratio1 = 1.0 * o1.getVal() / o1.getWeight(), ratio2 = 1.0 * o2.getVal() / o2.getWeight();
+                double ratio1 = o1.getVal() / o1.getWeight(), ratio2 = o2.getVal() / o2.getWeight();
                 return Double.compare(ratio2, ratio1);
             }
         });
@@ -118,7 +118,7 @@ public class KnapsackWithGreedyHeuristic {
         HashSet<Integer> includedItems2 = greedyPacking(items, cap, new Comparator<Item>() {
             @Override
             public int compare(Item o1, Item o2) {
-                return Integer.compare(o2.getVal(), o1.getVal());
+                return Double.compare(o2.getVal(), o1.getVal());
             }
         });
         int totalVal2 = 0;

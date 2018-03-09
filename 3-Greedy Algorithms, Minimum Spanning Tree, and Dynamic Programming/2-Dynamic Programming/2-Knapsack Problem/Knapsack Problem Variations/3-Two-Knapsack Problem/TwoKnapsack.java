@@ -43,7 +43,7 @@ public class TwoKnapsack {
      * solve a subproblem, we can cache its solution in a global take for O(1)
      * lookup time later on.
      */
-    private int[][][] subproblems;
+    private double[][][] subproblems;
 
     /**
      * Solves the two-knapsack problem of the items with the given values and
@@ -54,7 +54,7 @@ public class TwoKnapsack {
      * @param cap2 capacity of knapsack-2
      * @return included items in knapsack-1 and knapsack-2
      */
-    public ArrayList<HashSet<Integer>> twoKnapsack(int[] vals, int[] weights, int cap1, int cap2) {
+    public ArrayList<HashSet<Integer>> twoKnapsack(double[] vals, int[] weights, int cap1, int cap2) {
         // Check whether the input arrays are null or empty
         if ((vals == null) || (vals.length == 0) || (weights == null) || (weights.length == 0)) {
             throw new IllegalArgumentException("The input values and weights should not be null or empty.");
@@ -66,7 +66,7 @@ public class TwoKnapsack {
 
         int n = vals.length;
         // Initialization
-        subproblems = new int[n][cap1 + 1][cap2 + 1];
+        subproblems = new double[n][cap1 + 1][cap2 + 1];
         for (int x1 = 0; x1 <= cap1; ++x1) {
             for (int x2 = 0; x2 <= cap2; ++x2) {
                 if ((weights[0] <= x1) || (weights[0] <= x2)) {
@@ -78,17 +78,17 @@ public class TwoKnapsack {
         for (int item = 1; item < n; ++item) {
             for (int x1 = 0; x1 <= cap1; ++x1) {
                 for (int x2 = 0; x2 <= cap2; ++x2) {
-                    int resultWithoutCurr = subproblems[item - 1][x1][x2];
+                    double resultWithoutCurr = subproblems[item - 1][x1][x2];
                     if ((weights[item] <= x1) && (weights[item] <= x2)) {
-                        int resultWithCurrIn1 = subproblems[item - 1][x1 - weights[item]][x2] + vals[item];
-                        int resultWithCurrIn2 = subproblems[item - 1][x1][x2 - weights[item]] + vals[item];
+                        double resultWithCurrIn1 = subproblems[item - 1][x1 - weights[item]][x2] + vals[item];
+                        double resultWithCurrIn2 = subproblems[item - 1][x1][x2 - weights[item]] + vals[item];
                         subproblems[item][x1][x2] = Math.max(Math.max(resultWithoutCurr, resultWithCurrIn1),
                                 resultWithCurrIn2);
                     } else if (weights[item] <= x1) {
-                        int resultWithCurrIn1 = subproblems[item - 1][x1 - weights[item]][x2] + vals[item];
+                        double resultWithCurrIn1 = subproblems[item - 1][x1 - weights[item]][x2] + vals[item];
                         subproblems[item][x1][x2] = Math.max(resultWithoutCurr, resultWithCurrIn1);
                     } else if (weights[item] <= x2) {
-                        int resultWithCurrIn2 = subproblems[item - 1][x1][x2 - weights[item]] + vals[item];
+                        double resultWithCurrIn2 = subproblems[item - 1][x1][x2 - weights[item]] + vals[item];
                         subproblems[item][x1][x2] = Math.max(resultWithoutCurr, resultWithCurrIn2);
                     }
                 }
@@ -107,31 +107,31 @@ public class TwoKnapsack {
      * @param cap2 capacity of knapsack-2
      * @return included items in knapsack-1 and knapsack-2
      */
-    private ArrayList<HashSet<Integer>> reconstruct(int[] vals, int[] weights, int cap1, int cap2) {
+    private ArrayList<HashSet<Integer>> reconstruct(double[] vals, int[] weights, int cap1, int cap2) {
         HashSet<Integer> includedItems1 = new HashSet<Integer>(), includedItems2 = new HashSet<Integer>();
         int currItem = vals.length - 1, currCap1 = cap1, currCap2 = cap2;
         while (currItem >= 1) {
-            int resultWithoutCurr = subproblems[currItem - 1][currCap1][currCap2];
+            double resultWithoutCurr = subproblems[currItem - 1][currCap1][currCap2];
             if (weights[currItem] > currCap1) {
-                int resultWithCurrIn2 = subproblems[currItem - 1][currCap1][currCap2 - weights[currItem]]
+                double resultWithCurrIn2 = subproblems[currItem - 1][currCap1][currCap2 - weights[currItem]]
                         + vals[currItem];
                 if (resultWithoutCurr < resultWithCurrIn2) {
                     // Case 3: The current item is included in S2.
                     includedItems2.add(currItem);
                 }
             } else if (weights[currItem] > currCap2) {
-                int resultWithCurrIn1 = subproblems[currItem - 1][currCap1 - weights[currItem]][currCap2]
+                double resultWithCurrIn1 = subproblems[currItem - 1][currCap1 - weights[currItem]][currCap2]
                         + vals[currItem];
                 if (resultWithoutCurr < resultWithCurrIn1) {
                     // Case 2: The current item is included in S1.
                     includedItems1.add(currItem);
                 }
             } else {
-                int resultWithCurrIn1 = subproblems[currItem - 1][currCap1 - weights[currItem]][currCap2]
+                double resultWithCurrIn1 = subproblems[currItem - 1][currCap1 - weights[currItem]][currCap2]
                         + vals[currItem];
-                int resultWithCurrIn2 = subproblems[currItem - 1][currCap1][currCap2 - weights[currItem]]
+                double resultWithCurrIn2 = subproblems[currItem - 1][currCap1][currCap2 - weights[currItem]]
                         + vals[currItem];
-                int result = Math.max(Math.max(resultWithoutCurr, resultWithCurrIn1), resultWithCurrIn2);
+                double result = Math.max(Math.max(resultWithoutCurr, resultWithCurrIn1), resultWithCurrIn2);
                 if (result == resultWithoutCurr) {
                     // Case 1: The current item is not included.
                 } else if (result == resultWithCurrIn1) {

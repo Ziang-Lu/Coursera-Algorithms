@@ -33,7 +33,7 @@ public class KnapsackWithBudget {
      * solve a subproblem, we can cache its solution in a global take for O(1)
      * lookup time later on.
      */
-    private int[][][] subproblems;
+    private double[][][] subproblems;
 
     /**
      * Solves the knapsack problem (with budget) of the items with the given
@@ -45,7 +45,7 @@ public class KnapsackWithBudget {
      * @param cap capacity of the knapsack
      * @return included items
      */
-    public HashSet<Integer> knapsackWithBudget(int[] vals, int[] weights, int budget, int cap) {
+    public HashSet<Integer> knapsackWithBudget(double[] vals, int[] weights, int budget, int cap) {
         // Check whether the input arrays are null or empty
         if ((vals == null) || (vals.length == 0) || (weights == null) || (weights.length == 0)) {
             throw new IllegalArgumentException("The input values and weights should not be null or empty.");
@@ -61,7 +61,7 @@ public class KnapsackWithBudget {
 
         int n = vals.length;
         // Initialization
-        subproblems = new int[n][budget + 1][cap + 1];
+        subproblems = new double[n][budget + 1][cap + 1];
         for (int b = 0; b <= budget; ++b) {
             for (int x = 0; x <= cap; ++x) {
                 if ((b >= 1) && (weights[0] <= x)) {
@@ -95,7 +95,7 @@ public class KnapsackWithBudget {
      * @param cap capacity of the knapsack
      * @return included items
      */
-    private HashSet<Integer> reconstruct(int[] vals, int[] weights, int budget, int cap) {
+    private HashSet<Integer> reconstruct(double[] vals, int[] weights, int budget, int cap) {
         HashSet<Integer> includedItems = new HashSet<Integer>();
         int currItem = vals.length - 1, currBudget = budget, currCap = cap;
         while (currItem >= 1) {
