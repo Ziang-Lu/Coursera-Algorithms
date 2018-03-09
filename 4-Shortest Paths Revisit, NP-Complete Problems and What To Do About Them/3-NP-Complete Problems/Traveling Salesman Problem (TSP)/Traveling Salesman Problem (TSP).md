@@ -72,3 +72,6 @@ Since there are $O(n \cdot 2^n)$ subproblems, and each subproblem runs in $O(n)$
 
 Note that the running time complexity is still exponential, but it's better than brute-force (O($n!$)).
 
+**Optimization: Space optimization**
+
+In basic implementation, we need O($n \cdot 2^n$) space. However, since we only need solutions to subsets of size ($m - 1$) to compute the solutions to subsets of size $m$, we only need to keep track of the subproblem solutions in the previous out-most iteration, so the space needed is reduced to O($n \cdot C_n^k$).

@@ -45,13 +45,13 @@ public class TSPSolver {
         ArrayList<HashMap<String, Double>> A = new ArrayList<HashMap<String, Double>>();
         // Convert the city subset that contains only the source city to a BitSet
         StringBuilder srcS = new StringBuilder();
-        for (int i = 0; i < n; ++i) {
+        for (int v = 0; v < n; ++v) {
             srcS.append('0');
         }
         srcS.setCharAt(s, '1');
-        for (int i = 0; i < n; ++i) {
+        for (int v = 0; v < n; ++v) {
             HashMap<String, Double> shortestPathLenths = new HashMap<String, Double>();
-            if (i == s) {
+            if (v == s) {
                 shortestPathLenths.put(srcS.toString(), 0.0);
             } else {
                 shortestPathLenths.put(srcS.toString(), (double) INFINITY);
@@ -107,9 +107,9 @@ public class TSPSolver {
 
         // By now the algorithm only computes the shortest paths from s to each v that visit all the vertices exactly
         // once for each.
-
+        // However to complete TSP, we still need to go back to s.
         StringBuilder S = new StringBuilder();
-        for (int i = 0; i < n; ++i) {
+        for (int v = 0; v < n; ++v) {
             S.append('1');
         }
         double minTourLength = (double) INFINITY;
@@ -125,6 +125,7 @@ public class TSPSolver {
         // Since there are O(n 2^n) subproblems, and each subproblem runs in O(n), the overall running time complexity
         // is O(n^2 2^n).
         // Note that the running time complexity is still exponential, but it's better than brute-force (O(n!)).
+        // Overall space complexity: O(n 2^n)
     }
 
     /**
@@ -220,6 +221,106 @@ public class TSPSolver {
     private boolean bitIsSet(StringBuilder bitStr, int i) {
         return bitStr.charAt(i) == '1';
         // Running time complexity: O(1)
+    }
+
+    /**
+     * Solves the TSP of the given cities, assuming the first city is the source
+     * city, with optimization.
+     * @param cities cities to solve TSP
+     * @return minimum tour length
+     */
+    public double tspOptimized(Point2D.Double[] cities) {
+        // Check whether the input array is null or empty
+        if ((cities == null) || (cities.length == 0)) {
+            throw new IllegalArgumentException("The input cities should not be null or empty.");
+        }
+
+        int n = cities.length, s = 0;
+
+        // Initialization
+        // Space optimization: We only keep track of the subproblem solutions in the previous out-most iteration.
+        ArrayList<HashMap<String, Double>> prevMSubproblems = new ArrayList<HashMap<String, Double>>();
+        StringBuilder srcS = new StringBuilder();
+        for (int v = 0; v < n; ++v) {
+            srcS.append('0');
+        }
+        srcS.setCharAt(s, '1');
+        for (int v = 0; v < n; ++v) {
+            HashMap<String, Double> shortestPathLenths = new HashMap<String, Double>();
+            if (v == s) {
+                shortestPathLenths.put(srcS.toString(), 0.0);
+            } else {
+                shortestPathLenths.put(srcS.toString(), (double) INFINITY);
+            }
+            prevMSubproblems.add(shortestPathLenths);
+        }
+
+        // Bottom-up calculation
+        for (int m = 2; m <= n; ++m) {
+            // Initialize the subproblems of size-m subsets
+            ArrayList<HashMap<String, Double>> currMSubproblems = new ArrayList<HashMap<String, Double>>();
+            for (int v = 0; v < n; ++v) {
+                currMSubproblems.add(new HashMap<String, Double>());
+            }
+
+            for (HashSet<Integer> subset : combinations(n, m)) {
+                if (!subset.contains(s)) {
+                    continue;
+                }
+                StringBuilder S = constructBitStr(n, subset);
+                for (int v = 0; v < n; ++v) {
+                    if (!bitIsSet(S, v)) {
+                        continue;
+                    }
+
+                    if (v == s) {
+                        HashMap<String, Double> shortestPathLengths = prevMSubproblems.get(s);
+                        shortestPathLengths.put(S.toString(), (double) INFINITY);
+                        currMSubproblems.set(s, shortestPathLengths);
+                        continue;
+                    }
+
+                    changeBit(S, v, false);
+                    double minPathLength = (double) INFINITY;
+                    for (int w = 0; w < n; ++w) {
+                        if (bitIsSet(S, w) && (w != v)) {
+                            double pathLength = prevMSubproblems.get(w).get(S.toString())
+                                    + cities[w].distance(cities[v]);
+                            if (pathLength < minPathLength) {
+                                minPathLength = pathLength;
+                            }
+                        }
+                    }
+                    changeBit(S, v, true);
+                    HashMap<String, Double> shortestPathLengths = prevMSubproblems.get(v);
+                    shortestPathLengths.put(S.toString(), minPathLength);
+                    currMSubproblems.set(v, shortestPathLengths);
+                }
+            }
+            prevMSubproblems = currMSubproblems;
+            // Explicitly call garbage collection
+            System.gc();
+        }
+
+        // By now the algorithm only computes the shortest paths from s to each v that visit all the vertices exactly
+        // once for each.
+        // However to complete TSP, we still need to go back to s.
+        StringBuilder S = new StringBuilder();
+        for (int v = 0; v < n; ++v) {
+            S.append('1');
+        }
+        double minTourLength = (double) INFINITY;
+        for (int w = 0; w < n; ++w) {
+            if (w != s) {
+                double tourLength = prevMSubproblems.get(w).get(S.toString()) + cities[w].distance(cities[s]);
+                if (tourLength < minTourLength) {
+                    minTourLength = tourLength;
+                }
+            }
+        }
+        return minTourLength;
+        // Overall running time complexity: O(n^2 2^n)
+        // Overall space complexity: O(n 2^n)
     }
 
 }

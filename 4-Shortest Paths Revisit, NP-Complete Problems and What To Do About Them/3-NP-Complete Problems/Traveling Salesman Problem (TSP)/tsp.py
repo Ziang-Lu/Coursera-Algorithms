@@ -21,6 +21,7 @@ P(v, S) = min_(w in S, w != v) {P'(w, S-v) + c_(w, v)}
 
 __author__ = 'Ziang Lu'
 
+import gc
 import itertools
 import math
 
@@ -73,14 +74,14 @@ def tsp(cities):
     n, s = len(cities), 0
 
     # Initialization
-    A = [{} for i in range(n)]
+    A = [{} for v in range(n)]
     # Convert the city subset that contains only the source city to a bit string
     S = _construct_bit_str(length=n, set_idxs=[s])
-    for i in range(n):
-        if i == s:
+    for v in range(n):
+        if v == s:
             A[s][S] = 0
         else:
-            A[i][S] = INFINITY
+            A[v][S] = INFINITY
 
     # Bottom-up calculation
     for m in range(2, n + 1):
@@ -132,6 +133,7 @@ def tsp(cities):
     # the overall running time complexity is O(n^2 2^n).
     # Note that the running time complexity is still exponential, but it's
     # better than brute-force (O(n!)).
+    # Overall space complexity: O(n 2^n)
 
 
 def _construct_bit_str(length, set_idxs):
@@ -186,3 +188,72 @@ def _euclidean_distance(city1, city2):
     """
     return math.sqrt((city1.x - city2.x)**2 + (city1.y - city2.y)**2)
     # Running time complexity: O(1)
+
+
+def tsp_optimized(cities):
+    """
+    Solves the TSP of the given cities, assuming the first city is the source
+    city, with space optimization.
+    :param cities: list[City]
+    :return: float
+    """
+    # Check whether the input cities is None or empty
+    if cities is None or len(cities) == 0:
+        raise IllegalArgumentError('The input cities should not be None or '
+                                   'empty.')
+
+    n, s = len(cities), 0
+
+    # Initialization
+    # Space optimization: We only keep track of the subproblem solutions in the
+    # previous out-most iteration.
+    prev_m_subproblems = [{} for v in range(n)]
+    S = _construct_bit_str(length=n, set_idxs=[s])
+    for v in range(n):
+        if v == s:
+            prev_m_subproblems[s][S] = 0
+        else:
+            prev_m_subproblems[v][S] = INFINITY
+
+    # Bottom-up calculation
+    for m in range(2, n + 1):
+        # Initialize the subproblems of size-m subsets
+        curr_m_subproblems = [{} for v in range(n)]
+
+        for subset in itertools.combinations(range(n), m):
+            if s not in subset:
+                continue
+            S = _construct_bit_str(length=n, set_idxs=subset)
+            for v in range(n):
+                if not _bit_is_set(S, v):
+                    continue
+
+                if v == s:
+                    curr_m_subproblems[s][S] = INFINITY
+                    continue
+
+                S_wo_v = _change_bit(bit_str=S, i=v, setting=False)
+                min_path_length = INFINITY
+                for w in range(len(S)):
+                    if _bit_is_set(S_wo_v, w) and w != v:
+                        path_length = prev_m_subproblems[w][S_wo_v] + \
+                            _euclidean_distance(cities[w], cities[v])
+                        if path_length < min_path_length:
+                            min_path_length = path_length
+                curr_m_subproblems[v][S] = min_path_length
+        prev_m_subproblems = curr_m_subproblems
+
+    # By now the algorithm only computes the shortest paths from s to each v
+    # that visit all the vertices exactly once for each.
+    # However to complete TSP, we still need to go back to s.
+    S = _construct_bit_str(length=n, set_idxs=range(n))
+    min_tour_length = INFINITY
+    for w in range(n):
+        if w != s:
+            tour_length = prev_m_subproblems[w][S] + \
+                _euclidean_distance(cities[w], cities[s])
+            if tour_length < min_tour_length:
+                min_tour_length = tour_length
+    return min_tour_length
+    # Overall running time complexity: (O(n^2 2^n))
+    # Overall space complexity: O(n 2^n)
