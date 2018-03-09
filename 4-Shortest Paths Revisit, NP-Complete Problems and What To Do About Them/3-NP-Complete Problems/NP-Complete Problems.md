@@ -105,7 +105,7 @@ But, how to check whether a problem $\Pi$ is NP-complete?
 
 1. **Focus on some computationally tractable special cases**   => Exact algorithm
 
-   * e.g., <u>maximum-weight independent set problem</u>
+   * e.g., <u>Maximum-Weight Independent Set Problem</u>
 
      (In general graph, this is NP-complete; however if we restrict the graph to be a path graph, then this problem can be solved in O($n$) time using dynamic programming.)
 
@@ -113,7 +113,7 @@ But, how to check whether a problem $\Pi$ is NP-complete?
 
 2. **Solve in exponential-time, but faster than brute-force way**   => Exact algorithm
 
-   * e.g., <u>knapsack problem with dynamic programming-based algorithm</u>
+   * e.g., <u>Knapsack Problem with Dynamic Programming-Based Algorithm</u>
 
      (Though the algorithm still runs exponentially in the input size (number of encoding bits of the knapsack capacity $W$) as explained above, but is much faster than the O($2^n$) exponential-time brute-force search.)
 
@@ -123,6 +123,6 @@ But, how to check whether a problem $\Pi$ is NP-complete?
 
    *=> Sacrifice some correctness; gain efficiency.*
 
-   * e.g., *Refer to "**Knapsack Problem with Greedy-based Algorithm**"*
+   * e.g., *Refer to "**Knapsack Problem with Greedy-Based HEURISTIC**"* and *"**Knapsack Problem with Dynamic Programming-Based HEURISTIC**"*
 
 

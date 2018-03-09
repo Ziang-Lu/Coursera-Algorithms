@@ -1,4 +1,4 @@
-Application of "*Solve in exponential-time, but faster than brute-force way*"
+Application of "*Solve in exponential-time, but faster than brute-force way*"   => Exact algorithms
 
 ### Traveling Salesman Problem (TSP)
 

@@ -1,4 +1,4 @@
-Application of "*Solve in exponential-time, but faster than brute-force way*"
+Application of "*Solve in exponential-time, but faster than brute-force way*"   => Exact algorithms
 
 ### Vertex Cover Problem Variation
 

@@ -1,4 +1,4 @@
-Application of "*Focus on some computationally tractable special cases*"
+Application of "*Focus on some computationally tractable special cases*"   => Exact algorithms
 
 ### Vertex Cover Problem
 
