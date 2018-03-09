@@ -1,3 +1,5 @@
+Application of "*Focus on some computationally tractable special cases*"
+
 ### Vertex Cover Problem
 
 #### Problem Definition (somewhat "complement" to maximum-weight independent set problem)

@@ -1,3 +1,5 @@
+Application of "*Solve in exponential-time, but faster than brute-force way*"
+
 ### Traveling Salesman Problem (TSP)
 
 #### Problem Definition
@@ -66,10 +68,11 @@ $P(v, S) \ = \ min_{w \in S, w \ne v} \{P'(w, S - v) \ + c_{(w, v)}\}$
 
 **Running time complexity analysis:**
 
-Since there are $O(n \cdot 2^n)$ subproblems, and each subproblem runs in $O(n)$ time, the overall running time complexity is O($n^2 \cdot 2^n$).
+Since there are $O(n \cdot 2^n)$ subproblems, and each subproblem runs in $O(n)$ time, the overall running time complexity is **O($n^2 \cdot 2^n$)**.
 
 Note that the running time complexity is still exponential, but it's better than brute-force (O($n!$)).
 
 **Optimization: Space optimization**
 
-In basic implementation, we need O($n \cdot 2^n$) space. However, since we only need solutions to subsets of size ($m - 1$) to compute the solutions to subsets of size $m$, we only need to keep track of the subproblem solutions in the previous out-most iteration, so the space needed is reduced to O($n \cdot C_n^k$).
+In basic implementation, we need O($n \cdot 2^n$) space. However, since we only need solutions to subsets of size ($m - 1$) to compute the solutions to subsets of size $m$, we only need to keep track of the subproblem solutions in the previous out-most iteration, so the space needed is reduced to O($n \cdot C_n^k$) $\approx$ O($n^{k+1}$).
+

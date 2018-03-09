@@ -1,3 +1,5 @@
+Application of "*Focus on some computationally tractable special cases*"
+
 ### 2-SAT Problem
 
 #### Problem Definition

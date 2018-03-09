@@ -1,3 +1,5 @@
+Application of "*Solve in exponential-time, but faster than brute-force way*"
+
 ### Vertex Cover Problem Variation
 
 #### Problem Variation

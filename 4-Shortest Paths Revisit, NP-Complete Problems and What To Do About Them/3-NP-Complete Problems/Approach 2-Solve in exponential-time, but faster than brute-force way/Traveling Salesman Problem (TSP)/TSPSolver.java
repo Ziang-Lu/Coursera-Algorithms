@@ -323,7 +323,7 @@ public class TSPSolver {
         }
         return minTourLength;
         // Overall running time complexity: O(n^2 2^n)
-        // Overall space complexity: O(n * (n choose k))
+        // Overall space complexity: O(n * (n choose k)) = O(n^(k+1))
     }
 
 }

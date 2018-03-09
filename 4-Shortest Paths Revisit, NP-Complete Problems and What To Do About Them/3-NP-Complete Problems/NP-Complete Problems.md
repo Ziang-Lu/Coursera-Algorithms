@@ -109,20 +109,20 @@ But, how to check whether a problem $\Pi$ is NP-complete?
 
      (In general graph, this is NP-complete; however if we restrict the graph to be a path graph, then this problem can be solved in O($n$) time using dynamic programming.)
 
-   * e.g., *Refer to "**2-SAT problem**" and "**vertex cover problem**"*
+   * e.g., *Refer to "**2-SAT Problem**" and "**Vertex Cover Problem**"*
 
 2. **Solve in exponential-time, but faster than brute-force way**   => Exact algorithm
 
-   * e.g., <u>dynamic programming-based solution to the knapsack problem</u>
+   * e.g., <u>knapsack problem with dynamic programming-based algorithm</u>
 
      (Though the algorithm still runs exponentially in the input size (number of encoding bits of the knapsack capacity $W$) as explained above, but is much faster than the O($2^n$) exponential-time brute-force search.)
 
-   * e.g., *Refer to "**Traveling Salesman Problem (TSP)**" and "**vertex cover problem (variation)**"*
+   * e.g., *Refer to "**Traveling Salesman Problem (TSP)**" and "**Vertex Cover Problem (Variation)**"*
 
 3. **Use heuristics (efficient algorithms that are not always correct)**   => Approximate algorithm
 
    *=> Sacrifice some correctness; gain efficiency.*
 
-   * e.g., *Refer to "**greedy-based solution to the knapsack problem**"*
+   * e.g., *Refer to "**Knapsack Problem with Greedy-based Algorithm**"*
 
 

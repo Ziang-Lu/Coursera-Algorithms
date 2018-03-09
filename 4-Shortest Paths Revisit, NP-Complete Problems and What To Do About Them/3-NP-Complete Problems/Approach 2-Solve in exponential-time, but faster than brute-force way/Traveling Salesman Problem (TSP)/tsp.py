@@ -259,4 +259,4 @@ def tsp_optimized(cities):
                 min_tour_length = tour_length
     return min_tour_length
     # Overall running time complexity: (O(n^2 2^n))
-    # Overall space complexity: O(n * (n choose k))
+    # Overall space complexity: O(n * (n choose k)) = O(n^(k+1))
