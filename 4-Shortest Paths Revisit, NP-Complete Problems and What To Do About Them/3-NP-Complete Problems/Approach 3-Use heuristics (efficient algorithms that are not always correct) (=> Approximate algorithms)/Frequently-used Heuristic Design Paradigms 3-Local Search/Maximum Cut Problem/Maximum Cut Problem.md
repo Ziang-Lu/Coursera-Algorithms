@@ -36,7 +36,7 @@ e.g., For a **bipartite graph**, this problem can be solved by **BFS, and labeli
 
 2. While there is a vertex $v$ with $D_v(A, B) > C_v(A, B)$
 
-   * Move $v$ to the other side
+   * Move $v​$ to the other side
 
      => $C_v(A', B') = D_v(A, B) > C_v(A, B)$, and all the other edges stay unchanged.
 
@@ -46,5 +46,4 @@ e.g., For a **bipartite graph**, this problem can be solved by **BFS, and labeli
 
 **Running time complexity:**
 
-For each while-loop, the total number of crossing edges only goes up by at least 1, so there are at most $m$ while-loops. Within each while-loop, we only need to do constant amount of work (O(1)), so the running time complexity is **O($m$)**.
-
+For each while-loop, the total number of crossing edges only goes up by at least 1, so there are at most $m$ while-loops. Within each while-loop, we only need to do linear work (O($n$)), so the running time complexity is **O($m$$n$)**.
