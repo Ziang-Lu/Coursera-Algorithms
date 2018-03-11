@@ -123,6 +123,12 @@ But, how to check whether a problem $\Pi$ is NP-complete?
 
    *=> Sacrifice some correctness; gain efficiency.*
 
-   * e.g., *Refer to "**Knapsack Problem with Greedy-Based HEURISTIC**"* and *"**Knapsack Problem with Dynamic Programming-Based HEURISTIC**"*
+   Frequently-used heuristic design paradigms:
+
+   1. Greedy
+      * e.g., *Refer to "**Knapsack Problem with Greedy-Based Heuristic**"*
+   2. Dynamic programming
+      * e.g., *Refer to "**Knapsack Problem with Dynamic Programming-Based Heuristic**"*
+   3. Local search
 
 

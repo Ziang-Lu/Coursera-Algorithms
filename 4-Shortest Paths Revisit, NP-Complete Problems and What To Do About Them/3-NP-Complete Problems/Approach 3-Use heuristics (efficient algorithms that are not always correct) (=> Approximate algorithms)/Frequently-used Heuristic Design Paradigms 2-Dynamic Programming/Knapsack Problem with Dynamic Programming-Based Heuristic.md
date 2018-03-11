@@ -1,6 +1,8 @@
 Application of "*Use heuristics (efficient algorithms that are not always correct)*"   => Approximate algorithms
 
-### Knapsack Problem with Dynamic Programming-Based HEURISTIC
+Frequently-used heuristic design paradigms: Dynamic programming
+
+### Knapsack Problem with Dynamic Programming-Based Heuristic
 
 ***
 
