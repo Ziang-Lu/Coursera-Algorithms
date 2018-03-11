@@ -24,8 +24,8 @@ class Vertex(AbstractVertex):
         :param vtx_id: int
         """
         super().__init__(vtx_id)
-        self._freq_of_neighbors = {}
         self._edges = []
+        self._neighbors = set()
 
     def get_edge_with_neighbor(self, neighbor):
         """
@@ -65,18 +65,17 @@ class Vertex(AbstractVertex):
         if (new_edge.end1 is not self) and (new_edge.end2 is not self):
             raise IllegalArgumentError('The edge to add should involve this '
                                        'vertex.')
-
-        self._edges.append(new_edge)
-
         # Find the neighbor associated with the input edge
         if new_edge.end1 is self:  # endpoint2 is the neighbor.
             neighbor = new_edge.end2
         else:  # endpoint1 is the neighbor.
             neighbor = new_edge.end1
-        # Update the frequency of the neighbor
-        freq = self._freq_of_neighbors.get(neighbor.vtx_id, 0)
-        freq += 1
-        self._freq_of_neighbors[neighbor.vtx_id] = freq
+        # Check whether the input edge already exists
+        if neighbor.vtx_id in self._neighbors:
+            raise IllegalArgumentError('The edge to add already exists.')
+
+        self._edges.append(new_edge)
+        self._neighbors.add(neighbor.vtx_id)
 
     def remove_edge(self, edge_to_remove):
         """
@@ -92,29 +91,24 @@ class Vertex(AbstractVertex):
                 (edge_to_remove.end2 is not self):
             raise IllegalArgumentError('The edge to remove should involve this '
                                        'vertex.')
-
-        self._edges.remove(edge_to_remove)
-
         # Find the neighbor associated with the input edge
         if edge_to_remove.end1 is self:  # endpoint2 is the neighbor.
             neighbor = edge_to_remove.end2
         else:  # endpoint1 is the neighbor.
             neighbor = edge_to_remove.end1
-        # Update the frequency of the neighbor
-        freq = self._freq_of_neighbors.get(neighbor.vtx_id)
-        if freq == 1:
-            self._freq_of_neighbors.pop(neighbor.vtx_id)
-        else:
-            freq -= 1
-            self._freq_of_neighbors[neighbor.vtx_id] = freq
+        # Check whether the input edge exists
+        if neighbor.vtx_id not in self._neighbors:
+            raise IllegalArgumentError("The edge to remove doesn't exist.")
+
+        self._edges.remove(edge_to_remove)
+        self._neighbors.remove(neighbor.vtx_id)
 
     def __repr__(self):
         """
         String representation of this vertex.
         :return: str
         """
-        return 'Vertex #%d, Its neighbors and frequencies: %s' % \
-            (self._vtx_id, self._freq_of_neighbors)
+        return 'Vertex #%d, Its neighbors: %s' % (self._vtx_id, self._neighbors)
 
 
 class UndirectedEdge(object):

@@ -24,10 +24,10 @@ class Vertex(AbstractVertex):
         :param vtx_id: int
         """
         super().__init__(vtx_id)
-        self._freq_of_emissive_neighbors = {}
         self._emissive_edges = []
-        self._freq_of_incident_neighbors = {}
+        self._emissive_neighbors = set()
         self._incident_edges = []
+        self._incident_neighbors = set()
 
     def get_emissive_edge_with_head(self, head):
         """
@@ -91,13 +91,12 @@ class Vertex(AbstractVertex):
         if new_emissive_edge.tail is not self:
             raise IllegalArgumentError('The emissive edge to add should involve'
                                        ' this vertex as the tail.')
+        # Check whether the input emissive edge already exists
+        if new_emissive_edge.head.vtx_id in self._emissive_neighbors:
+            raise IllegalArgumentError('The emissive edge already exists.')
 
         self._emissive_edges.append(new_emissive_edge)
-
-        emissive_neighbor = new_emissive_edge.head
-        freq = self._freq_of_emissive_neighbors.get(emissive_neighbor.vtx_id, 0)
-        freq += 1
-        self._freq_of_emissive_neighbors[emissive_neighbor.vtx_id] = freq
+        self._emissive_neighbors.add(new_emissive_edge.head.vtx_id)
 
     def add_incident_edge(self, new_incident_edge):
         """
@@ -113,13 +112,12 @@ class Vertex(AbstractVertex):
         if new_incident_edge.head is not self:
             raise IllegalArgumentError('The incident edge to add should involve'
                                        ' this vertex as the head.')
+        # Check whether the input incident edge already exists
+        if new_incident_edge.tail.vtx_id in self._incident_neighbors:
+            raise IllegalArgumentError('The incident edge already exists.')
 
         self._incident_edges.append(new_incident_edge)
-
-        incident_neighbor = new_incident_edge.tail
-        freq = self._freq_of_incident_neighbors.get(incident_neighbor.vtx_id, 0)
-        freq += 1
-        self._freq_of_incident_neighbors[incident_neighbor.vtx_id] = freq
+        self._incident_neighbors.add(new_incident_edge.tail.vtx_id)
 
     def remove_emissive_edge(self, emissive_edge_to_remove):
         """
@@ -135,16 +133,13 @@ class Vertex(AbstractVertex):
         if emissive_edge_to_remove.tail is not self:
             raise IllegalArgumentError('The emissive edge to remove should '
                                        'involve this vertex as the tail.')
+        # Check whether the input emissive edge exists
+        if emissive_edge_to_remove.head.vtx_id not in self._emissive_neighbors:
+            raise IllegalArgumentError("The emissive edge to remove doesn't "
+                                       "exist.")
 
         self._emissive_edges.remove(emissive_edge_to_remove)
-
-        emissive_neighbor = emissive_edge_to_remove.head
-        freq = self._freq_of_emissive_neighbors.get(emissive_neighbor.vtx_id)
-        if freq == 1:
-            self._freq_of_emissive_neighbors.pop(emissive_neighbor.vtx_id)
-        else:
-            freq -= 1
-            self._freq_of_emissive_neighbors[emissive_neighbor.vtx_id] = freq
+        self._emissive_neighbors.remove(emissive_edge_to_remove.head.vtx_id)
 
     def remove_incident_edge(self, incident_edge_to_remove):
         """
@@ -160,16 +155,13 @@ class Vertex(AbstractVertex):
         if incident_edge_to_remove.head is not self:
             raise IllegalArgumentError('The incident edge to remove should '
                                        'involve this vertex as the head.')
+        # Check whether the input incident edge exists
+        if incident_edge_to_remove.tail.vtx_id not in self._incident_neighbors:
+            raise IllegalArgumentError("The incident edge to remove doesn't "
+                                       "exist.")
 
         self._incident_edges.remove(incident_edge_to_remove)
-
-        incident_neighbor = incident_edge_to_remove.tail
-        freq = self._freq_of_incident_neighbors.get(incident_neighbor.vtx_id)
-        if freq == 1:
-            self._freq_of_incident_neighbors.pop(incident_neighbor.vtx_id)
-        else:
-            freq -= 1
-            self._freq_of_incident_neighbors[incident_neighbor.vtx_id] = freq
+        self._incident_neighbors.remove(incident_edge_to_remove.tail.vtx_id)
 
     def __repr__(self):
         """
@@ -177,10 +169,8 @@ class Vertex(AbstractVertex):
         :return: str
         """
         s = 'Vertex #%d\n' % self._vtx_id
-        s += 'Its emissive neighbors and frequencies: %s\n' % \
-             self._freq_of_emissive_neighbors
-        s += 'Its incident neighbors and frequencies: %s\n' % \
-             self._freq_of_incident_neighbors
+        s += 'Its emissive neighbors: %s\n' % self._emissive_neighbors
+        s += 'Its incident neighbors: %s\n' % self._incident_neighbors
         return s
 
     def __eq__(self, other):
