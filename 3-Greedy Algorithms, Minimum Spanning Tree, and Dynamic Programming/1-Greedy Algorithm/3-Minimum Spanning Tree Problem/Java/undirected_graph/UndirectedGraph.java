@@ -13,7 +13,7 @@ import union_find.UnionFind;
 /**
  * Adjacency list representation of a undirected graph.
  *
- * Note that parallel edges and self-loops are not allowed.
+ * Note that parallel edges are allowed, but not self-loops.
  * @author Ziang Lu
  */
 public class UndirectedGraph implements GraphInterface {

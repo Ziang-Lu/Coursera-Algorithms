@@ -1,8 +1,38 @@
 Application of "*Solve in exponential-time, but faster than brute-force way*"   => Exact algorithms
 
-### Vertex Cover Problem Variation
+### Vertex Cover Problem (Variation)
 
-#### Problem Variation
+#### Problem Definition (somewhat "complement" to maximum-weight independent set problem)
+
+Given a undirected graph $G=(V,E)$, find a minimum-size vertex cover, which is a subset of the vertices such that each edge has at least one endpoint in the subset.
+
+*(Choose a minimum-size subset of the vertices that cover all the edges)*
+
+**In general graphs, this problem is NP-complete.**
+
+<br>
+
+#### Focus on computationally tractable special cases   => Exact algorithms
+
+However, we can restrict the graph to be some **special graph (path graph, tree graph, or bipartite graph (两偶图))**.
+
+------
+
+Bipartite graph (两偶图)
+
+A graph that has no odd cycle.
+
+Equivalently, you can divide the vertices into two groups $A$ and $B$, s.t. every single edge has exactly one endpoint in $A$ and the other in $B$.
+
+i.e., There exists a cut that slices every single edge.
+
+------
+
+<br>
+
+#### Solve in exponential-time, but faster than brute-force way   => Exact algorithms
+
+**Problem Variation**
 
 Consider except for the graph, we are also given as an input of a positive integer $k$, and the goal is to check whether there exists a vertex cover that uses at most $k$ vertices.
 

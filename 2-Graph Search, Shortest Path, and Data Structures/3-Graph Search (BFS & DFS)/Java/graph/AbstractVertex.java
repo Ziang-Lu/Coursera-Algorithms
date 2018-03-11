@@ -3,7 +3,7 @@ package graph;
 /**
  * AbstractVertex class.
  *
- * Note that parallel edges are allowed, but not self-loops.
+ * Note that parallel edges and self-loops are not allowed.
  * @author Ziang Lu
  */
 public abstract class AbstractVertex {

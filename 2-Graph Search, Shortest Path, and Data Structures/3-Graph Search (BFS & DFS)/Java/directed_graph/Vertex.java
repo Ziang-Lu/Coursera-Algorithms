@@ -1,34 +1,34 @@
 package directed_graph;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.BitSet;
 
 import graph.AbstractVertex;
 
 /**
  * Vertex class.
  *
- * Note that parallel edges are allowed, but not self-loops.
+ * Note that parallel edges and self-loops are not allowed.
  * @author Ziang Lu
  */
 class Vertex extends AbstractVertex {
 
     /**
-     * Frequency of emissive neighbors.
-     */
-    private final HashMap<Integer, Integer> freqOfEmissiveNeighbors;
-    /**
      * Emissive edge of this vertex.
      */
     private final ArrayList<DirectedEdge> emissiveEdges;
     /**
-     * Frequency of incident neighbors.
+     * Emissive edges of this vertex.
      */
-    private final HashMap<Integer, Integer> freqOfIncidentNeighbors;
+    private final BitSet emissiveNeighbors;
     /**
      * Incident of this vertex.
      */
     private final ArrayList<DirectedEdge> incidentEdges;
+    /**
+     * Incident neighbors of this vertex.
+     */
+    private final BitSet incidentNeighbors;
 
     /**
      * Constructor with parameter.
@@ -36,10 +36,10 @@ class Vertex extends AbstractVertex {
      */
     Vertex(int vtxID) {
         super(vtxID);
-        freqOfEmissiveNeighbors = new HashMap<Integer, Integer>();
         emissiveEdges = new ArrayList<DirectedEdge>();
-        freqOfIncidentNeighbors = new HashMap<Integer, Integer>();
+        emissiveNeighbors = new BitSet();
         incidentEdges = new ArrayList<DirectedEdge>();
+        incidentNeighbors = new BitSet();
     }
 
     /**
@@ -111,15 +111,13 @@ class Vertex extends AbstractVertex {
         if (newEmissiveEdge.tail() != this) {
             throw new IllegalArgumentException("The emissive edge to add should involve this vertex as the tail.");
         }
+        // Check whether the input emissive edge already exists
+        if (emissiveNeighbors.get(newEmissiveEdge.head().id())) {
+            throw new IllegalArgumentException("The emissive edge to add already exists.");
+        }
 
         emissiveEdges.add(newEmissiveEdge);
-
-        // Find the emissive neighbor associated with the input emissive edge
-        Vertex emissiveNeighbor = newEmissiveEdge.head();
-        // Update the frequency of the emissive neighbor
-        Integer freq = freqOfEmissiveNeighbors.getOrDefault(emissiveNeighbor.vtxID, 0);
-        ++freq;
-        freqOfEmissiveNeighbors.put(emissiveNeighbor.vtxID, freq);
+        emissiveNeighbors.set(newEmissiveEdge.head().id());
     }
 
     /**
@@ -135,15 +133,13 @@ class Vertex extends AbstractVertex {
         if (newIncidentEdge.head() != this) {
             throw new IllegalArgumentException("The incident edge to add should involve this vertex as the head.");
         }
+        // Check whether the input incident edge already exists
+        if (incidentNeighbors.get(newIncidentEdge.tail().id())) {
+            throw new IllegalArgumentException("The incident edge to add already exists.");
+        }
 
         incidentEdges.add(newIncidentEdge);
-
-        // Find the incident neighbor associated with the input incident edge
-        Vertex incidentNeighbor = newIncidentEdge.tail();
-        // Update the frequency of the incident neighbor
-        Integer freq = freqOfIncidentNeighbors.getOrDefault(incidentNeighbor.vtxID, 0);
-        ++freq;
-        freqOfIncidentNeighbors.put(incidentNeighbor.vtxID, freq);
+        incidentNeighbors.set(newIncidentEdge.tail().id());
     }
 
     /**
@@ -159,19 +155,13 @@ class Vertex extends AbstractVertex {
         if (emissiveEdgeToRemove.tail() != this) {
             throw new IllegalArgumentException("The emissive edge to remove should involve this vertex as the tail.");
         }
+        // Check whether the input emissive edge exists
+        if (!emissiveNeighbors.get(emissiveEdgeToRemove.head().id())) {
+            throw new IllegalArgumentException("The emissive edge to remove doesn't exist.");
+        }
 
         emissiveEdges.remove(emissiveEdgeToRemove);
-
-        // Find the emissive neighbor associated with the input emissive edge
-        Vertex emissiveNeighbor = emissiveEdgeToRemove.head();
-        // Update the frequency of the emissive neighbor
-        Integer freq = freqOfEmissiveNeighbors.get(emissiveNeighbor.vtxID);
-        if (freq == 1) {
-            freqOfEmissiveNeighbors.remove(emissiveNeighbor.vtxID);
-        } else {
-            --freq;
-            freqOfEmissiveNeighbors.put(emissiveNeighbor.vtxID, freq);
-        }
+        emissiveNeighbors.clear(emissiveEdgeToRemove.head().id());
     }
 
     /**
@@ -187,27 +177,21 @@ class Vertex extends AbstractVertex {
         if (incidentEdgeToRemove.head() != this) {
             throw new IllegalArgumentException("The incident edge to remove should involve this vertex as the head.");
         }
+        // Check whether the input incident edge exists
+        if (!incidentNeighbors.get(incidentEdgeToRemove.tail().id())) {
+            throw new IllegalArgumentException("The incident edge to remove doesn't exist.");
+        }
 
         incidentEdges.remove(incidentEdgeToRemove);
-
-        // Find the incident neighbor associated with the input incident edge
-        Vertex incidentNeighbor = incidentEdgeToRemove.tail();
-        // Update the frequency of the emissive neighbor
-        Integer freq = freqOfIncidentNeighbors.get(incidentNeighbor.vtxID);
-        if (freq == 1) {
-            freqOfIncidentNeighbors.remove(incidentNeighbor.vtxID);
-        } else {
-            --freq;
-            freqOfIncidentNeighbors.put(incidentNeighbor.vtxID, freq);
-        }
+        incidentNeighbors.clear(incidentEdgeToRemove.tail().id());
     }
 
     @Override
     public String toString() {
         StringBuilder s = new StringBuilder();
         s.append("Vertex #").append(vtxID).append('\n');
-        s.append("Its emissive neighbors and frequencyes: ").append(freqOfEmissiveNeighbors).append('\n');
-        s.append("Its incident neighbors and frequencyes: ").append(freqOfIncidentNeighbors).append('\n');
+        s.append("Its emissive neighbors: ").append(emissiveNeighbors);
+        s.append("Its incident neighbors: ").append(incidentNeighbors);
         return s.toString();
     }
 

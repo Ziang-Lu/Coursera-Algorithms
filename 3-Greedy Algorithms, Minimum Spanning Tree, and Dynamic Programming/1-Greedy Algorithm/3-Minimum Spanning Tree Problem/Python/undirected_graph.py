@@ -4,7 +4,7 @@
 """
 Adjacency list representation of undirected graph.
 
-Note that parallel edges and self-loops are not allowed.
+Note that parallel edges are allowed, but not self-loops.
 """
 
 __author__ = 'Ziang Lu'
