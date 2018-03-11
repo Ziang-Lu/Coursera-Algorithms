@@ -168,6 +168,12 @@ public class WeightedIntervalScheduling {
         // Running time complexity: O(1)
     }
 
+    /**
+     * Private helper method to reconstruct the maximum-weight interval
+     * scheduling according to the optimal solution using backtracking.
+     * @param jobs jobs to schedule
+     * @return maximum-weight interval scheduling
+     */
     private LinkedList<Integer> reconstructMaxWeightIntervalScheduling(Job[] jobs) {
         LinkedList<Integer> scheduledJobs = new LinkedList<Integer>();
         int curr = jobs.length - 1;

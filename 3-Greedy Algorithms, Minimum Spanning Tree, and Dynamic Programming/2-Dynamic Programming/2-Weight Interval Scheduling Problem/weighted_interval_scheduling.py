@@ -139,6 +139,10 @@ def _jobs_overlap(job1, job2):
 
 
 def _reconstruct_max_weight_interval_scheduling(jobs, subproblems):
+    """
+    Private helper function to reconstruct the maximum-weight interval
+    scheduling according to the optimal solution using backtracking.
+    """
     scheduled_jobs = []
     curr = len(jobs) - 1
     while curr >= 1:
