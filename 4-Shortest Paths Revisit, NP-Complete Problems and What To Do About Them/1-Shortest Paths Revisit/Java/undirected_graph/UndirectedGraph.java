@@ -8,7 +8,7 @@ import graph.GraphInterface;
 /**
  * Adjacency list representation of a undirected graph.
  *
- * Note that parallel edges are allowed, but not self-loops.
+ * Note that parallel edges and self-loops are not allowed.
  * @author Ziang Lu
  */
 public class UndirectedGraph implements GraphInterface {

@@ -4,7 +4,7 @@
 """
 Adjacency list representation of undirected graph.
 
-Note that parallel edges are allowed, but not self-loops.
+Note that parallel edges and self-loops are not allowed.
 """
 
 __author__ = 'Ziang Lu'
@@ -32,8 +32,8 @@ class Vertex(AbstractVertex, UnionFindObj):
         """
         AbstractVertex.__init__(self, vtx_id)
         UnionFindObj.__init__(self)
-        self._freq_of_neighbors = {}
         self._edges = []
+        self._neighbors = set()
         self._min_cost_incident_edge = None
         self._min_incident_cost = Vertex.DEFAULT_MIN_INCIDENT_COST
 
@@ -95,18 +95,17 @@ class Vertex(AbstractVertex, UnionFindObj):
         if (new_edge.end1 is not self) and (new_edge.end2 is not self):
             raise IllegalArgumentError('The edge to add should involve this '
                                        'vertex.')
-
-        self._edges.append(new_edge)
-
         # Find the neighbor associated with the input edge
         if new_edge.end1 is self:  # endpoint2 is the neighbor.
             neighbor = new_edge.end2
         else:  # endpoint1 is the neighbor.
             neighbor = new_edge.end1
-        # Update the frequency of the neighbor
-        freq = self._freq_of_neighbors.get(neighbor.vtx_id, 0)
-        freq += 1
-        self._freq_of_neighbors[neighbor.vtx_id] = freq
+        # Check whether the input edge already exists
+        if neighbor.vtx_id in self._neighbors:
+            raise IllegalArgumentError('The edge to add already exists.')
+
+        self._edges.append(new_edge)
+        self._neighbors.add(neighbor.vtx_id)
 
     def remove_edge(self, edge_to_remove):
         """
@@ -122,21 +121,17 @@ class Vertex(AbstractVertex, UnionFindObj):
                 (edge_to_remove.end2 is not self):
             raise IllegalArgumentError('The edge to remove should involve this '
                                        'vertex.')
-
-        self._edges.remove(edge_to_remove)
-
         # Find the neighbor associated with the input edge
         if edge_to_remove.end1 is self:  # endpoint2 is the neighbor.
             neighbor = edge_to_remove.end2
         else:  # endpoint1 is the neighbor.
             neighbor = edge_to_remove.end1
-        # Update the frequency of the neighbor
-        freq = self._freq_of_neighbors.get(neighbor.vtx_id)
-        if freq == 1:
-            self._freq_of_neighbors.pop(neighbor.vtx_id)
-        else:
-            freq -= 1
-            self._freq_of_neighbors[neighbor.vtx_id] = freq
+        # Check whether the input edge exists
+        if neighbor.vtx_id not in self._neighbors:
+            raise IllegalArgumentError("The edge to remove doesn't exist.")
+
+        self._edges.remove(edge_to_remove)
+        self._neighbors.remove(neighbor.vtx_id)
 
     @min_cost_incident_edge.setter
     def min_cost_incident_edge(self, min_cost_incident_edge):
@@ -164,8 +159,7 @@ class Vertex(AbstractVertex, UnionFindObj):
         String representation of this vertex.
         :return: str
         """
-        return 'Vertex #%d, Its neighbors and frequencies: %s' % \
-            (self._vtx_id, self._freq_of_neighbors)
+        return 'Vertex #%d, Its neighbors: %s' % (self._vtx_id, self._neighbors)
 
 
 @total_ordering

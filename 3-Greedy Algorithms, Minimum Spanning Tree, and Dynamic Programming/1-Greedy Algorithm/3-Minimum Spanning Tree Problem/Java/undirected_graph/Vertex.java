@@ -1,7 +1,7 @@
 package undirected_graph;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.BitSet;
 
 import graph.AbstractVertex;
 import union_find.UnionFindObj;
@@ -9,7 +9,7 @@ import union_find.UnionFindObj;
 /**
  * Vertex class.
  *
- * Note that parallel edges are allowed, but not self-loops.
+ * Note that parallel edges and self-loops are not allowed.
  * @author Ziang Lu
  */
 class Vertex extends AbstractVertex implements Comparable<Vertex>, UnionFindObj {
@@ -20,13 +20,13 @@ class Vertex extends AbstractVertex implements Comparable<Vertex>, UnionFindObj 
     private static final int DEFAULT_MIN_INCIDENT_COST = Integer.MAX_VALUE;
 
     /**
-     * Frequency of neighbors.
-     */
-    private final HashMap<Integer, Integer> freqOfNeighbors;
-    /**
      * Edges of this vertex.
      */
     private final ArrayList<UndirectedEdge> edges;
+    /**
+     * Neighbors of this vertex.
+     */
+    private final BitSet neighbors;
     /**
      * Reference to the incident edge with minimum cost from the spanned vertices (X).
      */
@@ -46,8 +46,8 @@ class Vertex extends AbstractVertex implements Comparable<Vertex>, UnionFindObj 
      */
     Vertex(int vtxID) {
         super(vtxID);
-        freqOfNeighbors = new HashMap<Integer, Integer>();
         edges = new ArrayList<UndirectedEdge>();
+        neighbors = new BitSet();
         minCostIncidentEdge = null;
         minIncidentCost = DEFAULT_MIN_INCIDENT_COST;
         leader = this;
@@ -116,9 +116,6 @@ class Vertex extends AbstractVertex implements Comparable<Vertex>, UnionFindObj 
         if ((newEdge.end1() != this) && (newEdge.end2() != this)) {
             throw new IllegalArgumentException("The edge to add should involve this vertex.");
         }
-
-        edges.add(newEdge);
-
         // Find the neighbor associated with the input edge
         Vertex neighbor = null;
         if (newEdge.end1() == this) { // endpoint2 is the neighbor.
@@ -126,10 +123,13 @@ class Vertex extends AbstractVertex implements Comparable<Vertex>, UnionFindObj 
         } else { // endpoint1 is the neighbor.
             neighbor = newEdge.end1();
         }
-        // Update the frequency of the neighbor
-        Integer freq = freqOfNeighbors.getOrDefault(neighbor.vtxID, 0);
-        ++freq;
-        freqOfNeighbors.put(neighbor.vtxID, freq);
+        // Check whether the input edge already exists
+        if (neighbors.get(neighbor.id())) {
+            throw new IllegalArgumentException("The edge to add already exists.");
+        }
+
+        edges.add(newEdge);
+        neighbors.set(neighbor.id());
     }
 
     /**
@@ -145,9 +145,6 @@ class Vertex extends AbstractVertex implements Comparable<Vertex>, UnionFindObj 
         if ((edgeToRemove.end1()!= this) && (edgeToRemove.end2() != this)) {
             throw new IllegalArgumentException("The edge to remove should involve this vertex.");
         }
-
-        edges.remove(edgeToRemove);
-
         // Find the neighbor associated with the input edge
         Vertex neighbor = null;
         if (edgeToRemove.end1() == this) { // endpoint2 is the neighbor.
@@ -155,14 +152,13 @@ class Vertex extends AbstractVertex implements Comparable<Vertex>, UnionFindObj 
         } else { // endpoint1 is the neighbor.
             neighbor = edgeToRemove.end1();
         }
-        // Update the frequency of the neighbor
-        Integer freq = freqOfNeighbors.get(neighbor.vtxID);
-        if (freq == 1) {
-            freqOfNeighbors.remove(neighbor.vtxID);
-        } else {
-            --freq;
-            freqOfNeighbors.put(neighbor.vtxID, freq);
+        // Check whether the input edge exists
+        if (!neighbors.get(neighbor.id())) {
+            throw new IllegalArgumentException("The edge to remove doesn't exists.");
         }
+
+        edges.remove(edgeToRemove);
+        neighbors.clear(neighbor.id());
     }
 
     /**
@@ -198,7 +194,7 @@ class Vertex extends AbstractVertex implements Comparable<Vertex>, UnionFindObj 
 
     @Override
     public String toString() {
-        return String.format("Vertex #%d, Its neighbors and frequencies: %s", vtxID, freqOfNeighbors);
+        return String.format("Vertex #%d, Its neighbors: %s", vtxID, neighbors);
     }
 
 }
