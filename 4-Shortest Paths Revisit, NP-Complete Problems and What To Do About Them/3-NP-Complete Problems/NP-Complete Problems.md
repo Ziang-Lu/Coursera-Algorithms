@@ -129,7 +129,7 @@ But, how to check whether a problem $\Pi$ is NP-complete?
       * e.g., *Refer to "**Knapsack Problem with Greedy-Based Heuristic**"*
    2. Dynamic programming
       * e.g., *Refer to "**Knapsack Problem with Dynamic Programming-Based Heuristic**"*
-   3. Local search
+   3. Local search (局部搜索)
       * e.g., *Refer to "**Maximum Cut Problem**"*
 
 
