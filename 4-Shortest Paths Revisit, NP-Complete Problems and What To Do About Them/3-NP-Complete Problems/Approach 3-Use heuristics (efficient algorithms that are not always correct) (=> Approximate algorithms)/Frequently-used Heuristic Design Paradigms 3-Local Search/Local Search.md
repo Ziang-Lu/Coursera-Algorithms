@@ -14,11 +14,11 @@ For each $x \in X$, we need to specify which $y \in X$ are its "neighbors".
 
 e.g.,
 
+In the <u>Maximum Cut Problem</u>, $X$ = cuts of the graph; $x$ and $y$ are neighboring cuts <=> $x$ and $y$ differ by moving one vertex $v$.
+
 In the <u>Constraint Satisfaction Problem</u>, $X$ = possible assignments of the variables; $x$ and $y$ are neighboring assignments <=> $x$ and $y$ differ by only one variable.
 
 In the <u>Traveling Salesman Problem</u>, $X$ = TSP tours; $x$ and $y$ are neighboring TSP tours <=> $x$ and $y$ differ by only two edges (by swapping a pair of consecutive cities).
-
-In the <u>Maximum Cut Problem</u>, $X$ = cuts of the graph; $x$ and $y$ are neighboring cuts <=> $x$ and $y$ differ by moving one vertex $v$.
 
 ***
 
