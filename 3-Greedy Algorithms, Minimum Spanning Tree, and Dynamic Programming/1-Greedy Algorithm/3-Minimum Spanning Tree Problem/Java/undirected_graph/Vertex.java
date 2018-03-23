@@ -46,7 +46,7 @@ class Vertex extends AbstractVertex implements Comparable<Vertex>, UnionFindObj 
      */
     Vertex(int vtxID) {
         super(vtxID);
-        edges = new ArrayList<UndirectedEdge>();
+        edges = new ArrayList<>();
         neighbors = new BitSet();
         minCostIncidentEdge = null;
         minIncidentCost = DEFAULT_MIN_INCIDENT_COST;

@@ -27,8 +27,8 @@ public class UndirectedGraph implements GraphInterface {
      * Default constructor.
      */
     public UndirectedGraph() {
-        vtxList = new ArrayList<Vertex>();
-        edgeList = new ArrayList<UndirectedEdge>();
+        vtxList = new ArrayList<>();
+        edgeList = new ArrayList<>();
     }
 
     @Override
@@ -202,7 +202,7 @@ public class UndirectedGraph implements GraphInterface {
      * @return next available vertex ID
      */
     private int getNextVtxID() {
-        ArrayList<Integer> vtxIDs = new ArrayList<Integer>();
+        ArrayList<Integer> vtxIDs = new ArrayList<>();
         for (Vertex vtx : vtxList) {
             vtxIDs.add(vtx.id());
         }

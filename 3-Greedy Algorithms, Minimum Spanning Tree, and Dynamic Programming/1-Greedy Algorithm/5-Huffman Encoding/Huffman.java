@@ -95,7 +95,7 @@ public class Huffman {
         HashMap<Character, Integer> freqOfChars = getFreqOfChars(s);
 
         // Create a Node heap from the map   [O(nlog n)]
-        PriorityQueue<Node> heap = new PriorityQueue<Node>();
+        PriorityQueue<Node> heap = new PriorityQueue<>();
         for (Map.Entry<Character, Integer> entry : freqOfChars.entrySet()) {
             heap.offer(new Node(entry.getKey(), entry.getValue()));
         }
@@ -114,7 +114,7 @@ public class Huffman {
         huffmanTreeRoot = heap.poll();
 
         // Create the encoding   [O(n)]
-        encodingMap = new HashMap<Character, String>();
+        encodingMap = new HashMap<>();
         createEncoding(huffmanTreeRoot, new StringBuilder());
         // Overall running time complexity: O(nlog n)
     }
@@ -126,7 +126,7 @@ public class Huffman {
      * @return map created map
      */
     private HashMap<Character, Integer> getFreqOfChars(String s) {
-        HashMap<Character, Integer> freqOfChars = new HashMap<Character, Integer>();
+        HashMap<Character, Integer> freqOfChars = new HashMap<>();
         for (char c : s.toCharArray()) {
             Integer freq = freqOfChars.getOrDefault(c, 0);
             ++freq;
@@ -172,7 +172,7 @@ public class Huffman {
         HashMap<Character, Integer> freqOfChars = getFreqOfChars(s);
 
         // Create a Node array and sort it   [O(nlog n)]
-        ArrayList<Node> nodes = new ArrayList<Node>();
+        ArrayList<Node> nodes = new ArrayList<>();
         for (Map.Entry<Character, Integer> entry : freqOfChars.entrySet()) {
             nodes.add(new Node(entry.getKey(), entry.getValue(), null, null));
         }
@@ -181,7 +181,7 @@ public class Huffman {
         // Construct the Huffman tree using two queues   [O(n)]
         // "primitives" contains the nodes with the original character keys, while "merged" contains the merged nodes.
         // According to the implementation, both of the queues are kept sorted.
-        ArrayDeque<Node> primitives = new ArrayDeque<Node>(nodes), merged = new ArrayDeque<Node>();
+        ArrayDeque<Node> primitives = new ArrayDeque<>(nodes), merged = new ArrayDeque<>();
         while ((primitives.size() != 0) || (merged.size() != 1)) {
             // Take out two nodes with minimum frequency from the two queues
             Node minNode1 = getMinFreqNode(primitives, merged);
@@ -195,7 +195,7 @@ public class Huffman {
         huffmanTreeRoot = merged.pop();
 
         // Create the encoding [O(n)]
-        encodingMap = new HashMap<Character, String>();
+        encodingMap = new HashMap<>();
         createEncoding(huffmanTreeRoot, new StringBuilder());
         // Overall running time complexity: O(nlog n)
     }

@@ -175,7 +175,7 @@ public class WeightedIntervalScheduling {
      * @return maximum-weight interval scheduling
      */
     private LinkedList<Integer> reconstructMaxWeightIntervalScheduling(Job[] jobs) {
-        LinkedList<Integer> scheduledJobs = new LinkedList<Integer>();
+        LinkedList<Integer> scheduledJobs = new LinkedList<>();
         int curr = jobs.length - 1;
         while (curr >= 1) {
             double resultWithoutCurr = subproblems[curr - 1];

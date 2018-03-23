@@ -74,7 +74,7 @@ public class LongestCommonSubsequenceFinder {
      * @return longest common subsequence
      */
     private LinkedList<Character> reconstructLongestCommonSubsequence(String x, String y) {
-        LinkedList<Character> lcs = new LinkedList<Character>();
+        LinkedList<Character> lcs = new LinkedList<>();
         int i = x.length(), j = y.length();
         while ((i >= 1) && (j >= 1)) {
             char xCurr = x.charAt(i - 1), yCurr = y.charAt(j - 1);

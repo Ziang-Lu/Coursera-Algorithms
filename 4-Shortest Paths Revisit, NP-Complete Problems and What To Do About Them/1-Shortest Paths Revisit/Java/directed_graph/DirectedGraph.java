@@ -38,8 +38,8 @@ public class DirectedGraph implements GraphInterface {
      * Default constructor.
      */
     public DirectedGraph() {
-        vtxList = new ArrayList<Vertex>();
-        edgeList = new ArrayList<DirectedEdge>();
+        vtxList = new ArrayList<>();
+        edgeList = new ArrayList<>();
     }
 
     @Override
@@ -85,7 +85,7 @@ public class DirectedGraph implements GraphInterface {
      */
     private void removeVtx(Vertex vtxToRemove) {
         // Remove all the edges associated with the vertex to remove
-        ArrayList<DirectedEdge> edgesToRemove = new ArrayList<DirectedEdge>();
+        ArrayList<DirectedEdge> edgesToRemove = new ArrayList<>();
         edgesToRemove.addAll(vtxToRemove.emissiveEdges());
         edgesToRemove.addAll(vtxToRemove.incidentEdges());
         while (edgesToRemove.size() > 0) {
@@ -244,9 +244,9 @@ public class DirectedGraph implements GraphInterface {
      * @return shortest paths
      */
     private ArrayList<LinkedList<Integer>> reconstructShortestPaths() {
-        ArrayList<LinkedList<Integer>> shortestPaths = new ArrayList<LinkedList<Integer>>();
+        ArrayList<LinkedList<Integer>> shortestPaths = new ArrayList<>();
         for (Vertex vtx : vtxList) {
-            LinkedList<Integer> shortestPath = new LinkedList<Integer>();
+            LinkedList<Integer> shortestPath = new LinkedList<>();
             shortestPath.add(vtx.id());
             Vertex currVtx = vtx;
             int budget = vtxList.size() - 1;
@@ -351,9 +351,9 @@ public class DirectedGraph implements GraphInterface {
      * @return shortest paths
      */
     private ArrayList<LinkedList<Integer>> reconstructShortestPathsOptimized(Vertex[] penultimateVtxs) {
-        ArrayList<LinkedList<Integer>> shortestPaths = new ArrayList<LinkedList<Integer>>();
+        ArrayList<LinkedList<Integer>> shortestPaths = new ArrayList<>();
         for (Vertex vtx : vtxList) {
-            LinkedList<Integer> shortestPath = new LinkedList<Integer>();
+            LinkedList<Integer> shortestPath = new LinkedList<>();
             Vertex currVtx = vtx;
             while (currVtx != null) {
                 shortestPath.addFirst(currVtx.id());
@@ -437,9 +437,9 @@ public class DirectedGraph implements GraphInterface {
      * @return destination-driven shortest paths
      */
     private ArrayList<LinkedList<Integer>> reconstructShortestPathsDestDriven() {
-        ArrayList<LinkedList<Integer>> shortestPaths = new ArrayList<LinkedList<Integer>>();
+        ArrayList<LinkedList<Integer>> shortestPaths = new ArrayList<>();
         for (Vertex vtx : vtxList) {
-            LinkedList<Integer> shortestPath = new LinkedList<Integer>();
+            LinkedList<Integer> shortestPath = new LinkedList<>();
             shortestPath.add(vtx.id());
             Vertex currVtx = vtx;
             int budget = vtxList.size() - 1;
@@ -543,9 +543,9 @@ public class DirectedGraph implements GraphInterface {
      * @return destination-driven shortest paths
      */
     private ArrayList<LinkedList<Integer>> reconstructShortestPathsDestDrivenOptimized(Vertex[] nextVtxs) {
-        ArrayList<LinkedList<Integer>> shortestPaths = new ArrayList<LinkedList<Integer>>();
+        ArrayList<LinkedList<Integer>> shortestPaths = new ArrayList<>();
         for (Vertex vtx : vtxList) {
-            LinkedList<Integer> shortestPath = new LinkedList<Integer>();
+            LinkedList<Integer> shortestPath = new LinkedList<>();
             Vertex currVtx = vtx;
             while (currVtx != null) {
                 shortestPath.add(currVtx.id());

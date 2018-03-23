@@ -38,8 +38,8 @@ public class UndirectedGraph implements GraphInterface {
      * Default constructor.
      */
     public UndirectedGraph() {
-        vtxList = new ArrayList<Vertex>();
-        edgeList = new ArrayList<UndirectedEdge>();
+        vtxList = new ArrayList<>();
+        edgeList = new ArrayList<>();
     }
 
     @Override

@@ -26,8 +26,8 @@ public class DirectedGraph implements GraphInterface {
      * Default constructor.
      */
     public DirectedGraph() {
-        vtxList = new ArrayList<Vertex>();
-        edgeList = new ArrayList<DirectedEdge>();
+        vtxList = new ArrayList<>();
+        edgeList = new ArrayList<>();
     }
 
     @Override
@@ -172,10 +172,10 @@ public class DirectedGraph implements GraphInterface {
         // 1. Initialize G as s explored and other vertices unexplored
         srcVtx.setAsExplored();
         // 2. Let Q be the queue of vertices initialized with s
-        ArrayDeque<Vertex> queue = new ArrayDeque<Vertex>();
+        ArrayDeque<Vertex> queue = new ArrayDeque<>();
         queue.offer(srcVtx);
 
-        ArrayList<Integer> findableVtxIDs = new ArrayList<Integer>();
+        ArrayList<Integer> findableVtxIDs = new ArrayList<>();
         findableVtxIDs.add(srcVtxID);
 
         // 3. While Q is not empty
@@ -218,7 +218,7 @@ public class DirectedGraph implements GraphInterface {
         // 1. Initialize G as s explored and other vertices unexplored
         srcVtx.setAsExplored();
         // 2. Let Q be the queue of vertices initialized with s
-        ArrayDeque<Vertex> queue = new ArrayDeque<Vertex>();
+        ArrayDeque<Vertex> queue = new ArrayDeque<>();
         queue.offer(srcVtx);
         // 3. While Q is not empty
         while (!queue.isEmpty()) {
@@ -269,7 +269,7 @@ public class DirectedGraph implements GraphInterface {
         // Initialize G as s explored and other vertices unexplored
         srcVtx.setAsExplored();
 
-        ArrayList<Integer> findableVtxIDs = new ArrayList<Integer>();
+        ArrayList<Integer> findableVtxIDs = new ArrayList<>();
         findableVtxIDs.add(srcVtxID);
 
         dfsHelper(srcVtx, findableVtxIDs);
@@ -339,7 +339,7 @@ public class DirectedGraph implements GraphInterface {
      * @return vertices sorted by finishing time
      */
     private ArrayList<Vertex> getVtxsSortedByFinishTime() {
-        ArrayList<Vertex> vtxsSortedByFinishTime = new ArrayList<Vertex>();
+        ArrayList<Vertex> vtxsSortedByFinishTime = new ArrayList<>();
         // For every vertex v
         for (Vertex vtx : vtxList) {
             // If v is unexplored

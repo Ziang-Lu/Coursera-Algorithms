@@ -38,8 +38,8 @@ public class UndirectedGraph implements GraphInterface {
      * Default constructor.
      */
     public UndirectedGraph() {
-        vtxList = new ArrayList<Vertex>();
-        edgeList = new ArrayList<UndirectedEdge>();
+        vtxList = new ArrayList<>();
+        edgeList = new ArrayList<>();
     }
 
     @Override
@@ -256,9 +256,9 @@ public class UndirectedGraph implements GraphInterface {
      * @return shortest paths
      */
     private ArrayList<LinkedList<Integer>> reconstructShortestPaths() {
-        ArrayList<LinkedList<Integer>> shortestPaths = new ArrayList<LinkedList<Integer>>();
+        ArrayList<LinkedList<Integer>> shortestPaths = new ArrayList<>();
         for (Vertex vtx : vtxList) {
-            LinkedList<Integer> shortestPath = new LinkedList<Integer>();
+            LinkedList<Integer> shortestPath = new LinkedList<>();
             shortestPath.add(vtx.id());
             Vertex currVtx = vtx;
             int budget = vtxList.size() - 1;
@@ -381,9 +381,9 @@ public class UndirectedGraph implements GraphInterface {
      * @return shortest paths
      */
     private ArrayList<LinkedList<Integer>> reconstructShortestPathsOptimized(Vertex[] penultimateVtxs) {
-        ArrayList<LinkedList<Integer>> shortestPaths = new ArrayList<LinkedList<Integer>>();
+        ArrayList<LinkedList<Integer>> shortestPaths = new ArrayList<>();
         for (Vertex vtx : vtxList) {
-            LinkedList<Integer> shortestPath = new LinkedList<Integer>();
+            LinkedList<Integer> shortestPath = new LinkedList<>();
             Vertex currVtx = vtx;
             while (currVtx != null) {
                 shortestPath.addFirst(currVtx.id());
@@ -479,9 +479,9 @@ public class UndirectedGraph implements GraphInterface {
      * @return destination-driven shortest paths
      */
     private ArrayList<LinkedList<Integer>> reconstructShortestPathsDestDriven() {
-        ArrayList<LinkedList<Integer>> shortestPaths = new ArrayList<LinkedList<Integer>>();
+        ArrayList<LinkedList<Integer>> shortestPaths = new ArrayList<>();
         for (Vertex vtx : vtxList) {
-            LinkedList<Integer> shortestPath = new LinkedList<Integer>();
+            LinkedList<Integer> shortestPath = new LinkedList<>();
             shortestPath.add(vtx.id());
             Vertex currVtx = vtx;
             int budget = vtxList.size() - 1;
@@ -603,9 +603,9 @@ public class UndirectedGraph implements GraphInterface {
      * @return destination-driven shortest paths
      */
     private ArrayList<LinkedList<Integer>> reconstructShortestPathsDestDrivenOptimized(Vertex[] nextVtxs) {
-        ArrayList<LinkedList<Integer>> shortestPaths = new ArrayList<LinkedList<Integer>>();
+        ArrayList<LinkedList<Integer>> shortestPaths = new ArrayList<>();
         for (Vertex vtx : vtxList) {
-            LinkedList<Integer> shortestPath = new LinkedList<Integer>();
+            LinkedList<Integer> shortestPath = new LinkedList<>();
             Vertex currVtx = vtx;
             while (currVtx != null) {
                 shortestPath.add(currVtx.id());

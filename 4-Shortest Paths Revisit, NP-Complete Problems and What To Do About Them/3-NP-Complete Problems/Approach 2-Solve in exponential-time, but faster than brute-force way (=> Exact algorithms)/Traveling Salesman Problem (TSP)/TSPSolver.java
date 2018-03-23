@@ -45,7 +45,7 @@ public class TSPSolver {
         int n = cities.length, s = 0;
 
         // Initialization
-        ArrayList<HashMap<String, Float>> A = new ArrayList<HashMap<String, Float>>();
+        ArrayList<HashMap<String, Float>> A = new ArrayList<>();
         // Convert the city subset that contains only the source city to a BitSet
         StringBuilder srcS = new StringBuilder();
         for (int v = 0; v < n; ++v) {
@@ -53,7 +53,7 @@ public class TSPSolver {
         }
         srcS.setCharAt(s, '1');
         for (int v = 0; v < n; ++v) {
-            HashMap<String, Float> shortestPathLenths = new HashMap<String, Float>();
+            HashMap<String, Float> shortestPathLenths = new HashMap<>();
             if (v == s) {
                 shortestPathLenths.put(srcS.toString(), (float) 0.0);
             } else {
@@ -140,7 +140,7 @@ public class TSPSolver {
      * @return combinations from 0 to (n - 1) with k numbers
      */
     private ArrayList<HashSet<Integer>> combinations(int n, int k) {
-        ArrayList<HashSet<Integer>> combs = new ArrayList<HashSet<Integer>>();
+        ArrayList<HashSet<Integer>> combs = new ArrayList<>();
         combinationsHelper(n, 0, k, combs, new HashSet<Integer>());
         return combs;
         // Running time complexity: O(n^k)
@@ -164,7 +164,7 @@ public class TSPSolver {
         }
         // Base case 2: Have to add all the remaining numbers
         if ((n - i) <= budget) {
-            HashSet<Integer> combSoFarCopy = new HashSet<Integer>(combSoFar);
+            HashSet<Integer> combSoFarCopy = new HashSet<>(combSoFar);
             for (int j = i; j < n; ++j) {
                 combSoFarCopy.add(j);
             }
@@ -242,14 +242,14 @@ public class TSPSolver {
 
         // Initialization
         // Space optimization: We only keep track of the subproblem solutions in the previous out-most iteration.
-        ArrayList<HashMap<String, Float>> prevMSubproblems = new ArrayList<HashMap<String, Float>>();
+        ArrayList<HashMap<String, Float>> prevMSubproblems = new ArrayList<>();
         StringBuilder srcS = new StringBuilder();
         for (int v = 0; v < n; ++v) {
             srcS.append('0');
         }
         srcS.setCharAt(s, '1');
         for (int v = 0; v < n; ++v) {
-            HashMap<String, Float> shortestPathLenths = new HashMap<String, Float>();
+            HashMap<String, Float> shortestPathLenths = new HashMap<>();
             if (v == s) {
                 shortestPathLenths.put(srcS.toString(), (float) 0.0);
             } else {
@@ -261,7 +261,7 @@ public class TSPSolver {
         // Bottom-up calculation
         for (int m = 2; m <= n; ++m) {
             // Initialize the subproblems of size-m subsets
-            ArrayList<HashMap<String, Float>> currMSubproblems = new ArrayList<HashMap<String, Float>>();
+            ArrayList<HashMap<String, Float>> currMSubproblems = new ArrayList<>();
             for (int v = 0; v < n; ++v) {
                 currMSubproblems.add(new HashMap<String, Float>());
             }

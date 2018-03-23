@@ -1,4 +1,4 @@
-p/**
+/**
  * Select & Rank problem:
  * Given the ranking of a key in the BST, find the key.
  * Given a key in the BST, find its ranking.
@@ -207,7 +207,7 @@ public class AugmentedBST implements BSTInterface {
     }
 
     /**
-     * Returns the ranking of the given key in the BST. 
+     * Returns the ranking of the given key in the BST.
      * @param key given key
      * @return ranking if found, -1 if not found
      */

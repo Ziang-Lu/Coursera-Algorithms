@@ -36,10 +36,10 @@ class Vertex extends AbstractVertex {
      */
     Vertex(int vtxID) {
         super(vtxID);
-        freqOfEmissiveNeighbors = new HashMap<Integer, Integer>();
-        emissiveEdges = new ArrayList<DirectedEdge>();
-        freqOfIncidentNeighbors = new HashMap<Integer, Integer>();
-        incidentEdges = new ArrayList<DirectedEdge>();
+        freqOfEmissiveNeighbors = new HashMap<>();
+        emissiveEdges = new ArrayList<>();
+        freqOfIncidentNeighbors = new HashMap<>();
+        incidentEdges = new ArrayList<>();
     }
 
     /**

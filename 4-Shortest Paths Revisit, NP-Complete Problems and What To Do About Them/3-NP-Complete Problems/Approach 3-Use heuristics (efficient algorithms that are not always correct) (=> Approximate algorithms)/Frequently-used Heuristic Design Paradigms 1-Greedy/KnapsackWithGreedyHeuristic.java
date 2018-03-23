@@ -143,7 +143,7 @@ public class KnapsackWithGreedyHeuristic {
      */
     private HashSet<Integer> greedyPacking(Item[] items, int cap, Comparator<Item> comparator) {
         Arrays.sort(items, comparator);
-        HashSet<Integer> includedItems = new HashSet<Integer>();
+        HashSet<Integer> includedItems = new HashSet<>();
         int totalWeight = 0;
         for (int i = 0; i < items.length; ++i) {
             if ((totalWeight + items[i].getWeight()) > cap) {

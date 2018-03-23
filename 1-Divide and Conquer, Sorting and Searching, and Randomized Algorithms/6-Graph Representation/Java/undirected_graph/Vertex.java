@@ -28,8 +28,8 @@ class Vertex extends AbstractVertex {
      */
     Vertex(int vtxID) {
         super(vtxID);
-        freqOfNeighbors = new HashMap<Integer, Integer>();
-        edges = new ArrayList<UndirectedEdge>();
+        freqOfNeighbors = new HashMap<>();
+        edges = new ArrayList<>();
     }
 
     /**

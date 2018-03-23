@@ -37,8 +37,8 @@ public class DirectedGraph implements GraphInterface {
      * Default constructor.
      */
     public DirectedGraph() {
-        vtxList = new ArrayList<Vertex>();
-        edgeList = new ArrayList<DirectedEdge>();
+        vtxList = new ArrayList<>();
+        edgeList = new ArrayList<>();
     }
 
     @Override
@@ -84,7 +84,7 @@ public class DirectedGraph implements GraphInterface {
      */
     private void removeVtx(Vertex vtxToRemove) {
         // Remove all the edges associated with the vertex to remove
-        ArrayList<DirectedEdge> edgesToRemove = new ArrayList<DirectedEdge>();
+        ArrayList<DirectedEdge> edgesToRemove = new ArrayList<>();
         edgesToRemove.addAll(vtxToRemove.emissiveEdges());
         edgesToRemove.addAll(vtxToRemove.incidentEdges());
         while (edgesToRemove.size() > 0) {

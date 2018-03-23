@@ -26,8 +26,8 @@ public class UndirectedGraph implements GraphInterface {
      * Default constructor.
      */
     public UndirectedGraph() {
-        vtxList = new ArrayList<Vertex>();
-        edgeList = new ArrayList<UndirectedEdge>();
+        vtxList = new ArrayList<>();
+        edgeList = new ArrayList<>();
     }
 
     @Override
@@ -172,10 +172,10 @@ public class UndirectedGraph implements GraphInterface {
         // 1. Initialize G as s explored and other vertices unexplored
         srcVtx.setAsExplored();
         // 2. Let Q be the queue of vertices initialized with s
-        ArrayDeque<Vertex> queue = new ArrayDeque<Vertex>();
+        ArrayDeque<Vertex> queue = new ArrayDeque<>();
         queue.offer(srcVtx);
 
-        ArrayList<Integer> findableVtxIDs = new ArrayList<Integer>();
+        ArrayList<Integer> findableVtxIDs = new ArrayList<>();
         findableVtxIDs.add(srcVtxID);
 
         // 3. While Q is not empty
@@ -225,7 +225,7 @@ public class UndirectedGraph implements GraphInterface {
         // 1. Initialize G as s explored and other vertices unexplored
         srcVtx.setAsExplored();
         // 2. Let Q be the queue of vertices initialized with s
-        ArrayDeque<Vertex> queue = new ArrayDeque<Vertex>();
+        ArrayDeque<Vertex> queue = new ArrayDeque<>();
         queue.offer(srcVtx);
         // 3. While Q is not empty
         while (!queue.isEmpty()) {
@@ -262,7 +262,7 @@ public class UndirectedGraph implements GraphInterface {
     @Override
     public int numOfConnectedComponentsWithBFS() {
         // Undirected connectivity
-        ArrayList<ArrayList<Integer>> components = new ArrayList<ArrayList<Integer>>();
+        ArrayList<ArrayList<Integer>> components = new ArrayList<>();
         for (Vertex vtx : vtxList) {
             // If v is unexplored (i.e., not explored from some previous BFS)
             if (!vtx.explored()) {
@@ -290,7 +290,7 @@ public class UndirectedGraph implements GraphInterface {
         // Initialize G as s explored and other vertices unexplored
         srcVtx.setAsExplored();
 
-        ArrayList<Integer> findableVtxIDs = new ArrayList<Integer>();
+        ArrayList<Integer> findableVtxIDs = new ArrayList<>();
         findableVtxIDs.add(srcVtxID);
 
         dfsHelper(srcVtx, findableVtxIDs);
@@ -330,7 +330,7 @@ public class UndirectedGraph implements GraphInterface {
     @Override
     public int numOfConnectedComponentsWithDFS() {
         // Undirected connectivity
-        ArrayList<ArrayList<Integer>> components = new ArrayList<ArrayList<Integer>>();
+        ArrayList<ArrayList<Integer>> components = new ArrayList<>();
         // For every vertex v
         for (Vertex vtx : vtxList) {
             // If v is unexplored (i.e., not explored from some previous DFS)

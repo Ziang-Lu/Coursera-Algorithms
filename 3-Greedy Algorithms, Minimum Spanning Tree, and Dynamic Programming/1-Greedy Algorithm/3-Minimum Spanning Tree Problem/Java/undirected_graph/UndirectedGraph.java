@@ -31,8 +31,8 @@ public class UndirectedGraph implements GraphInterface {
      * Default constructor.
      */
     public UndirectedGraph() {
-        vtxList = new ArrayList<Vertex>();
-        edgeList = new ArrayList<UndirectedEdge>();
+        vtxList = new ArrayList<>();
+        edgeList = new ArrayList<>();
     }
 
     @Override
@@ -180,10 +180,10 @@ public class UndirectedGraph implements GraphInterface {
         //    current spanning tree
         BitSet spanned = new BitSet();
         spanned.set(srcVtx.id());
-        ArrayList<UndirectedEdge> currSpanningTree = new ArrayList<UndirectedEdge>();
+        ArrayList<UndirectedEdge> currSpanningTree = new ArrayList<>();
 
         // 3. Create a heap containing all the edges with one endpoint in X (the set) and the other in (V-X)
-        PriorityQueue<UndirectedEdge> crossingEdges = new PriorityQueue<UndirectedEdge>(srcVtx.edges());
+        PriorityQueue<UndirectedEdge> crossingEdges = new PriorityQueue<>(srcVtx.edges());
 
         // 4. While X != V
         while (spanned.cardinality() < vtxList.size()) {
@@ -250,10 +250,10 @@ public class UndirectedGraph implements GraphInterface {
             neighbor.setMinCostIncidentEdge(edge);
             neighbor.setMinIncidentCost(edge.cost());
         }
-        ArrayList<UndirectedEdge> currSpanningTree = new ArrayList<UndirectedEdge>();
+        ArrayList<UndirectedEdge> currSpanningTree = new ArrayList<>();
 
         // 3. Create a heap containing all the vertices not in X (V-X)
-        PriorityQueue<Vertex> vtxsToProcess = new PriorityQueue<Vertex>(vtxList);
+        PriorityQueue<Vertex> vtxsToProcess = new PriorityQueue<>(vtxList);
 
         // 4. While X != V
         while (spanned.cardinality() < vtxList.size()) {
@@ -309,11 +309,11 @@ public class UndirectedGraph implements GraphInterface {
      */
     public double kruskalMSTStraightforward() {
         // 1. Sort the edges in order of increasing cost   [O(mlog m)]
-        ArrayList<UndirectedEdge> edges = new ArrayList<UndirectedEdge>(edgeList);
+        ArrayList<UndirectedEdge> edges = new ArrayList<>(edgeList);
         Collections.sort(edges);
 
         // 2. Initialize T = {empty}, which is the current spanning tree
-        ArrayList<UndirectedEdge> currSpanningTree = new ArrayList<UndirectedEdge>();
+        ArrayList<UndirectedEdge> currSpanningTree = new ArrayList<>();
 
         // 3. For each edge e = (v, w) in the sorted edge list   [O(mn)]
         for (UndirectedEdge edge : edges) {
@@ -352,7 +352,7 @@ public class UndirectedGraph implements GraphInterface {
      * @return constructed connected map
      */
     private HashMap<Integer, ArrayList<Vertex>> constructConnections(ArrayList<UndirectedEdge> edges) {
-        HashMap<Integer, ArrayList<Vertex>> connections = new HashMap<Integer, ArrayList<Vertex>>();
+        HashMap<Integer, ArrayList<Vertex>> connections = new HashMap<>();
         for (UndirectedEdge edge : edges) {
             addNeighbor(connections, edge.end1(), edge.end2());
             addNeighbor(connections, edge.end2(), edge.end1());
@@ -406,17 +406,17 @@ public class UndirectedGraph implements GraphInterface {
      */
     public double kruskalMSTImproved() {
         // 1. Sort the edges in order of increasing cost   [O(mlog m)]
-        ArrayList<UndirectedEdge> edges = new ArrayList<UndirectedEdge>(edgeList);
+        ArrayList<UndirectedEdge> edges = new ArrayList<>(edgeList);
         Collections.sort(edges);
 
         // 2. Initialize T = {empty}, which is the current spanning tree
-        ArrayList<UndirectedEdge> currSpanningTree = new ArrayList<UndirectedEdge>();
+        ArrayList<UndirectedEdge> currSpanningTree = new ArrayList<>();
 
         // 3. Create a UnionFind of vertices
         // object -> vertex
         // group -> connected component w.r.t. the edges in T
         // Each of the vertex is on its own isolated connected component.
-        UnionFind<Vertex> unionFind = new UnionFind<Vertex>(vtxList);
+        UnionFind<Vertex> unionFind = new UnionFind<>(vtxList);
 
         // 4. For each edge e = (v, w) in the sorted edge list   [O(nlog n)]
         for (UndirectedEdge edge : edges) {
@@ -461,11 +461,11 @@ public class UndirectedGraph implements GraphInterface {
             throw new IllegalArgumentException("The number of clusters must be at least 2.");
         }
 
-        ArrayList<UndirectedEdge> edges = new ArrayList<UndirectedEdge>(edgeList);
+        ArrayList<UndirectedEdge> edges = new ArrayList<>(edgeList);
         Collections.sort(edges);
 
         // Initially, each point is in a separate cluster.
-        UnionFind<Vertex> unionFind = new UnionFind<Vertex>(vtxList);
+        UnionFind<Vertex> unionFind = new UnionFind<>(vtxList);
 
         boolean stopped = false;
         for (UndirectedEdge edge : edges) {

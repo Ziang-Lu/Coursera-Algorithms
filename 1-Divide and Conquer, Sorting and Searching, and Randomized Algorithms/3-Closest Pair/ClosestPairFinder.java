@@ -167,7 +167,7 @@ public class ClosestPairFinder {
         // Filtering
         double lowerBound = xThreshold - delta, upperBound = xThreshold + delta;
         // Let Sy be the points of P with x within the range
-        ArrayList<Point2D.Double> Sy = new ArrayList<Point2D.Double>();
+        ArrayList<Point2D.Double> Sy = new ArrayList<>();
         // To create Sy: iterate over Py: if x is within the range, put the point in Sy
         for (Point2D.Double p : Py) {
             if ((p.getX() > lowerBound) && (p.getX() < upperBound)) {

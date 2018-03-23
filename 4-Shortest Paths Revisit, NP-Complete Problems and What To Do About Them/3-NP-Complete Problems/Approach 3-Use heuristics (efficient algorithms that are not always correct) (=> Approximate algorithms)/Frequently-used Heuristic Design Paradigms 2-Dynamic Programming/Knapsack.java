@@ -113,7 +113,7 @@ public class Knapsack {
         }
 
         // Reconstruct the included items from the optimal solution
-        HashSet<Integer> includedItems = new HashSet<Integer>();
+        HashSet<Integer> includedItems = new HashSet<>();
         int currItem = lastItem, currTargetVal = maxTotalVal;
         double currCap = cap;
         while (currItem >= 1) {

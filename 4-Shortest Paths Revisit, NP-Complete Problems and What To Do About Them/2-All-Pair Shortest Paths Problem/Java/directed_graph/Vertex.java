@@ -36,9 +36,9 @@ class Vertex extends AbstractVertex {
      */
     Vertex(int vtxID) {
         super(vtxID);
-        emissiveEdges = new ArrayList<DirectedEdge>();
+        emissiveEdges = new ArrayList<>();
         emissiveNeighbors = new BitSet();
-        incidentEdges = new ArrayList<DirectedEdge>();
+        incidentEdges = new ArrayList<>();
         incidentNeighbors = new BitSet();
     }
 

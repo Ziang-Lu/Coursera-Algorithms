@@ -108,7 +108,7 @@ public class TwoKnapsack {
      * @return included items in knapsack-1 and knapsack-2
      */
     private ArrayList<HashSet<Integer>> reconstruct(double[] vals, int[] weights, int cap1, int cap2) {
-        HashSet<Integer> includedItems1 = new HashSet<Integer>(), includedItems2 = new HashSet<Integer>();
+        HashSet<Integer> includedItems1 = new HashSet<>(), includedItems2 = new HashSet<>();
         int currItem = vals.length - 1, currCap1 = cap1, currCap2 = cap2;
         while (currItem >= 1) {
             double resultWithoutCurr = subproblems[currItem - 1][currCap1][currCap2];

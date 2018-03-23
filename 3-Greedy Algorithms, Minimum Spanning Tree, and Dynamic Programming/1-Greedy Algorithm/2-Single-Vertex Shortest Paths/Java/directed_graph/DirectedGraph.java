@@ -27,8 +27,8 @@ public class DirectedGraph implements GraphInterface {
      * Default constructor.
      */
     public DirectedGraph() {
-        vtxList = new ArrayList<Vertex>();
-        edgeList = new ArrayList<DirectedEdge>();
+        vtxList = new ArrayList<>();
+        edgeList = new ArrayList<>();
     }
 
     @Override
@@ -74,7 +74,7 @@ public class DirectedGraph implements GraphInterface {
      */
     private void removeVtx(Vertex vtxToRemove) {
         // Remove all the edges associated with the vertex to remove
-        ArrayList<DirectedEdge> edgesToRemove = new ArrayList<DirectedEdge>();
+        ArrayList<DirectedEdge> edgesToRemove = new ArrayList<>();
         edgesToRemove.addAll(vtxToRemove.emissiveEdges());
         edgesToRemove.addAll(vtxToRemove.incidentEdges());
         while (edgesToRemove.size() > 0) {
@@ -171,14 +171,14 @@ public class DirectedGraph implements GraphInterface {
         }
 
         // 1. Create a map between vertices and the shortest distances from the source vertex (X)
-        HashMap<Integer, Double> shortestDistances = new HashMap<Integer, Double>();
+        HashMap<Integer, Double> shortestDistances = new HashMap<>();
 
         // Since we'll be using a lot of extract-min operations, we consider to use a heap to speed up the algorithm.
 
         // 2. Initialize the local minimum Dijkstra score of the source vertex to 0, and create a heap containing all
         //    the vertices not in X (V-X)
         srcVtx.setLocalMinScore(0.0);
-        PriorityQueue<Vertex> vtxsToProcess = new PriorityQueue<Vertex>(vtxList);
+        PriorityQueue<Vertex> vtxsToProcess = new PriorityQueue<>(vtxList);
 
         // 3. While X is not equal to V
         while (shortestDistances.size() < vtxList.size()) {

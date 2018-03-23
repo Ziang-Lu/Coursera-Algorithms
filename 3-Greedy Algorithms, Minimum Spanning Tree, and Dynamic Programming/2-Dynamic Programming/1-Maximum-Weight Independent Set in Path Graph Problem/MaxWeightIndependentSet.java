@@ -49,7 +49,7 @@ public class MaxWeightIndependentSet {
         }
 
         if (weights.length == 1) {
-            HashSet<Integer> mwis = new HashSet<Integer>();
+            HashSet<Integer> mwis = new HashSet<>();
             mwis.add(1);
             return mwis;
         }
@@ -74,7 +74,7 @@ public class MaxWeightIndependentSet {
      * @return MWIS of the given path graph
      */
     private HashSet<Integer> reconstructMWIS(int[] weights) {
-        HashSet<Integer> mwis = new HashSet<Integer>();
+        HashSet<Integer> mwis = new HashSet<>();
         int currVtx = subproblems.length - 1;
         while (currVtx >= 2) {
             if (subproblems[currVtx - 1] >= (subproblems[currVtx - 2] + weights[currVtx])) {

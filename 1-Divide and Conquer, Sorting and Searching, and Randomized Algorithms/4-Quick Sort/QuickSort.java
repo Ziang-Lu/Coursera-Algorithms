@@ -56,7 +56,7 @@ public class QuickSort {
             // [Deterministic] Use the median of medians as the pivot
 
             // Create the sorted parts
-            ArrayList<int[]> sortedParts = new ArrayList<int[]>();
+            ArrayList<int[]> sortedParts = new ArrayList<>();
             int i = left;
             while (i <= right) {
                 int numOfElems = Math.min(5, right + 1 - left);
@@ -97,7 +97,7 @@ public class QuickSort {
     /**
      * Helper method to partition the given part of the array.
      * @param nums array to partition
-     * @param left left bound 
+     * @param left left bound
      * @param right right bound
      * @return
      */

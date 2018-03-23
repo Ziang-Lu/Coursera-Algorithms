@@ -28,7 +28,7 @@ class Vertex extends AbstractVertex {
      */
     Vertex(int vtxID) {
         super(vtxID);
-        edges = new ArrayList<UndirectedEdge>();
+        edges = new ArrayList<>();
         neighbors = new BitSet();
     }
 

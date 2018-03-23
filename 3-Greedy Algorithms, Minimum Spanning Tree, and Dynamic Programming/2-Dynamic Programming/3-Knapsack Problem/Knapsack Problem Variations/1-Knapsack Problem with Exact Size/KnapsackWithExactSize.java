@@ -70,7 +70,7 @@ public class KnapsackWithExactSize {
      * @return included items
      */
     private HashSet<Integer> reconstruct(double[] vals, int[] weights, int cap) {
-        HashSet<Integer> includedItems = new HashSet<Integer>();
+        HashSet<Integer> includedItems = new HashSet<>();
         int currItem = vals.length - 1, currCap = cap;
         while (currItem >= 1) {
             while (currItem >= 1) {

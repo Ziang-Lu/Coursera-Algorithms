@@ -91,7 +91,7 @@ public class MyHTWithSC implements MyHTInterface {
      * @return created data list
      */
     private ArrayList<LinkedList<DataItem>> initializeData(int capacity) {
-        ArrayList<LinkedList<DataItem>> data = new ArrayList<LinkedList<DataItem>>();
+        ArrayList<LinkedList<DataItem>> data = new ArrayList<>();
         for (int i = 0; i < capacity; ++i) {
             data.add(new LinkedList<DataItem>());
         }
@@ -217,7 +217,7 @@ public class MyHTWithSC implements MyHTInterface {
         return true;
     }
 
-    
+
     @Override
     public String remove(String text) {
         // Check whether the input string is a lowercase word

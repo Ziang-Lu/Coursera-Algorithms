@@ -96,7 +96,7 @@ public class KnapsackWithBudget {
      * @return included items
      */
     private HashSet<Integer> reconstruct(double[] vals, int[] weights, int budget, int cap) {
-        HashSet<Integer> includedItems = new HashSet<Integer>();
+        HashSet<Integer> includedItems = new HashSet<>();
         int currItem = vals.length - 1, currBudget = budget, currCap = cap;
         while (currItem >= 1) {
             if ((currBudget >= 1) && (weights[currItem] <= currCap) && (subproblems[currItem

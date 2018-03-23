@@ -25,10 +25,10 @@ public class UnionFind <T> {
      * @param objs list of sole objects
      */
     public UnionFind(ArrayList<T> objs) {
-        groups = new HashMap<String, ArrayList<UnionFindObj>>();
+        groups = new HashMap<>();
         for (T obj : objs) {
             UnionFindObj o = (UnionFindObj) obj;
-            ArrayList<UnionFindObj> group = new ArrayList<UnionFindObj>();
+            ArrayList<UnionFindObj> group = new ArrayList<>();
             group.add(o);
             groups.put(o.objName(), group);
         }
