@@ -3,6 +3,8 @@
 
 __author__ = 'Ziang Lu'
 
+from abc import ABC, abstractmethod
+
 
 class IllegalArgumentError(ValueError):
     pass
@@ -38,7 +40,7 @@ class AbstractEdge(object):
         return self._length
 
 
-class AbstractGraph(object):
+class AbstractGraph(ABC):
     INFINITY = 1000000
 
     def __init__(self):
@@ -48,6 +50,7 @@ class AbstractGraph(object):
         self._vtx_list = []
         self._edge_list = []
 
+    @abstractmethod
     def add_vtx(self, new_vtx_id):
         """
         Adds a new vertex to this graph.
@@ -81,6 +84,7 @@ class AbstractGraph(object):
 
         self._remove_vtx(vtx_to_remove=vtx_to_remove)
 
+    @abstractmethod
     def _remove_vtx(self, vtx_to_remove):
         """
         Private helper function to remove the given vertex from this graph.
@@ -89,6 +93,7 @@ class AbstractGraph(object):
         """
         pass
 
+    @abstractmethod
     def add_edge(self, end1_id, end2_id, length):
         """
         Adds a new edge to this graph.
@@ -99,6 +104,7 @@ class AbstractGraph(object):
         """
         pass
 
+    @abstractmethod
     def _add_edge(self, new_edge):
         """
         Private helper function to add the given edge to this graph.
@@ -107,6 +113,7 @@ class AbstractGraph(object):
         """
         pass
 
+    @abstractmethod
     def remove_edge(self, end1_id, end2_id):
         """
         Removes an edge from this graph.
@@ -116,6 +123,7 @@ class AbstractGraph(object):
         """
         pass
 
+    @abstractmethod
     def _remove_edge(self, edge_to_remove):
         """
         Private helper function to remove the given edge from this graph.
@@ -136,6 +144,7 @@ class AbstractGraph(object):
         for edge in self._edge_list:
             print(edge)
 
+    @abstractmethod
     def bellman_ford_shortest_paths(self, src_vtx_id):
         """
         Returns the mapping between the vertices and the shortest paths from the
@@ -148,6 +157,7 @@ class AbstractGraph(object):
         """
         pass
 
+    @abstractmethod
     def _reconstruct_shortest_paths(self, subproblems):
         """
         Private helper function to reconstruct the shortest paths according to
@@ -157,6 +167,7 @@ class AbstractGraph(object):
         """
         pass
 
+    @abstractmethod
     def bellman_ford_shortest_paths_optimized(self, src_vtx_id):
         """
         Returns the mapping between the vertices and the shortest paths from the
@@ -188,6 +199,7 @@ class AbstractGraph(object):
         return shortest_paths
         # Running time complexity: O(n^2)
 
+    @abstractmethod
     def bellman_ford_shortest_paths_dest_driven(self, dest_vtx_id):
         """
         Returns the mapping between the vertices and the shortest paths to the
@@ -200,6 +212,7 @@ class AbstractGraph(object):
         """
         pass
 
+    @abstractmethod
     def _reconstruct_shortest_paths_dest_driven(self, subproblems):
         """
         Private helper function to reconstruct the destination-driven shortest
@@ -209,6 +222,7 @@ class AbstractGraph(object):
         """
         pass
 
+    @abstractmethod
     def bellman_ford_shortest_paths_dest_driven_optimized(self, dest_vtx_id):
         """
         Returns the mapping between the vertices and the shortest paths to the
@@ -239,6 +253,7 @@ class AbstractGraph(object):
         return shortest_paths
         # Running time complexity: O(n^2)
 
+    @abstractmethod
     def shortest_paths_dest_driven_push_based(self, dest_vtx_id):
         """
         Returns the mapping between the vertices and the shortest paths to the

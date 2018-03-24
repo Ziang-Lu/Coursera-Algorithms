@@ -3,6 +3,8 @@
 
 __author__ = 'Ziang Lu'
 
+from abc import ABC, abstractmethod
+
 
 class IllegalArgumentError(ValueError):
     pass
@@ -66,7 +68,7 @@ class AbstractVertex(object):
         self._layer = layer
 
 
-class AbstractGraph(object):
+class AbstractGraph(ABC):
     def __init__(self):
         """
         Default constructor.
@@ -74,6 +76,7 @@ class AbstractGraph(object):
         self._vtx_list = []
         self._edge_list = []
 
+    @abstractmethod
     def add_vtx(self, new_vtx_id):
         """
         Adds a new vertex to this graph.
@@ -107,6 +110,7 @@ class AbstractGraph(object):
 
         self._remove_vtx(vtx_to_remove=vtx_to_remove)
 
+    @abstractmethod
     def _remove_vtx(self, vtx_to_remove):
         """
         Private helper function to remove the given vertex from this graph.
@@ -115,6 +119,7 @@ class AbstractGraph(object):
         """
         pass
 
+    @abstractmethod
     def add_edge(self, end1_id, end2_id):
         """
         Adds a new edge to this graph.
@@ -124,6 +129,7 @@ class AbstractGraph(object):
         """
         pass
 
+    @abstractmethod
     def _add_edge(self, new_edge):
         """
         Private helper function to add the given edge to this graph.
@@ -132,6 +138,7 @@ class AbstractGraph(object):
         """
         pass
 
+    @abstractmethod
     def remove_edge(self, end1_id, end2_id):
         """
         Removes an edge from this graph.
@@ -141,6 +148,7 @@ class AbstractGraph(object):
         """
         pass
 
+    @abstractmethod
     def _remove_edge(self, edge_to_remove):
         """
         Private helper function to remove the given edge from this graph.
@@ -161,6 +169,7 @@ class AbstractGraph(object):
         for edge in self._edge_list:
             print(edge)
 
+    @abstractmethod
     def bfs(self, src_vtx_id):
         """
         Finds all the findable vertices starting from the given source vertex
@@ -178,6 +187,7 @@ class AbstractGraph(object):
         for vtx in self._vtx_list:
             vtx.set_as_unexplored()
 
+    @abstractmethod
     def shortest_path(self, src_vtx_id, dest_vtx_id):
         """
         Finds the length of the shortest path from the given source vertex to
@@ -188,6 +198,7 @@ class AbstractGraph(object):
         """
         pass
 
+    @abstractmethod
     def num_of_connected_components_with_bfs(self):
         """
         Returns the number of connected components of this graph using BFS.
@@ -219,6 +230,7 @@ class AbstractGraph(object):
 
         return findable_vtx_ids
 
+    @abstractmethod
     def _dfs_helper(self, vtx, findable_vtx_ids):
         """
         Private helper function to do DFS and find all the findable vertices
@@ -229,6 +241,7 @@ class AbstractGraph(object):
         """
         pass
 
+    @abstractmethod
     def num_of_connected_components_with_dfs(self):
         """
         Returns the number of connected components of this graph using DFS.

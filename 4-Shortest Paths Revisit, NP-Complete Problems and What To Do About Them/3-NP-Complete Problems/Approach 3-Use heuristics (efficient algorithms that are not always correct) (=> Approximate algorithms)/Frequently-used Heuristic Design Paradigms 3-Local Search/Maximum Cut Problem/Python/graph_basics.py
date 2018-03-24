@@ -3,6 +3,8 @@
 
 __author__ = 'Ziang Lu'
 
+from abc import ABC, abstractmethod
+
 
 class IllegalArgumentError(ValueError):
     pass
@@ -33,6 +35,7 @@ class AbstractGraph(object):
         self._vtx_list = []
         self._edge_list = []
 
+    @abstractmethod
     def add_vtx(self, new_vtx_id):
         """
         Adds a new vertex to this graph.
@@ -66,6 +69,7 @@ class AbstractGraph(object):
 
         self._remove_vtx(vtx_to_remove=vtx_to_remove)
 
+    @abstractmethod
     def _remove_vtx(self, vtx_to_remove):
         """
         Private helper function to remove the given vertex from this graph.
@@ -74,6 +78,7 @@ class AbstractGraph(object):
         """
         pass
 
+    @abstractmethod
     def add_edge(self, end1_id, end2_id, length):
         """
         Adds a new edge to this graph.
@@ -84,6 +89,7 @@ class AbstractGraph(object):
         """
         pass
 
+    @abstractmethod
     def _add_edge(self, new_edge):
         """
         Private helper function to add the given edge to this graph.
@@ -92,6 +98,7 @@ class AbstractGraph(object):
         """
         pass
 
+    @abstractmethod
     def remove_edge(self, end1_id, end2_id):
         """
         Removes an edge from this graph.
@@ -101,6 +108,7 @@ class AbstractGraph(object):
         """
         pass
 
+    @abstractmethod
     def _remove_edge(self, edge_to_remove):
         """
         Private helper function to remove the given edge from this graph.
@@ -121,6 +129,7 @@ class AbstractGraph(object):
         for edge in self._edge_list:
             print(edge)
 
+    @abstractmethod
     def compute_maximum_cut(self):
         """
         Computes a cut with maximum number of crossing edges using local search
