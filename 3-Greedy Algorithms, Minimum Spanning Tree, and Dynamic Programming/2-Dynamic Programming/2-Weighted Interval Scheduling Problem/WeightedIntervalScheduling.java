@@ -148,9 +148,9 @@ public class WeightedIntervalScheduling {
                 return mid;
             }
             if (!jobsOverlap(jobs[mid], jobs[i])) {
-                start = mid;
+                start = mid + 1;
             } else {
-                end = mid;
+                end = mid - 1;
             }
         }
         return -1; // Not found
