@@ -2,6 +2,8 @@ package union_find;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Eager Union implementation of Union-Find data structure.
@@ -18,13 +20,13 @@ public class UnionFind <T> {
      * (representative of the group) object, and the group name is exactly the
      * name of the leader.
      */
-    private HashMap<String, ArrayList<UnionFindObj>> groups;
+    private Map<String, List<UnionFindObj>> groups;
 
     /**
      * Constructor with parameter.
      * @param objs list of sole objects
      */
-    public UnionFind(ArrayList<T> objs) {
+    public UnionFind(List<T> objs) {
         groups = new HashMap<>();
         for (T obj : objs) {
             UnionFindObj o = (UnionFindObj) obj;
@@ -70,9 +72,9 @@ public class UnionFind <T> {
             throw new IllegalArgumentException("The input group names don't both exist.");
         }
 
-        ArrayList<UnionFindObj> groupA = groups.get(groupNameA), groupB = groups.get(groupNameB);
+        List<UnionFindObj> groupA = groups.get(groupNameA), groupB = groups.get(groupNameB);
         // In order to reduce the number of leader updates, let the smaller group inherit the leader of the larger one.
-        ArrayList<UnionFindObj> larger = null, smaller = null;
+        List<UnionFindObj> larger = null, smaller = null;
         if (groupA.size() >= groupB.size()) {
             larger = groupA; smaller = groupB;
         } else {
@@ -93,7 +95,7 @@ public class UnionFind <T> {
      * @param group given group
      * @param newLeader given new leader
      */
-    private void updateLeader(ArrayList<UnionFindObj> group, UnionFindObj newLeader) {
+    private void updateLeader(List<UnionFindObj> group, UnionFindObj newLeader) {
         for (UnionFindObj obj : group) {
             obj.setLeader(newLeader);
         }

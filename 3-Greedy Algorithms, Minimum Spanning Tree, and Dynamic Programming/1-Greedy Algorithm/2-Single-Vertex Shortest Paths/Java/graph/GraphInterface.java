@@ -1,6 +1,6 @@
 package graph;
 
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A very simple interface for any graph implementation.
@@ -48,6 +48,6 @@ public interface GraphInterface {
      * @param srcVtxID source vertex ID
      * @return mapping between vertices and shortest distances
      */
-    HashMap<Integer, Double> dijkstraShortestPaths(int srcVtxID);
+    Map<Integer, Double> dijkstraShortestPaths(int srcVtxID);
 
 }

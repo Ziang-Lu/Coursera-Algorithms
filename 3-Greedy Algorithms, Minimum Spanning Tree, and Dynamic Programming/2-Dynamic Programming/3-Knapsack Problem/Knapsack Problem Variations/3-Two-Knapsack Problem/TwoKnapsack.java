@@ -34,6 +34,8 @@
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class TwoKnapsack {
 
@@ -54,7 +56,7 @@ public class TwoKnapsack {
      * @param cap2 capacity of knapsack-2
      * @return included items in knapsack-1 and knapsack-2
      */
-    public ArrayList<HashSet<Integer>> twoKnapsack(double[] vals, int[] weights, int cap1, int cap2) {
+    public List<Set<Integer>> twoKnapsack(double[] vals, int[] weights, int cap1, int cap2) {
         // Check whether the input arrays are null or empty
         if ((vals == null) || (vals.length == 0) || (weights == null) || (weights.length == 0)) {
             throw new IllegalArgumentException("The input values and weights should not be null or empty.");
@@ -107,8 +109,8 @@ public class TwoKnapsack {
      * @param cap2 capacity of knapsack-2
      * @return included items in knapsack-1 and knapsack-2
      */
-    private ArrayList<HashSet<Integer>> reconstruct(double[] vals, int[] weights, int cap1, int cap2) {
-        HashSet<Integer> includedItems1 = new HashSet<>(), includedItems2 = new HashSet<>();
+    private List<Set<Integer>> reconstruct(double[] vals, int[] weights, int cap1, int cap2) {
+        Set<Integer> includedItems1 = new HashSet<>(), includedItems2 = new HashSet<>();
         int currItem = vals.length - 1, currCap1 = cap1, currCap2 = cap2;
         while (currItem >= 1) {
             double resultWithoutCurr = subproblems[currItem - 1][currCap1][currCap2];
@@ -151,7 +153,7 @@ public class TwoKnapsack {
         } else if (weights[0] <= currCap2) {
             includedItems2.add(0);
         }
-        ArrayList<HashSet<Integer>> knapsacks = new ArrayList<HashSet<Integer>>();
+        List<Set<Integer>> knapsacks = new ArrayList<>();
         knapsacks.add(includedItems1);
         knapsacks.add(includedItems2);
         return knapsacks;

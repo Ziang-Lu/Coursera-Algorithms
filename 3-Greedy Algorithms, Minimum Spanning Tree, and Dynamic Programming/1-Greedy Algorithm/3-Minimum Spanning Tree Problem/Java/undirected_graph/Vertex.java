@@ -2,6 +2,7 @@ package undirected_graph;
 
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.List;
 
 import graph.AbstractVertex;
 import union_find.UnionFindObj;
@@ -22,7 +23,7 @@ class Vertex extends AbstractVertex implements Comparable<Vertex>, UnionFindObj 
     /**
      * Edges of this vertex.
      */
-    private final ArrayList<UndirectedEdge> edges;
+    private final List<UndirectedEdge> edges;
     /**
      * Neighbors of this vertex.
      */
@@ -78,7 +79,7 @@ class Vertex extends AbstractVertex implements Comparable<Vertex>, UnionFindObj 
      * Accessor of edges.
      * @return edges
      */
-    ArrayList<UndirectedEdge> edges() {
+    List<UndirectedEdge> edges() {
         return edges;
     }
 

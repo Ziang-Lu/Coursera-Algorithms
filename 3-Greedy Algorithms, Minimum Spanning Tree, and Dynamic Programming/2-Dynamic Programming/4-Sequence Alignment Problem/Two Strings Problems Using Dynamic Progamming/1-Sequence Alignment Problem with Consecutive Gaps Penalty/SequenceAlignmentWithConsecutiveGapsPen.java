@@ -11,7 +11,7 @@
  *    => We can only solve this problem in a bottom-up way.
  */
 
-import java.util.HashMap;
+import java.util.Map;
 
 public class SequenceAlignmentWithConsecutiveGapsPen {
 
@@ -42,7 +42,7 @@ public class SequenceAlignmentWithConsecutiveGapsPen {
      * @return optimal alignment
      */
     public String[] sequenceAlignmentWithConsecutiveGapsPen(String x, String y, int a, int b,
-            HashMap<Character, HashMap<Character, Integer>> penMap) {
+            Map<Character, Map<Character, Integer>> penMap) {
         // Check whether the input strings are null or empty
         if ((x == null) || (x.length() == 0) || (y == null) || (y.length() == 0)) {
             throw new IllegalArgumentException("The input sequences should not be null or empty.");
@@ -107,7 +107,7 @@ public class SequenceAlignmentWithConsecutiveGapsPen {
      * @return optimal alignment
      */
     private String[] reconstructOptimalAlignment(String x, String y, int a, int b,
-            HashMap<Character, HashMap<Character, Integer>> penMap) {
+            Map<Character, Map<Character, Integer>> penMap) {
         StringBuilder sx = new StringBuilder(), sy = new StringBuilder();
         int i = x.length(), j = y.length();
         while ((i >= 1) && (j >= 1)) {

@@ -2,6 +2,8 @@ package directed_graph;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.PriorityQueue;
 
 import graph.GraphInterface;
@@ -17,11 +19,11 @@ public class DirectedGraph implements GraphInterface {
     /**
      * Vertex list.
      */
-    private final ArrayList<Vertex> vtxList;
+    private final List<Vertex> vtxList;
     /**
      * Edge list.
      */
-    private final ArrayList<DirectedEdge> edgeList;
+    private final List<DirectedEdge> edgeList;
 
     /**
      * Default constructor.
@@ -74,7 +76,7 @@ public class DirectedGraph implements GraphInterface {
      */
     private void removeVtx(Vertex vtxToRemove) {
         // Remove all the edges associated with the vertex to remove
-        ArrayList<DirectedEdge> edgesToRemove = new ArrayList<>();
+        List<DirectedEdge> edgesToRemove = new ArrayList<>();
         edgesToRemove.addAll(vtxToRemove.emissiveEdges());
         edgesToRemove.addAll(vtxToRemove.incidentEdges());
         while (edgesToRemove.size() > 0) {
@@ -163,7 +165,7 @@ public class DirectedGraph implements GraphInterface {
     }
 
     @Override
-    public HashMap<Integer, Double> dijkstraShortestPaths(int srcVtxID) {
+    public Map<Integer, Double> dijkstraShortestPaths(int srcVtxID) {
         // Check whether the input source vertex exists
         Vertex srcVtx = findVtx(srcVtxID);
         if (srcVtx == null) {
@@ -171,7 +173,7 @@ public class DirectedGraph implements GraphInterface {
         }
 
         // 1. Create a map between vertices and the shortest distances from the source vertex (X)
-        HashMap<Integer, Double> shortestDistances = new HashMap<>();
+        Map<Integer, Double> shortestDistances = new HashMap<>();
 
         // Since we'll be using a lot of extract-min operations, we consider to use a heap to speed up the algorithm.
 

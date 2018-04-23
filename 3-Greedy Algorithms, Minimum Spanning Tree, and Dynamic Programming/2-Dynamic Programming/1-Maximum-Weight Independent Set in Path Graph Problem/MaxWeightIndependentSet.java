@@ -23,8 +23,8 @@
  * S(i) = max{S(i - 1), S(i - 2) + v_i}
  */
 
-import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Set;
 
 public class MaxWeightIndependentSet {
 
@@ -42,14 +42,14 @@ public class MaxWeightIndependentSet {
      * @param weights weights of the path graph
      * @return MWIS in the given path graph
      */
-    public HashSet<Integer> findMWIS(int[] weights) {
+    public Set<Integer> findMWIS(int[] weights) {
         // Check whether the input array is null or empty
         if ((weights == null) || (weights.length == 0)) {
             throw new IllegalArgumentException("The input weights should not be null or empty.");
         }
 
         if (weights.length == 1) {
-            HashSet<Integer> mwis = new HashSet<>();
+            Set<Integer> mwis = new HashSet<>();
             mwis.add(1);
             return mwis;
         }
@@ -73,8 +73,8 @@ public class MaxWeightIndependentSet {
      * @param weights weights of the path graph
      * @return MWIS of the given path graph
      */
-    private HashSet<Integer> reconstructMWIS(int[] weights) {
-        HashSet<Integer> mwis = new HashSet<>();
+    private Set<Integer> reconstructMWIS(int[] weights) {
+        Set<Integer> mwis = new HashSet<>();
         int currVtx = subproblems.length - 1;
         while (currVtx >= 2) {
             if (subproblems[currVtx - 1] >= (subproblems[currVtx - 2] + weights[currVtx])) {

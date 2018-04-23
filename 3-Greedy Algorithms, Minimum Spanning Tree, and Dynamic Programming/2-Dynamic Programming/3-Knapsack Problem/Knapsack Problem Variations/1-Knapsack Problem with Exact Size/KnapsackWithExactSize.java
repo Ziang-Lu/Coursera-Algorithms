@@ -5,6 +5,7 @@
  */
 
 import java.util.HashSet;
+import java.util.Set;
 
 public class KnapsackWithExactSize {
 
@@ -24,7 +25,7 @@ public class KnapsackWithExactSize {
      * @param cap capacity of the knapsack
      * @return included items
      */
-    public HashSet<Integer> knapsackWithExactSize(double[] vals, int[] weights, int cap) {
+    public Set<Integer> knapsackWithExactSize(double[] vals, int[] weights, int cap) {
         // Check whether the input arrays are null or empty
         if ((vals == null) || (vals.length == 0) || (weights == null) || (weights.length == 0)) {
             throw new IllegalArgumentException("The input values and weights should not be null or empty.");
@@ -69,8 +70,8 @@ public class KnapsackWithExactSize {
      * @param cap capacity of the knapsack
      * @return included items
      */
-    private HashSet<Integer> reconstruct(double[] vals, int[] weights, int cap) {
-        HashSet<Integer> includedItems = new HashSet<>();
+    private Set<Integer> reconstruct(double[] vals, int[] weights, int cap) {
+        Set<Integer> includedItems = new HashSet<>();
         int currItem = vals.length - 1, currCap = cap;
         while (currItem >= 1) {
             while (currItem >= 1) {

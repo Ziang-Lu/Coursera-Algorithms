@@ -1,5 +1,3 @@
-import java.util.Arrays;
-
 /**
  * Scheduling Problem:
  * -One shared resource
@@ -41,6 +39,7 @@ import java.util.Arrays;
  *    i.e., s is optimal.
  */
 
+import java.util.Arrays;
 import java.util.Comparator;
 
 class Job {

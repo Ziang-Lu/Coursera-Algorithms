@@ -24,6 +24,7 @@
  */
 
 import java.util.HashSet;
+import java.util.Set;
 
 public class KnapsackWithBudget {
 
@@ -45,7 +46,7 @@ public class KnapsackWithBudget {
      * @param cap capacity of the knapsack
      * @return included items
      */
-    public HashSet<Integer> knapsackWithBudget(double[] vals, int[] weights, int budget, int cap) {
+    public Set<Integer> knapsackWithBudget(double[] vals, int[] weights, int budget, int cap) {
         // Check whether the input arrays are null or empty
         if ((vals == null) || (vals.length == 0) || (weights == null) || (weights.length == 0)) {
             throw new IllegalArgumentException("The input values and weights should not be null or empty.");
@@ -95,8 +96,8 @@ public class KnapsackWithBudget {
      * @param cap capacity of the knapsack
      * @return included items
      */
-    private HashSet<Integer> reconstruct(double[] vals, int[] weights, int budget, int cap) {
-        HashSet<Integer> includedItems = new HashSet<>();
+    private Set<Integer> reconstruct(double[] vals, int[] weights, int budget, int cap) {
+        Set<Integer> includedItems = new HashSet<>();
         int currItem = vals.length - 1, currBudget = budget, currCap = cap;
         while (currItem >= 1) {
             if ((currBudget >= 1) && (weights[currItem] <= currCap) && (subproblems[currItem

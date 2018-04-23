@@ -1,6 +1,6 @@
 ### Optimal BST Problem
 
-Originally, a perfectly balanced BST, like a Red-Black Tree will provide the best performance (O(log n)) when frequency of access is uniform (or known, and thus must be infered as uniform).
+Originally, a perfectly balanced BST, like a Red-Black Tree will provide the best performance (O(log n)) when frequency of access is uniform (or unknown, and thus must be infered as uniform).
 
 ***
 

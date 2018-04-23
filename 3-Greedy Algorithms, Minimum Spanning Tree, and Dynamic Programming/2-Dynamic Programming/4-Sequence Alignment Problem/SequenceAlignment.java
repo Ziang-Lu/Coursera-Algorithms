@@ -35,7 +35,7 @@
  *                   S(X_i, Y_j - y_j) + pen_gap}
  */
 
-import java.util.HashMap;
+import java.util.Map;
 
 public class SequenceAlignment {
 
@@ -56,8 +56,7 @@ public class SequenceAlignment {
      * @param penMap penalty between each character pair
      * @return optimal alignment
      */
-    public String[] sequenceAlignment(String x, String y, int gapPen,
-            HashMap<Character, HashMap<Character, Integer>> penMap) {
+    public String[] sequenceAlignment(String x, String y, int gapPen, Map<Character, Map<Character, Integer>> penMap) {
         // Check whether the input strings are null or empty
         if ((x == null) || (x.length() == 0) || (y == null) || (y.length() == 0)) {
             throw new IllegalArgumentException("The input sequences should not be null or empty.");
@@ -104,7 +103,7 @@ public class SequenceAlignment {
      * @return optimal alignment
      */
     private String[] reconstructOptimalAlignment(String x, String y, int gapPen,
-            HashMap<Character, HashMap<Character, Integer>> penMap) {
+            Map<Character, Map<Character, Integer>> penMap) {
         StringBuilder sx = new StringBuilder(), sy = new StringBuilder();
         int i = x.length(), j = y.length();
         while ((i >= 1) && (j >= 1)) {
