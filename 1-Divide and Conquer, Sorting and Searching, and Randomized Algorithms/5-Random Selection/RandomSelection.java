@@ -61,7 +61,7 @@ public class RandomSelection {
         } else {
             return kthLargestHelper(nums, pivotIdx + 1, right, k);
         }
-        // T(n) = T(n / 2) + O(n)
+        // T(n) = T(n/2) + O(n)
         // a = 1, b = 2, d = 1
         // According to Master Method, the expected running time complexity is O(n).
     }
