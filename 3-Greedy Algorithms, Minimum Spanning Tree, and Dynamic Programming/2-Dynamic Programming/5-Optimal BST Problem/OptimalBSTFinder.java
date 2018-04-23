@@ -13,14 +13,15 @@
  * -Proof:
  * Suppose T_L is not optimal for items 1, 2, ..., r-1 with C(T_L*) < C(T_L).
  * (The other case is similar.)
- * Thus, we can obtain a T* from T by replacing the left subtree by T*.
+ * Thus, we can obtain a T* from T by replacing the left subtree by T_L*.
  * =>
  * C(T) = sum(p_i * [search time for item-i in T])
  *      = C(T_L) + sum(p_i * 1) for 1<=i<=r-1 + p_r * 1 + C(T_R) + sum(p_i * 1)
  *        for r+1<=i<=n
  *      = C(T_L) + C(T_R) + sum(p_i) for 1<=i<=n
- *      < C(T_L*) + C(T_R) + const = C(T*)
- * Thus by proof by contradiction, T_L must be optimal for items 1, 2, ..., r-1.
+ *      > C(T_L*) + C(T_R) + const = C(T*)
+ * So T is not optimal. Thus by proof by contradiction, T_L must be optimal for
+ * items 1, 2, ..., r-1.
  *
  * Algorithm: (Dynamic programming)
  * Suppose 1<=i<=j<=n,
