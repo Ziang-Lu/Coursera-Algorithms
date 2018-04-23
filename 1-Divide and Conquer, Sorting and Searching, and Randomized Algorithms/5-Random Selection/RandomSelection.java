@@ -108,7 +108,7 @@ public class RandomSelection {
         // The pivot has already been moved to the left.
         int pivot = nums[left];
 
-        // Iterate over the sub-array, use a pointer to keep track of the smaller part, and swap the current number with the pointer as necessary
+        // Iterate over the subarray, use a pointer to keep track of the smaller part, and swap the current number with the pointer as necessary
         int smallerPtr = left + 1;
         int i = left + 1;
         while (true) {
