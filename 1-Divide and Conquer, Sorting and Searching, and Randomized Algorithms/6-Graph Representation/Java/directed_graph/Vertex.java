@@ -2,6 +2,8 @@ package directed_graph;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import graph.AbstractVertex;
 
@@ -16,19 +18,19 @@ class Vertex extends AbstractVertex {
     /**
      * Frequency of emissive neighbors.
      */
-    private final HashMap<Integer, Integer> freqOfEmissiveNeighbors;
+    private final Map<Integer, Integer> freqOfEmissiveNeighbors;
     /**
      * Emissive edge of this vertex.
      */
-    private final ArrayList<DirectedEdge> emissiveEdges;
+    private final List<DirectedEdge> emissiveEdges;
     /**
      * Frequency of incident neighbors.
      */
-    private final HashMap<Integer, Integer> freqOfIncidentNeighbors;
+    private final Map<Integer, Integer> freqOfIncidentNeighbors;
     /**
      * Incident of this vertex.
      */
-    private final ArrayList<DirectedEdge> incidentEdges;
+    private final List<DirectedEdge> incidentEdges;
 
     /**
      * Constructor with parameter.
@@ -66,7 +68,7 @@ class Vertex extends AbstractVertex {
      * Accessor of emissiveEdges.
      * @return emissiveEdges
      */
-    ArrayList<DirectedEdge> emissiveEdges() {
+    List<DirectedEdge> emissiveEdges() {
         return emissiveEdges;
     }
 
@@ -94,7 +96,7 @@ class Vertex extends AbstractVertex {
      * Accessor of incidentEdges.
      * @return incidentEdges
      */
-    ArrayList<DirectedEdge> incidentEdges() {
+    List<DirectedEdge> incidentEdges() {
         return incidentEdges;
     }
 

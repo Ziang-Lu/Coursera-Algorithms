@@ -8,6 +8,7 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 
 public class ClosestPairFinder {
 
@@ -167,7 +168,7 @@ public class ClosestPairFinder {
         // Filtering
         double lowerBound = xThreshold - delta, upperBound = xThreshold + delta;
         // Let Sy be the points of P with x within the range
-        ArrayList<Point2D.Double> Sy = new ArrayList<>();
+        List<Point2D.Double> Sy = new ArrayList<>();
         // To create Sy: iterate over Py: if x is within the range, put the point in Sy
         for (Point2D.Double p : Py) {
             if ((p.getX() > lowerBound) && (p.getX() < upperBound)) {

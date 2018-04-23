@@ -2,6 +2,8 @@ package undirected_graph;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import graph.AbstractVertex;
 
@@ -16,11 +18,11 @@ class Vertex extends AbstractVertex {
     /**
      * Frequency of neighbors.
      */
-    private final HashMap<Integer, Integer> freqOfNeighbors;
+    private final Map<Integer, Integer> freqOfNeighbors;
     /**
      * Edges of this vertex.
      */
-    private final ArrayList<UndirectedEdge> edges;
+    private final List<UndirectedEdge> edges;
 
     /**
      * Constructor with parameter.
@@ -57,7 +59,7 @@ class Vertex extends AbstractVertex {
      * Accessor of edges.
      * @return edges
      */
-    ArrayList<UndirectedEdge> edges() {
+    List<UndirectedEdge> edges() {
         return edges;
     }
 

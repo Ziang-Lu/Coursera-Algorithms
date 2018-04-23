@@ -1,6 +1,7 @@
 package undirected_graph;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import graph.GraphInterface;
 
@@ -15,11 +16,11 @@ public class UndirectedGraph implements GraphInterface {
     /**
      * Vertex list.
      */
-    private final ArrayList<Vertex> vtxList;
+    private final List<Vertex> vtxList;
     /**
      * Edge list.
      */
-    private final ArrayList<UndirectedEdge> edgeList;
+    private final List<UndirectedEdge> edgeList;
 
     /**
      * Default constructor.
@@ -72,7 +73,7 @@ public class UndirectedGraph implements GraphInterface {
      */
     private void removeVtx(Vertex vtxToRemove) {
         // Remove all the edges associated with the vertex to remove
-        ArrayList<UndirectedEdge> edgesToRemove = vtxToRemove.edges();
+        List<UndirectedEdge> edgesToRemove = vtxToRemove.edges();
         while (edgesToRemove.size() > 0) {
             UndirectedEdge edgeToRemove = edgesToRemove.get(0);
             removeEdge(edgeToRemove);

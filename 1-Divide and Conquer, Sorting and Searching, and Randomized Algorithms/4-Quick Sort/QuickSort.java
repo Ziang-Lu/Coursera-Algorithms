@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 public class QuickSort {
@@ -56,7 +57,7 @@ public class QuickSort {
             // [Deterministic] Use the median of medians as the pivot
 
             // Create the sorted parts
-            ArrayList<int[]> sortedParts = new ArrayList<>();
+            List<int[]> sortedParts = new ArrayList<>();
             int i = left;
             while (i <= right) {
                 int numOfElems = Math.min(5, right + 1 - left);

@@ -1,6 +1,7 @@
 package directed_graph;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import graph.GraphInterface;
 
@@ -15,11 +16,11 @@ public class DirectedGraph implements GraphInterface {
     /**
      * Vertex list.
      */
-    private final ArrayList<Vertex> vtxList;
+    private final List<Vertex> vtxList;
     /**
      * Edge list.
      */
-    private final ArrayList<DirectedEdge> edgeList;
+    private final List<DirectedEdge> edgeList;
 
     /**
      * Default constructor.
@@ -72,7 +73,7 @@ public class DirectedGraph implements GraphInterface {
      */
     private void removeVtx(Vertex vtxToRemove) {
         // Remove all the edges associated with the vertex to remove
-        ArrayList<DirectedEdge> edgesToRemove = new ArrayList<>();
+        List<DirectedEdge> edgesToRemove = new ArrayList<>();
         edgesToRemove.addAll(vtxToRemove.emissiveEdges());
         edgesToRemove.addAll(vtxToRemove.incidentEdges());
         while (edgesToRemove.size() > 0) {
