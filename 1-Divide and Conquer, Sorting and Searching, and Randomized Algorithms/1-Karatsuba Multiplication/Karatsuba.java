@@ -50,24 +50,24 @@ public class Karatsuba {
      * Private helper method to pad the given number of zeros to the given
      * string.
      * @param s string to be padded
-     * @param nZeros number of zeros
+     * @param nZero number of zeros
      * @param atFront boolean whether to pad zeros at front
      * @return string with padded zeros
      */
-    private String padZeros(String s, int nZeros, boolean atFront) {
-        String newStr = "";
+    private String padZeros(String s, int nZero, boolean atFront) {
+        StringBuilder newStr = new StringBuilder();
         if (atFront) {
-            for (int i = 0; i < nZeros; ++i) {
-                newStr += "0";
+            for (int i = 0; i < nZero; ++i) {
+                newStr.append(0);
             }
-            newStr += s;
+            newStr.append(s);
         } else {
-            newStr += s;
-            for (int i = 0; i < nZeros; ++i) {
-                newStr += "0";
+            newStr.append(s);
+            for (int i = 0; i < nZero; ++i) {
+                newStr.append(0);
             }
         }
-        return newStr;
+        return newStr.toString();
     }
 
 }
