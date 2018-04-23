@@ -2,6 +2,8 @@ package undirected_graph;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Queue;
 
 import graph.GraphInterface;
 
@@ -16,11 +18,11 @@ public class UndirectedGraph implements GraphInterface {
     /**
      * Vertex list.
      */
-    private final ArrayList<Vertex> vtxList;
+    private final List<Vertex> vtxList;
     /**
      * Edge list.
      */
-    private final ArrayList<UndirectedEdge> edgeList;
+    private final List<UndirectedEdge> edgeList;
 
     /**
      * Default constructor.
@@ -73,7 +75,7 @@ public class UndirectedGraph implements GraphInterface {
      */
     private void removeVtx(Vertex vtxToRemove) {
         // Remove all the edges associated with the vertex to remove
-        ArrayList<UndirectedEdge> edgesToRemove = vtxToRemove.edges();
+        List<UndirectedEdge> edgesToRemove = vtxToRemove.edges();
         while (edgesToRemove.size() > 0) {
             UndirectedEdge edgeToRemove = edgesToRemove.get(0);
             removeEdge(edgeToRemove);
@@ -162,7 +164,7 @@ public class UndirectedGraph implements GraphInterface {
     }
 
     @Override
-    public ArrayList<Integer> bfs(int srcVtxID) {
+    public List<Integer> bfs(int srcVtxID) {
         // Check whether the input source vertex exists
         Vertex srcVtx = findVtx(srcVtxID);
         if (srcVtx == null) {
@@ -172,10 +174,10 @@ public class UndirectedGraph implements GraphInterface {
         // 1. Initialize G as s explored and other vertices unexplored
         srcVtx.setAsExplored();
         // 2. Let Q be the queue of vertices initialized with s
-        ArrayDeque<Vertex> queue = new ArrayDeque<>();
+        Queue<Vertex> queue = new ArrayDeque<>();
         queue.offer(srcVtx);
 
-        ArrayList<Integer> findableVtxIDs = new ArrayList<>();
+        List<Integer> findableVtxIDs = new ArrayList<>();
         findableVtxIDs.add(srcVtxID);
 
         // 3. While Q is not empty
@@ -225,7 +227,7 @@ public class UndirectedGraph implements GraphInterface {
         // 1. Initialize G as s explored and other vertices unexplored
         srcVtx.setAsExplored();
         // 2. Let Q be the queue of vertices initialized with s
-        ArrayDeque<Vertex> queue = new ArrayDeque<>();
+        Queue<Vertex> queue = new ArrayDeque<>();
         queue.offer(srcVtx);
         // 3. While Q is not empty
         while (!queue.isEmpty()) {
@@ -262,12 +264,12 @@ public class UndirectedGraph implements GraphInterface {
     @Override
     public int numOfConnectedComponentsWithBFS() {
         // Undirected connectivity
-        ArrayList<ArrayList<Integer>> components = new ArrayList<>();
+        List<List<Integer>> components = new ArrayList<>();
         for (Vertex vtx : vtxList) {
             // If v is unexplored (i.e., not explored from some previous BFS)
             if (!vtx.explored()) {
                 // Do BFS towards v   (Discovers precisely v's connected component)
-                ArrayList<Integer> component = bfs(vtx.id());
+                List<Integer> component = bfs(vtx.id());
                 components.add(component);
             }
         }
@@ -280,7 +282,7 @@ public class UndirectedGraph implements GraphInterface {
      */
 
     @Override
-    public ArrayList<Integer> dfs(int srcVtxID) {
+    public List<Integer> dfs(int srcVtxID) {
         // Check whether the input source vertex exists
         Vertex srcVtx = findVtx(srcVtxID);
         if (srcVtx == null) {
@@ -290,7 +292,7 @@ public class UndirectedGraph implements GraphInterface {
         // Initialize G as s explored and other vertices unexplored
         srcVtx.setAsExplored();
 
-        ArrayList<Integer> findableVtxIDs = new ArrayList<>();
+        List<Integer> findableVtxIDs = new ArrayList<>();
         findableVtxIDs.add(srcVtxID);
 
         dfsHelper(srcVtx, findableVtxIDs);
@@ -304,7 +306,7 @@ public class UndirectedGraph implements GraphInterface {
      * @param vtx
      * @param findableVtxIDs all the findable vertices
      */
-    private void dfsHelper(Vertex vtx, ArrayList<Integer> findableVtxIDs) {
+    private void dfsHelper(Vertex vtx, List<Integer> findableVtxIDs) {
         // For every edge (v, w)
         for (UndirectedEdge edge : vtx.edges()) {
             // Find the neighbor
@@ -330,13 +332,13 @@ public class UndirectedGraph implements GraphInterface {
     @Override
     public int numOfConnectedComponentsWithDFS() {
         // Undirected connectivity
-        ArrayList<ArrayList<Integer>> components = new ArrayList<>();
+        List<List<Integer>> components = new ArrayList<>();
         // For every vertex v
         for (Vertex vtx : vtxList) {
             // If v is unexplored (i.e., not explored from some previous DFS)
             if (!vtx.explored()) {
                 // Do DFS towards v   (Discovers precisely v's connected component)
-                ArrayList<Integer> component = dfs(vtx.id());
+                List<Integer> component = dfs(vtx.id());
                 components.add(component);
             }
         }

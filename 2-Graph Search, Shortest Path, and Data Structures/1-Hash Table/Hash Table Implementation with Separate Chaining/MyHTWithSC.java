@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * A very simple hash table implementation with separate chaining, mapping
@@ -58,7 +59,7 @@ public class MyHTWithSC implements MyHTInterface {
     /**
      * Underlying data items.
      */
-    private ArrayList<LinkedList<DataItem>> data;
+    private List<LinkedList<DataItem>> data;
     /**
      * Number of data items.
      */
@@ -90,8 +91,8 @@ public class MyHTWithSC implements MyHTInterface {
      * @param capacity capacity
      * @return created data list
      */
-    private ArrayList<LinkedList<DataItem>> initializeData(int capacity) {
-        ArrayList<LinkedList<DataItem>> data = new ArrayList<>();
+    private List<LinkedList<DataItem>> initializeData(int capacity) {
+        List<LinkedList<DataItem>> data = new ArrayList<>();
         for (int i = 0; i < capacity; ++i) {
             data.add(new LinkedList<DataItem>());
         }
@@ -169,7 +170,7 @@ public class MyHTWithSC implements MyHTInterface {
     private void rehash() {
         // Rather than insert the words again, we simply need to reconnect the references between two lists
         // Temporarily store the original list
-        ArrayList<LinkedList<DataItem>> tmp = data;
+        List<LinkedList<DataItem>> tmp = data;
         // Create the new list
         int newSize = findNextPrime(data.size() * 2 + 1);
         data = initializeData(newSize);

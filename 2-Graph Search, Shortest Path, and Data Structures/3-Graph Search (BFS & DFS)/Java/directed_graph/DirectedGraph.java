@@ -2,6 +2,8 @@ package directed_graph;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Queue;
 
 import graph.GraphInterface;
 
@@ -16,11 +18,11 @@ public class DirectedGraph implements GraphInterface {
     /**
      * Vertex list.
      */
-    private final ArrayList<Vertex> vtxList;
+    private final List<Vertex> vtxList;
     /**
      * Edge list.
      */
-    private final ArrayList<DirectedEdge> edgeList;
+    private final List<DirectedEdge> edgeList;
 
     /**
      * Default constructor.
@@ -73,7 +75,7 @@ public class DirectedGraph implements GraphInterface {
      */
     private void removeVtx(Vertex vtxToRemove) {
         // Remove all the edges associated with the vertex to remove
-        ArrayList<DirectedEdge> edgesToRemove = new ArrayList<DirectedEdge>();
+        List<DirectedEdge> edgesToRemove = new ArrayList<DirectedEdge>();
         edgesToRemove.addAll(vtxToRemove.emissiveEdges());
         edgesToRemove.addAll(vtxToRemove.incidentEdges());
         while (edgesToRemove.size() > 0) {
@@ -162,7 +164,7 @@ public class DirectedGraph implements GraphInterface {
     }
 
     @Override
-    public ArrayList<Integer> bfs(int srcVtxID) {
+    public List<Integer> bfs(int srcVtxID) {
         // Check whether the input source vertex exists
         Vertex srcVtx = findVtx(srcVtxID);
         if (srcVtx == null) {
@@ -172,10 +174,10 @@ public class DirectedGraph implements GraphInterface {
         // 1. Initialize G as s explored and other vertices unexplored
         srcVtx.setAsExplored();
         // 2. Let Q be the queue of vertices initialized with s
-        ArrayDeque<Vertex> queue = new ArrayDeque<>();
+        Queue<Vertex> queue = new ArrayDeque<>();
         queue.offer(srcVtx);
 
-        ArrayList<Integer> findableVtxIDs = new ArrayList<>();
+        List<Integer> findableVtxIDs = new ArrayList<>();
         findableVtxIDs.add(srcVtxID);
 
         // 3. While Q is not empty
@@ -218,7 +220,7 @@ public class DirectedGraph implements GraphInterface {
         // 1. Initialize G as s explored and other vertices unexplored
         srcVtx.setAsExplored();
         // 2. Let Q be the queue of vertices initialized with s
-        ArrayDeque<Vertex> queue = new ArrayDeque<>();
+        Queue<Vertex> queue = new ArrayDeque<>();
         queue.offer(srcVtx);
         // 3. While Q is not empty
         while (!queue.isEmpty()) {
@@ -259,7 +261,7 @@ public class DirectedGraph implements GraphInterface {
      */
 
     @Override
-    public ArrayList<Integer> dfs(int srcVtxID) {
+    public List<Integer> dfs(int srcVtxID) {
         // Check whether the input source vertex exists
         Vertex srcVtx = findVtx(srcVtxID);
         if (srcVtx == null) {
@@ -269,7 +271,7 @@ public class DirectedGraph implements GraphInterface {
         // Initialize G as s explored and other vertices unexplored
         srcVtx.setAsExplored();
 
-        ArrayList<Integer> findableVtxIDs = new ArrayList<>();
+        List<Integer> findableVtxIDs = new ArrayList<>();
         findableVtxIDs.add(srcVtxID);
 
         dfsHelper(srcVtx, findableVtxIDs);
@@ -283,7 +285,7 @@ public class DirectedGraph implements GraphInterface {
      * @param vtx given vertex
      * @param findableVtxIDs all the findable vertices
      */
-    private void dfsHelper(Vertex vtx, ArrayList<Integer> findableVtxIDs) {
+    private void dfsHelper(Vertex vtx, List<Integer> findableVtxIDs) {
         // For every directed edge (v, w)
         for (DirectedEdge edge : vtx.emissiveEdges()) {
             Vertex w = edge.head();
@@ -311,7 +313,7 @@ public class DirectedGraph implements GraphInterface {
          *    connected.
          */
         // 1. Run DFS-loop on G   [First pass]
-        ArrayList<Vertex> vtxsSortedByFinishTime = getVtxsSortedByFinishTime();
+        List<Vertex> vtxsSortedByFinishTime = getVtxsSortedByFinishTime();
         // Essentially, the vertices sorted by this finishing time is exactly the reversed topological ordering.
 
         // 2. Clear explored and get ready for the second pass
@@ -338,8 +340,8 @@ public class DirectedGraph implements GraphInterface {
      * using DFS.
      * @return vertices sorted by finishing time
      */
-    private ArrayList<Vertex> getVtxsSortedByFinishTime() {
-        ArrayList<Vertex> vtxsSortedByFinishTime = new ArrayList<>();
+    private List<Vertex> getVtxsSortedByFinishTime() {
+        List<Vertex> vtxsSortedByFinishTime = new ArrayList<>();
         // For every vertex v
         for (Vertex vtx : vtxList) {
             // If v is unexplored
@@ -359,7 +361,7 @@ public class DirectedGraph implements GraphInterface {
      * @param vtx given vertex
      * @param vtxsSortedByFinishTime vertices sorted by finishing time
      */
-    private void dfsHelperWithFinishTime(Vertex vtx, ArrayList<Vertex> vtxsSortedByFinishTime) {
+    private void dfsHelperWithFinishTime(Vertex vtx, List<Vertex> vtxsSortedByFinishTime) {
         // For every edge (v, w)
         for (DirectedEdge edge : vtx.emissiveEdges()) {
             Vertex w = edge.head();
@@ -381,7 +383,7 @@ public class DirectedGraph implements GraphInterface {
      * @return topological ordering of the vertices
      */
     public int[] topologicalSort() {
-        ArrayList<Vertex> vtxsSortdByFinishTime = getVtxsSortedByFinishTime();
+        List<Vertex> vtxsSortdByFinishTime = getVtxsSortedByFinishTime();
         // Essentially, the vertices sorted by this finishing time is exactly the reversed topological ordering.
 
         int n = vtxList.size();

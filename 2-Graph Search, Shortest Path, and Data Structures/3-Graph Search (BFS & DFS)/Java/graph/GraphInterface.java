@@ -1,6 +1,6 @@
 package graph;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A very simple interface for any graph implementation.
@@ -45,7 +45,7 @@ public interface GraphInterface {
      * @param srcVtxID source vertex ID
      * @return all the findable vertices
      */
-    ArrayList<Integer> bfs(int srcVtxID);
+    List<Integer> bfs(int srcVtxID);
 
     /**
      * Sets all the vertices to unexplored.
@@ -77,7 +77,7 @@ public interface GraphInterface {
      * @param srcVtxID source vertex ID
      * @return all the findable vertices
      */
-    ArrayList<Integer> dfs(int srcVtxID);
+    List<Integer> dfs(int srcVtxID);
 
     /**
      * Returns the number of connected components of this graph using DFS.
