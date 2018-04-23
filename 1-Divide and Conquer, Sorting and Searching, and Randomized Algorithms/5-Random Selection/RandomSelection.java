@@ -47,7 +47,7 @@ public class RandomSelection {
         if (left == right) {
             return nums[left];
         }
-        // Choose a pivot from the given sub-array, and move it to the left
+        // Choose a pivot from the given subarray, and move it to the left
         choosePivot(nums, left, right);
         int pivotIdx = partition(nums, left, right);
         // Base case 2: Found it
@@ -67,14 +67,14 @@ public class RandomSelection {
     }
 
     /**
-     * Helper method to choose a pivot from the given sub-array, and move it to
+     * Helper method to choose a pivot from the given subarray, and move it to
      * the left.
      * @param nums array to sort
      * @param left left bound
      * @param right right bound
      */
     private void choosePivot(int[] nums, int left, int right) {
-        // [Randomized] Randomly choose a pivot from the given sub-array
+        // [Randomized] Randomly choose a pivot from the given subarray
         Random randomGenerator = new Random();
         int pivotIdx = left + randomGenerator.nextInt(right + 1 - left);
         // Move the pivot to the left
