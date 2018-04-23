@@ -2,6 +2,7 @@ package directed_graph;
 
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.List;
 
 import graph.AbstractVertex;
 
@@ -16,7 +17,7 @@ class Vertex extends AbstractVertex {
     /**
      * Emissive edge of this vertex.
      */
-    private final ArrayList<DirectedEdge> emissiveEdges;
+    private final List<DirectedEdge> emissiveEdges;
     /**
      * Emissive edges of this vertex.
      */
@@ -24,7 +25,7 @@ class Vertex extends AbstractVertex {
     /**
      * Incident of this vertex.
      */
-    private final ArrayList<DirectedEdge> incidentEdges;
+    private final List<DirectedEdge> incidentEdges;
     /**
      * Incident neighbors of this vertex.
      */
@@ -66,7 +67,7 @@ class Vertex extends AbstractVertex {
      * Accessor of emissiveEdges.
      * @return emissiveEdges
      */
-    ArrayList<DirectedEdge> emissiveEdges() {
+    List<DirectedEdge> emissiveEdges() {
         return emissiveEdges;
     }
 
@@ -94,7 +95,7 @@ class Vertex extends AbstractVertex {
      * Accessor of incidentEdges.
      * @return incidentEdges
      */
-    ArrayList<DirectedEdge> incidentEdges() {
+    List<DirectedEdge> incidentEdges() {
         return incidentEdges;
     }
 

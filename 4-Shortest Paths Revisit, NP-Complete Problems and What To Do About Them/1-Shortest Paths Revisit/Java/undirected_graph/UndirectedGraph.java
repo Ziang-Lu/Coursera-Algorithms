@@ -2,6 +2,7 @@ package undirected_graph;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 import graph.GraphInterface;
 
@@ -21,11 +22,11 @@ public class UndirectedGraph implements GraphInterface {
     /**
      * Vertex list.
      */
-    private final ArrayList<Vertex> vtxList;
+    private final List<Vertex> vtxList;
     /**
      * Edge list.
      */
-    private final ArrayList<UndirectedEdge> edgeList;
+    private final List<UndirectedEdge> edgeList;
     /**
      * Bellman-Ford subproblem solutions.
      * Since there are only O(n^2) subproblems, the first time we solve a
@@ -85,7 +86,7 @@ public class UndirectedGraph implements GraphInterface {
      */
     private void removeVtx(Vertex vtxToRemove) {
         // Remove all the edges associated with the vertex to remove
-        ArrayList<UndirectedEdge> edgesToRemove = vtxToRemove.edges();
+        List<UndirectedEdge> edgesToRemove = vtxToRemove.edges();
         while (edgesToRemove.size() > 0) {
             UndirectedEdge edgeToRemove = edgesToRemove.get(0);
             removeEdge(edgeToRemove);
@@ -174,7 +175,7 @@ public class UndirectedGraph implements GraphInterface {
     }
 
     @Override
-    public ArrayList<LinkedList<Integer>> bellmanFordShortestPaths(int srcVtxID) {
+    public List<LinkedList<Integer>> bellmanFordShortestPaths(int srcVtxID) {
         // Check whether the input source vertex exists
         Vertex srcVtx = findVtx(srcVtxID);
         if (srcVtx == null) {
@@ -255,8 +256,8 @@ public class UndirectedGraph implements GraphInterface {
      * optimal solution using backtracking.
      * @return shortest paths
      */
-    private ArrayList<LinkedList<Integer>> reconstructShortestPaths() {
-        ArrayList<LinkedList<Integer>> shortestPaths = new ArrayList<>();
+    private List<LinkedList<Integer>> reconstructShortestPaths() {
+        List<LinkedList<Integer>> shortestPaths = new ArrayList<>();
         for (Vertex vtx : vtxList) {
             LinkedList<Integer> shortestPath = new LinkedList<>();
             shortestPath.add(vtx.id());
@@ -293,7 +294,7 @@ public class UndirectedGraph implements GraphInterface {
     }
 
     @Override
-    public ArrayList<LinkedList<Integer>> bellmanFordShortestPathsOptimized(int srcVtxID) {
+    public List<LinkedList<Integer>> bellmanFordShortestPathsOptimized(int srcVtxID) {
         // Check whether the input source vertex exists
         Vertex srcVtx = findVtx(srcVtxID);
         if (srcVtx == null) {
@@ -380,8 +381,8 @@ public class UndirectedGraph implements GraphInterface {
      * @param penultimateVtxs penultimate vertices in the shortest paths
      * @return shortest paths
      */
-    private ArrayList<LinkedList<Integer>> reconstructShortestPathsOptimized(Vertex[] penultimateVtxs) {
-        ArrayList<LinkedList<Integer>> shortestPaths = new ArrayList<>();
+    private List<LinkedList<Integer>> reconstructShortestPathsOptimized(Vertex[] penultimateVtxs) {
+        List<LinkedList<Integer>> shortestPaths = new ArrayList<>();
         for (Vertex vtx : vtxList) {
             LinkedList<Integer> shortestPath = new LinkedList<>();
             Vertex currVtx = vtx;
@@ -397,7 +398,7 @@ public class UndirectedGraph implements GraphInterface {
     }
 
     @Override
-    public ArrayList<LinkedList<Integer>> bellmanFordShortestPathsDestDriven(int destVtxID) {
+    public List<LinkedList<Integer>> bellmanFordShortestPathsDestDriven(int destVtxID) {
         // Check whether the input destination vertex exists
         Vertex destVtx = findVtx(destVtxID);
         if (destVtx == null) {
@@ -478,8 +479,8 @@ public class UndirectedGraph implements GraphInterface {
      * paths according to the optimal solution using backtracking.
      * @return destination-driven shortest paths
      */
-    private ArrayList<LinkedList<Integer>> reconstructShortestPathsDestDriven() {
-        ArrayList<LinkedList<Integer>> shortestPaths = new ArrayList<>();
+    private List<LinkedList<Integer>> reconstructShortestPathsDestDriven() {
+        List<LinkedList<Integer>> shortestPaths = new ArrayList<>();
         for (Vertex vtx : vtxList) {
             LinkedList<Integer> shortestPath = new LinkedList<>();
             shortestPath.add(vtx.id());
@@ -516,7 +517,7 @@ public class UndirectedGraph implements GraphInterface {
     }
 
     @Override
-    public ArrayList<LinkedList<Integer>> bellmanFordShortestPathsDestDrivenOptimized(int destVtxID) {
+    public List<LinkedList<Integer>> bellmanFordShortestPathsDestDrivenOptimized(int destVtxID) {
         // Check whether the input destination vertex exists
         Vertex destVtx = findVtx(destVtxID);
         if (destVtx == null) {
@@ -602,8 +603,8 @@ public class UndirectedGraph implements GraphInterface {
      * @param nextVtxs next vertices in the shortest paths
      * @return destination-driven shortest paths
      */
-    private ArrayList<LinkedList<Integer>> reconstructShortestPathsDestDrivenOptimized(Vertex[] nextVtxs) {
-        ArrayList<LinkedList<Integer>> shortestPaths = new ArrayList<>();
+    private List<LinkedList<Integer>> reconstructShortestPathsDestDrivenOptimized(Vertex[] nextVtxs) {
+        List<LinkedList<Integer>> shortestPaths = new ArrayList<>();
         for (Vertex vtx : vtxList) {
             LinkedList<Integer> shortestPath = new LinkedList<>();
             Vertex currVtx = vtx;
@@ -619,7 +620,7 @@ public class UndirectedGraph implements GraphInterface {
     }
 
     @Override
-    public ArrayList<LinkedList<Integer>> shortestPathsDestDrivenPushBased(int destVtxID) {
+    public List<LinkedList<Integer>> shortestPathsDestDrivenPushBased(int destVtxID) {
         // Check whether the input destination vertex exists
         Vertex destVtx = findVtx(destVtxID);
         if (destVtx == null) {

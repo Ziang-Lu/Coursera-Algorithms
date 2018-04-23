@@ -22,6 +22,7 @@
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Set;
 
 public class KnapsackWithGreedyHeuristic {
 
@@ -87,7 +88,7 @@ public class KnapsackWithGreedyHeuristic {
      * @param cap capacity of the knapsack
      * @return included items
      */
-    public HashSet<Integer> knapsackGreedy(double[] vals, int[] weights, int cap) {
+    public Set<Integer> knapsackGreedy(double[] vals, int[] weights, int cap) {
         // Check whether the input arrays are null or empty
         if ((vals == null) || (vals.length == 0) || (weights == null) || (weights.length == 0)) {
             throw new IllegalArgumentException("The input values and weights should not be null or empty.");
@@ -103,7 +104,7 @@ public class KnapsackWithGreedyHeuristic {
             items[idx] = new Item(idx, vals[idx], weights[idx]);
         }
 
-        HashSet<Integer> includedItems1 = greedyPacking(items, cap, new Comparator<Item>() {
+        Set<Integer> includedItems1 = greedyPacking(items, cap, new Comparator<Item>() {
             @Override
             public int compare(Item o1, Item o2) {
                 double ratio1 = o1.getVal() / o1.getWeight(), ratio2 = o2.getVal() / o2.getWeight();
@@ -115,7 +116,7 @@ public class KnapsackWithGreedyHeuristic {
             totalVal1 += vals[idx];
         }
 
-        HashSet<Integer> includedItems2 = greedyPacking(items, cap, new Comparator<Item>() {
+        Set<Integer> includedItems2 = greedyPacking(items, cap, new Comparator<Item>() {
             @Override
             public int compare(Item o1, Item o2) {
                 return Double.compare(o2.getVal(), o1.getVal());
@@ -141,9 +142,9 @@ public class KnapsackWithGreedyHeuristic {
      * @param comparator given greedy heuristic
      * @return included items
      */
-    private HashSet<Integer> greedyPacking(Item[] items, int cap, Comparator<Item> comparator) {
+    private Set<Integer> greedyPacking(Item[] items, int cap, Comparator<Item> comparator) {
         Arrays.sort(items, comparator);
-        HashSet<Integer> includedItems = new HashSet<>();
+        Set<Integer> includedItems = new HashSet<>();
         int totalWeight = 0;
         for (int i = 0; i < items.length; ++i) {
             if ((totalWeight + items[i].getWeight()) > cap) {

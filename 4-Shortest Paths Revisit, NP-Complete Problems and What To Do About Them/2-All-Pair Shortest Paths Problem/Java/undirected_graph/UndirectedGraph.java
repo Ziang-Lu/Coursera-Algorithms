@@ -1,7 +1,7 @@
 package undirected_graph;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 
 import graph.GraphInterface;
 
@@ -21,11 +21,11 @@ public class UndirectedGraph implements GraphInterface {
     /**
      * Vertex list.
      */
-    private final ArrayList<Vertex> vtxList;
+    private final List<Vertex> vtxList;
     /**
      * Edge list.
      */
-    private final ArrayList<UndirectedEdge> edgeList;
+    private final List<UndirectedEdge> edgeList;
     /**
      * Floyd-Warshall subproblem solutions.
      * Since there are only O(n^2) subproblems, the first time we solve a
@@ -85,7 +85,7 @@ public class UndirectedGraph implements GraphInterface {
      */
     private void removeVtx(Vertex vtxToRemove) {
         // Remove all the edges associated with the vertex to remove
-        ArrayList<UndirectedEdge> edgesToRemove = vtxToRemove.edges();
+        List<UndirectedEdge> edgesToRemove = vtxToRemove.edges();
         while (edgesToRemove.size() > 0) {
             UndirectedEdge edgeToRemove = edgesToRemove.get(0);
             removeEdge(edgeToRemove);
@@ -219,7 +219,6 @@ public class UndirectedGraph implements GraphInterface {
             }
         }
         // The final solution lies in exactly subproblems[n][s][d].
-        System.out.println(Arrays.deepToString(floydWarshallSubproblems[n]));
         return floydWarshallSubproblems[n];
         // Overall running time complexity: O(n^3)
         // Overall space complexity: O(n^3)

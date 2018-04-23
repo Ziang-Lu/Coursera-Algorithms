@@ -16,12 +16,12 @@
  */
 
 import java.awt.geom.Point2D;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Scanner;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class TSPSolver {
 
@@ -45,7 +45,7 @@ public class TSPSolver {
         int n = cities.length, s = 0;
 
         // Initialization
-        ArrayList<HashMap<String, Float>> A = new ArrayList<>();
+        List<Map<String, Float>> A = new ArrayList<>();
         // Convert the city subset that contains only the source city to a BitSet
         StringBuilder srcS = new StringBuilder();
         for (int v = 0; v < n; ++v) {
@@ -53,7 +53,7 @@ public class TSPSolver {
         }
         srcS.setCharAt(s, '1');
         for (int v = 0; v < n; ++v) {
-            HashMap<String, Float> shortestPathLenths = new HashMap<>();
+            Map<String, Float> shortestPathLenths = new HashMap<>();
             if (v == s) {
                 shortestPathLenths.put(srcS.toString(), (float) 0.0);
             } else {
@@ -64,7 +64,7 @@ public class TSPSolver {
 
         // Bottom-up calculation
         for (int m = 2; m <= n; ++m) {
-            for (HashSet<Integer> subset : combinations(n, m)) {
+            for (Set<Integer> subset : combinations(n, m)) {
                 // The source city must be in the city subset.
                 if (!subset.contains(s)) {
                     continue;
@@ -81,7 +81,7 @@ public class TSPSolver {
                     }
 
                     if (v == s) {
-                        HashMap<String, Float> shortestPathLengths = A.get(s);
+                        Map<String, Float> shortestPathLengths = A.get(s);
                         shortestPathLengths.put(S.toString(), (float) INFINITY);
                         A.set(s, shortestPathLengths);
                         continue;
@@ -101,7 +101,7 @@ public class TSPSolver {
                         }
                     }
                     changeBit(S, v, true);
-                    HashMap<String, Float> shortestPathLengths = A.get(v);
+                    Map<String, Float> shortestPathLengths = A.get(v);
                     shortestPathLengths.put(S.toString(), minPathLength);
                     A.set(v, shortestPathLengths);
                 }
@@ -139,8 +139,8 @@ public class TSPSolver {
      * @param k given k
      * @return combinations from 0 to (n - 1) with k numbers
      */
-    private ArrayList<HashSet<Integer>> combinations(int n, int k) {
-        ArrayList<HashSet<Integer>> combs = new ArrayList<>();
+    private List<Set<Integer>> combinations(int n, int k) {
+        List<Set<Integer>> combs = new ArrayList<>();
         combinationsHelper(n, 0, k, combs, new HashSet<Integer>());
         return combs;
         // Running time complexity: O(n^k)
@@ -155,16 +155,15 @@ public class TSPSolver {
      * @param combs all combinations
      * @param combSoFar combination so far
      */
-    private void combinationsHelper(int n, int i, int budget, ArrayList<HashSet<Integer>> combs,
-            HashSet<Integer> combSoFar) {
+    private void combinationsHelper(int n, int i, int budget, List<Set<Integer>> combs, Set<Integer> combSoFar) {
         // Base case 1: No more budget
         if (budget <= 0) {
-            combs.add(new HashSet<Integer>(combSoFar));
+            combs.add(new HashSet<>(combSoFar));
             return;
         }
         // Base case 2: Have to add all the remaining numbers
         if ((n - i) <= budget) {
-            HashSet<Integer> combSoFarCopy = new HashSet<>(combSoFar);
+            Set<Integer> combSoFarCopy = new HashSet<>(combSoFar);
             for (int j = i; j < n; ++j) {
                 combSoFarCopy.add(j);
             }
@@ -187,7 +186,7 @@ public class TSPSolver {
      * @param setIdxs set indices
      * @return constructed bit string
      */
-    private StringBuilder constructBitStr(int length, HashSet<Integer> setIdxs) {
+    private StringBuilder constructBitStr(int length, Set<Integer> setIdxs) {
         StringBuilder bitStr = new StringBuilder();
         for (int i = 0; i < length; ++i) {
             bitStr.append('0');
@@ -242,14 +241,14 @@ public class TSPSolver {
 
         // Initialization
         // Space optimization: We only keep track of the subproblem solutions in the previous out-most iteration.
-        ArrayList<HashMap<String, Float>> prevMSubproblems = new ArrayList<>();
+        List<Map<String, Float>> prevMSubproblems = new ArrayList<>();
         StringBuilder srcS = new StringBuilder();
         for (int v = 0; v < n; ++v) {
             srcS.append('0');
         }
         srcS.setCharAt(s, '1');
         for (int v = 0; v < n; ++v) {
-            HashMap<String, Float> shortestPathLenths = new HashMap<>();
+            Map<String, Float> shortestPathLenths = new HashMap<>();
             if (v == s) {
                 shortestPathLenths.put(srcS.toString(), (float) 0.0);
             } else {
@@ -261,12 +260,12 @@ public class TSPSolver {
         // Bottom-up calculation
         for (int m = 2; m <= n; ++m) {
             // Initialize the subproblems of size-m subsets
-            ArrayList<HashMap<String, Float>> currMSubproblems = new ArrayList<>();
+            List<Map<String, Float>> currMSubproblems = new ArrayList<>();
             for (int v = 0; v < n; ++v) {
-                currMSubproblems.add(new HashMap<String, Float>());
+                currMSubproblems.add(new HashMap<>());
             }
 
-            for (HashSet<Integer> subset : combinations(n, m)) {
+            for (Set<Integer> subset : combinations(n, m)) {
                 if (!subset.contains(s)) {
                     continue;
                 }
@@ -277,7 +276,7 @@ public class TSPSolver {
                     }
 
                     if (v == s) {
-                        HashMap<String, Float> shortestPathLengths = prevMSubproblems.get(s);
+                        Map<String, Float> shortestPathLengths = prevMSubproblems.get(s);
                         shortestPathLengths.put(S.toString(), (float) INFINITY);
                         currMSubproblems.set(s, shortestPathLengths);
                         continue;
@@ -295,7 +294,7 @@ public class TSPSolver {
                         }
                     }
                     changeBit(S, v, true);
-                    HashMap<String, Float> shortestPathLengths = prevMSubproblems.get(v);
+                    Map<String, Float> shortestPathLengths = prevMSubproblems.get(v);
                     shortestPathLengths.put(S.toString(), minPathLength);
                     currMSubproblems.set(v, shortestPathLengths);
                 }

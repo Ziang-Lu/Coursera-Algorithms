@@ -1,7 +1,7 @@
 package graph;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * A very simple interface for any graph implementation.
@@ -51,7 +51,7 @@ public interface GraphInterface {
      * @param srcVtxID source vertex ID
      * @return shortest paths
      */
-    ArrayList<LinkedList<Integer>> bellmanFordShortestPaths(int srcVtxID);
+    List<LinkedList<Integer>> bellmanFordShortestPaths(int srcVtxID);
 
     /**
      * Returns the mapping between the vertices and the shortest paths from the
@@ -62,7 +62,7 @@ public interface GraphInterface {
      * @param srcVtxID source vertex ID
      * @return shortest paths
      */
-    ArrayList<LinkedList<Integer>> bellmanFordShortestPathsOptimized(int srcVtxID);
+    List<LinkedList<Integer>> bellmanFordShortestPathsOptimized(int srcVtxID);
 
     /**
      * Returns the mapping between the vertices and the shortest paths to the
@@ -73,7 +73,7 @@ public interface GraphInterface {
      * @param destVtxID destination vertex ID
      * @return destination-driven shortest paths
      */
-    ArrayList<LinkedList<Integer>> bellmanFordShortestPathsDestDriven(int destVtxID);
+    List<LinkedList<Integer>> bellmanFordShortestPathsDestDriven(int destVtxID);
 
     /**
      * Returns the mapping between the vertices and the shortest paths to the
@@ -84,7 +84,7 @@ public interface GraphInterface {
      * @param destVtxID destination vertex ID
      * @return destination-driven shortest paths
      */
-    ArrayList<LinkedList<Integer>> bellmanFordShortestPathsDestDrivenOptimized(int destVtxID);
+    List<LinkedList<Integer>> bellmanFordShortestPathsDestDrivenOptimized(int destVtxID);
 
     /**
      * Returns the mapping between the vertices and the shortest paths to the
@@ -92,6 +92,6 @@ public interface GraphInterface {
      * @param destVtxID destination vertex ID
      * @return destination-driven shortest paths
      */
-    ArrayList<LinkedList<Integer>> shortestPathsDestDrivenPushBased(int destVtxID);
+    List<LinkedList<Integer>> shortestPathsDestDrivenPushBased(int destVtxID);
 
 }
