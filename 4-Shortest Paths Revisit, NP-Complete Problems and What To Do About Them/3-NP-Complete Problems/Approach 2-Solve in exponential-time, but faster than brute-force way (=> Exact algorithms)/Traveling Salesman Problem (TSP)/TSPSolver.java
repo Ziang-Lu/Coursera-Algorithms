@@ -17,6 +17,7 @@
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -141,43 +142,36 @@ public class TSPSolver {
      */
     private List<Set<Integer>> combinations(int n, int k) {
         List<Set<Integer>> combs = new ArrayList<>();
-        combinationsHelper(n, 0, k, combs, new HashSet<Integer>());
+        combinationsHelper(combs, new Integer[k], 0, 0, n - 1);
         return combs;
         // Running time complexity: O(n^k)
     }
 
     /**
-     * Private helper method to choose the given budget of numbers from i to
-     * (n - 1) recursively.
-     * @param n given numbers
-     * @param i given current index
-     * @param budget given budget
+     * Private helper method to set the given spot to some number in the current
+     * combination.
      * @param combs all combinations
-     * @param combSoFar combination so far
+     * @param currComb current combination
+     * @param spot given spot
+     * @param start smallest candidate for the given spot
+     * @param n largest candidate for the given spot
      */
-    private void combinationsHelper(int n, int i, int budget, List<Set<Integer>> combs, Set<Integer> combSoFar) {
-        // Base case 1: No more budget
-        if (budget <= 0) {
-            combs.add(new HashSet<>(combSoFar));
-            return;
-        }
-        // Base case 2: Have to add all the remaining numbers
-        if ((n - i) <= budget) {
-            Set<Integer> combSoFarCopy = new HashSet<>(combSoFar);
-            for (int j = i; j < n; ++j) {
-                combSoFarCopy.add(j);
-            }
-            combs.add(combSoFarCopy);
-            return;
-        }
+    private void combinationsHelper(List<Set<Integer>> combs, Integer[] currComb, int spot, int start, int n) {
+        // We can keep the invariant that all the combinations are sorted. Thus [start, n] serves as the candidates for
+        // the current spot.
 
+        // Base case
+        if (spot >= currComb.length) {
+            combs.add(new HashSet<>(Arrays.asList(currComb)));
+            return;
+        }
         // Recursive case
-        // Include the current number, and then recurse
-        combSoFar.add(i);
-        combinationsHelper(n, i + 1, budget - 1, combs, combSoFar);
-        // Not include the current number (remove the current number due to the previous recursion), and then recurse
-        combSoFar.remove(i);
-        combinationsHelper(n, i + 1, budget, combs, combSoFar);
+        for (int candidate = start; candidate < n; ++candidate) {
+            currComb[spot] = candidate;
+            // Since all of the final combinations should be sorted and all the candidates can only be used once, the
+            // candidates for the remaining spots should be [candidate + 1, n].
+            combinationsHelper(combs, currComb, spot + 1, start + 1, n);
+        }
     }
 
     /**
