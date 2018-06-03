@@ -13,7 +13,6 @@ def karatsuba(x, y):
     :param y: int
     :return: int
     """
-
     # We assume that the input x and y are both non-negative.
 
     x_s, y_s = str(x), str(y)
