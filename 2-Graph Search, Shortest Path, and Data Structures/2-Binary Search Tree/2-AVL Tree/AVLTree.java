@@ -2,7 +2,7 @@
  * A very simple self-balanced AVL Tree implementation.
  *
  * Invariant of an AVL Tree:
- * The heights of the left and right sub-trees of any node in an AVL Tree won't
+ * The heights of the left and right subtrees of any node in an AVL Tree won't
  * differ more than 1.
  *
  * @author Ziang Lu
@@ -55,11 +55,11 @@ public class AVLTree implements BSTInterface {
     }
 
     /**
-     * Private helper method to search for the given key in the given sub-tree
+     * Private helper method to search for the given key in the given subtree
      * recursively.
      * @param key key to search for
      * @param curr current node
-     * @return whether the key is in the sub-tree
+     * @return whether the key is in the subtree
      */
     private boolean searchHelper(int key, Node curr) {
         // Base case 1: Not found
@@ -74,7 +74,7 @@ public class AVLTree implements BSTInterface {
         // Recursive case
         return searchHelper(key, curr.left) || searchHelper(key, curr.right);
     }
-    
+
     @Override
     public void insert(int key) {
         if (root == null) {
@@ -86,13 +86,13 @@ public class AVLTree implements BSTInterface {
     }
 
     /**
-     * Private helper method to insert the given key to the given sub-tree
+     * Private helper method to insert the given key to the given subtree
      * recursively.
      * @param key key to insert
      * @param parent parent node
      * @param curr current node
      * @param isLC whether the current node is the left child
-     * @return root of the sub-tree after insertion
+     * @return root of the subtree after insertion
      */
     private Node insertHelper(int key, Node parent, Node curr, boolean isLC) {
         // Base case 1: Found the spot to insert
@@ -118,7 +118,7 @@ public class AVLTree implements BSTInterface {
             curr.right = insertHelper(key, curr, curr.right, false);
         }
 
-        // An insertion in the left or right sub-tree may break the balance of the current node.
+        // An insertion in the left or right subtree may break the balance of the current node.
         return rebalance(curr);
         // T(n) = T(n/2) + O(n)
         // a = 1, b = 2, d = 1
@@ -131,25 +131,25 @@ public class AVLTree implements BSTInterface {
     /**
      * Helper method to rebalance the given node if it is unbalanced.
      * @param curr given node
-     * @return root of the sub-tree after rebalancing
+     * @return root of the subtree after rebalancing
      */
     private Node rebalance(Node curr) {
         int balance = getBalance(curr);
         // For detailed explanation, please refer to the tutorial.
         if ((balance > 1) && (getBalance(curr.left) > 0)) {
             // Left-left imbalance
-            // For the unbalanced node, the height of the left sub-tree is 2 higher than the right sub-tree;
-            // for the left child, the height of the left sub-tree is 1 higher than the right sub-tree.
+            // For the unbalanced node, the height of the left subtree is 2 higher than the right subtree;
+            // for the left child, the height of the left subtree is 1 higher than the right subtree.
             return rightRotate(curr);
         } else if ((balance < -1) && (getBalance(curr.right) < 0)) {
             // Right-right imbalance
-            // For the unbalanced node, the height of the right sub-tree is 2 higher than the left sub-tree;
-            // for the right child, the height of the right sub-tree is 1 higher than the left sub-tree.
+            // For the unbalanced node, the height of the right subtree is 2 higher than the left subtree;
+            // for the right child, the height of the right subtree is 1 higher than the left subtree.
             return leftRotate(curr);
         } else if ((balance > 1) && (getBalance(curr.left) < 0)) {
             // Left-right imbalance
-            // For the unbalanced node, the height of the left sub-tree is 2 higher than the right sub-tree;
-            // for the left child, the height of the right sub-tree is 1 higher than the left sub-tree.
+            // For the unbalanced node, the height of the left subtree is 2 higher than the right subtree;
+            // for the left child, the height of the right subtree is 1 higher than the left subtree.
 
             // First do a left rotation towards the left child, making the case a left-left imbalance
             curr.left = leftRotate(curr.left);
@@ -157,8 +157,8 @@ public class AVLTree implements BSTInterface {
             return rightRotate(curr);
         } else if ((balance < -1) && (getBalance(curr.right) > 0)) {
             // Right-left imbalance
-            // For the unbalanced node, the height of the right sub-tree is 2 higher than the left sub-tree;
-            // for the right child, the height of the left sub-tree is 1 higher than the right sub-tree.
+            // For the unbalanced node, the height of the right subtree is 2 higher than the left subtree;
+            // for the right child, the height of the left subtree is 1 higher than the right subtree.
 
             // First do a right rotation towards the right child, making the case a right-right imbalance
             curr.right = rightRotate(curr.right);
@@ -207,7 +207,7 @@ public class AVLTree implements BSTInterface {
     /**
      * Helper method to do a right rotation towards the given unbalanced node.
      * @param unbalanced given unbalanced node
-     * @return root of the sub-tree after right rotation
+     * @return root of the subtree after right rotation
      */
     private Node rightRotate(Node unbalanced) {
         // Temporarily store the left child
@@ -224,7 +224,7 @@ public class AVLTree implements BSTInterface {
     /**
      * Helper method to do a left rotation towards the given unbalanced node.
      * @param unbalanced given unbalanced node
-     * @return root of the sub-tree after left rotation
+     * @return root of the subtree after left rotation
      */
     private Node leftRotate(Node unbalanced) {
         // Temporarily store the right child
@@ -248,11 +248,11 @@ public class AVLTree implements BSTInterface {
     }
 
     /**
-     * Private helper method to delete the given key from the given sub-tree
+     * Private helper method to delete the given key from the given subtree
      * recursively.
      * @param key key to delete
      * @param curr current node
-     * @return root of the sub-tree after deletion
+     * @return root of the subtree after deletion
      */
     private Node deleteHelper(int key, Node curr) {
         // Case 1: Not found
@@ -275,7 +275,7 @@ public class AVLTree implements BSTInterface {
                 Node successor = getSuccessor(curr);
                 successor.left = curr.left;
 
-                // A reconnection in the right sub-tree may break the balance of the current (successor) node.
+                // A reconnection in the right subtree may break the balance of the current (successor) node.
                 return rebalance(successor);
             }
         }
@@ -287,7 +287,7 @@ public class AVLTree implements BSTInterface {
             curr.right = deleteHelper(key, curr.right);
         }
 
-        // A deletion in the left or right sub-tree may break the balance of the current node.
+        // A deletion in the left or right subtree may break the balance of the current node.
         return rebalance(curr);
         // T(n) = T(n/2) + O(n)
         // a = 1, b = 2, d = 1
@@ -310,7 +310,7 @@ public class AVLTree implements BSTInterface {
 
     /**
      * Helper method to get the successor of the given node to delete in the
-     * given sub-tree recursively.
+     * given subtree recursively.
      * @param nodeToDelete node to delete
      * @param parent parent node
      * @param curr current node
@@ -327,7 +327,7 @@ public class AVLTree implements BSTInterface {
         }
         // Recursive case
         Node successor = getSuccessorHelper(nodeToDelete, curr, curr.left);
-        // A reconnection in the left sub-tree may break the balance of the current node.
+        // A reconnection in the left subtree may break the balance of the current node.
         if (curr == nodeToDelete.right) {
             parent.right = rebalance(curr);
         } else {
@@ -347,8 +347,7 @@ public class AVLTree implements BSTInterface {
     }
 
     /**
-     * Private helper method to traverse the given sub-tree in-order
-     * recursively.
+     * Private helper method to traverse the given subtree in-order recursively.
      * @param curr current node
      * @param s StringBuilder to append
      */
@@ -384,7 +383,6 @@ public class AVLTree implements BSTInterface {
         tree.insert(10);
         tree.insert(12);
         System.out.println("Testing insertion **********************************");
-        System.out.println("At");
         tree.traverseInOrder(); // [1] [2] [3] [4] [5] [6] [7] [8] [9] [10] [11] [12]
         System.out.println("root: " + tree.root); // [5]
         System.out.println("root.left: " + tree.root.left); // [2]

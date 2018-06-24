@@ -28,7 +28,7 @@ Observation:
 
 For every BST, if every root-null path has $\ge k$ nodes, then the top of this tree has to be totally filled in.
 
-i.e., The top of this tree has to include a perfectly balanced tree of depth $(k-1)$. 即至少前k个level是full的
+i.e., The top of this tree has to include a perfectly balanced tree of depth $(k-1)$. 即至少前$k$个level是full的
 
 Proof:
 
@@ -41,8 +41,6 @@ $$
 k \le log_2(n+1)
 $$
 
-
-
 For a Red-Black Tree with $n$ nodes (some red, some black), each root-null path having $m_{black}$ black nodes (Invarient #4), we have
 $$
 m_{black} \le k \le log_2 (n + 1)
@@ -53,7 +51,7 @@ m_{black} \le log_2 (n + 1)
 $$
 According to Invariant #3,
 $$
-Max \ height \le m_{red} + m_{black} \le 2m_{black} \le 2log_2(n + 1)
+Max \ Height = m_{red} + m_{black} \le 2m_{black} \le 2log_2(n + 1)
 $$
 where Max Height is exactly the longest root-null path.
 
