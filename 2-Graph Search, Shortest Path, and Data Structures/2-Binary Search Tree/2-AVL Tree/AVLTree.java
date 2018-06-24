@@ -72,7 +72,11 @@ public class AVLTree implements BSTInterface {
         }
 
         // Recursive case
-        return searchHelper(key, curr.left) || searchHelper(key, curr.right);
+        if (curr.key > key) {
+            return searchHelper(key, curr.left);
+        } else {
+            return searchHelper(key, curr.right);
+        }
     }
 
     @Override

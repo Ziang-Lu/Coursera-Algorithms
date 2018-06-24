@@ -88,9 +88,9 @@ public class RedBlackTree {
     }
 
     /**
-     * Searches for the given key in the BST.
+     * Searches for the given key in the Red-Black Tree.
      * @param key key to search for
-     * @return whether the key is in the BST
+     * @return whether the key is in the Red-Black Tree
      */
     public boolean search(int key) {
         return searchHelper(key, root);
@@ -207,23 +207,9 @@ public class RedBlackTree {
                 Node uncle = grandparent.right;
 
                 if ((uncle != null) && (uncle.color == RED)) { // Case 3.1: The uncle is red.
-                    /*
-                            Black
-                            /   \
-                          Red   Red
-                         /
-                       Red (Curr)
-                     */
                     // To restore invariant #3 and #4, simply recolor the grandparent to red and the parent and the uncle to
                     // black.
                     restoreParentAndUncleAreRed(grandparent, parent, uncle);
-                    /*
-                             Red
-                            /   \
-                        Black   Black
-                         /
-                       Red (Curr)
-                     */
 
                     // In this way, the same case applies to the newly recolored grandparent.
                     // Then we simply need to recurse towards grandparent.
@@ -259,7 +245,7 @@ public class RedBlackTree {
             } else {
                 Node uncle = grandparent.left;
 
-                if ((uncle != null) && (uncle.color == RED)) { // Case 3.1: The uncle is red.ß
+                if ((uncle != null) && (uncle.color == RED)) { // Case 3.1: The uncle is red.
                     restoreParentAndUncleAreRed(grandparent, parent, uncle);
                     restoreInvariants(grandparent);
                 } else { // Case 3.2: The uncle is black.
@@ -299,6 +285,13 @@ public class RedBlackTree {
         // Running time complexity: O(log n)
     }
 
+    /**
+     * Helper method to restore the invariants when the parent and the uncle are
+     * both red.
+     * @param grandparent grandparent
+     * @param parent parent node
+     * @param uncle uncle node
+     */
     private void restoreParentAndUncleAreRed(Node grandparent, Node parent, Node uncle) {
         grandparent.color = RED;
         parent.color = BLACK;

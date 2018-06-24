@@ -5,7 +5,7 @@
 A very simple self-balancing AVL Tree implementation.
 
 Invariant of an AVL Tree:
-The heights of the left and right sub-trees of any node in an AVL Tree won't
+The heights of the left and right subtrees of any node in an AVL Tree won't
 differ more than 1.
 """
 
@@ -21,7 +21,7 @@ class Node(object):
         self._key = key
         self._left = None
         self._right = None
-
+–
     @property
     def key(self):
         """
@@ -87,8 +87,8 @@ class AVLTree(object):
 
     def _search_helper(self, key, curr):
         """
-        Private helper function to search for the given key in the given
-        sub-tree recursively.
+        Private helper function to search for the given key in the given subtree
+        recursively.
         :param key: int
         :param curr: Node
         :return: bool
@@ -101,8 +101,10 @@ class AVLTree(object):
             return True
 
         # Recursive case
-        return self._search_helper(key, curr=curr.left) or \
-            self._search_helper(key, curr=curr.right)
+        if curr.key > key:
+            return self._search_helper(key, curr=curr.left)
+        else:
+            return self._search_helper(key, curr=curr.right)
 
     def insert(self, key):
         """
@@ -119,7 +121,7 @@ class AVLTree(object):
 
     def _insert_helper(self, key, parent, curr, is_lc):
         """
-        Private helper function to insert the given key to the given sub-tree
+        Private helper function to insert the given key to the given subtree
         recursively.
         :param key: int
         :param parent: Node
@@ -148,7 +150,7 @@ class AVLTree(object):
             curr.right = self._insert_helper(key, parent=curr, curr=curr.right,
                                              is_lc=False)
 
-        # An insertion in the left or right sub-tree may break the balance of
+        # An insertion in the left or right subtree may break the balance of
         # the current node.
         return self._rebalance(curr)
         # T(n) = T(n/2) + O(n)
@@ -171,24 +173,24 @@ class AVLTree(object):
         # For detailed explanation, please refer to the tutorial.
         if balance > 1 and self._get_balance(curr.left) > 0:
             # Left-left imbalance
-            # For the unbalanced node, the height of the left sub-tree is 2
-            # higher than the right sub-tree;
-            # for the left child, the height of the left sub-tree is 1 higher
-            # than the right sub-tree.
+            # For the unbalanced node, the height of the left subtree is 2
+            # higher than the right subtree;
+            # for the left child, the height of the left subtree is 1 higher
+            # than the right subtree.
             return self._right_rotate(unbalanced=curr)
         elif balance < -1 and self._get_balance(curr.right) < 0:
             # Right-right imbalance
-            # For the unbalanced node, the height of the right sub-tree is 2
-            # higher than the left sub-tree;
-            # for the right child, the height of the right sub-tree is 1 higher
-            # than the left sub-tree.
+            # For the unbalanced node, the height of the right subtree is 2
+            # higher than the left subtree;
+            # for the right child, the height of the right subtree is 1 higher
+            # than the left subtree.
             return self._left_rotate(unbalanced=curr)
         elif balance > 1 and self._get_balance(curr.left) < 0:
             # Left-left imbalance
-            # For the unbalanced node, the height of the left sub-tree is 2
-            # higher than the right sub-tree;
-            # for the left child, the height of the right sub-tree is 1 higher
-            # than the left sub-tree.
+            # For the unbalanced node, the height of the left subtree is 2
+            # higher than the right subtree;
+            # for the left child, the height of the right subtree is 1 higher
+            # than the left subtree.
 
             # First do a left rotation towards the left child, making the case a
             # left-left imbalance
@@ -197,10 +199,10 @@ class AVLTree(object):
             return self._right_rotate(unbalanced=curr)
         elif balance < -1 and self._get_balance(curr.right) > 0:
             # Right-left imbalance
-            # For the unbalanced node, the height of the right sub-tree is 2
-            # higher than the left sub-tree;
-            # for the right child, the height of the left sub-tree is 1 higher
-            # than the right sub-tree.
+            # For the unbalanced node, the height of the right subtree is 2
+            # higher than the left subtree;
+            # for the right child, the height of the left subtree is 1 higher
+            # than the right subtree.
 
             # First do a right rotation towards the right child, making the case
             # a right-right imbalance
@@ -289,7 +291,7 @@ class AVLTree(object):
 
     def _delete_helper(self, key, curr):
         """
-        Private helper function to delete the given key from the given sub-tree
+        Private helper function to delete the given key from the given subtree
         recursively.
         :param key: int
         :param curr: Node
@@ -314,7 +316,7 @@ class AVLTree(object):
                 successor = self._get_successor(node_to_delete=curr)
                 successor.left = curr.left
 
-                # A reconnection in the right sub-tree may break the balance of
+                # A reconnection in the right subtree may break the balance of
                 # the current (successor) node.
                 return self._rebalance(curr=successor)
 
@@ -324,7 +326,7 @@ class AVLTree(object):
         else:
             curr.right = self._delete_helper(key, curr=curr.right)
 
-        # A deletion in the left or right sub-tree may break the balance of the
+        # A deletion in the left or right subtree may break the balance of the
         # current node.
         return self._rebalance(curr=curr)
         # T(n) = T(n/2) + O(n)
@@ -351,7 +353,7 @@ class AVLTree(object):
     def _get_successor_helper(self, node_to_delete, parent, curr):
         """
         Helper function to get the successor of the given node to delete in the
-        given sub-tree recursively.
+        given subtree recursively.
         :param node_to_delete: Node
         :param parent: Node
         :param curr: Node
@@ -366,7 +368,7 @@ class AVLTree(object):
         # Recursive case
         successor = self._get_successor_helper(node_to_delete=node_to_delete,
                                                parent=curr, curr=curr.left)
-        # A reconnection in the right sub-tree may break the balance of
+        # A reconnection in the right subtree may break the balance of
         # the current node.
         if curr is node_to_delete.right:
             parent.right = self._rebalance(curr=curr)
@@ -387,7 +389,7 @@ class AVLTree(object):
 
     def _traverse_in_order_helper(self, curr):
         """
-        Private helper function to traverse the given sub-tree in-order
+        Private helper function to traverse the given subtree in-order
         recursively.
         :param curr: Node
         :return: None
@@ -400,53 +402,3 @@ class AVLTree(object):
         s += str(curr) + ' '
         s += self._traverse_in_order_helper(curr=curr.right)
         return s
-
-
-def main():
-    tree = AVLTree()
-
-    print('Testing insertion **********************************')
-    tree.insert(7)
-    tree.insert(2)
-    tree.insert(1), tree.insert(1)
-    tree.insert(5)
-    tree.insert(3)
-    tree.insert(6)
-    tree.insert(4)
-    tree.insert(9)
-    tree.insert(8)
-    tree.insert(11), tree.insert(11)
-    tree.insert(10)
-    tree.insert(12)
-    print('After inserting 7, 2, 1, 5, 3, 6, 4, 9, 11, 10, 12:')
-    tree.traverse_in_order()  # [1] [2] [3] [4] [5] [6] [7] [8] [9] [10] [11] [12]
-    print('root: %s' % tree._root)  # root: [5]
-    print('root.left: %s' % tree._root.left)  # root.left: [2]
-    print('root.right: %s' % tree._root.right)  # root.right: [9]
-    print('****************************************************')
-    print()
-
-    print('Testing searching *******')
-    print('Searching for 2:', tree.search(2))  # True
-    print('Searching for 100:', tree.search(100))  # False
-    print('*************************')
-    print()
-
-    print('Testing deletion ******************************')
-    tree.delete(1)
-    print('After deleting 1:')
-    tree.traverse_in_order()  # [2] [3] [4] [5] [6] [7] [8] [9] [10] [11] [12]
-
-    tree.delete(9)
-    print('After deleting 9:')
-    tree.traverse_in_order()  # [2] [3] [4] [5] [6] [7] [8] [10] [11] [12]
-
-    tree.delete(11)
-    print('After deleting 11:')
-    tree.traverse_in_order()  # [2] [3] [4] [5] [6] [7] [8] [10] [12]
-    print('***********************************************')
-    print()
-
-
-if __name__ == '__main__':
-    main()
