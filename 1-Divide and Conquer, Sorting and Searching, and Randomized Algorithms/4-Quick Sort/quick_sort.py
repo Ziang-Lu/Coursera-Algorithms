@@ -4,9 +4,10 @@
 __author__ = 'Ziang Lu'
 
 import random
+from typing import List
 
 
-def quick_sort(nums):
+def quick_sort(nums: List[int]) -> None:
     """
     Sorts the given list using Quick Sort.
     :param nums: list[int]
@@ -20,7 +21,7 @@ def quick_sort(nums):
     _quick_sort_helper(nums, left=0, right=len(nums) - 1)
 
 
-def _quick_sort_helper(nums, left, right):
+def _quick_sort_helper(nums: List[int], left: int, right: int) -> None:
     """
     Private helper function to sort the given sub-list recursively using Quick
     Sort.
@@ -40,7 +41,8 @@ def _quick_sort_helper(nums, left, right):
     _quick_sort_helper(nums, left=pivot_idx + 1, right=right)
 
 
-def _choose_pivot(nums, left, right, randomly=True):
+def _choose_pivot(nums: List[int], left: int, right: int,
+                  randomly=True) -> None:
     """
     Helper function to choose a pivot from the given sub-list, and move it to
     the left.
@@ -77,7 +79,7 @@ def _choose_pivot(nums, left, right, randomly=True):
         nums[left], nums[pivot_idx] = nums[pivot_idx], nums[left]
 
 
-def _partition(nums, left, right):
+def _partition(nums: List[int], left: int, right: int) -> int:
     """
     Helper function to partition the given sub-list.
     :param nums: list[int]

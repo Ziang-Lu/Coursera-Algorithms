@@ -10,7 +10,8 @@ Note that parallel edges are allowed, but not self-loops.
 __author__ = 'Ziang Lu'
 
 import random
-from graph_basics import AbstractVertex, AbstractGraph
+
+from graph_basics import AbstractGraph, AbstractVertex
 
 
 class IllegalArgumentError(ValueError):
@@ -18,7 +19,8 @@ class IllegalArgumentError(ValueError):
 
 
 class Vertex(AbstractVertex):
-    def __init__(self, vtx_id):
+
+    def __init__(self, vtx_id: int):
         """
         Constructor with parameter.
         :param vtx_id: int
@@ -27,11 +29,11 @@ class Vertex(AbstractVertex):
         self._freq_of_neighbors = {}
         self._edges = []
 
-    def get_edge_with_neighbor(self, neighbor):
+    def get_edge_with_neighbor(self, neighbor: AbstractVertex):
         """
         Returns the first edge with the given neighbor.
-        :param neighbor: Vertex
-        :return: Edge
+        :param neighbor: AbstractVertex
+        :return: UndirectedEdge
         """
         # Check whether the input neighbor is None
         if neighbor is None:
@@ -45,17 +47,17 @@ class Vertex(AbstractVertex):
         return None
 
     @property
-    def edges(self):
+    def edges(self) -> list:
         """
         Accessor of edges.
-        :return: list[Edge]
+        :return: list[UndirectedEdge]
         """
         return self._edges
 
-    def add_edge(self, new_edge):
+    def add_edge(self, new_edge) -> None:
         """
         Adds the given edge to this vertex.
-        :param new_edge: Edge
+        :param new_edge: UndirectedEdge
         :return: None
         """
         # Check whether the input edge is None
@@ -78,10 +80,10 @@ class Vertex(AbstractVertex):
         freq += 1
         self._freq_of_neighbors[neighbor.vtx_id] = freq
 
-    def remove_edge(self, edge_to_remove):
+    def remove_edge(self, edge_to_remove) -> None:
         """
         Removes the given edge from this vertex.
-        :param edge_to_remove: Edge
+        :param edge_to_remove: UndirectedEdge
         :return: None
         """
         # Check whether the input edge is None
@@ -109,16 +111,13 @@ class Vertex(AbstractVertex):
             self._freq_of_neighbors[neighbor.vtx_id] = freq
 
     def __repr__(self):
-        """
-        String representation of this vertex.
-        :return: str
-        """
         return 'Vertex #%d, Its neighbors and frequencies: %s' % \
-            (self._vtx_id, self._freq_of_neighbors)
+               (self._vtx_id, self._freq_of_neighbors)
 
 
 class UndirectedEdge(object):
-    def __init__(self, end1, end2):
+
+    def __init__(self, end1: Vertex, end2: Vertex):
         """
         Constructor with parameter.
         :param end1: Vertex
@@ -128,7 +127,7 @@ class UndirectedEdge(object):
         self._end2 = end2
 
     @property
-    def end1(self):
+    def end1(self) -> Vertex:
         """
         Accessor of end1.
         :return: Vertex
@@ -136,7 +135,7 @@ class UndirectedEdge(object):
         return self._end1
 
     @property
-    def end2(self):
+    def end2(self) -> Vertex:
         """
         Accessor of end2.
         :return: Vertex
@@ -144,7 +143,7 @@ class UndirectedEdge(object):
         return self._end2
 
     @end1.setter
-    def end1(self, end1):
+    def end1(self, end1: Vertex) -> None:
         """
         Mutator of end1.
         :param end1: Vertex
@@ -153,7 +152,7 @@ class UndirectedEdge(object):
         self._end1 = end1
 
     @end2.setter
-    def end2(self, end2):
+    def end2(self, end2: Vertex) -> None:
         """
         Mutator of end2.
         :param end2: Vertex
@@ -162,15 +161,12 @@ class UndirectedEdge(object):
         self._end2 = end2
 
     def __repr__(self):
-        """
-        String representation of this edge.
-        :return: str
-        """
         return 'Edge between Vertex #%d and Vertex #%d' % \
-            (self._end1.vtx_id, self._end2.vtx_id)
+               (self._end1.vtx_id, self._end2.vtx_id)
 
 
 class UndirectedGraph(AbstractGraph):
+
     def __init__(self):
         """
         Default constructor.
@@ -245,7 +241,7 @@ class UndirectedGraph(AbstractGraph):
         except IllegalArgumentError:
             pass
 
-    def compute_minimum_cut(self):
+    def compute_minimum_cut(self) -> int:
         """
         Computes a cut with the fewest number of crossing edges.
         :return: int
@@ -275,7 +271,7 @@ class UndirectedGraph(AbstractGraph):
             self._reconnect_edges(end=end2, merged_vtx=merged_vtx)
         return len(self._edge_list)
 
-    def _get_next_vtx_id(self):
+    def _get_next_vtx_id(self) -> int:
         """
         Private helper function to get the next available vertex ID, which is 1
         greater than the current largest vertex ID.
@@ -286,7 +282,7 @@ class UndirectedGraph(AbstractGraph):
             vtx_ids.append(vtx.vtx_id)
         return max(vtx_ids) + 1
 
-    def _reconnect_edges(self, end, merged_vtx):
+    def _reconnect_edges(self, end: Vertex, merged_vtx: Vertex) -> None:
         """
         Private helper function to reconstruct the edges associated with the
         given endpoint to the given merged vertex, and remove the endpoint.
@@ -311,4 +307,3 @@ class UndirectedGraph(AbstractGraph):
             merged_vtx.add_edge(edge_from_end)
         # Remove the endpoint
         self._vtx_list.remove(end)
-

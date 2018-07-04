@@ -13,9 +13,10 @@ O(nlog n)
 __author__ = 'Ziang Lu'
 
 import random
+from typing import List
 
 
-def kth_largest(nums, k):
+def kth_largest(nums: List[int], k: int) -> int:
     """
     Finds the k-th largest element in the given list.
     :param nums: list[int]
@@ -35,7 +36,7 @@ def kth_largest(nums, k):
     # Overall running time complexity: O(n), better than O(nlog n)
 
 
-def _kth_largest_helper(nums, k, left, right):
+def _kth_largest_helper(nums: List[int], k: int, left: int, right: int) -> int:
     """
     Private helper function to find the k-th largest element in the given list
     recursively.
@@ -62,7 +63,7 @@ def _kth_largest_helper(nums, k, left, right):
         return _kth_largest_helper(nums, k, left=pivot_idx + 1, right=right)
 
 
-def _choose_pivot(nums, left, right):
+def _choose_pivot(nums: List[int], left: int, right: int) -> None:
     """
     Helper function to choose a pivot from the given sub-list, and move it to
     the left.
@@ -78,7 +79,7 @@ def _choose_pivot(nums, left, right):
         nums[left], nums[pivot_idx] = nums[pivot_idx], nums[left]
 
 
-def _partition(nums, left, right):
+def _partition(nums: List[int], left: int, right: int) -> int:
     """
     Helper function to partition the given sub-list.
     :param nums: list[int]

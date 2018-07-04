@@ -4,7 +4,7 @@
 __author__ = 'Ziang Lu'
 
 
-def karatsuba(x, y):
+def karatsuba(x: int, y: int) -> int:
     """
     Calculates the multiplication of two integers using Karatsuba
     Multiplication.
@@ -45,7 +45,7 @@ def karatsuba(x, y):
     # O(n^1.585), better than O(n^2).
 
 
-def _pad_zeros(s, n_zeros, at_front):
+def _pad_zeros(s: str, n_zeros: int, at_front: bool) -> str:
     """
     Private helper function to pad the given number of zeros to the given
     string.

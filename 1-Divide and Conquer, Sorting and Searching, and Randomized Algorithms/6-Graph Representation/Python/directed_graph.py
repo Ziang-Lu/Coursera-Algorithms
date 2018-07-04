@@ -9,7 +9,7 @@ Note that parallel edges are allowed, but not self-loops.
 
 __author__ = 'Ziang Lu'
 
-from graph_basics import AbstractVertex, AbstractGraph
+from graph_basics import AbstractGraph, AbstractVertex
 
 
 class IllegalArgumentError(ValueError):
@@ -17,7 +17,8 @@ class IllegalArgumentError(ValueError):
 
 
 class Vertex(AbstractVertex):
-    def __init__(self, vtx_id):
+
+    def __init__(self, vtx_id: int):
         """
         Constructor with parameter.
         :param vtx_id: int
@@ -28,11 +29,11 @@ class Vertex(AbstractVertex):
         self._freq_of_incident_neighbors = {}
         self._incident_edges = []
 
-    def get_emissive_edge_with_head(self, head):
+    def get_emissive_edge_with_head(self, head: AbstractVertex):
         """
         Returns the first emissive edge with the given head.
-        :param head: Vertex
-        :return: Edge
+        :param head: AbstractVertex
+        :return: DirectedEdge
         """
         # Check whether the input head is None
         if head is None:
@@ -45,18 +46,18 @@ class Vertex(AbstractVertex):
         return None
 
     @property
-    def emissive_edges(self):
+    def emissive_edges(self) -> list:
         """
         Accessor of emissive_edges.
-        :return: list[Edge]
+        :return: list[DirectedEdge]
         """
         return self._emissive_edges
 
-    def get_incident_edge_with_tail(self, tail):
+    def get_incident_edge_with_tail(self, tail: AbstractVertex):
         """
         Returns the first incident edge with the given tail.
-        :param tail: Vertex
-        :return: Edge
+        :param tail: AbstractVertex
+        :return: DirectedEdge
         """
         # Check whether the input tail is None
         if tail is None:
@@ -69,17 +70,17 @@ class Vertex(AbstractVertex):
         return None
 
     @property
-    def incident_edges(self):
+    def incident_edges(self) -> list:
         """
         Accessor of incident_edges.
-        :return: list[Edge]
+        :return: list[DirectedEdge]
         """
         return self._incident_edges
 
-    def add_emissive_edge(self, new_emissive_edge):
+    def add_emissive_edge(self, new_emissive_edge) -> None:
         """
         Adds the given emissive edge to this vertex.
-        :param new_emissive_edge: Edge
+        :param new_emissive_edge: DirectedEdge
         :return: None
         """
         # Check whether the input emissive edge is None
@@ -98,10 +99,10 @@ class Vertex(AbstractVertex):
         freq += 1
         self._freq_of_emissive_neighbors[emissive_neighbor.vtx_id] = freq
 
-    def add_incident_edge(self, new_incident_edge):
+    def add_incident_edge(self, new_incident_edge) -> None:
         """
         Adds the given incident edge to this vertex
-        :param new_incident_edge: Edge
+        :param new_incident_edge: DirectedEdge
         :return: None
         """
         # Check whether the input incident edge is None
@@ -120,10 +121,10 @@ class Vertex(AbstractVertex):
         freq += 1
         self._freq_of_incident_neighbors[incident_neighbor.vtx_id] = freq
 
-    def remove_emissive_edge(self, emissive_edge_to_remove):
+    def remove_emissive_edge(self, emissive_edge_to_remove) -> None:
         """
         Removes the given emissive edge from this vertex.
-        :param emissive_edge_to_remove: Edge
+        :param emissive_edge_to_remove: DirectedEdge
         :return: None
         """
         # Check whether the input emissive edge is None
@@ -145,10 +146,10 @@ class Vertex(AbstractVertex):
             freq -= 1
             self._freq_of_emissive_neighbors[emissive_neighbor.vtx_id] = freq
 
-    def remove_incident_edge(self, incident_edge_to_remove):
+    def remove_incident_edge(self, incident_edge_to_remove) -> None:
         """
         Removes the given incident edge from this vertex.
-        :param incident_edge_to_remove: Edge
+        :param incident_edge_to_remove: DirectedEdge
         :return: None
         """
         # Check whether the input incident edge is None
@@ -171,10 +172,6 @@ class Vertex(AbstractVertex):
             self._freq_of_incident_neighbors[incident_neighbor.vtx_id] = freq
 
     def __repr__(self):
-        """
-        String representation of this vertex.
-        :return: str
-        """
         s = 'Vertex #%d\n' % self._vtx_id
         s += 'Its emissive neighbors and frequencies: %s\n' % \
              self._freq_of_emissive_neighbors
@@ -192,7 +189,8 @@ class Vertex(AbstractVertex):
 
 
 class DirectedEdge(object):
-    def __init__(self, tail, head):
+
+    def __init__(self, tail: Vertex, head: Vertex):
         """
         Constructor with parameter.
         :param tail: Vertex
@@ -202,7 +200,7 @@ class DirectedEdge(object):
         self._head = head
 
     @property
-    def tail(self):
+    def tail(self) -> Vertex:
         """
         Accessor of tail.
         :return: Vertex
@@ -210,7 +208,7 @@ class DirectedEdge(object):
         return self._tail
 
     @property
-    def head(self):
+    def head(self) -> Vertex:
         """
         Accessor of head.
         :return: Vertex
@@ -218,7 +216,7 @@ class DirectedEdge(object):
         return self._head
 
     @tail.setter
-    def tail(self, tail):
+    def tail(self, tail: Vertex) -> None:
         """
         Mutator of tail.
         :param tail: Vertex
@@ -227,7 +225,7 @@ class DirectedEdge(object):
         self._tail = tail
 
     @head.setter
-    def head(self, head):
+    def head(self, head: Vertex) -> None:
         """
         Mutator of head.
         :param head: Vertex
@@ -236,15 +234,12 @@ class DirectedEdge(object):
         self._head = head
 
     def __repr__(self):
-        """
-        String representation of this edge.
-        :return head: str
-        """
         return 'Edge from Vertex #%d to Vertex #%d' % \
-            (self._tail.vtx_id, self._head.vtx_id)
+               (self._tail.vtx_id, self._head.vtx_id)
 
 
 class DirectedGraph(AbstractGraph):
+
     def __init__(self):
         """
         Default constructor.
@@ -307,7 +302,8 @@ class DirectedGraph(AbstractGraph):
         head.remove_incident_edge(edge_to_remove)
         self._edge_list.remove(edge_to_remove)
 
-    def remove_directed_edges_between_pair(self, tail_id, head_id):
+    def remove_directed_edges_between_pair(self, tail_id: int,
+                                           head_id: int) -> None:
         """
         Removes all the directed edges between a vertex pair from this graph.
         :param tail_id: int

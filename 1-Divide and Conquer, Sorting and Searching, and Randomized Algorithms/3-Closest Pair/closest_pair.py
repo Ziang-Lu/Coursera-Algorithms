@@ -11,9 +11,10 @@ __author__ = 'Ziang Lu'
 
 import copy
 import math
+from typing import List, Type
 
 
-def find_closest_pair_1d(points):
+def find_closest_pair_1d(points: List[float]) -> List[float]:
     """
     Finds the closest pair in the given 1D points.
     :param points: list[float]
@@ -43,7 +44,8 @@ def find_closest_pair_1d(points):
 
 
 class Point(object):
-    def __init__(self, x, y):
+
+    def __init__(self, x: float, y: float):
         """
         Constructor with parameter.
         :param x: float
@@ -53,7 +55,7 @@ class Point(object):
         self._y = y
 
     @property
-    def x(self):
+    def x(self) -> float:
         """
         Accessor of x.
         :return: float
@@ -61,21 +63,22 @@ class Point(object):
         return self._x
 
     @property
-    def y(self):
+    def y(self) -> float:
         """
         Accessor of y.
         :return: float
         """
         return self._y
 
-    def distance(self, another):
+    def distance(self, another) -> float:
         """
         Calculates the Euclidean distance between this point and the given
         point.
         :param another: Point
         :return: float
         """
-        return math.sqrt((self._x - another.x)**2 + (self._y - another.y)**2)
+        return math.sqrt(
+            (self._x - another.x) ** 2 + (self._y - another.y) ** 2)
 
     def __repr__(self):
         """
@@ -85,7 +88,7 @@ class Point(object):
         return 'Point(x=%s, y=%s)' % (self._x, self._y)
 
 
-def find_closest_pair_2d(points):
+def find_closest_pair_2d(points: List[Point]) -> List[Point]:
     """
     Finds the closest pair in the given 2D points.
     :param points: list[Point]
@@ -109,7 +112,8 @@ def find_closest_pair_2d(points):
     return _find_closest_pair_2d_helper(Px, Py)
 
 
-def _find_closest_pair_2d_helper(Px, Py):
+def _find_closest_pair_2d_helper(Px: List[Point],
+                                 Py: List[Point]) -> List[Point]:
     """
     Private helper function to find the closest pair in the given 2D points
     recursively.
@@ -169,7 +173,8 @@ def _find_closest_pair_2d_helper(Px, Py):
     # According to Master Method, the running time complexity is O(nlog n)
 
 
-def _find_closer_split_pair(Px, Py, x_threshold, delta):
+def _find_closer_split_pair(Px: List[Point], Py: List[Point],
+                            x_threshold: float, delta: float) -> List[Point]:
     """
     Helper function to find the closest closer split pair in the given 2D
     points.

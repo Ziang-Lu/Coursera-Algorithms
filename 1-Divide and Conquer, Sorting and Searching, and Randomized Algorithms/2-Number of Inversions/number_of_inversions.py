@@ -15,8 +15,10 @@ in the merging step.
 
 __author__ = 'Ziang Lu'
 
+from typing import List
 
-def count_inversions(nums):
+
+def count_inversions(nums: List[int]) -> int:
     """
     Counts the # of inversions in the given list.
     :param nums: list[int]
@@ -34,7 +36,8 @@ def count_inversions(nums):
     # Overall running time complexity: O(nlog n), better than O(n^2)
 
 
-def _merge_sort_helper(nums, left, right, aux):
+def _merge_sort_helper(nums: List[int], left: int, right: int,
+                       aux: List[int]) -> int:
     """
     Private helper function to sort the given sub-list recursively using Merge
     Sort.
@@ -63,7 +66,8 @@ def _merge_sort_helper(nums, left, right, aux):
     # According to Master Method, the running time complexity is O(nlog n).
 
 
-def _merge(nums, left, mid, right, aux):
+def _merge(nums: List[int], left: int, mid: int, right: int,
+           aux: List[int]) -> int:
     """
     Helper function to merge the given sub-list.
     :param nums: list[int]
