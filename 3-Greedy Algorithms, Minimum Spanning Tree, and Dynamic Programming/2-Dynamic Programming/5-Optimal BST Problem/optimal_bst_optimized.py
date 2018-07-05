@@ -16,13 +16,14 @@ brute-force searches when searching for the root of a subproblem.
 __author__ = 'Ziang Lu'
 
 import sys
+from typing import List
 
 
 class IllegalArgumentError(ValueError):
     pass
 
 
-def find_optimal_bst(weights):
+def find_optimal_bst(weights: List[int]) -> int:
     """
     Finds the optimal BST for items with the given weight distribution, and
     calculates its weighted search time (WST), in an improved bottom-up way.
@@ -38,7 +39,6 @@ def find_optimal_bst(weights):
     # Initialization
     roots = [[0] * n for i in range(n)]
     subproblems = [[0] * n for i in range(n)]
-    n_item = 1
     for i in range(n):
         roots[i][i] = i
         subproblems[i][i] = weights[i]
@@ -67,5 +67,5 @@ def find_optimal_bst(weights):
                     min_wst = curr_wst
             roots[start][end] = root_with_min_wst
             subproblems[start][end] = min_wst
-    return subproblems[start][end]
+    return subproblems[0][n - 1]
     # Overall running time complexity: O(n^2) [Analysis ?????]

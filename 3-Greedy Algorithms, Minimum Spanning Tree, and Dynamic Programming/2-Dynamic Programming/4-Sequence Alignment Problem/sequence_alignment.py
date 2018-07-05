@@ -38,19 +38,22 @@ S(X_i, Y_j) = min{S(X_i - x_i, Y_j - y_j) + pen_{x_i,y_j},
 
 __author__ = 'Ziang Lu'
 
+from typing import Dict, List
+
 
 class IllegalArgumentError(ValueError):
     pass
 
 
-def sequence_alignment(x, y, gap_pen, pen_map):
+def sequence_alignment(x: str, y: str, gap_pen: int,
+                       pen_map: Dict[str, Dict[str, int]]) -> List[str]:
     """
     Solves the sequence alignment problem of the given two strings with the
     given penalties in an improved bottom-up way.
     :param x: str
     :param y: str
     :param gap_pen: int
-    :param pen_map: dict{char: dict{char: int}}
+    :param pen_map: dict{str: dict{str: int}}
     :return: list[str]
     """
     # Check whether the input strings are None or empty
@@ -85,14 +88,17 @@ def sequence_alignment(x, y, gap_pen, pen_map):
     # Overall running time complexity: O(mn)
 
 
-def _reconstruct_optimal_alignment(x, y, gap_pen, pen_map, subproblems):
+def _reconstruct_optimal_alignment(x: str, y: str, gap_pen: int,
+                                   pen_map: Dict[str, Dict[str, int]],
+                                   subproblems: List[List[int]]) -> List[str]:
     """
     Private helper function to reconstruct the optimal alignment according to
     the optimal solution using backtracking.
     :param x: str
     :param y: str
     :param gap_pen: int
-    :param pen_map: dict{char: dict{char: int}}
+    :param pen_map: dict{str: dict{str: int}}
+    :param subproblems: list[list[int]]
     :return: list[str]
     """
     sx, sy = '', ''

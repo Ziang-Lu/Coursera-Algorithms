@@ -26,16 +26,18 @@ S(i, x) = max{S(i - 1, x), S(i - 1, x - w_i) + v_i}
 
 __author__ = 'Ziang Lu'
 
+from typing import List, Set
+
 
 class IllegalArgumentError(ValueError):
     pass
 
 
-def knapsack(vals, weights, cap):
+def knapsack(vals: List[int], weights: List[int], cap: int) -> Set[int]:
     """
     Solves the knapsack problem of the items with the given values and weights,
     and the given capacity, in an improved bottom-up way.
-    :param vals: list[float]
+    :param vals: list[int]
     :param weights: list[int]
     :param cap: int
     :return: set{int}
@@ -69,11 +71,12 @@ def knapsack(vals, weights, cap):
     return _reconstruct(vals, weights, cap, subproblems=subproblems)
 
 
-def _reconstruct(vals, weights, cap, subproblems):
+def _reconstruct(vals: List[int], weights: List[int], cap: int,
+                 subproblems: List[List[int]]) -> Set[int]:
     """
     Private helper function to reconstruct the included items according to the
     optimal solution using backtracking.
-    :param vals: list[float]
+    :param vals: list[int]
     :param weights: list[int]
     :param cap: int
     :param subproblems: list[list[float]]

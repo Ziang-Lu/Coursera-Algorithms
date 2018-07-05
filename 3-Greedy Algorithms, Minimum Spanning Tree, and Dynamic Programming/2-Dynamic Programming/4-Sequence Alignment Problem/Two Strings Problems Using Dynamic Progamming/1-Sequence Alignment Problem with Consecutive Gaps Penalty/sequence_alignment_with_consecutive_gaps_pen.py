@@ -16,12 +16,17 @@ with a gap) to the total penalty.
 
 __author__ = 'Ziang Lu'
 
+from typing import Dict, List
+
 
 class IllegalArgumentException(ValueError):
     pass
 
 
-def sequence_alignment_with_consecutive_gaps_pen(x, y, a, b, pen_map):
+def sequence_alignment_with_consecutive_gaps_pen(x: str, y: str, a: int, b: int,
+                                                 pen_map: Dict[
+                                                     str, Dict[str, int]]) -> \
+        List[str]:
     """
     Solves the sequence alignment (with consecutive gaps penalty) of the given
     two strings with the given penalties in a bottom-up way.
@@ -29,7 +34,7 @@ def sequence_alignment_with_consecutive_gaps_pen(x, y, a, b, pen_map):
     :param y: str
     :param a: int
     :param b: int
-    :param pen_map: dict{char: dict{char: int}}
+    :param pen_map: dict{str: dict{str: int}}
     :return: list[str]
     """
     # Check whether the input strings are None or empty
@@ -82,8 +87,12 @@ def sequence_alignment_with_consecutive_gaps_pen(x, y, a, b, pen_map):
     # Overall running time complexity: O(mn)
 
 
-def _reconstruct_optimal_alignment(x, y, a, b, pen_gap, subproblems,
-                                   sx_ends_with_gap, sy_ends_with_gap):
+def _reconstruct_optimal_alignment(x: str, y: str, a: int, b: int,
+                                   pen_gap: Dict[str, Dict[str, int]],
+                                   subproblems: List[List[int]],
+                                   sx_ends_with_gap: List[List[bool]],
+                                   sy_ends_with_gap: List[List[bool]]) -> List[
+    str]:
     """
     Private helper function to reconstruct the optimal alignment according to
     the optimal solution using backtracking.
@@ -91,7 +100,7 @@ def _reconstruct_optimal_alignment(x, y, a, b, pen_gap, subproblems,
     :param y: str
     :param a: int
     :param b: int
-    :param pen_gap: dict{char: dict{char: int}}
+    :param pen_gap: dict{str: dict{str: int}}
     :param subproblems: list[list[int]]
     :param sx_ends_with_gap: list[list[bool]]
     :param sy_ends_with_gap: list[list[bool]]

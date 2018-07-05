@@ -28,12 +28,14 @@ S(i) = max{S(i - 1), S(i - 2) + v_i}
 
 __author__ = 'Ziang Lu'
 
+from typing import List, Set
+
 
 class IllegalArgumentError(ValueError):
     pass
 
 
-def find_mwis(weights):
+def find_mwis(weights: List[int]) -> Set[int]:
     """
     Finds the maximum-weight independent set (MWIS) in a path graph with the
     given weights in an improved bottom-up way.
@@ -46,7 +48,7 @@ def find_mwis(weights):
                                    'empty.')
 
     if len(weights) == 1:
-        return set([0])
+        return {0}
 
     # Initialization
     subproblems = [weights[0], max(weights[0], weights[1])]
@@ -59,7 +61,7 @@ def find_mwis(weights):
     # Overall running time complexity: O(n)
 
 
-def _reconstruct_mwis(weights, subproblems):
+def _reconstruct_mwis(weights: List[int], subproblems: List[int]) -> Set[int]:
     """
     Private helper function to reconstruct MWIS according to the optimal
     solution using backtracking.

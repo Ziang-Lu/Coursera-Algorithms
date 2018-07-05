@@ -37,16 +37,19 @@ S(i, x1, x2) = max{S(i - 1, x1, x2),
 
 __author__ = 'Ziang Lu'
 
+from typing import List, Set
+
 
 class IllegalArgumentError(ValueError):
     pass
 
 
-def two_knapsack(vals, weights, cap1, cap2):
+def two_knapsack(vals: List[int], weights: List[int], cap1: int, cap2: int) -> \
+        List[Set[int]]:
     """
     Solves the two-knapsack problem of the items with the given values and
     weights, and the given capacities, in an improved bottom-up way.
-    :param vals: list[float]
+    :param vals: list[int]
     :param weights: list[int]
     :param cap1: int
     :param cap2: int
@@ -97,15 +100,16 @@ def two_knapsack(vals, weights, cap1, cap2):
     # knapsack capacities
 
 
-def _reconstruct(vals, weights, cap1, cap2, subproblems):
+def _reconstruct(vals: List[int], weights: List[int], cap1: int, cap2: int,
+                 subproblems: List[List[List[int]]]) -> List[Set[int]]:
     """
     Private helper function to reconstruct the included items in knapsack-1 and
     knapsack-2 according to the optimal solution using backtracking.
-    :param vals: list[float]
+    :param vals: list[int]
     :param weights: list[int]
     :param cap1: int
     :param cap2: int
-    :param subproblems: list[list[list[float]]]
+    :param subproblems: list[list[list[int]]]
     :return: list[set{int}]
     """
     included_items1, included_items2 = set(), set()
@@ -114,21 +118,25 @@ def _reconstruct(vals, weights, cap1, cap2, subproblems):
         result_without_curr = subproblems[curr_item - 1][curr_cap1][curr_cap2]
         if weights[curr_item] > curr_cap1:
             result_with_curr_in_2 = \
-                subproblems[curr_item - 1][curr_cap1][curr_cap2 - weights[curr_item]] + vals[curr_item]
+                subproblems[curr_item - 1][curr_cap1][
+                    curr_cap2 - weights[curr_item]] + vals[curr_item]
             if result_without_curr < result_with_curr_in_2:
                 # Case 3: The current item is included in S2.
                 included_items2.add(curr_item)
         elif weights[curr_item] > curr_cap2:
             result_with_curr_in_1 = \
-                subproblems[curr_item - 1][curr_cap1 - weights[curr_item]][curr_cap2] + vals[curr_item]
+                subproblems[curr_item - 1][curr_cap1 - weights[curr_item]][
+                    curr_cap2] + vals[curr_item]
             if result_without_curr < result_with_curr_in_1:
                 # Case 2: The current item is included in S1.
                 included_items1.add(curr_item)
         else:
             result_with_curr_in_1 = \
-                subproblems[curr_item - 1][curr_cap1 - weights[curr_item]][curr_cap2] + vals[curr_item]
+                subproblems[curr_item - 1][curr_cap1 - weights[curr_item]][
+                    curr_cap2] + vals[curr_item]
             result_with_curr_in_2 = \
-                subproblems[curr_item - 1][curr_cap1][curr_cap2 - weights[curr_item]] + vals[curr_item]
+                subproblems[curr_item - 1][curr_cap1][
+                    curr_cap2 - weights[curr_item]] + vals[curr_item]
             result = max(result_without_curr, result_with_curr_in_1,
                          result_with_curr_in_2)
             if result == result_without_curr:

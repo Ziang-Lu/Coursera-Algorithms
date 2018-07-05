@@ -33,13 +33,14 @@ C(T_{i,j}) = min_(i<=r<=j) {C(T_L) + C(T_R) + sum(p_k) for i<=k<=j}
 __author__ = 'Ziang Lu'
 
 import sys
+from typing import List
 
 
 class IllegalArgumentError(ValueError):
     pass
 
 
-def find_optimal_bst(weights):
+def find_optimal_bst(weights: List[int]) -> int:
     """
     Finds the optimal BST for items with the given weight distribution, and
     calculates its weighted search time (WST), in an improved bottom-up way.
@@ -54,7 +55,6 @@ def find_optimal_bst(weights):
     n = len(weights)
     # Initialization
     subproblems = [[0] * n for i in range(n)]
-    n_item = 1
     for i in range(n):
         subproblems[i][i] = weights[i]
     # Bottom-up calculation
@@ -78,5 +78,5 @@ def find_optimal_bst(weights):
                 if curr_wst < min_wst:
                     min_wst = curr_wst
             subproblems[start][end] = min_wst
-    return subproblems[start][end]
+    return subproblems[0][n - 1]
     # Overall running time complexity: O(n^3)

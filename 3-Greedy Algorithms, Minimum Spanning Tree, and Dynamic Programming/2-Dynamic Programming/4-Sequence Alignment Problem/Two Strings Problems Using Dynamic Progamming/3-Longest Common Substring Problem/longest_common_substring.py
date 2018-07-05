@@ -26,7 +26,14 @@ class IllegalArgumentError(ValueError):
     pass
 
 
-def find_longest_common_substring(x, y):
+def find_longest_common_substring(x: str, y: str) -> str:
+    """
+    Finds the longest common substring between the given two strings in a
+    bottom-up way.
+    :param x: str
+    :param y: str
+    :return: str
+    """
     # Check whether the input strings are None or empty
     if x is None or len(x) == 0 or y is None or len(y) == 0:
         raise IllegalArgumentError('The input strings should noe bt None or '

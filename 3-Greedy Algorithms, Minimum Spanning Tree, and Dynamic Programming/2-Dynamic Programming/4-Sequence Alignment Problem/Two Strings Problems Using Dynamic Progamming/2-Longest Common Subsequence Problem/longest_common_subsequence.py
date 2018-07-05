@@ -28,18 +28,20 @@ Else:
 
 __author__ = 'Ziang Lu'
 
+from typing import List
+
 
 class IllegalArgumenError(ValueError):
     pass
 
 
-def longest_common_subsequence(x, y):
+def longest_common_subsequence(x: str, y: str) -> List[str]:
     """
     Finds the longest common subsequence of the given strings in an improved
     bottom-up way.
     :param x: str
     :param y: str
-    :return: list[char]
+    :return: list[str]
     """
     # Check whether the the input strings are None or empty
     if x is None or len(x) == 0 or y is None or len(y) == 0:
@@ -63,16 +65,19 @@ def longest_common_subsequence(x, y):
     # Overall running time complexity: O(mn)
 
 
-def _reconstruct_longest_common_subsequence(x, y, subproblems):
+def _reconstruct_longest_common_subsequence(x: str, y: str,
+                                            subproblems: List[List[int]]) -> \
+        List[str]:
     """
     Private helper function to reconstruct the longest common subsequence
     according to the optimal solution using backtracking.
     :param x: str
     :param y: str
+    :param subproblems: list[list[int]]
     :return: list[char]
     """
     lcs = []
-    i , j = len(x), len(y)
+    i, j = len(x), len(y)
     while i >= 1 and j >= 1:
         x_curr, y_curr = x[i - 1], y[j - 1]
         if x_curr == y_curr:

@@ -26,16 +26,19 @@ S(i, b, x) = max{S(i - 1, b, x), S(i - 1, b - 1, x - w_i) + v_i}
 
 __author__ = 'Ziang Lu'
 
+from typing import List, Set
+
 
 class IllegalArgumentError(ValueError):
     pass
 
 
-def knapsack_with_budget(vals, weights, budget, cap):
+def knapsack_with_budget(vals: List[int], weights: List[int], budget: int,
+                         cap: int) -> Set[int]:
     """
     Solves the knapsack problem (with budget) of the items with the given values
     and weights, with the given budget and capacity, in an bottom-up way.
-    :param vals: list[float]
+    :param vals: list[int]
     :param weights: list[int]
     :param budget: int
     :param cap: int
@@ -78,15 +81,16 @@ def knapsack_with_budget(vals, weights, budget, cap):
     # the knapsack capacity
 
 
-def _reconstruct(vals, weights, budget, cap, subproblems):
+def _reconstruct(vals: List[int], weights: List[int], budget: int, cap: int,
+                 subproblems: List[List[List[int]]]) -> Set[int]:
     """
     Private helper function to reconstruct the included items according to the
     optimal solution using backtracking.
-    :param vals: list[float]
+    :param vals: list[int]
     :param weights: list[int]
     :param budget: int
     :param cap: int
-    :param subproblems: list[list[list[float]]]
+    :param subproblems: list[list[list[int]]]
     :return: set{int}
     """
     included_item = set()
@@ -95,7 +99,8 @@ def _reconstruct(vals, weights, budget, cap, subproblems):
         result_without_curr = subproblems[curr_item - 1][curr_budget][curr_cap]
         if curr_budget >= 1 and weights[curr_item] <= curr_cap \
                 and result_without_curr \
-                < (subproblems[curr_item - 1][curr_budget - 1][curr_cap - weights[curr_item]] + vals[curr_item]):
+                < (subproblems[curr_item - 1][curr_budget - 1][
+                       curr_cap - weights[curr_item]] + vals[curr_item]):
             included_item.add(curr_item)
             curr_budget -= 1
             curr_cap -= weights[curr_item]

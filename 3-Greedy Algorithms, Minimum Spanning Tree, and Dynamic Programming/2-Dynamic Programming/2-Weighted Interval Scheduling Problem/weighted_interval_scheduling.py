@@ -33,13 +33,16 @@ S(i) = max{S(i - 1), S(L(i)) + w_i}
 
 __author__ = 'Ziang Lu'
 
+from typing import List
+
 
 class IllegalArgumentError(ValueError):
     pass
 
 
 class Job(object):
-    def __init__(self, weight, starting_time, ending_time):
+
+    def __init__(self, weight: float, starting_time: float, ending_time: float):
         """
         Constructor with parameter.
         :param weight: float
@@ -51,7 +54,7 @@ class Job(object):
         self._ending_time = ending_time
 
     @property
-    def weight(self):
+    def weight(self) -> float:
         """
         Accessor of weight.
         :return: float
@@ -59,7 +62,7 @@ class Job(object):
         return self._weight
 
     @property
-    def starting_time(self):
+    def starting_time(self) -> float:
         """
         Accessor of starting_time.
         :return: float
@@ -67,7 +70,7 @@ class Job(object):
         return self._starting_time
 
     @property
-    def ending_time(self):
+    def ending_time(self) -> float:
         """
         Accessor of ending_time.
         :return: float
@@ -75,7 +78,7 @@ class Job(object):
         return self._ending_time
 
 
-def find_max_weight_interval_scheduling(jobs):
+def find_max_weight_interval_scheduling(jobs: List[Job]) -> List[int]:
     """
     Finds the maximum-weight interval scheduling in an improved bottom-up way.
     :param jobs: list[Job]
@@ -91,7 +94,7 @@ def find_max_weight_interval_scheduling(jobs):
 
     n = len(jobs)
     # Initialization
-    subproblems = [0] * n
+    subproblems = [0.0] * n
     # Bottom-up calculation
     for curr in range(1, n):
         result_without_curr = subproblems[curr - 1]
@@ -105,7 +108,7 @@ def find_max_weight_interval_scheduling(jobs):
     # Overall running time complexity: O(nlog n)
 
 
-def _find_last_no_overlap(jobs, i):
+def _find_last_no_overlap(jobs: List[Job], i: int) -> int:
     """
     Private helper function to find the last job not overlapping with the given
     job using binary search.
@@ -127,21 +130,26 @@ def _find_last_no_overlap(jobs, i):
     # Running time complexity: O(log n)
 
 
-def _jobs_overlap(job1, job2):
+def _jobs_overlap(job1: Job, job2: Job) -> bool:
     """
     Helper function to check whether the given two jobs overlap.
     :param job1: Job
-    :param job_2: Job
+    :param job2: Job
     :return: bool
     """
-    return job1.ending_time <= job2.starting_end
+    return job1.ending_time <= job2.ending_time
     # Running time complexity: O(1)
 
 
-def _reconstruct_max_weight_interval_scheduling(jobs, subproblems):
+def _reconstruct_max_weight_interval_scheduling(jobs: List[Job],
+                                                subproblems: List[float]) -> \
+        List[int]:
     """
     Private helper function to reconstruct the maximum-weight interval
     scheduling according to the optimal solution using backtracking.
+    :param jobs: list[Job]
+    :param subproblems: list[float]
+    :return: list[int]
     """
     scheduled_jobs = []
     curr = len(jobs) - 1

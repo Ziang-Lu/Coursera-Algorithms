@@ -9,22 +9,26 @@ Algorithm: Same as the ordinary knapsack problem.
 
 __author__ = 'Ziang Lu'
 
+from typing import List, Set
+
 
 class IllegalArgumentError(ValueError):
     pass
 
 
-def knapsack_with_exact_size(vals, weights, cap):
+def knapsack_with_exact_size(vals: List[int], weights: List[int], cap: int) -> \
+        Set[int]:
     """
     Solves the knapsack problem (with exact size) of the items with the given
     values and weights, and the given capacity, in an improved bottom-up way.
-    :param vals: list[float]
+    :param vals: list[int]
     :param weights: list[int]
     :param cap: int
     :return: set{int}
     """
     # Check whether the input arrays are None or empty
-    if vals is None or len(weights) == 0 or weights is None or len(weights) == 0:
+    if vals is None or len(weights) == 0 or weights is None or len(
+            weights) == 0:
         raise IllegalArgumentError('The input values and weights should not be '
                                    'null or empty.')
     # Check whether the input capacity is non-negative
@@ -56,14 +60,15 @@ def knapsack_with_exact_size(vals, weights, cap):
     # Overall running time complexity: O(nW), where W is the knapsack capacity
 
 
-def _reconstruct(vals, weights, cap, subproblems):
+def _reconstruct(vals: List[int], weights: List[int], cap: int,
+                 subproblems: List[List[int]]) -> Set[int]:
     """
     Private helper function to reconstruct the included items according to
     the optimal solution using backtracking.
-    :param vals: list[float]
+    :param vals: list[int]
     :param weights: list[int]
     :param cap: int
-    :param subproblems: list[list[float]]
+    :param subproblems: list[list[int]]
     :return: set{int}
     """
     included_items = set()
