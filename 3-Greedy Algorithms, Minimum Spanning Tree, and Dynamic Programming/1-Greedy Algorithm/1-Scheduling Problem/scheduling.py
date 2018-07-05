@@ -44,16 +44,23 @@ Since i > j, then w_i/l_i <= w_j/l_j => w_i*l_j (cost) <= w_j*l_i (benefit)
 __author__ = 'Ziang Lu'
 
 from functools import total_ordering
+from typing import List
 
 
 @total_ordering
 class Job(object):
-    def __init__(self, weight, length):
+
+    def __init__(self, weight: float, length: float):
+        """
+        Constructor with parameter.
+        :param weight: float
+        :param length: float
+        """
         self._weight = weight
         self._length = length
 
     @property
-    def weight(self):
+    def weight(self) -> float:
         """
         Accessor of weight.
         :return: float
@@ -61,7 +68,7 @@ class Job(object):
         return self._weight
 
     @property
-    def length(self):
+    def length(self) -> float:
         """
         Accessor of length.
         :return: float
@@ -69,17 +76,19 @@ class Job(object):
         return self._length
 
     def __lt__(self, other):
-        score, other_score = self._weight / self._length, other.weight / other.length
+        score, other_score = self._weight / self._length, other.weight / \
+                             other.length
         return other_score < score
 
     def __repr__(self):
-        """
-        String representation of this job.
-        :return: str
-        """
-        return 'Job with weight %lf and length %lf' %\
+        return 'Job with weight %lf and length %lf' % \
                (self._weight, self._length)
 
 
-def schedule(jobs):
+def schedule(jobs: List[Job]) -> None:
+    """
+    Schedules the given jobs.
+    :param jobs: list[Job]
+    :return: None
+    """
     jobs.sort()

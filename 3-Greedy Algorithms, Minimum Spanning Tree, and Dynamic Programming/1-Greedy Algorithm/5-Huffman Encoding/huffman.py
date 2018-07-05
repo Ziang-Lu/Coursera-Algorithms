@@ -10,7 +10,8 @@ from functools import total_ordering
 
 @total_ordering
 class Node(object):
-    def __init__(self, c, freq, left, right):
+
+    def __init__(self, c: str, freq: int, left, right):
         """
         Constructor with parameter.
         :param c: str
@@ -24,7 +25,7 @@ class Node(object):
         self._right = right
 
     @property
-    def c(self):
+    def c(self) -> str:
         """
         Accessor of c.
         :return: str
@@ -32,7 +33,7 @@ class Node(object):
         return self._c
 
     @property
-    def freq(self):
+    def freq(self) -> int:
         """
         Accessor of freq.
         :return: int
@@ -60,7 +61,8 @@ class Node(object):
 
 
 class HuffmanTree(object):
-    def __init__(self, s):
+
+    def __init__(self, s: str):
         """
         Constructor with parameter.
         :param s: str
@@ -69,7 +71,7 @@ class HuffmanTree(object):
         self._encoding_map = {}
         self.construct_huffman_tree_with_heap(s)
 
-    def construct_huffman_tree_with_heap(self, s):
+    def construct_huffman_tree_with_heap(self, s: str) -> None:
         """
         Constructs the Huffman tree using the given string with a heap.
         :param s: s
@@ -106,7 +108,7 @@ class HuffmanTree(object):
         self._create_encoding(self._root, encoding_so_far='')
         # Overall running time complexity: O(nlog n)
 
-    def _create_encoding(self, curr, encoding_so_far):
+    def _create_encoding(self, curr: Node, encoding_so_far: str) -> None:
         """
         Private helper function to create the encoding recursively.
         :param curr: Node
@@ -124,7 +126,7 @@ class HuffmanTree(object):
         # a = 2, b = 2, d = 0
         # According to Master Method, the running time complexity is O(n).
 
-    def encode(self, msg):
+    def encode(self, msg: str) -> str:
         """
         Encodes the given message.
         :param msg: str
@@ -136,7 +138,7 @@ class HuffmanTree(object):
 
         return ''.join([self._encoding_map[c] for c in msg])
 
-    def decode(self, encoded):
+    def decode(self, encoded: str) -> str:
         """
         Decodes the given encoded string.
         :param encoded: str
@@ -148,7 +150,7 @@ class HuffmanTree(object):
 
         return self._decode_helper(encoded, idx=0, curr=self._root)
 
-    def _decode_helper(self, encoded, idx, curr):
+    def _decode_helper(self, encoded: str, idx: int, curr: Node) -> str:
         """
         Private helper function to decode the encoded string recursively.
         :param encoded: str
@@ -163,7 +165,7 @@ class HuffmanTree(object):
         if curr.left is None and curr.right is None:
             # Restart from the root
             return curr.c + \
-                self._decode_helper(encoded, idx=idx, curr=self._root)
+                   self._decode_helper(encoded, idx=idx, curr=self._root)
 
         # Recursive case
         if encoded[idx] == '0':

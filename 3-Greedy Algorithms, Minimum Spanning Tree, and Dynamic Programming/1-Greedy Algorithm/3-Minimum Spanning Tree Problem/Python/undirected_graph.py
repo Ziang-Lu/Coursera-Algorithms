@@ -13,8 +13,10 @@ import heapq
 import random
 import sys
 from functools import total_ordering
-from graph_basics import AbstractVertex, AbstractGraph
-from union_find import UnionFindObj, UnionFind
+from typing import Dict, List
+
+from graph_basics import AbstractGraph, AbstractVertex
+from union_find import UnionFind, UnionFindObj
 
 
 class IllegalArgumentError(ValueError):
@@ -25,7 +27,7 @@ class IllegalArgumentError(ValueError):
 class Vertex(AbstractVertex, UnionFindObj):
     DEFAULT_MIN_INCIDENT_COST = sys.maxsize
 
-    def __init__(self, vtx_id):
+    def __init__(self, vtx_id: int):
         """
         Constructor with parameter.
         :param vtx_id: int
@@ -37,11 +39,11 @@ class Vertex(AbstractVertex, UnionFindObj):
         self._min_cost_incident_edge = None
         self._min_incident_cost = Vertex.DEFAULT_MIN_INCIDENT_COST
 
-    def get_edge_with_neighbor(self, neighbor):
+    def get_edge_with_neighbor(self, neighbor: AbstractVertex):
         """
         Returns the first edge with the given neighbor.
-        :param neighbor: Vertex
-        :return: Edge
+        :param neighbor: AbstractVertex
+        :return: UndirectedEdge
         """
         # Check whether the input neighbor is None
         if neighbor is None:
@@ -55,10 +57,10 @@ class Vertex(AbstractVertex, UnionFindObj):
         return None
 
     @property
-    def edges(self):
+    def edges(self) -> list:
         """
         Accessor of edges.
-        :return: list[Edge]
+        :return: list[UndirectedEdge]
         """
         return self._edges
 
@@ -71,7 +73,7 @@ class Vertex(AbstractVertex, UnionFindObj):
         return self._min_cost_incident_edge
 
     @property
-    def min_incident_cost(self):
+    def min_incident_cost(self) -> float:
         """
         Accessor of min_incident_edge.
         :return: float
@@ -82,10 +84,10 @@ class Vertex(AbstractVertex, UnionFindObj):
     def obj_name(self):
         return str(self._vtx_id)
 
-    def add_edge(self, new_edge):
+    def add_edge(self, new_edge) -> None:
         """
         Adds the given edge to this vertex.
-        :param new_edge: Edge
+        :param new_edge: UndirectedEdge
         :return: None
         """
         # Check whether the input edge is None
@@ -107,10 +109,10 @@ class Vertex(AbstractVertex, UnionFindObj):
         self._edges.append(new_edge)
         self._neighbors.add(neighbor.vtx_id)
 
-    def remove_edge(self, edge_to_remove):
+    def remove_edge(self, edge_to_remove) -> None:
         """
         Removes the given edge from this vertex.
-        :param edge_to_remove: Edge
+        :param edge_to_remove: UndirectedEdge
         :return: None
         """
         # Check whether the input edge is None
@@ -134,7 +136,7 @@ class Vertex(AbstractVertex, UnionFindObj):
         self._neighbors.remove(neighbor.vtx_id)
 
     @min_cost_incident_edge.setter
-    def min_cost_incident_edge(self, min_cost_incident_edge):
+    def min_cost_incident_edge(self, min_cost_incident_edge) -> None:
         """
         Mutator of min_cost_incident_edge
         :param min_cost_incident_edge: UndirectedEdge
@@ -143,7 +145,7 @@ class Vertex(AbstractVertex, UnionFindObj):
         self._min_cost_incident_edge = min_cost_incident_edge
 
     @min_incident_cost.setter
-    def min_incident_cost(self, min_incident_cost):
+    def min_incident_cost(self, min_incident_cost: float) -> None:
         """
         Mutator of min_incident_cost.
         :param min_incident_cost: float
@@ -155,16 +157,13 @@ class Vertex(AbstractVertex, UnionFindObj):
         return self._min_incident_cost < other.min_incident_cost
 
     def __repr__(self):
-        """
-        String representation of this vertex.
-        :return: str
-        """
         return 'Vertex #%d, Its neighbors: %s' % (self._vtx_id, self._neighbors)
 
 
 @total_ordering
 class UndirectedEdge(object):
-    def __init__(self, end1, end2, cost):
+
+    def __init__(self, end1: Vertex, end2: Vertex, cost: float):
         """
         Constructor with parameter.
         :param end1: Vertex
@@ -176,7 +175,7 @@ class UndirectedEdge(object):
         self._cost = cost
 
     @property
-    def end1(self):
+    def end1(self) -> Vertex:
         """
         Accessor of end1.
         :return: Vertex
@@ -184,7 +183,7 @@ class UndirectedEdge(object):
         return self._end1
 
     @property
-    def end2(self):
+    def end2(self) -> Vertex:
         """
         Accessor of end2.
         :return: Vertex
@@ -192,7 +191,7 @@ class UndirectedEdge(object):
         return self._end2
 
     @property
-    def cost(self):
+    def cost(self) -> float:
         """
         Accessor of cost.
         :return: float
@@ -200,7 +199,7 @@ class UndirectedEdge(object):
         return self._cost
 
     @end1.setter
-    def end1(self, end1):
+    def end1(self, end1: Vertex) -> None:
         """
         Mutator of end1.
         :param end1: Vertex
@@ -209,7 +208,7 @@ class UndirectedEdge(object):
         self._end1 = end1
 
     @end2.setter
-    def end2(self, end2):
+    def end2(self, end2: Vertex) -> None:
         """
         Mutator of end2.
         :param end2: Vertex
@@ -221,15 +220,12 @@ class UndirectedEdge(object):
         return self._cost < other.cost
 
     def __repr__(self):
-        """
-        String representation of this edge.
-        :return: str
-        """
         return 'Edge between Vertex #%d and Vertex #%d' % \
-            (self._end1.vtx_id, self._end2.vtx_id)
+               (self._end1.vtx_id, self._end2.vtx_id)
 
 
 class UndirectedGraph(AbstractGraph):
+
     def __init__(self):
         """
         Default constructor.
@@ -291,20 +287,7 @@ class UndirectedGraph(AbstractGraph):
         end2.remove_edge(edge_to_remove)
         self._edge_list.remove(edge_to_remove)
 
-    def remove_edges_between_pair(self, end1_id, end2_id):
-        """
-        Removes all the edges between a vertex pair from this graph.
-        :param end1_id: int
-        :param end2_id: int
-        :return: None
-        """
-        try:
-            while True:
-                self.remove_edge(end1_id=end1_id, end2_id=end2_id)
-        except IllegalArgumentError:
-            pass
-
-    def prim_mst_straightforward(self):
+    def prim_mst_straightforward(self) -> float:
         """
         Finds the minimum spanning tree (MST) in this graph using
         straightforward Prim's MST Algorithm.
@@ -333,7 +316,8 @@ class UndirectedGraph(AbstractGraph):
             # Add e to T
             curr_spanning_tree.append(cheapest_crossing_edge)
             # Add w to X (the set)
-            if cheapest_crossing_edge.end1.vtx_id in spanned:  # endpoint2 is the w.
+            if cheapest_crossing_edge.end1.vtx_id in spanned:  # endpoint2 is
+                #  the w.
                 w = cheapest_crossing_edge.end2
             else:  # endpoint1 is the w.
                 w = cheapest_crossing_edge.end1
@@ -354,7 +338,7 @@ class UndirectedGraph(AbstractGraph):
         # Overall running time complexity: O((m + n)log m)
         # Since usually m >= n, it could be simplified to O(mlog m).
 
-    def kruskal_mst_straightforward(self):
+    def kruskal_mst_straightforward(self) -> float:
         """
         Finds the minimum spanning tree (MST) using straightforward Kruskal's
         MST Algorithm.
@@ -378,7 +362,8 @@ class UndirectedGraph(AbstractGraph):
         return sum(map(lambda edge: edge.cost, curr_spanning_tree))
         # Overall running time complexity: O(mn)
 
-    def _dfs_and_check_path(self, spanning_tree, v, w):
+    def _dfs_and_check_path(self, spanning_tree: List[UndirectedEdge],
+                            v: Vertex, w: Vertex) -> bool:
         """
         Private helper function to check whether there exists a v-w path in the
         given spanning tree.
@@ -394,7 +379,8 @@ class UndirectedGraph(AbstractGraph):
         return self._dfs_and_check_path_helper(connections, curr=v, target=w)
         # Running time complexity: O(n)
 
-    def _construct_connections(self, edges):
+    def _construct_connections(self, edges: List[UndirectedEdge]) -> Dict[
+        int, List[Vertex]]:
         """
         Helper function to construct the connection map from the given edges.
         :param edges: list[UndirectedEdge]
@@ -407,7 +393,8 @@ class UndirectedGraph(AbstractGraph):
         return connections
         # Running time complexity: O(n)
 
-    def _add_neighbor(self, connections, v, neighbor):
+    def _add_neighbor(self, connections: Dict[int, List[Vertex]], v: Vertex,
+                      neighbor: Vertex) -> None:
         """
         Helper function to add the given neighbor of the given vertex to the
         given connection map.
@@ -421,7 +408,8 @@ class UndirectedGraph(AbstractGraph):
         connections[v.vtx_id] = neighbors
         # Running time complexity: O(1)
 
-    def _dfs_and_check_path_helper(self, connections, curr, target):
+    def _dfs_and_check_path_helper(self, connections: Dict[int, List[Vertex]],
+                                   curr: Vertex, target: Vertex) -> bool:
         """
         Helper function to check whether there exists a curr-target path in the
         given connection map recursively.
@@ -441,7 +429,7 @@ class UndirectedGraph(AbstractGraph):
         return False
         # Running time complexity: O(n)
 
-    def kruskal_mst_improved(self):
+    def kruskal_mst_improved(self) -> float:
         """
         Finds the minimum spanning tree (MST) using improved Kruskal's MST
         Algorithm.
@@ -486,7 +474,7 @@ class UndirectedGraph(AbstractGraph):
         return sum(map(lambda edge: edge.cost, curr_spanning_tree))
         # Overall running time complexity: O(mlog m)
 
-    def clustering_with_max_spacing(self, k):
+    def clustering_with_max_spacing(self, k: int) -> float:
         """
         Clusters the graph into the given number of cluster using maximum
         spacing as the objective function, which is to maximize the minimum
@@ -516,7 +504,8 @@ class UndirectedGraph(AbstractGraph):
                 group_name_p, group_name_q = \
                     edge.end1.leader.obj_name, edge.end2.leader.obj_name
                 union_find.union(group_name_p, group_name_q)
-                if union_find.num_of_groups() == k:  # Repeat until only k clusters
+                if union_find.num_of_groups() == k:  # Repeat until only k
+                    # clusters
                     # The maximum spacing is simply the cost of the next
                     # cheapest crossing edge among different connected
                     # components.

@@ -11,12 +11,15 @@ Maintain a partition of a set of objects
 
 __author__ = 'Ziang Lu'
 
+from typing import List
+
 
 class IllegalArgumentError(ValueError):
     pass
 
 
 class UnionFindObj(object):
+
     def __init__(self):
         self._leader = self
 
@@ -29,7 +32,7 @@ class UnionFindObj(object):
         return self._leader
 
     @leader.setter
-    def leader(self, leader):
+    def leader(self, leader) -> None:
         """
         Mutator of leader.
         :param leader: UnionFindObj
@@ -38,7 +41,7 @@ class UnionFindObj(object):
         self._leader = leader
 
     @property
-    def obj_name(self):
+    def obj_name(self) -> str:
         """
         Returns the name of this object.
         :return: str
@@ -47,7 +50,8 @@ class UnionFindObj(object):
 
 
 class UnionFind(object):
-    def __init__(self, objs):
+
+    def __init__(self, objs: List[UnionFindObj]):
         """
         Constructor with parameter.
         :param objs: list[UnionFindObj]
@@ -56,14 +60,14 @@ class UnionFind(object):
         for obj in objs:
             self._groups[obj.obj_name] = [obj]
 
-    def num_of_groups(self):
+    def num_of_groups(self) -> int:
         """
         Returns the number of groups.
         :return: int
         """
         return len(self._groups)
 
-    def find(self, obj):
+    def find(self, obj: UnionFindObj) -> str:
         """
         Returns the name of the group, which is exactly the name of the group
         leader, that the given object belongs to.
@@ -73,7 +77,7 @@ class UnionFind(object):
         return obj.leader.obj_name
         # Running time complexity: O(1)
 
-    def union(self, group_name_a, group_name_b):
+    def union(self, group_name_a: str, group_name_b: str) -> None:
         """
         Fuses the given two groups together.
         Objects in the first group and objects in the second group should all
@@ -108,7 +112,8 @@ class UnionFind(object):
         self._groups[larger_leader.obj_name] = larger
         self._groups.pop(smaller_name)
 
-    def _update_leader(self, group, new_leader):
+    def _update_leader(self, group: List[UnionFindObj],
+                       new_leader: UnionFindObj) -> None:
         """
         Private helper function to update the leader of the given group to the
         given new leader.

@@ -65,7 +65,8 @@ class LazyUnionObj:
     """
     Simple class for object to be stored in Union-Find data structure.
     """
-    def __init__(self, name):
+
+    def __init__(self, name: str):
         """
         Constructor with parameter.
         :param name: str
@@ -75,7 +76,7 @@ class LazyUnionObj:
         self._rank = 0
 
     @property
-    def obj_name(self):
+    def obj_name(self) -> str:
         """
         Accessor of name.
         :return: str
@@ -91,7 +92,7 @@ class LazyUnionObj:
         return self._parent
 
     @property
-    def rank(self):
+    def rank(self) -> int:
         """
         Accessor of rank.
         :return: int
@@ -99,7 +100,7 @@ class LazyUnionObj:
         return self._rank
 
     @parent.setter
-    def parent(self, parent):
+    def parent(self, parent) -> None:
         """
         Mutator of parent.
         :param parent: LazyUnionObj
@@ -108,7 +109,7 @@ class LazyUnionObj:
         self._parent = parent
 
     @rank.setter
-    def rank(self, rank):
+    def rank(self, rank: int) -> None:
         """
         Mutator of rank.
         :param rank: int
@@ -118,8 +119,9 @@ class LazyUnionObj:
 
 
 class LazyUnion(object):
+
     @staticmethod
-    def find(obj):
+    def find(obj: LazyUnionObj):
         """
         Returns the name of the group, which is exactly the name of the group
         root, that the given object belongs to.
@@ -132,7 +134,7 @@ class LazyUnion(object):
         # Running time complexity: O(log n)
 
     @staticmethod
-    def _find_root(obj):
+    def _find_root(obj: LazyUnionObj) -> LazyUnionObj:
         """
         Private helper function to find the root of the given object.
         :param obj: LazyUnionObj
@@ -145,7 +147,7 @@ class LazyUnion(object):
         # Running time complexity: O(log n)
 
     @staticmethod
-    def _is_root(obj):
+    def _is_root(obj: LazyUnionObj) -> bool:
         """
         Helper function to check whether the given object is a root.
         :param obj: LazyUnionObj
@@ -155,7 +157,7 @@ class LazyUnion(object):
         # Running time complexity: O(1)
 
     @staticmethod
-    def _path_compression(obj, root):
+    def _path_compression(obj, root: LazyUnionObj) -> LazyUnionObj:
         """
         Private helper function to do path compression for the given object.
         :param obj: LazyUnionObj
@@ -169,7 +171,7 @@ class LazyUnion(object):
         # Running time complexity: O(log n)
 
     @staticmethod
-    def union(x, y):
+    def union(x: LazyUnionObj, y: LazyUnionObj) -> None:
         """
         Fuses the two groups that the given two objects belong to, respectively,
         together.
