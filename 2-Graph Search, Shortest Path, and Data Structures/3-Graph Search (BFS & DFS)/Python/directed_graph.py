@@ -10,7 +10,9 @@ Note that parallel edges and self-loops are not allowed.
 __author__ = 'Ziang Lu'
 
 from queue import Queue
-from graph_basics import AbstractVertex, AbstractGraph
+from typing import List
+
+from graph_basics import AbstractGraph, AbstractVertex
 
 
 class IllegalArgumentError(ValueError):
@@ -18,7 +20,8 @@ class IllegalArgumentError(ValueError):
 
 
 class Vertex(AbstractVertex):
-    def __init__(self, vtx_id):
+
+    def __init__(self, vtx_id: int):
         """
         Constructor with parameter.
         :param vtx_id: int
@@ -29,11 +32,11 @@ class Vertex(AbstractVertex):
         self._incident_edges = []
         self._incident_neighbors = set()
 
-    def get_emissive_edge_with_head(self, head):
+    def get_emissive_edge_with_head(self, head: AbstractVertex):
         """
         Returns the first emissive edge with the given head.
-        :param head: Vertex
-        :return: Edge
+        :param head: AbstractVertex
+        :return: DirectedEdge
         """
         # Check whether the input head is None
         if head is None:
@@ -46,18 +49,18 @@ class Vertex(AbstractVertex):
         return None
 
     @property
-    def emissive_edges(self):
+    def emissive_edges(self) -> list:
         """
         Accessor of emissive_edges.
-        :return: list[Edge]
+        :return: list[DirectedEdge]
         """
         return self._emissive_edges
 
-    def get_incident_edge_with_tail(self, tail):
+    def get_incident_edge_with_tail(self, tail: AbstractVertex):
         """
         Returns the first incident edge with the given tail.
-        :param tail: Vertex
-        :return: Edge
+        :param tail: AbstractVertex
+        :return: DirectedEdge
         """
         # Check whether the input tail is None
         if tail is None:
@@ -70,17 +73,17 @@ class Vertex(AbstractVertex):
         return None
 
     @property
-    def incident_edges(self):
+    def incident_edges(self) -> list:
         """
         Accessor of incident_edges.
-        :return: list[Edge]
+        :return: list[DirectedEdge]
         """
         return self._incident_edges
 
-    def add_emissive_edge(self, new_emissive_edge):
+    def add_emissive_edge(self, new_emissive_edge) -> None:
         """
         Adds the given emissive edge to this vertex.
-        :param new_emissive_edge: Edge
+        :param new_emissive_edge: DirectedEdge
         :return: None
         """
         # Check whether the input emissive edge is None
@@ -98,10 +101,10 @@ class Vertex(AbstractVertex):
         self._emissive_edges.append(new_emissive_edge)
         self._emissive_neighbors.add(new_emissive_edge.head.vtx_id)
 
-    def add_incident_edge(self, new_incident_edge):
+    def add_incident_edge(self, new_incident_edge) -> None:
         """
         Adds the given incident edge to this vertex
-        :param new_incident_edge: Edge
+        :param new_incident_edge: DirectedEdge
         :return: None
         """
         # Check whether the input incident edge is None
@@ -119,10 +122,10 @@ class Vertex(AbstractVertex):
         self._incident_edges.append(new_incident_edge)
         self._incident_neighbors.add(new_incident_edge.tail.vtx_id)
 
-    def remove_emissive_edge(self, emissive_edge_to_remove):
+    def remove_emissive_edge(self, emissive_edge_to_remove) -> None:
         """
         Removes the given emissive edge from this vertex.
-        :param emissive_edge_to_remove: Edge
+        :param emissive_edge_to_remove: DirectedEdge
         :return: None
         """
         # Check whether the input emissive edge is None
@@ -141,10 +144,10 @@ class Vertex(AbstractVertex):
         self._emissive_edges.remove(emissive_edge_to_remove)
         self._emissive_neighbors.remove(emissive_edge_to_remove.head.vtx_id)
 
-    def remove_incident_edge(self, incident_edge_to_remove):
+    def remove_incident_edge(self, incident_edge_to_remove) -> None:
         """
         Removes the given incident edge from this vertex.
-        :param incident_edge_to_remove: Edge
+        :param incident_edge_to_remove: DirectedEdge
         :return: None
         """
         # Check whether the input incident edge is None
@@ -164,26 +167,18 @@ class Vertex(AbstractVertex):
         self._incident_neighbors.remove(incident_edge_to_remove.tail.vtx_id)
 
     def __repr__(self):
-        """
-        String representation of this vertex.
-        :return: str
-        """
         s = 'Vertex #%d\n' % self._vtx_id
         s += 'Its emissive neighbors: %s\n' % self._emissive_neighbors
         s += 'Its incident neighbors: %s\n' % self._incident_neighbors
         return s
 
     def __eq__(self, other):
-        """
-        Equality test between this and the given vertex
-        :param other: Vertex
-        :return: bool
-        """
         return isinstance(other, Vertex) and self._vtx_id == other.vtx_id
 
 
 class DirectedEdge(object):
-    def __init__(self, tail, head):
+
+    def __init__(self, tail: Vertex, head: Vertex):
         """
         Constructor with parameter.
         :param tail: Vertex
@@ -193,7 +188,7 @@ class DirectedEdge(object):
         self._head = head
 
     @property
-    def tail(self):
+    def tail(self) -> Vertex:
         """
         Accessor of tail.
         :return: Vertex
@@ -201,7 +196,7 @@ class DirectedEdge(object):
         return self._tail
 
     @property
-    def head(self):
+    def head(self) -> Vertex:
         """
         Accessor of head.
         :return: Vertex
@@ -209,7 +204,7 @@ class DirectedEdge(object):
         return self._head
 
     @tail.setter
-    def tail(self, tail):
+    def tail(self, tail: Vertex) -> None:
         """
         Mutator of tail.
         :param tail: Vertex
@@ -218,7 +213,7 @@ class DirectedEdge(object):
         self._tail = tail
 
     @head.setter
-    def head(self, head):
+    def head(self, head: Vertex) -> None:
         """
         Mutator of head.
         :param head: Vertex
@@ -227,15 +222,12 @@ class DirectedEdge(object):
         self._head = head
 
     def __repr__(self):
-        """
-        String representation of this edge.
-        :return head: str
-        """
         return 'Edge from Vertex #%d to Vertex #%d' % \
-            (self._tail.vtx_id, self._head.vtx_id)
+               (self._tail.vtx_id, self._head.vtx_id)
 
 
 class DirectedGraph(AbstractGraph):
+
     def __init__(self):
         """
         Default constructor.
@@ -346,7 +338,7 @@ class DirectedGraph(AbstractGraph):
     def shortest_path(self, src_vtx_id, dest_vtx_id):
         # Check whether the input source and destination vertices both exist
         src_vtx, dest_vtx = self._find_vtx(src_vtx_id), \
-            self._find_vtx(dest_vtx_id)
+                            self._find_vtx(dest_vtx_id)
         if src_vtx is None:
             raise IllegalArgumentError("The input source and destination "
                                        "vertices don't both exist.")
@@ -429,7 +421,7 @@ class DirectedGraph(AbstractGraph):
                 self.dfs(src_vtx_id=vtx.vtx_id)
         return count
 
-    def _get_vtxs_sorted_by_finish_time(self):
+    def _get_vtxs_sorted_by_finish_time(self) -> List[Vertex]:
         """
         Private helper function to get the vertices sorted by finishing time
         when using DFS
@@ -448,7 +440,9 @@ class DirectedGraph(AbstractGraph):
                                                   vtxs_sorted_by_finish_time)
         return vtxs_sorted_by_finish_time
 
-    def _dfs_helper_with_finish_time(self, vtx, vtxs_sorted_by_finish_time):
+    def _dfs_helper_with_finish_time(self, vtx: Vertex,
+                                     vtxs_sorted_by_finish_time: List[
+                                         Vertex]) -> None:
         """
         Helper function to do DFS and set the finishing time of the given
         vertex.
@@ -470,7 +464,7 @@ class DirectedGraph(AbstractGraph):
         # Set v's finishing time
         vtxs_sorted_by_finish_time.append(vtx)
 
-    def topological_sort(self):
+    def topological_sort(self) -> List[int]:
         """
         Returns the topological ordering of the vertices of this directed graph
         using DFS.
@@ -481,7 +475,7 @@ class DirectedGraph(AbstractGraph):
         return list(reversed(list(map(lambda vtx: vtx.vtx_id,
                                       vtxs_sorted_by_finish_time))))
 
-    def topological_sort_straightforward(self):
+    def topological_sort_straightforward(self) -> List[int]:
         """
         Returns the topological ordering of the vertices of this directed graph
         using straightforward algorithm.
@@ -493,8 +487,10 @@ class DirectedGraph(AbstractGraph):
                                                       len(self._vtx_list))
         return topological_ordering
 
-    def _topological_sort_straightforward_helper(self, topological_ordering,
-                                                 curr_order):
+    def _topological_sort_straightforward_helper(self,
+                                                 topological_ordering: List[
+                                                     int],
+                                                 curr_order: int) -> None:
         """
         Private helper function to fill in the given order of the topological
         ordering using straightforward algorithm recursively.
@@ -516,7 +512,7 @@ class DirectedGraph(AbstractGraph):
         self._topological_sort_straightforward_helper(topological_ordering,
                                                       curr_order=curr_order - 1)
 
-    def _get_sink_vertex(self):
+    def _get_sink_vertex(self) -> Vertex:
         """
         Helper function to get a sink vertex.
         :return: Vertex

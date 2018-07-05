@@ -10,7 +10,8 @@ Note that parallel edges and self-loops are not allowed.
 __author__ = 'Ziang Lu'
 
 from queue import Queue
-from graph_basics import AbstractVertex, AbstractGraph
+
+from graph_basics import AbstractGraph, AbstractVertex
 
 
 class IllegalArgumentError(ValueError):
@@ -18,7 +19,8 @@ class IllegalArgumentError(ValueError):
 
 
 class Vertex(AbstractVertex):
-    def __init__(self, vtx_id):
+
+    def __init__(self, vtx_id: int):
         """
         Constructor with parameter.
         :param vtx_id: int
@@ -27,11 +29,11 @@ class Vertex(AbstractVertex):
         self._edges = []
         self._neighbors = set()
 
-    def get_edge_with_neighbor(self, neighbor):
+    def get_edge_with_neighbor(self, neighbor: AbstractVertex):
         """
         Returns the first edge with the given neighbor.
-        :param neighbor: Vertex
-        :return: Edge
+        :param neighbor: AbstractVertex
+        :return: UndirectedEdge
         """
         # Check whether the input neighbor is None
         if neighbor is None:
@@ -45,17 +47,17 @@ class Vertex(AbstractVertex):
         return None
 
     @property
-    def edges(self):
+    def edges(self) -> list:
         """
         Accessor of edges.
-        :return: list[Edge]
+        :return: list[UndirectedEdge]
         """
         return self._edges
 
-    def add_edge(self, new_edge):
+    def add_edge(self, new_edge) -> None:
         """
         Adds the given edge to this vertex.
-        :param new_edge: Edge
+        :param new_edge: UndirectedEdge
         :return: None
         """
         # Check whether the input edge is None
@@ -77,10 +79,10 @@ class Vertex(AbstractVertex):
         self._edges.append(new_edge)
         self._neighbors.add(neighbor.vtx_id)
 
-    def remove_edge(self, edge_to_remove):
+    def remove_edge(self, edge_to_remove) -> None:
         """
         Removes the given edge from this vertex.
-        :param edge_to_remove: Edge
+        :param edge_to_remove: UndirectedEdge
         :return: None
         """
         # Check whether the input edge is None
@@ -104,15 +106,12 @@ class Vertex(AbstractVertex):
         self._neighbors.remove(neighbor.vtx_id)
 
     def __repr__(self):
-        """
-        String representation of this vertex.
-        :return: str
-        """
         return 'Vertex #%d, Its neighbors: %s' % (self._vtx_id, self._neighbors)
 
 
 class UndirectedEdge(object):
-    def __init__(self, end1, end2):
+
+    def __init__(self, end1: Vertex, end2: Vertex):
         """
         Constructor with parameter.
         :param end1: Vertex
@@ -122,7 +121,7 @@ class UndirectedEdge(object):
         self._end2 = end2
 
     @property
-    def end1(self):
+    def end1(self) -> Vertex:
         """
         Accessor of end1.
         :return: Vertex
@@ -130,7 +129,7 @@ class UndirectedEdge(object):
         return self._end1
 
     @property
-    def end2(self):
+    def end2(self) -> Vertex:
         """
         Accessor of end2.
         :return: Vertex
@@ -138,7 +137,7 @@ class UndirectedEdge(object):
         return self._end2
 
     @end1.setter
-    def end1(self, end1):
+    def end1(self, end1: Vertex) -> None:
         """
         Mutator of end1.
         :param end1: Vertex
@@ -147,7 +146,7 @@ class UndirectedEdge(object):
         self._end1 = end1
 
     @end2.setter
-    def end2(self, end2):
+    def end2(self, end2: Vertex) -> None:
         """
         Mutator of end2.
         :param end2: Vertex
@@ -156,15 +155,12 @@ class UndirectedEdge(object):
         self._end2 = end2
 
     def __repr__(self):
-        """
-        String representation of this edge.
-        :return: str
-        """
         return 'Edge between Vertex #%d and Vertex #%d' % \
-            (self._end1.vtx_id, self._end2.vtx_id)
+               (self._end1.vtx_id, self._end2.vtx_id)
 
 
 class UndirectedGraph(AbstractGraph):
+
     def __init__(self):
         """
         Default constructor.
@@ -226,19 +222,6 @@ class UndirectedGraph(AbstractGraph):
         end2.remove_edge(edge_to_remove)
         self._edge_list.remove(edge_to_remove)
 
-    def remove_edges_between_pair(self, end1_id, end2_id):
-        """
-        Removes all the edges between a vertex pair from this graph.
-        :param end1_id: int
-        :param end2_id: int
-        :return: None
-        """
-        try:
-            while True:
-                self.remove_edge(end1_id=end1_id, end2_id=end2_id)
-        except IllegalArgumentError:
-            pass
-
     def bfs(self, src_vtx_id):
         # Check whether the input source vertex exists
         src_vtx = self._find_vtx(src_vtx_id)
@@ -278,7 +261,7 @@ class UndirectedGraph(AbstractGraph):
     def shortest_path(self, src_vtx_id, dest_vtx_id):
         # Check whether the input source and destination vertices both exist
         src_vtx, dest_vtx = self._find_vtx(src_vtx_id), \
-            self._find_vtx(dest_vtx_id)
+                            self._find_vtx(dest_vtx_id)
         if src_vtx is None:
             raise IllegalArgumentError("The input source and destination "
                                        "vertices don't both exist.")

@@ -11,6 +11,7 @@ __author__ = 'Ziang Lu'
 import hashlib
 import math
 import re
+from typing import List
 
 
 class IllegalArgumentError(ValueError):
@@ -18,7 +19,8 @@ class IllegalArgumentError(ValueError):
 
 
 class DataItem(object):
-    def __init__(self, data):
+
+    def __init__(self, data: str):
         """
         Constructor with parameter.
         :param data: str
@@ -27,33 +29,29 @@ class DataItem(object):
         self._freq = 1
 
     @property
-    def data(self):
+    def data(self) -> str:
         """
         Accessor of data.
-        :return:
+        :return: str
         """
         return self._data
 
     @property
-    def freq(self):
+    def freq(self) -> int:
         """
         Accessor of freq.
-        :return:
+        :return: int
         """
         return self._freq
 
-    def add_freq(self):
+    def add_freq(self) -> None:
         """
         Adds 1 to the frequency.
-        :return: int
+        :return: None
         """
         self._freq += 1
 
     def __repr__(self):
-        """
-        String representation of this DataItem.
-        :return:
-        """
         return '[%s, %d]' % (self._data, self._freq)
 
 
@@ -74,7 +72,7 @@ class HTWithSC(object):
         self._data = self._initialize_data(capacity=initial_capacity)
         self._num_of_items = 0
 
-    def _initialize_data(self, capacity):
+    def _initialize_data(self, capacity: int) -> List[List[DataItem]]:
         """
         Private helper function to initialize data list with the given capacity.
         :param capacity: int
@@ -82,7 +80,7 @@ class HTWithSC(object):
         """
         return [[] for i in range(capacity)]
 
-    def hash_value(self, text):
+    def hash_value(self, text: str) -> int:
         """
         Calculates the hash value of the given text.
         :param text: str
@@ -95,7 +93,7 @@ class HTWithSC(object):
         self._md5.update(text.encode('utf-8'))
         return int(self._md5.hexdigest(), base=16) % len(self._data)
 
-    def _is_lower_word(self, text):
+    def _is_lower_word(self, text: str) -> bool:
         """
         Private helper function to determine whether the given text is a
         lowercase word.
@@ -105,14 +103,14 @@ class HTWithSC(object):
         lower_word_regex = re.compile('^[a-z]+$')
         return text is not None and lower_word_regex.match(text)
 
-    def size(self):
+    def size(self) -> int:
         """
         Returns the number of items in the hash table.
         :return: int
         """
         return self._num_of_items
 
-    def contains(self, text):
+    def contains(self, text: str) -> bool:
         """
         Checks whether the given text is in the hash table.
         :param text: str
@@ -129,7 +127,7 @@ class HTWithSC(object):
                 return True
         return False
 
-    def insert(self, text):
+    def insert(self, text: str) -> None:
         """
         Inserts the given text to the hash table.
         No duplicate allowed
@@ -152,7 +150,7 @@ class HTWithSC(object):
         if self._num_of_items / len(self._data) > HTWithSC._LOAD_FACTOR:
             self._rehash()
 
-    def _rehash(self):
+    def _rehash(self) -> None:
         """
         Private helper function to rehash when the load factor is reached.
         :return: None
@@ -169,7 +167,7 @@ class HTWithSC(object):
                 hash_val = self.hash_value(item.data)
                 self._data[hash_val].append(item)
 
-    def _find_next_prime(self, start):
+    def _find_next_prime(self, start: int) -> int:
         """
         Helper function to find the next prime starting from the given number.
         :param start: int
@@ -180,7 +178,7 @@ class HTWithSC(object):
             n += 1
         return n
 
-    def _is_prime(self, n):
+    def _is_prime(self, n: int) -> bool:
         """
         Helper function to determine whether the given number is prime.
         :param n: int
@@ -197,7 +195,7 @@ class HTWithSC(object):
                 return False
         return True
 
-    def remove(self, text):
+    def remove(self, text: str) -> str:
         """
         Removes the given text from the hash table.
         :param text: str
@@ -220,7 +218,7 @@ class HTWithSC(object):
         self._num_of_items -= 1
         return removed_data
 
-    def display(self):
+    def display(self) -> None:
         """
         Displays the hash table.
         :return: None

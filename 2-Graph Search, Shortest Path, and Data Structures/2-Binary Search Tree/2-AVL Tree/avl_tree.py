@@ -13,7 +13,8 @@ __author__ = 'Ziang Lu'
 
 
 class Node(object):
-    def __init__(self, key):
+
+    def __init__(self, key: int):
         """
         Constructor with parameter.
         :param key: int
@@ -21,9 +22,9 @@ class Node(object):
         self._key = key
         self._left = None
         self._right = None
-–
+
     @property
-    def key(self):
+    def key(self) -> int:
         """
         Accessor of key.
         :return: int
@@ -47,7 +48,7 @@ class Node(object):
         return self._right
 
     @left.setter
-    def left(self, left):
+    def left(self, left) -> None:
         """
         Mutator of left.
         :param left: Node
@@ -56,7 +57,7 @@ class Node(object):
         self._left = left
 
     @right.setter
-    def right(self, right):
+    def right(self, right) -> None:
         """
         Mutator of right.
         :param right: Node
@@ -65,19 +66,16 @@ class Node(object):
         self._right = right
 
     def __repr__(self):
-        """
-        String representation of this node.
-        :return: str
-        """
         s = '[%d]' % self._key
         return s
 
 
 class AVLTree(object):
+
     def __init__(self):
         self._root = None
 
-    def search(self, key):
+    def search(self, key: int) -> bool:
         """
         Searches for the given key in this BST.
         :param key: int
@@ -85,7 +83,7 @@ class AVLTree(object):
         """
         return self._search_helper(key, curr=self._root)
 
-    def _search_helper(self, key, curr):
+    def _search_helper(self, key: int, curr: Node) -> bool:
         """
         Private helper function to search for the given key in the given subtree
         recursively.
@@ -106,7 +104,7 @@ class AVLTree(object):
         else:
             return self._search_helper(key, curr=curr.right)
 
-    def insert(self, key):
+    def insert(self, key: int) -> None:
         """
         Inserts the given key to the BST.
         :param key: int
@@ -119,7 +117,8 @@ class AVLTree(object):
         self._root = self._insert_helper(key, parent=None, curr=self._root,
                                          is_lc=True)
 
-    def _insert_helper(self, key, parent, curr, is_lc):
+    def _insert_helper(self, key: int, parent: Node, curr: Node,
+                       is_lc: bool) -> Node:
         """
         Private helper function to insert the given key to the given subtree
         recursively.
@@ -163,7 +162,7 @@ class AVLTree(object):
         # encountered unbalanced node when backtracking, all of its upper nodes
         # remain balanced.
 
-    def _rebalance(self, curr):
+    def _rebalance(self, curr: Node) -> Node:
         """
         Helper function to rebalance the given node if it is unbalanced.
         :param curr: Node
@@ -215,7 +214,7 @@ class AVLTree(object):
         return curr
         # Running time complexity: O(n)
 
-    def _get_balance(self, node):
+    def _get_balance(self, node: Node) -> int:
         """
         Helper function to calculate the balance of the given node.
         :param node: Node
@@ -225,11 +224,11 @@ class AVLTree(object):
             return 0
 
         left_height, right_height = self._get_height(node.left), \
-            self._get_height(node.right)
+                                    self._get_height(node.right)
         return left_height - right_height
         # Running time complexity: O(n)
 
-    def _get_height(self, node):
+    def _get_height(self, node: Node) -> int:
         """
         Helper function to calculate the height of the given node recursively.
         :param node: Node
@@ -240,13 +239,13 @@ class AVLTree(object):
             return 0
         # Recursive case
         left_height, right_height = self._get_height(node.left), \
-            self._get_height(node.right)
+                                    self._get_height(node.right)
         return 1 + max(left_height, right_height)
         # T(n) = 2T(n/2) + O(1)
         # a = 2, b = 2, d = 0
         # According to Master Method, the running time complexity is O(n).
 
-    def _right_rotate(self, unbalanced):
+    def _right_rotate(self, unbalanced: Node) -> Node:
         """
         Helper method to do a right rotation towards the given unbalanced node.
         :param unbalanced: Node
@@ -262,7 +261,7 @@ class AVLTree(object):
         return tmp
         # Running time complexity: O(1)
 
-    def _left_rotate(self, unbalanced):
+    def _left_rotate(self, unbalanced: Node) -> Node:
         """
         Helper method to do a left rotation towards the given unbalanced node.
         :param unbalanced: Node
@@ -278,7 +277,7 @@ class AVLTree(object):
         return tmp
         # Running time complexity: O(1)
 
-    def delete(self, key):
+    def delete(self, key: int) -> None:
         """
         Deletes the given key from the BST.
         :param key: int
@@ -289,7 +288,7 @@ class AVLTree(object):
 
         self._root = self._delete_helper(key, curr=self._root)
 
-    def _delete_helper(self, key, curr):
+    def _delete_helper(self, key: int, curr: Node) -> Node:
         """
         Private helper function to delete the given key from the given subtree
         recursively.
@@ -339,7 +338,7 @@ class AVLTree(object):
         # encountered unbalanced node when backtracking, its upper nodes may
         # also be unbalanced.
 
-    def _get_successor(self, node_to_delete):
+    def _get_successor(self, node_to_delete: Node) -> Node:
         """
         Helper function to get the successor of the given node to delete.
         :param node_to_delete: Node
@@ -350,7 +349,8 @@ class AVLTree(object):
                                           curr=node_to_delete.right)
         # Running time complexity: O(n)
 
-    def _get_successor_helper(self, node_to_delete, parent, curr):
+    def _get_successor_helper(self, node_to_delete: Node, parent: Node,
+                              curr: Node) -> Node:
         """
         Helper function to get the successor of the given node to delete in the
         given subtree recursively.
@@ -379,7 +379,7 @@ class AVLTree(object):
         # a = 1, b = 2, d = 1
         # According to Master Method, the running time complexity is O(n).
 
-    def traverse_in_order(self):
+    def traverse_in_order(self) -> str:
         """
         Traverses the BST in-order.
         :return: str
@@ -387,12 +387,12 @@ class AVLTree(object):
         s = self._traverse_in_order_helper(curr=self._root)
         print(s.strip())
 
-    def _traverse_in_order_helper(self, curr):
+    def _traverse_in_order_helper(self, curr: Node) -> str:
         """
         Private helper function to traverse the given subtree in-order
         recursively.
         :param curr: Node
-        :return: None
+        :return: str
         """
         # Base case
         if curr is None:

@@ -18,7 +18,8 @@ __author__ = 'Ziang Lu'
 
 
 class Node(object):
-    def __init__(self, key, color):
+
+    def __init__(self, key: int, color: bool):
         """
         Constructor with parameter.
         :param key: int
@@ -31,7 +32,7 @@ class Node(object):
         self._color = color
 
     @property
-    def key(self):
+    def key(self) -> int:
         """
         Accessor of key.
         :return: int
@@ -63,7 +64,7 @@ class Node(object):
         return self._right
 
     @property
-    def color(self):
+    def color(self) -> bool:
         """
         Accessor of color.
         :return: None
@@ -71,7 +72,7 @@ class Node(object):
         return self._color
 
     @parent.setter
-    def parent(self, parent):
+    def parent(self, parent) -> None:
         """
         Mutator of parent.
         :param parent: Node
@@ -80,7 +81,7 @@ class Node(object):
         self._parent = parent
 
     @left.setter
-    def left(self, left):
+    def left(self, left) -> None:
         """
         Mutator of left.
         :param left: Node
@@ -89,7 +90,7 @@ class Node(object):
         self._left = left
 
     @right.setter
-    def right(self, right):
+    def right(self, right) -> None:
         """
         Mutator of right.
         :param right: Node
@@ -98,7 +99,7 @@ class Node(object):
         self._right = right
 
     @color.setter
-    def color(self, color):
+    def color(self, color: bool) -> None:
         """
         Mutator of color.
         :param color: boolean
@@ -126,7 +127,7 @@ class RedBlackTree(object):
         """
         self._root = None
 
-    def search(self, key):
+    def search(self, key: int) -> bool:
         """
         Searches for the given key in the Red-Black Tree.
         :param key: int
@@ -134,7 +135,7 @@ class RedBlackTree(object):
         """
         return self._search_helper(key, curr=self._root)
 
-    def _search_helper(self, key, curr):
+    def _search_helper(self, key: int, curr: Node) -> bool:
         """
         Private helper method to search for the given key in the given subtree
         recursively.
@@ -155,7 +156,7 @@ class RedBlackTree(object):
         else:
             return self._search_helper(key, curr=curr.right)
 
-    def insert(self, key):
+    def insert(self, key: int) -> None:
         """
         Insertion:
         1. Insert a new element as a normal BST (Might break invariants)
@@ -171,7 +172,8 @@ class RedBlackTree(object):
         """
         self._insert_helper(key, parent=None, curr=self._root, is_lc=True)
 
-    def _insert_helper(self, key, parent, curr, is_lc):
+    def _insert_helper(self, key: int, parent: Node, curr: Node,
+                       is_lc: bool) -> None:
         """
         Private helper method to insert the given key to the given subtree
         recursively.
@@ -211,7 +213,7 @@ class RedBlackTree(object):
         # According to Master Method, the overall running time complexity is
         # O(log n).
 
-    def _restore_invariants(self, to_restore):
+    def _restore_invariants(self, to_restore: Node) -> None:
         """
         Helper method to restore the invariants.
         :param to_restore: Node
@@ -327,7 +329,8 @@ class RedBlackTree(object):
         self._root.color = RedBlackTree.BLACK
         # Running time complexity: O(log n)
 
-    def _restore_parent_and_uncle_are_red(self, grandparent, parent, uncle):
+    def _restore_parent_and_uncle_are_red(self, grandparent: Node, parent: Node,
+                                          uncle: Node) -> None:
         """
         Helper method to restore the invariants when the parent and the uncle
         are both red.
@@ -341,7 +344,7 @@ class RedBlackTree(object):
         uncle.color = RedBlackTree.BLACK
         # Running time complexity: O(1)
 
-    def _left_rotate(self, to_rotate):
+    def _left_rotate(self, to_rotate: Node) -> None:
         """
         Helper method to do a left rotation on the given node.
         :param to_rotate: Node
@@ -370,7 +373,7 @@ class RedBlackTree(object):
             self._root = to_rotate
         # Running time complexity: O(1)
 
-    def _right_rotate(self, to_rotate):
+    def _right_rotate(self, to_rotate: Node) -> None:
         """
         Helper method to do a right rotation on the given node.
         :param to_rotate: Node
@@ -399,20 +402,20 @@ class RedBlackTree(object):
             self._root = to_rotate
         # Running time complexity: O(1)
 
-    def traverse_in_order(self):
+    def traverse_in_order(self) -> None:
         """
         Traverses the Red-Black Tree in-order.
-        :return: str
+        :return: None
         """
         s = self._traverse_in_order_helper(curr=self._root)
         print(s.strip())
 
-    def _traverse_in_order_helper(self, curr):
+    def _traverse_in_order_helper(self, curr: Node) -> str:
         """
         Private helper function to traverse the given subtree in-order
         recursively.
         :param curr: Node
-        :return: None
+        :return: str
         """
         # Base case
         if curr is None:

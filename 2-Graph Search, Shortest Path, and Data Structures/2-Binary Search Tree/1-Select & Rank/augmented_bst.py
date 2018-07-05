@@ -13,7 +13,8 @@ __author__ = 'Ziang Lu'
 
 
 class Node(object):
-    def __init__(self, key):
+
+    def __init__(self, key: int):
         """
         Constructor with parameter.
         :param key: int
@@ -24,7 +25,7 @@ class Node(object):
         self._size = 1
 
     @property
-    def key(self):
+    def key(self) -> int:
         """
         Accessor of key.
         :return: int
@@ -48,7 +49,7 @@ class Node(object):
         return self._right
 
     @property
-    def size(self):
+    def size(self) -> int:
         """
         Accessor of size.
         :return: int
@@ -56,7 +57,7 @@ class Node(object):
         return self._size
 
     @left.setter
-    def left(self, left):
+    def left(self, left) -> None:
         """
         Mutator of left.
         :param left: Node
@@ -65,7 +66,7 @@ class Node(object):
         self._left = left
 
     @right.setter
-    def right(self, right):
+    def right(self, right) -> None:
         """
         Mutator of right.
         :param right: Node
@@ -74,7 +75,7 @@ class Node(object):
         self._right = right
 
     @size.setter
-    def size(self, size):
+    def size(self, size: int) -> None:
         """
         Mutator of size.
         :param size: int
@@ -83,10 +84,6 @@ class Node(object):
         self._size = size
 
     def __repr__(self):
-        """
-        String representation of this node.
-        :return: str
-        """
         s = '[%d, size: %d]' % (self._key, self._size)
         return s
 
@@ -97,13 +94,14 @@ class AugmentedBST(object):
     A simple BST class, but each node has an additional data field: the number
     of nodes in the sub-tree rooted at that node.
     """
+
     def __init__(self):
         """
         Default constructor.
         """
         self._root = None
 
-    def search(self, key):
+    def search(self, key: int) -> bool:
         """
         Searches for the given key in this BST.
         :param key: int
@@ -111,7 +109,7 @@ class AugmentedBST(object):
         """
         return self._search_helper(key, curr=self._root)
 
-    def _search_helper(self, key, curr):
+    def _search_helper(self, key: int, curr: Node) -> bool:
         """
         Private helper function to search for the given key in the given
         sub-tree recursively.
@@ -128,9 +126,9 @@ class AugmentedBST(object):
 
         # Recursive case
         return self._search_helper(key, curr=curr.left) or \
-            self._search_helper(key, curr=curr.right)
+               self._search_helper(key, curr=curr.right)
 
-    def insert(self, key):
+    def insert(self, key: int) -> bool:
         """
         Inserts the given key to the BST.
         :param key: int
@@ -143,7 +141,8 @@ class AugmentedBST(object):
         return self._insert_helper(key, parent=None, curr=self._root,
                                    is_lc=True)
 
-    def _insert_helper(self, key, parent, curr, is_lc):
+    def _insert_helper(self, key: int, parent: Node, curr: Node,
+                       is_lc: bool) -> bool:
         """
         Private helper function to insert the given key to the given sub-tree
         recursively.
@@ -174,7 +173,7 @@ class AugmentedBST(object):
             return self._insert_helper(key, parent=curr, curr=curr.right,
                                        is_lc=False)
 
-    def traverse_in_order(self):
+    def traverse_in_order(self) -> None:
         """
         Traverses the BST in-order.
         :return: str
@@ -182,12 +181,12 @@ class AugmentedBST(object):
         s = self._traverse_in_order_helper(curr=self._root)
         print(s.strip())
 
-    def _traverse_in_order_helper(self, curr):
+    def _traverse_in_order_helper(self, curr: Node) -> str:
         """
         Private helper function to traverse the given sub-tree in-order
         recursively.
         :param curr: Node
-        :return: None
+        :return: str
         """
         # Base case
         if curr is None:
@@ -198,7 +197,7 @@ class AugmentedBST(object):
         s += self._traverse_in_order_helper(curr=curr.right)
         return s
 
-    def select(self, rank):
+    def select(self, rank: int) -> int:
         """
         Returns the key with the given ranking in the BST.
         :param rank: int
@@ -214,7 +213,7 @@ class AugmentedBST(object):
 
         return self._select_helper(rank, curr=self._root)
 
-    def _select_helper(self, rank, curr):
+    def _select_helper(self, rank: int, curr: Node) -> int:
         """
         Private helper function to find the key with the given ranking in the
         given sub-tree recursively.
@@ -239,7 +238,7 @@ class AugmentedBST(object):
             return self._select_helper(rank - curr_rank_in_subtree,
                                        curr=curr.right)
 
-    def get_rank(self, key):
+    def get_rank(self, key: int) -> int:
         """
         Returns the ranking of the given key in the BST.
         :param key: int
@@ -247,7 +246,7 @@ class AugmentedBST(object):
         """
         return self._get_rank_helper(key, curr=self._root)
 
-    def _get_rank_helper(self, key, curr):
+    def _get_rank_helper(self, key: int, curr: Node) -> int:
         """
         Private helper function to find the ranking of the given key in the
         given sub-tree recursively.
@@ -273,4 +272,4 @@ class AugmentedBST(object):
             # Note that the rank in the right sub-tree is
             # (rank - curr_rank_in_subtree)
             return curr_rank_in_subtree + \
-                self._get_rank_helper(key, curr=curr.right)
+                   self._get_rank_helper(key, curr=curr.right)

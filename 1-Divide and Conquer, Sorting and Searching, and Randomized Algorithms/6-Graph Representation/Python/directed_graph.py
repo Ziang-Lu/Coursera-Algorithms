@@ -180,11 +180,6 @@ class Vertex(AbstractVertex):
         return s
 
     def __eq__(self, other):
-        """
-        Equality test between this and the given vertex
-        :param other: Vertex
-        :return: bool
-        """
         return isinstance(other, Vertex) and self._vtx_id == other.vtx_id
 
 
