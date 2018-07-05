@@ -9,7 +9,9 @@ Note that parallel edges and self-loops are not allowed.
 
 __author__ = 'Ziang Lu'
 
-from graph_basics import AbstractVertex, AbstractEdge, AbstractGraph
+from typing import List
+
+from graph_basics import AbstractEdge, AbstractGraph, AbstractVertex
 
 
 class IllegalArgumentError(ValueError):
@@ -17,7 +19,8 @@ class IllegalArgumentError(ValueError):
 
 
 class Vertex(AbstractVertex):
-    def __init__(self, vtx_id):
+
+    def __init__(self, vtx_id: int):
         """
         Constructor with parameter.
         :param vtx_id: int
@@ -28,11 +31,11 @@ class Vertex(AbstractVertex):
         self._incident_edges = []
         self._incident_neighbors = set()
 
-    def get_emissive_edge_with_head(self, head):
+    def get_emissive_edge_with_head(self, head: AbstractVertex) -> AbstractEdge:
         """
         Returns the first emissive edge with the given head.
-        :param head: Vertex
-        :return: Edge
+        :param head: AbstractVertex
+        :return: AbstractEdge
         """
         # Check whether the input head is None
         if head is None:
@@ -45,18 +48,18 @@ class Vertex(AbstractVertex):
         return None
 
     @property
-    def emissive_edges(self):
+    def emissive_edges(self) -> List[AbstractEdge]:
         """
         Accessor of emissive_edges.
-        :return: list[Edge]
+        :return: list[AbstractEdge]
         """
         return self._emissive_edges
 
-    def get_incident_edge_with_tail(self, tail):
+    def get_incident_edge_with_tail(self, tail: AbstractVertex) -> AbstractEdge:
         """
         Returns the first incident edge with the given tail.
-        :param tail: Vertex
-        :return: Edge
+        :param tail: AbstractVertex
+        :return: AbstractEdge
         """
         # Check whether the input tail is None
         if tail is None:
@@ -69,17 +72,17 @@ class Vertex(AbstractVertex):
         return None
 
     @property
-    def incident_edges(self):
+    def incident_edges(self) -> List[AbstractEdge]:
         """
         Accessor of incident_edges.
-        :return: list[Edge]
+        :return: list[AbstractEdge]
         """
         return self._incident_edges
 
-    def add_emissive_edge(self, new_emissive_edge):
+    def add_emissive_edge(self, new_emissive_edge: AbstractEdge) -> None:
         """
         Adds the given emissive edge to this vertex.
-        :param new_emissive_edge: Edge
+        :param new_emissive_edge: AbstractEdge
         :return: None
         """
         # Check whether the input emissive edge is None
@@ -97,10 +100,10 @@ class Vertex(AbstractVertex):
         self._emissive_edges.append(new_emissive_edge)
         self._emissive_neighbors.add(new_emissive_edge.head.vtx_id)
 
-    def add_incident_edge(self, new_incident_edge):
+    def add_incident_edge(self, new_incident_edge: AbstractEdge) -> None:
         """
         Adds the given incident edge to this vertex
-        :param new_incident_edge: Edge
+        :param new_incident_edge: AbstractEdge
         :return: None
         """
         # Check whether the input incident edge is None
@@ -118,10 +121,11 @@ class Vertex(AbstractVertex):
         self._incident_edges.append(new_incident_edge)
         self._incident_neighbors.add(new_incident_edge.tail.vtx_id)
 
-    def remove_emissive_edge(self, emissive_edge_to_remove):
+    def remove_emissive_edge(self,
+                             emissive_edge_to_remove: AbstractEdge) -> None:
         """
         Removes the given emissive edge from this vertex.
-        :param emissive_edge_to_remove: Edge
+        :param emissive_edge_to_remove: AbstractEdge
         :return: None
         """
         # Check whether the input emissive edge is None
@@ -140,10 +144,11 @@ class Vertex(AbstractVertex):
         self._emissive_edges.remove(emissive_edge_to_remove)
         self._emissive_neighbors.remove(emissive_edge_to_remove.head.vtx_id)
 
-    def remove_incident_edge(self, incident_edge_to_remove):
+    def remove_incident_edge(self,
+                             incident_edge_to_remove: AbstractEdge) -> None:
         """
         Removes the given incident edge from this vertex.
-        :param incident_edge_to_remove: Edge
+        :param incident_edge_to_remove: AbstractEdge
         :return: None
         """
         # Check whether the input incident edge is None
@@ -163,37 +168,30 @@ class Vertex(AbstractVertex):
         self._incident_neighbors.remove(incident_edge_to_remove.tail.vtx_id)
 
     def __repr__(self):
-        """
-        String representation of this vertex.
-        :return: str
-        """
         s = 'Vertex #%d\n' % self._vtx_id
         s += 'Its emissive neighbors: %s\n' % self._emissive_neighbors
         s += 'Its incident neighbors: %s\n' % self._incident_neighbors
         return s
 
     def __eq__(self, other):
-        """
-        Equality test between this and the given vertex
-        :param other: Vertex
-        :return: bool
-        """
         return isinstance(other, Vertex) and self._vtx_id == other.vtx_id
 
 
 class DirectedEdge(AbstractEdge):
-    def __init__(self, tail, head, length):
+
+    def __init__(self, tail: Vertex, head: Vertex, length: int):
         """
         Constructor with parameter.
         :param tail: Vertex
         :param head: Vertex
+        :param length: int
         """
         super().__init__(length)
         self._tail = tail
         self._head = head
 
     @property
-    def tail(self):
+    def tail(self) -> Vertex:
         """
         Accessor of tail.
         :return: Vertex
@@ -201,7 +199,7 @@ class DirectedEdge(AbstractEdge):
         return self._tail
 
     @property
-    def head(self):
+    def head(self) -> Vertex:
         """
         Accessor of head.
         :return: Vertex
@@ -209,7 +207,7 @@ class DirectedEdge(AbstractEdge):
         return self._head
 
     @tail.setter
-    def tail(self, tail):
+    def tail(self, tail: Vertex) -> None:
         """
         Mutator of tail.
         :param tail: Vertex
@@ -218,7 +216,7 @@ class DirectedEdge(AbstractEdge):
         self._tail = tail
 
     @head.setter
-    def head(self, head):
+    def head(self, head: Vertex) -> None:
         """
         Mutator of head.
         :param head: Vertex
@@ -227,15 +225,12 @@ class DirectedEdge(AbstractEdge):
         self._head = head
 
     def __repr__(self):
-        """
-        String representation of this edge.
-        :return head: str
-        """
         return 'Edge from Vertex #%d to Vertex #%d' % \
-            (self._tail.vtx_id, self._head.vtx_id)
+               (self._tail.vtx_id, self._head.vtx_id)
 
 
 class DirectedGraph(AbstractGraph):
+
     def __init__(self):
         """
         Default constructor.
@@ -298,19 +293,6 @@ class DirectedGraph(AbstractGraph):
         head.remove_incident_edge(edge_to_remove)
         self._edge_list.remove(edge_to_remove)
 
-    def remove_directed_edges_between_pair(self, tail_id, head_id):
-        """
-        Removes all the directed edges between a vertex pair from this graph.
-        :param tail_id: int
-        :param head_id: int
-        :return: None
-        """
-        try:
-            while True:
-                self.remove_edge(tail_id=tail_id, head_id=head_id)
-        except IllegalArgumentError:
-            pass
-
     def floyd_warshall_apsp(self):
         n = len(self._vtx_list)
         # Initialization
@@ -319,7 +301,7 @@ class DirectedGraph(AbstractGraph):
             for dest_vtx in self._vtx_list:
                 if src_vtx is not dest_vtx:
                     subproblems[0][src_vtx.vtx_id][dest_vtx.vtx_id] = \
-                        super().INFINITY
+                        super()._INFINITY
         for edge in self._edge_list:
             subproblems[0][edge.tail.vtx_id][edge.head.vtx_id] = edge.length
         # Bottom-up calculation
@@ -366,7 +348,7 @@ class DirectedGraph(AbstractGraph):
             for dest_vtx in self._vtx_list:
                 if src_vtx is not dest_vtx:
                     prev_iter_subproblems[src_vtx.vtx_id][dest_vtx.vtx_id] = \
-                        super().INFINITY
+                        super()._INFINITY
         for edge in self._edge_list:
             prev_iter_subproblems[edge.tail.vtx_id][edge.head.vtx_id] = \
                 edge.length

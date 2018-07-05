@@ -9,7 +9,9 @@ Note that parallel edges and self-loops are not allowed.
 
 __author__ = 'Ziang Lu'
 
-from graph_basics import AbstractVertex, AbstractEdge, AbstractGraph
+from typing import List
+
+from graph_basics import AbstractEdge, AbstractGraph, AbstractVertex
 
 
 class IllegalArgumentError(ValueError):
@@ -17,7 +19,8 @@ class IllegalArgumentError(ValueError):
 
 
 class Vertex(AbstractVertex):
-    def __init__(self, vtx_id):
+
+    def __init__(self, vtx_id: int):
         """
         Constructor with parameter.
         :param vtx_id: int
@@ -26,11 +29,11 @@ class Vertex(AbstractVertex):
         self._edges = []
         self._neighbors = set()
 
-    def get_edge_with_neighbor(self, neighbor):
+    def get_edge_with_neighbor(self, neighbor: AbstractVertex) -> AbstractEdge:
         """
         Returns the first edge with the given neighbor.
-        :param neighbor: Vertex
-        :return: Edge
+        :param neighbor: AbstractVertex
+        :return: AbstractEdge
         """
         # Check whether the input neighbor is None
         if neighbor is None:
@@ -44,17 +47,17 @@ class Vertex(AbstractVertex):
         return None
 
     @property
-    def edges(self):
+    def edges(self) -> List[AbstractEdge]:
         """
         Accessor of edges.
         :return: list[Edge]
         """
         return self._edges
 
-    def add_edge(self, new_edge):
+    def add_edge(self, new_edge: AbstractEdge) -> None:
         """
         Adds the given edge to this vertex.
-        :param new_edge: Edge
+        :param new_edge: AbstractEdge
         :return: None
         """
         # Check whether the input edge is None
@@ -76,10 +79,10 @@ class Vertex(AbstractVertex):
         self._edges.append(new_edge)
         self._neighbors.add(neighbor.vtx_id)
 
-    def remove_edge(self, edge_to_remove):
+    def remove_edge(self, edge_to_remove: AbstractEdge) -> None:
         """
         Removes the given edge from this vertex.
-        :param edge_to_remove: Edge
+        :param edge_to_remove: AbstractEdge
         :return: None
         """
         # Check whether the input edge is None
@@ -103,15 +106,12 @@ class Vertex(AbstractVertex):
         self._neighbors.remove(neighbor.vtx_id)
 
     def __repr__(self):
-        """
-        String representation of this vertex.
-        :return: str
-        """
         return 'Vertex #%d, Its neighbors: %s' % (self._vtx_id, self._neighbors)
 
 
 class UndirectedEdge(AbstractEdge):
-    def __init__(self, end1, end2, length):
+
+    def __init__(self, end1: Vertex, end2: Vertex, length: int):
         """
         Constructor with parameter.
         :param end1: Vertex
@@ -122,7 +122,7 @@ class UndirectedEdge(AbstractEdge):
         self._end2 = end2
 
     @property
-    def end1(self):
+    def end1(self) -> Vertex:
         """
         Accessor of end1.
         :return: Vertex
@@ -130,7 +130,7 @@ class UndirectedEdge(AbstractEdge):
         return self._end1
 
     @property
-    def end2(self):
+    def end2(self) -> Vertex:
         """
         Accessor of end2.
         :return: Vertex
@@ -138,7 +138,7 @@ class UndirectedEdge(AbstractEdge):
         return self._end2
 
     @end1.setter
-    def end1(self, end1):
+    def end1(self, end1: Vertex) -> None:
         """
         Mutator of end1.
         :param end1: Vertex
@@ -147,7 +147,7 @@ class UndirectedEdge(AbstractEdge):
         self._end1 = end1
 
     @end2.setter
-    def end2(self, end2):
+    def end2(self, end2: Vertex) -> None:
         """
         Mutator of end2.
         :param end2: Vertex
@@ -156,15 +156,12 @@ class UndirectedEdge(AbstractEdge):
         self._end2 = end2
 
     def __repr__(self):
-        """
-        String representation of this edge.
-        :return: str
-        """
         return 'Edge between Vertex #%d and Vertex #%d' % \
-            (self._end1.vtx_id, self._end2.vtx_id)
+               (self._end1.vtx_id, self._end2.vtx_id)
 
 
 class UndirectedGraph(AbstractGraph):
+
     def __init__(self):
         """
         Default constructor.
@@ -226,19 +223,6 @@ class UndirectedGraph(AbstractGraph):
         end2.remove_edge(edge_to_remove)
         self._edge_list.remove(edge_to_remove)
 
-    def remove_edges_between_pair(self, end1_id, end2_id):
-        """
-        Removes all the edges between a vertex pair from this graph.
-        :param end1_id: int
-        :param end2_id: int
-        :return: None
-        """
-        try:
-            while True:
-                self.remove_edge(end1_id=end1_id, end2_id=end2_id)
-        except IllegalArgumentError:
-            pass
-
     def bellman_ford_shortest_paths(self, src_vtx_id):
         # Check whether the input source vertex exists
         src_vtx = self._find_vtx(src_vtx_id)
@@ -250,7 +234,7 @@ class UndirectedGraph(AbstractGraph):
         subproblems = [[0] * n for i in range(n)]
         for vtx in self._vtx_list:
             if vtx is not src_vtx:
-                subproblems[vtx.vtx_id][0] = super().INFINITY
+                subproblems[vtx.vtx_id][0] = super()._INFINITY
         # Bottom-up calculation
         for budget in range(1, n):
             for vtx in self._vtx_list:
@@ -268,7 +252,7 @@ class UndirectedGraph(AbstractGraph):
                     # By plucking off the final hop (w, v), we form
                     # P(s, w, i - 1).
                     path_length = subproblems[neighbor.vtx_id][budget - 1] + \
-                        edge.length
+                                  edge.length
                     if path_length < min_path_length:
                         min_path_length = path_length
                 # P(s, v, i) is the minimum among the above (1 + in-degree(v))
@@ -318,7 +302,7 @@ class UndirectedGraph(AbstractGraph):
                     else:  # endpoint1 is the neighbor.
                         neighbor = edge.end1
                     path_length = subproblems[neighbor.vtx_id][budget - 1] + \
-                        edge.length
+                                  edge.length
                     if path_length < min_path_length:
                         prev_vtx = neighbor
                         min_path_length = path_length
@@ -343,7 +327,7 @@ class UndirectedGraph(AbstractGraph):
         prev_iter_subproblems, curr_iter_subproblems = [0] * n, [0] * n
         for vtx in self._vtx_list:
             if vtx is not src_vtx:
-                prev_iter_subproblems[vtx.vtx_id] = super().INFINITY
+                prev_iter_subproblems[vtx.vtx_id] = super()._INFINITY
         # In order to recover the ability to reconstruct the shortest paths, we
         # also keep track of the penultimate vertices in the previous outer
         # iteration.
@@ -367,7 +351,7 @@ class UndirectedGraph(AbstractGraph):
                     else:  # endpoint1 is the neighbor.
                         neighbor = edge.end1
                     path_length = prev_iter_subproblems[neighbor.vtx_id] + \
-                        edge.length
+                                  edge.length
                     if path_length < min_path_length:
                         min_path_length = path_length
                         made_update_in_iter = True
@@ -413,7 +397,7 @@ class UndirectedGraph(AbstractGraph):
         subproblems = [[0] * n for i in range(n)]
         for vtx in self._vtx_list:
             if vtx is not dest_vtx:
-                subproblems[vtx.vtx_id][0] = super().INFINITY
+                subproblems[vtx.vtx_id][0] = super()._INFINITY
         # Bottom-up calculation
         for budget in range(1, n):
             for vtx in self._vtx_list:
@@ -431,7 +415,7 @@ class UndirectedGraph(AbstractGraph):
                     # By plucking off the first hop (v, w), we form
                     # P'(w, d, i - 1).
                     path_length = subproblems[neighbor.vtx_id][budget - 1] + \
-                        edge.length
+                                  edge.length
                     if path_length < min_path_length:
                         min_path_length = path_length
                 # P(v, d, i) is the minimum among the above (1 + out-degree(v))
@@ -482,7 +466,7 @@ class UndirectedGraph(AbstractGraph):
                     else:  # endpoint1 is the neighbor.
                         neighbor = edge.end1
                     path_length = subproblems[neighbor.vtx_id][budget - 1] + \
-                        edge.length
+                                  edge.length
                     if path_length < min_path_length:
                         next_vtx = neighbor
                         min_path_length = path_length
@@ -507,7 +491,7 @@ class UndirectedGraph(AbstractGraph):
         prev_iter_subproblems, curr_iter_subproblems = [0] * n, [0] * n
         for vtx in self._vtx_list:
             if vtx is not dest_vtx:
-                prev_iter_subproblems[vtx.vtx_id] = super().INFINITY
+                prev_iter_subproblems[vtx.vtx_id] = super()._INFINITY
         # In order to recover the ability to reconstruct the shortest paths, we
         # also keep track of the next vertices in the previous outer iteration.
         prev_iter_next_vtxs, curr_iter_next_vtxs = [None] * n, [None] * n
@@ -529,7 +513,7 @@ class UndirectedGraph(AbstractGraph):
                     else:  # endpoint1 is the neighbor.
                         neighbor = edge.end1
                     path_length = prev_iter_subproblems[neighbor.vtx_id] + \
-                        edge.length
+                                  edge.length
                     if path_length < min_path_length:
                         min_path_length = path_length
                         made_update_in_iter = True
@@ -549,7 +533,7 @@ class UndirectedGraph(AbstractGraph):
                 else:  # endpoint1 is the neighbor.
                     neighbor = edge.end1
                 path_length = prev_iter_subproblems[neighbor.vtx_id] + \
-                    edge.length
+                              edge.length
                 if path_length < min_path_length:
                     min_path_length = path_length
                     made_update_in_iter = True
@@ -574,7 +558,7 @@ class UndirectedGraph(AbstractGraph):
         min_path_lengths, next_vtxs = [0] * n, [None] * n
         for vtx in self._vtx_list:
             if vtx is not dest_vtx:
-                min_path_lengths[vtx.vtx_id] = super().INFINITY
+                min_path_lengths[vtx.vtx_id] = super()._INFINITY
         # Start the notifications from the destination vertex
         for edge in dest_vtx.edges:
             self._notify_neighbor(dest_vtx, edge,
@@ -584,7 +568,9 @@ class UndirectedGraph(AbstractGraph):
             next_vtxs=next_vtxs)
         # Overall running time complexity: O(2^n)
 
-    def _notify_neighbor(self, next_vtx, edge, min_path_lengths, next_vtxs):
+    def _notify_neighbor(self, next_vtx: Vertex, edge: UndirectedEdge,
+                         min_path_lengths: List[int],
+                         next_vtxs: List[Vertex]) -> List[Vertex]:
         """
         Private helper function to notify the neighbor of the given edge with an
         updated minimum path length of the original vertex of the given edge

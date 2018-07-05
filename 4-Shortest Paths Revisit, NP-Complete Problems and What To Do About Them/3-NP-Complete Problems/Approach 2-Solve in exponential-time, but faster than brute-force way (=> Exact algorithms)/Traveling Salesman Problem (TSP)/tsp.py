@@ -24,7 +24,9 @@ __author__ = 'Ziang Lu'
 import gc
 import itertools
 import math
-import time
+
+from typing import Iterable, List
+
 
 INFINITY = 1000000
 
@@ -34,7 +36,8 @@ class IllegalArgumentError(ValueError):
 
 
 class City(object):
-    def __init__(self, x, y):
+
+    def __init__(self, x: float, y: float):
         """
         Constructur with parameters.
         :param x: float
@@ -44,7 +47,7 @@ class City(object):
         self._y = y
 
     @property
-    def x(self):
+    def x(self) -> float:
         """
         Accessor of x.
         :return: float
@@ -52,7 +55,7 @@ class City(object):
         return self._x
 
     @property
-    def y(self):
+    def y(self) -> float:
         """
         Accessor of y.
         :return: float
@@ -60,7 +63,7 @@ class City(object):
         return self._y
 
 
-def tsp(cities):
+def tsp(cities: List[City]) -> float:
     """
     Solves the TSP of the given cities, assuming the first city is the source
     city.
@@ -109,12 +112,12 @@ def tsp(cities):
                 # {S - v}, containing s and w, exactly once for each.
                 # P(v, S) is the minimum among the possible choices of w in S,
                 # w != v.
-                S_wo_v = _change_bit(bit_str=S, i=v, setting=False)
+                S_wo_v = _change_bit(bit_str=S, i=v, set_bit=False)
                 min_path_length = INFINITY
                 for w in range(len(S)):
                     if _bit_is_set(S_wo_v, w) and w != v:
                         path_length = A[w][S_wo_v] + \
-                            _euclidean_distance(cities[w], cities[v])
+                                      _euclidean_distance(cities[w], cities[v])
                         if path_length < min_path_length:
                             min_path_length = path_length
                 A[v][S] = min_path_length
@@ -137,7 +140,7 @@ def tsp(cities):
     # Overall space complexity: O(n 2^n)
 
 
-def _construct_bit_str(length, set_idxs):
+def _construct_bit_str(length: int, set_idxs: Iterable) -> str:
     """
     Private helper function to construct a bit string of the given length, with
     the given indices set.
@@ -147,27 +150,27 @@ def _construct_bit_str(length, set_idxs):
     """
     bit_str = '0' * length
     for set_idx in set_idxs:
-        bit_str = _change_bit(bit_str=bit_str, i=set_idx, setting=True)
+        bit_str = _change_bit(bit_str=bit_str, i=set_idx, set_bit=True)
     return bit_str
     # Running time complexity: O(n), where n is the length of the set indices
 
 
-def _change_bit(bit_str, i, setting):
+def _change_bit(bit_str: str, i: int, set_bit: bool) -> str:
     """
     Helper function to change the i-th bit in the given bit string.
     :param bit_str: str
     :param i: int
-    :param setting: bool
+    :param set_bit: bool
     :return: str
     """
-    if setting:
+    if set_bit:
         return bit_str[:i] + '1' + bit_str[i + 1:]
     else:
         return bit_str[:i] + '0' + bit_str[i + 1:]
     # Running time complexty: O(1)
 
 
-def _bit_is_set(bit_str, i):
+def _bit_is_set(bit_str: str, i: int) -> bool:
     """
     Private helper function to check whether the i-th bit in the given bit
     string is set.
@@ -179,7 +182,7 @@ def _bit_is_set(bit_str, i):
     # Running time complexity: O(1)
 
 
-def _euclidean_distance(city1, city2):
+def _euclidean_distance(city1: City, city2: City) -> float:
     """
     Private helper function to return the Euclidean distance between the given
     two cities.
@@ -187,11 +190,11 @@ def _euclidean_distance(city1, city2):
     :param city2: City
     :return: float
     """
-    return math.sqrt((city1.x - city2.x)**2 + (city1.y - city2.y)**2)
+    return math.sqrt((city1.x - city2.x) ** 2 + (city1.y - city2.y) ** 2)
     # Running time complexity: O(1)
 
 
-def tsp_optimized(cities):
+def tsp_optimized(cities: List[City]) -> float:
     """
     Solves the TSP of the given cities, assuming the first city is the source
     city, with space optimization.
@@ -233,12 +236,12 @@ def tsp_optimized(cities):
                     curr_m_subproblems[s][S] = INFINITY
                     continue
 
-                S_wo_v = _change_bit(bit_str=S, i=v, setting=False)
+                S_wo_v = _change_bit(bit_str=S, i=v, set_bit=False)
                 min_path_length = INFINITY
                 for w in range(len(S)):
                     if _bit_is_set(S_wo_v, w) and w != v:
                         path_length = prev_m_subproblems[w][S_wo_v] + \
-                            _euclidean_distance(cities[w], cities[v])
+                                      _euclidean_distance(cities[w], cities[v])
                         if path_length < min_path_length:
                             min_path_length = path_length
                 curr_m_subproblems[v][S] = min_path_length
@@ -254,7 +257,7 @@ def tsp_optimized(cities):
     for w in range(n):
         if w != s:
             tour_length = prev_m_subproblems[w][S] + \
-                _euclidean_distance(cities[w], cities[s])
+                          _euclidean_distance(cities[w], cities[s])
             if tour_length < min_tour_length:
                 min_tour_length = tour_length
     return min_tour_length

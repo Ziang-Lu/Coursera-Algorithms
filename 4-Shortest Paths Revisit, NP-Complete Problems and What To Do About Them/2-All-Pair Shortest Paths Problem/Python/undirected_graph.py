@@ -9,7 +9,9 @@ Note that parallel edges and self-loops are not allowed.
 
 __author__ = 'Ziang Lu'
 
-from graph_basics import AbstractVertex, AbstractEdge, AbstractGraph
+from typing import List
+
+from graph_basics import AbstractEdge, AbstractGraph, AbstractVertex
 
 
 class IllegalArgumentError(ValueError):
@@ -17,27 +19,8 @@ class IllegalArgumentError(ValueError):
 
 
 class Vertex(AbstractVertex):
-    def __init__(self, vtx_id):
-        """
-        Constructor with parameter.
-        :param vtx_id: int
-        """
-        super().__init__(vtx_id)
-        self._freq_of_neighbors = {}
-        self._edges = []
 
-    def get_edge_with_neighbor(self, neighbor):
-        """
-        Returns the first edge with the given neighbor.
-        :param neighbor: Vertex
-        :return: Edge
-        """
-        # Check whether the input neighbor is None
-        if neighbor is None:
-            raise IllegalArgumentError('The input neighbor should not be None.')
-
-class Vertex(AbstractVertex):
-    def __init__(self, vtx_id):
+    def __init__(self, vtx_id: int):
         """
         Constructor with parameter.
         :param vtx_id: int
@@ -46,11 +29,11 @@ class Vertex(AbstractVertex):
         self._edges = []
         self._neighbors = set()
 
-    def get_edge_with_neighbor(self, neighbor):
+    def get_edge_with_neighbor(self, neighbor: AbstractVertex) -> AbstractEdge:
         """
         Returns the first edge with the given neighbor.
-        :param neighbor: Vertex
-        :return: Edge
+        :param neighbor: AbstractVertex
+        :return: AbstractEdge
         """
         # Check whether the input neighbor is None
         if neighbor is None:
@@ -64,17 +47,17 @@ class Vertex(AbstractVertex):
         return None
 
     @property
-    def edges(self):
+    def edges(self) -> List[AbstractEdge]:
         """
         Accessor of edges.
-        :return: list[Edge]
+        :return: list[AbstractEdge]
         """
         return self._edges
 
-    def add_edge(self, new_edge):
+    def add_edge(self, new_edge: AbstractEdge) -> None:
         """
         Adds the given edge to this vertex.
-        :param new_edge: Edge
+        :param new_edge: AbstractEdge
         :return: None
         """
         # Check whether the input edge is None
@@ -96,10 +79,10 @@ class Vertex(AbstractVertex):
         self._edges.append(new_edge)
         self._neighbors.add(neighbor.vtx_id)
 
-    def remove_edge(self, edge_to_remove):
+    def remove_edge(self, edge_to_remove: AbstractEdge) -> None:
         """
         Removes the given edge from this vertex.
-        :param edge_to_remove: Edge
+        :param edge_to_remove: AbstractEdge
         :return: None
         """
         # Check whether the input edge is None
@@ -123,26 +106,24 @@ class Vertex(AbstractVertex):
         self._neighbors.remove(neighbor.vtx_id)
 
     def __repr__(self):
-        """
-        String representation of this vertex.
-        :return: str
-        """
         return 'Vertex #%d, Its neighbors: %s' % (self._vtx_id, self._neighbors)
 
 
 class UndirectedEdge(AbstractEdge):
-    def __init__(self, end1, end2, length):
+
+    def __init__(self, end1: Vertex, end2: Vertex, length: int):
         """
         Constructor with parameter.
         :param end1: Vertex
         :param end2: Vertex
+        :param length: int
         """
         super().__init__(length)
         self._end1 = end1
         self._end2 = end2
 
     @property
-    def end1(self):
+    def end1(self) -> Vertex:
         """
         Accessor of end1.
         :return: Vertex
@@ -150,7 +131,7 @@ class UndirectedEdge(AbstractEdge):
         return self._end1
 
     @property
-    def end2(self):
+    def end2(self) -> Vertex:
         """
         Accessor of end2.
         :return: Vertex
@@ -158,7 +139,7 @@ class UndirectedEdge(AbstractEdge):
         return self._end2
 
     @end1.setter
-    def end1(self, end1):
+    def end1(self, end1: Vertex) -> None:
         """
         Mutator of end1.
         :param end1: Vertex
@@ -167,7 +148,7 @@ class UndirectedEdge(AbstractEdge):
         self._end1 = end1
 
     @end2.setter
-    def end2(self, end2):
+    def end2(self, end2: Vertex) -> None:
         """
         Mutator of end2.
         :param end2: Vertex
@@ -176,15 +157,12 @@ class UndirectedEdge(AbstractEdge):
         self._end2 = end2
 
     def __repr__(self):
-        """
-        String representation of this edge.
-        :return: str
-        """
         return 'Edge between Vertex #%d and Vertex #%d' % \
-            (self._end1.vtx_id, self._end2.vtx_id)
+               (self._end1.vtx_id, self._end2.vtx_id)
 
 
 class UndirectedGraph(AbstractGraph):
+
     def __init__(self):
         """
         Default constructor.
@@ -246,19 +224,6 @@ class UndirectedGraph(AbstractGraph):
         end2.remove_edge(edge_to_remove)
         self._edge_list.remove(edge_to_remove)
 
-    def remove_edges_between_pair(self, end1_id, end2_id):
-        """
-        Removes all the edges between a vertex pair from this graph.
-        :param end1_id: int
-        :param end2_id: int
-        :return: None
-        """
-        try:
-            while True:
-                self.remove_edge(end1_id=end1_id, end2_id=end2_id)
-        except IllegalArgumentError:
-            pass
-
     def floyd_warshall_apsp(self):
         n = len(self._vtx_list)
         # Initialization
@@ -267,7 +232,7 @@ class UndirectedGraph(AbstractGraph):
             for dest_vtx in self._vtx_list:
                 if src_vtx is not dest_vtx:
                     subproblems[0][src_vtx.vtx_id][dest_vtx.vtx_id] = \
-                        super().INFINITY
+                        super()._INFINITY
         for edge in self._edge_list:
             subproblems[0][edge.end1.vtx_id][edge.end2.vtx_id] = edge.length
             subproblems[0][edge.end2.vtx_id][edge.end1.vtx_id] = edge.length
@@ -315,7 +280,7 @@ class UndirectedGraph(AbstractGraph):
             for dest_vtx in self._vtx_list:
                 if src_vtx is not dest_vtx:
                     prev_iter_subproblems[src_vtx.vtx_id][dest_vtx.vtx_id] = \
-                        super().INFINITY
+                        super()._INFINITY
         for edge in self._edge_list:
             prev_iter_subproblems[edge.end1.vtx_id][edge.end2.vtx_id] = \
                 edge.length

@@ -24,13 +24,16 @@ Greedy algorithm:
 
 __author__ = 'Ziang Lu'
 
+from typing import Callable, List, Set, Tuple
+
 
 class IllegalArgumentError(ValueError):
     pass
 
 
 class Item(object):
-    def __init__(self, idx, val, weight):
+
+    def __init__(self, idx: int, val: int, weight: int):
         """
         Constructor with parameter.
         :param idx: int
@@ -42,7 +45,7 @@ class Item(object):
         self._weight = weight
 
     @property
-    def idx(self):
+    def idx(self) -> int:
         """
         Accessor of idx.
         :return: int
@@ -50,7 +53,7 @@ class Item(object):
         return self._idx
 
     @property
-    def val(self):
+    def val(self) -> int:
         """
         Accessor of val.
         :return: int
@@ -58,7 +61,7 @@ class Item(object):
         return self._val
 
     @property
-    def weight(self):
+    def weight(self) -> int:
         """
         Accessor of weight.
         :return: int
@@ -66,7 +69,7 @@ class Item(object):
         return self._weight
 
 
-def knapsack_greedy(vals, weights, cap):
+def knapsack_greedy(vals: List[int], weights: List[int], cap: int) -> Set[int]:
     """
     Solves the knapsack problem of the items of the given values and weights,
     and the given capacity, using a greedy heuristic.
@@ -90,10 +93,10 @@ def knapsack_greedy(vals, weights, cap):
         items.append(Item(idx, vals[idx], weights[idx]))
 
     included_items1, total_val1 = _greedy_packing(
-        items, cap, key_func=lambda item: item.val / item.weight)
+        items, cap, func=lambda item: item.val / item.weight)
 
     included_items2, total_val2 = _greedy_packing(
-        items, cap, key_func=lambda item: item.val)
+        items, cap, func=lambda item: item.val)
 
     if total_val1 >= total_val2:
         return included_items1
@@ -102,15 +105,16 @@ def knapsack_greedy(vals, weights, cap):
     # Overall running time complexity: O(nlog n)
 
 
-def _greedy_packing(items, cap, key_func):
+def _greedy_packing(items: List[Item], cap: int, func: Callable) -> Tuple[
+    Set[int], int]:
     """
     Private helper function to pack the items using the given greedy heuristic.
     :param items: list[Item]
     :param cap: int
-    :param key_func: func
-    :return: set{int}
+    :param func: func
+    :return: set{int}, int
     """
-    items.sort(key=key_func)
+    items.sort(key=func)
     included_items = set()
     total_val, total_weight = 0, 0
     for i in range(len(items)):

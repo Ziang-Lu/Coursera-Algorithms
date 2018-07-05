@@ -25,6 +25,9 @@ S(i, x) = max{S(i - 1, x), S(i - 1, x - v_i) + w_i}
 
 __author__ = 'Ziang Lu'
 
+from typing import List, Set
+
+
 INFINITY = 1000000.0
 
 
@@ -32,7 +35,7 @@ class IllegalArgumentError(ValueError):
     pass
 
 
-def knapsack(vals, weights, cap):
+def knapsack(vals: List[int], weights: List[float], cap: float) -> Set[int]:
     """
     Solves the knapsack problem of the items with the given values and weights,
     and the given capacity, in an improved bottom-up way.
@@ -53,7 +56,7 @@ def knapsack(vals, weights, cap):
     n = len(vals)
     val_sum = sum(vals)
     # Initialization
-    subproblems = [[0] * (val_sum + 1) for i in range(n)]
+    subproblems = [[0.0] * (val_sum + 1) for i in range(n)]
     for x in range(val_sum + 1):
         if vals[0] >= x:
             subproblems[0][x] = weights[0]
@@ -72,7 +75,8 @@ def knapsack(vals, weights, cap):
     # O(n ^ 2 v_max)
 
 
-def _reconstruct(vals, weights, cap, subproblems):
+def _reconstruct(vals: List[int], weights: List[float], cap: float,
+                 subproblems: List[List[float]]) -> Set[int]:
     """
     Private helper function to find the optimal solution itself and reconstruct
     the included items according to the optimal solution using backtracking.
@@ -117,7 +121,10 @@ def _reconstruct(vals, weights, cap, subproblems):
     # Running time complexity: O(n)
 
 
-def knapsack_with_dynamic_programming_heuristic(vals, weights, cap, epsilon):
+def knapsack_with_dynamic_programming_heuristic(vals: List[float],
+                                                weights: List[float],
+                                                cap: float, epsilon: float) -> \
+        Set[int]:
     """
     Solves the knapsack problem of the items with the given values and weights,
     and the given capacity, using a dynamic programming-based heuristic with the
