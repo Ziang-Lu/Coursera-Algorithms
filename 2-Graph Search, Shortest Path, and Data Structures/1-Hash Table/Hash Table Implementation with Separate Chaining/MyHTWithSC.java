@@ -54,7 +54,52 @@ public class MyHTWithSC implements MyHTInterface {
     /**
      * Load factor.
      */
-    private static final double LOAD_FACTOR = 5.0;
+    private static final double LOAD_FACTOR = 0.5;
+
+    /**
+     * Initializes data list with the given capacity.
+     * @param capacity capacity
+     * @return created data list
+     */
+    private static List<LinkedList<DataItem>> initializeData(int capacity) {
+        List<LinkedList<DataItem>> data = new ArrayList<>();
+        for (int i = 0; i < capacity; ++i) {
+            data.add(new LinkedList<DataItem>());
+        }
+        return data;
+    }
+
+    /**
+     * Determines whether the given text is a lowercase word.
+     * @param text text to check
+     * @return whether the given text is a lowercase word
+     */
+    private static boolean isLowerWord(String text) {
+        return (text != null) && (text.matches("^[a-z]+$"));
+    }
+
+    /**
+     * Determines whether the given number is prime.
+     * @param n number to check
+     * @return whether the given number is prime
+     */
+    private boolean isPrime(int n) {
+        if (n <= 1) {
+            return false;
+        }
+        if (n == 2) {
+            return true;
+        }
+        if ((n % 2) == 0) {
+            return false;
+        }
+        for (int i = 3; i < Math.sqrt(n); i += 2) {
+            if ((n % i) == 0) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     /**
      * Underlying data items.
@@ -86,19 +131,6 @@ public class MyHTWithSC implements MyHTInterface {
         nItem = 0;
     }
 
-    /**
-     * Private helper method to initialize data list with the given capacity.
-     * @param capacity capacity
-     * @return created data list
-     */
-    private List<LinkedList<DataItem>> initializeData(int capacity) {
-        List<LinkedList<DataItem>> data = new ArrayList<>();
-        for (int i = 0; i < capacity; ++i) {
-            data.add(new LinkedList<DataItem>());
-        }
-        return data;
-    }
-
     @Override
     public int hashValue(String text) {
         // Check whether the input string is a lowercase word
@@ -107,16 +139,6 @@ public class MyHTWithSC implements MyHTInterface {
         }
 
         return text.hashCode() % data.size();
-    }
-
-    /**
-     * Private helper method to determine whether the given text is a lowercase
-     * word.
-     * @param text text to check
-     * @return whether the given text is a lowercase word
-     */
-    private boolean isLowerWord(String text) {
-        return (text != null) && (text.matches("^[a-z]+$"));
     }
 
     @Override
@@ -194,30 +216,6 @@ public class MyHTWithSC implements MyHTInterface {
         }
         return n;
     }
-
-    /**
-     * Helper method to determine whether the given number is prime.
-     * @param n number to check
-     * @return whether the given number is prime
-     */
-    private boolean isPrime(int n) {
-        if (n <= 1) {
-            return false;
-        }
-        if (n == 2) {
-            return true;
-        }
-        if ((n % 2) == 0) {
-            return false;
-        }
-        for (int i = 3; i < Math.sqrt(n); i += 2) {
-            if ((n % i) == 0) {
-                return false;
-            }
-        }
-        return true;
-    }
-
 
     @Override
     public String remove(String text) {

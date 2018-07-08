@@ -52,11 +52,48 @@ class DataItem(object):
         self._freq += 1
 
     def __repr__(self):
-        return '[%s, %d]' % (self._data, self._freq)
+        return '[{data}, {freq}]'.format(data=self._data, freq=self._freq)
 
 
 class HTWithSC(object):
     _LOAD_FACTOR = 5.0
+
+    @staticmethod
+    def _initialize_data(capacity: int) -> List[list]:
+        """
+        Initializes data list with the given capacity.
+        :param capacity: int
+        :return: list[list[DataItem]]
+        """
+        return [[] for _ in range(capacity)]
+
+    @staticmethod
+    def _is_lower_word(text: str) -> bool:
+        """
+        Determines whether the given text is a lowercase word.
+        :param text: str
+        :return: bool
+        """
+        lower_word_regex = re.compile('^[a-z]+$')
+        return text is not None and lower_word_regex.match(text)
+
+    @staticmethod
+    def _is_prime(n: int) -> bool:
+        """
+        Determines whether the given number is prime.
+        :param n: int
+        :return: bool
+        """
+        if n <= 1:
+            return False
+        if n == 2:
+            return True
+        if n % 2 == 0:
+            return False
+        for i in range(3, int(math.sqrt(n)), 2):
+            if n % i == 0:
+                return False
+        return True
 
     def __init__(self, initial_capacity=10):
         """
@@ -65,20 +102,13 @@ class HTWithSC(object):
         """
         # Check whether the input initial capacity is positive
         if initial_capacity <= 0:
-            raise IllegalArgumentError('The initial capacity should be'
-                                       'positive.')
+            raise IllegalArgumentError(
+                'The initial capacity should be positive.'
+            )
 
         self._md5 = hashlib.md5()
-        self._data = self._initialize_data(capacity=initial_capacity)
+        self._data = self._initialize_data(initial_capacity)
         self._num_of_items = 0
-
-    def _initialize_data(self, capacity: int) -> List[List[DataItem]]:
-        """
-        Private helper function to initialize data list with the given capacity.
-        :param capacity: int
-        :return: list[list[DataItem]]
-        """
-        return [[] for i in range(capacity)]
 
     def hash_value(self, text: str) -> int:
         """
@@ -92,16 +122,6 @@ class HTWithSC(object):
 
         self._md5.update(text.encode('utf-8'))
         return int(self._md5.hexdigest(), base=16) % len(self._data)
-
-    def _is_lower_word(self, text: str) -> bool:
-        """
-        Private helper function to determine whether the given text is a
-        lowercase word.
-        :param text: str
-        :return: bool
-        """
-        lower_word_regex = re.compile('^[a-z]+$')
-        return text is not None and lower_word_regex.match(text)
 
     def size(self) -> int:
         """
@@ -147,7 +167,7 @@ class HTWithSC(object):
                 return
         chaining.append(DataItem(text))
         self._num_of_items += 1
-        if self._num_of_items / len(self._data) > HTWithSC._LOAD_FACTOR:
+        if self._num_of_items / len(self._data) > self._LOAD_FACTOR:
             self._rehash()
 
     def _rehash(self) -> None:
@@ -177,23 +197,6 @@ class HTWithSC(object):
         while not self._is_prime(n):
             n += 1
         return n
-
-    def _is_prime(self, n: int) -> bool:
-        """
-        Helper function to determine whether the given number is prime.
-        :param n: int
-        :return: bool
-        """
-        if n <= 1:
-            return False
-        if n == 2:
-            return True
-        if n % 2 == 0:
-            return False
-        for i in range(3, int(math.sqrt(n)), 2):
-            if n % i == 0:
-                return False
-        return True
 
     def remove(self, text: str) -> str:
         """
