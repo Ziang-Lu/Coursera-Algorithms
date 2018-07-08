@@ -36,7 +36,7 @@ class Vertex(AbstractVertex):
         :return: DirectedEdge
         """
         # Check whether the input head is None
-        if head is None:
+        if not head:
             raise IllegalArgumentError('The input head should not be None.')
 
         for emissive_edge in self._emissive_edges:
@@ -60,7 +60,7 @@ class Vertex(AbstractVertex):
         :return: DirectedEdge
         """
         # Check whether the input tail is None
-        if tail is None:
+        if not tail:
             raise IllegalArgumentError('The input tail should not be None.')
 
         for incident_edge in self._incident_edges:
@@ -84,7 +84,7 @@ class Vertex(AbstractVertex):
         :return: None
         """
         # Check whether the input emissive edge is None
-        if new_emissive_edge is None:
+        if not new_emissive_edge:
             raise IllegalArgumentError('The emissive edge to add should not be '
                                        'None.')
         # Check whether the input emissive edge involves this vertex as the tail
@@ -106,7 +106,7 @@ class Vertex(AbstractVertex):
         :return: None
         """
         # Check whether the input incident edge is None
-        if new_incident_edge is None:
+        if not new_incident_edge:
             raise IllegalArgumentError('The incident edge to add should not be '
                                        'None.')
         # Check whether the input incident edge involves this vertex as the head
@@ -128,7 +128,7 @@ class Vertex(AbstractVertex):
         :return: None
         """
         # Check whether the input emissive edge is None
-        if emissive_edge_to_remove is None:
+        if not emissive_edge_to_remove:
             raise IllegalArgumentError('The emissive edge to remove should not '
                                        'be None.')
         # Check whether the input emissive edge involves this vertex as the tail
@@ -153,7 +153,7 @@ class Vertex(AbstractVertex):
         :return: None
         """
         # Check whether the input incident edge is None
-        if incident_edge_to_remove is None:
+        if not incident_edge_to_remove:
             raise IllegalArgumentError('The incident edge to remove should not '
                                        'be None.')
         # Check whether the input incident edge involves this vertex as the head
@@ -172,11 +172,11 @@ class Vertex(AbstractVertex):
             self._freq_of_incident_neighbors[incident_neighbor.vtx_id] = freq
 
     def __repr__(self):
-        s = 'Vertex #%d\n' % self._vtx_id
-        s += 'Its emissive neighbors and frequencies: %s\n' % \
-             self._freq_of_emissive_neighbors
-        s += 'Its incident neighbors and frequencies: %s\n' % \
-             self._freq_of_incident_neighbors
+        s = 'Vertex #{vtx_id}\n'.format(vtx_id=self._vtx_id)
+        s += 'Its emissive neighbors and frequencies: {}\n'.format(
+            self._freq_of_emissive_neighbors)
+        s += 'Its incident neighbors and frequencies: {}\n'.format(
+            self._freq_of_incident_neighbors)
         return s
 
     def __eq__(self, other):
@@ -229,8 +229,8 @@ class DirectedEdge(object):
         self._head = head
 
     def __repr__(self):
-        return 'Edge from Vertex #%d to Vertex #%d' % \
-               (self._tail.vtx_id, self._head.vtx_id)
+        return 'Edge from Vertex #{tail_id} to Vertex #{head_id}'.format(
+            tail_id=self._tail.vtx_id, head_id=self._head.vtx_id)
 
 
 class DirectedGraph(AbstractGraph):
@@ -254,7 +254,7 @@ class DirectedGraph(AbstractGraph):
         edges_to_remove = []
         edges_to_remove.extend(vtx_to_remove.emissive_edges)
         edges_to_remove.extend(vtx_to_remove.incident_edges)
-        while len(edges_to_remove) > 0:
+        while len(edges_to_remove):
             edge_to_remove = edges_to_remove[0]
             self._remove_edge(edge_to_remove=edge_to_remove)
         # Remove the vertex
@@ -263,7 +263,7 @@ class DirectedGraph(AbstractGraph):
     def add_edge(self, tail_id, head_id):
         # Check whether the input endpoints both exist
         tail, head = self._find_vtx(tail_id), self._find_vtx(head_id)
-        if tail is None or head is None:
+        if not tail or not head:
             raise IllegalArgumentError("The endpoints don't both exist.")
         # Check whether the input vertices are the same
         if tail_id == head_id:
@@ -282,11 +282,11 @@ class DirectedGraph(AbstractGraph):
     def remove_edge(self, tail_id, head_id):
         # Check whether the input endpoints both exist
         tail, head = self._find_vtx(tail_id), self._find_vtx(head_id)
-        if tail is None or head is None:
+        if not tail or not head:
             raise IllegalArgumentError("The endpoints don't both exist.")
         # Check whether the edge to remove exists
         edge_to_remove = tail.get_emissive_edge_with_head(head)
-        if edge_to_remove is None:
+        if not edge_to_remove:
             raise IllegalArgumentError("The edge to remove doesn't exist.")
 
         self._remove_edge(edge_to_remove=edge_to_remove)
@@ -296,17 +296,3 @@ class DirectedGraph(AbstractGraph):
         tail.remove_emissive_edge(edge_to_remove)
         head.remove_incident_edge(edge_to_remove)
         self._edge_list.remove(edge_to_remove)
-
-    def remove_directed_edges_between_pair(self, tail_id: int,
-                                           head_id: int) -> None:
-        """
-        Removes all the directed edges between a vertex pair from this graph.
-        :param tail_id: int
-        :param head_id: int
-        :return: None
-        """
-        try:
-            while True:
-                self.remove_edge(tail_id=tail_id, head_id=head_id)
-        except IllegalArgumentError:
-            pass

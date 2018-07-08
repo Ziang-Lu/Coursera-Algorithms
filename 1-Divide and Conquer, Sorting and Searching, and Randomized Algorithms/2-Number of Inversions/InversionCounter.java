@@ -20,7 +20,6 @@ public class InversionCounter {
     public int countInversions(int[] nums) {
         // Check whether the input array is null or empty
         if ((nums == null) || (nums.length == 0)) {
-            System.out.println("The input array shouldn't be null or empty.");
             return 0;
         }
 

@@ -24,12 +24,10 @@ def kth_largest(nums: List[int], k: int) -> int:
     :return: int
     """
     # Check whether the input list is null or empty
-    if nums is None or len(nums) == 0:
-        print('The input list should not be None or empty.')
+    if not nums:
         return 0
     # Check whether the input k is valid
     if k < 0 or k >= len(nums):
-        print('The input k should be within the range of the input list.')
         return 0
 
     return _kth_largest_helper(nums, k, left=0, right=len(nums) - 1)

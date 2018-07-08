@@ -20,12 +20,10 @@ public class ClosestPairFinder {
     private double[] findClosestPair1D(double[] points) {
         // Check whether the input point array is null or empty
         if ((points == null) || (points.length == 0)) {
-            System.out.println("The input point array should not be null or empty.");
             return new double[0];
         }
 
         if (points.length == 1) {
-            System.out.println("The length of the input array should be at least 2.")
             return new double[0];
         }
 
@@ -94,13 +92,13 @@ public class ClosestPairFinder {
      * @return closest pair
      */
     private Point2D.Double[] findClosestPair2DHelper(Point2D.Double[] Px, Point2D.Double[] Py) {
-        int numOfPoints = Px.length;
+        int nPoint = Px.length;
         // Base case 1: 2 points
-        if (numOfPoints == 2) {
+        if (nPoint == 2) {
             return Px;
         }
         // Base case 2: 3 points
-        if (numOfPoints == 3) {
+        if (nPoint == 3) {
             double distance1 = Px[0].distance(Px[1]), distance2 = Px[1].distance(Px[2]),
                     distance3 = Px[2].distance(Px[0]);
             double minDistance = Math.min(Math.min(distance1, distance2), distance3);
@@ -116,12 +114,12 @@ public class ClosestPairFinder {
         // Recursive case
         // [Divide]
         // Let Q be the left half of P, and R be the right half of P
-        Point2D.Double[] Qx = new Point2D.Double[numOfPoints / 2], Qy = new Point2D.Double[numOfPoints / 2];
-        System.arraycopy(Px, 0, Qx, 0, numOfPoints / 2);
-        Point2D.Double[] Rx = new Point2D.Double[numOfPoints - numOfPoints / 2],
-                Ry = new Point2D.Double[numOfPoints - numOfPoints / 2];
-        System.arraycopy(Px, numOfPoints / 2, Rx, 0, numOfPoints - numOfPoints / 2);
-        // To create Qy and Ry, iterate over Py: if x is smaller than or equal to the threshold, put the point in Qy; otherwise put it in Ry
+        Point2D.Double[] Qx = new Point2D.Double[nPoint / 2], Qy = new Point2D.Double[nPoint / 2];
+        System.arraycopy(Px, 0, Qx, 0, nPoint / 2);
+        Point2D.Double[] Rx = new Point2D.Double[nPoint - nPoint / 2], Ry = new Point2D.Double[nPoint - nPoint / 2];
+        System.arraycopy(Px, nPoint / 2, Rx, 0, nPoint - nPoint / 2);
+        // To create Qy and Ry, iterate over Py: if x is smaller than or equal to the threshold, put the point in Qy;
+        // otherwise put it in Ry
         double xThreshold = Qx[Qx.length - 1].getX();
         int QyPtr = 0, RyPtr = 0;
         for (Point2D.Double p : Py) {
@@ -175,7 +173,8 @@ public class ClosestPairFinder {
                 Sy.add(p);
             }
         }
-        // Iterate over Sy, and for each point, look at its at most 7 subsequent points, and find the closest closer split pair
+        // Iterate over Sy, and for each point, look at its at most 7 subsequent points, and find the closest closer
+        // split pair
         Point2D.Double p1 = null, p2 = null;
         double closerDistance = delta;
         for (int i = 0; i < (Sy.size() - 1); ++i) {

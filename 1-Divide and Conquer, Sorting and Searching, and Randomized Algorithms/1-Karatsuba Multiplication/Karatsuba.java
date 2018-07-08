@@ -68,6 +68,7 @@ public class Karatsuba {
             }
         }
         return newStr.toString();
+        // Running time complexity: O(n)
     }
 
 }

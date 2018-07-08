@@ -64,7 +64,7 @@ class AbstractGraph(ABC):
         """
         # Check whether the input vertex exists
         vtx_to_remove = self._find_vtx(vtx_id)
-        if vtx_to_remove is None:
+        if not vtx_to_remove:
             raise IllegalArgumentError("The input vertex doesn't exist.")
 
         self._remove_vtx(vtx_to_remove=vtx_to_remove)

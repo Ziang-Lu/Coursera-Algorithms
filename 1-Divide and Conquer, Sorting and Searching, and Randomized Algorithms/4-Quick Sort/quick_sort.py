@@ -14,8 +14,7 @@ def quick_sort(nums: List[int]) -> None:
     :return: None
     """
     # Check whether the input list is null or empty
-    if nums is None or len(nums) == 0:
-        print('The input list should not be None or empty.')
+    if not nums:
         return
 
     _quick_sort_helper(nums, left=0, right=len(nums) - 1)
@@ -35,45 +34,23 @@ def _quick_sort_helper(nums: List[int], left: int, right: int) -> None:
         return
     # Recursive case
     # Choose a pivot from the given sub-list, and move it to the left.
-    _choose_pivot(nums, left=left, right=right)
+    _choose_pivot(nums, left, right)
     pivot_idx = _partition(nums, left=left, right=right)
     _quick_sort_helper(nums, left=left, right=pivot_idx - 1)
     _quick_sort_helper(nums, left=pivot_idx + 1, right=right)
 
 
-def _choose_pivot(nums: List[int], left: int, right: int,
-                  randomly=True) -> None:
+def _choose_pivot(nums: List[int], left: int, right: int) -> None:
     """
     Helper function to choose a pivot from the given sub-list, and move it to
     the left.
     :param nums: list[int]
     :param left: int
     :param right: int
-    :param randomly: bool
     :return: None
     """
-    if randomly:
-        # [Randomized] Randomly choose a pivot from the given sub-list
-        pivot_idx = random.randrange(left, right + 1)
-        # Move the pivot to the left
-    else:
-        # [Deterministic] Use the median of medians as the pivot
-
-        # Create sorted parts
-        sorted_parts = []
-        i = left
-        while i <= right:
-            num_of_elems = min(5, right + 1 - left)
-            part = nums[i:i + num_of_elems]
-            part.sort()
-            sorted_parts.append(part)
-            i += num_of_elems
-        # Take out the medians of the sorted parts
-        medians = []
-        for sorted_part in sorted_parts:
-            medians.append(sorted_part[len(sorted_part) // 2])
-        # Use the median of the medians as the pivot
-        pivot_idx = len(medians) // 2
+    # [Randomized] Randomly choose a pivot from the given sub-list
+    pivot_idx = random.randint(left, right)
     # Move the pivot to the left
     if pivot_idx != left:
         nums[left], nums[pivot_idx] = nums[pivot_idx], nums[left]

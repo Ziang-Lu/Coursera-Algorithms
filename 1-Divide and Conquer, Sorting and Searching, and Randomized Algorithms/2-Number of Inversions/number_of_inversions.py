@@ -25,8 +25,7 @@ def count_inversions(nums: List[int]) -> int:
     :return: int
     """
     # Check whether the input list is None or empty
-    if nums is None or len(nums) == 0:
-        print('The input list should not be None or empty.')
+    if not nums:
         return 0
 
     # Since we can't modify the input list, we need to make a copy.

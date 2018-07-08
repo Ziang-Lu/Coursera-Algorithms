@@ -20,12 +20,10 @@ public class RandomSelection {
     public int kthLargest(int[] nums, int k) {
         // Check whether the input array is null or empty
         if ((nums == null) || nums.length == 0) {
-            System.out.println("The input array should not be null or empty.");
             return 0;
         }
         // Check whether the input k is valid
         if ((k < 0) || (k >= nums.length)) {
-            System.out.println("The input k should be within the range of the given array.");
             return 0;
         }
 
@@ -100,7 +98,7 @@ public class RandomSelection {
     /**
      * Helper method to partition the given part of the array.
      * @param nums array to partition
-     * @param left left bound 
+     * @param left left bound
      * @param right right bound
      * @return
      */
@@ -108,7 +106,8 @@ public class RandomSelection {
         // The pivot has already been moved to the left.
         int pivot = nums[left];
 
-        // Iterate over the subarray, use a pointer to keep track of the smaller part, and swap the current number with the pointer as necessary
+        // Iterate over the subarray, use a pointer to keep track of the smaller part, and swap the current number with
+        // the pointer as necessary
         int smallerPtr = left + 1;
         int i = left + 1;
         while (true) {

@@ -19,9 +19,9 @@ def karatsuba(x: int, y: int) -> int:
 
     # Pad leading zeros   [O(n)]
     if len(x_s) > len(y_s):
-        y_s = _pad_zeros(y_s, n_zeros=len(x_s) - len(y_s), at_front=True)
+        y_s = _pad_zeros(y_s, len(x_s) - len(y_s), at_front=True)
     elif len(x_s) < len(y_s):
-        x_s = _pad_zeros(x_s, n_zeros=len(y_s) - len(x_s), at_front=True)
+        x_s = _pad_zeros(x_s, len(y_s) - len(x_s), at_front=True)
 
     n = len(x_s)
     # Base case
@@ -36,8 +36,8 @@ def karatsuba(x: int, y: int) -> int:
     bd = karatsuba(b, d)
     ad_bc = karatsuba(a + b, c + d) - ac - bd
     # Combine the results   [O(n)]
-    part_1_s = _pad_zeros(str(ac), n_zeros=2 * (n - n // 2), at_front=False)
-    part_2_s = _pad_zeros(str(ad_bc), n_zeros=n - n // 2, at_front=False)
+    part_1_s = _pad_zeros(str(ac), 2 * (n - n // 2), at_front=False)
+    part_2_s = _pad_zeros(str(ad_bc), n - n // 2, at_front=False)
     return int(part_1_s) + int(part_2_s) + bd
     # T(n) = 3T(n/2) + O(n)
     # a = 2, b = 2, d = 1
@@ -62,3 +62,4 @@ def _pad_zeros(s: str, n_zeros: int, at_front: bool) -> str:
         new_s += s
         new_s += '0' * n_zeros
     return new_s
+    # Running time complexity: O(n)
