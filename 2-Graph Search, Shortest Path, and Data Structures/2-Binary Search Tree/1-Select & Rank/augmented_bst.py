@@ -84,8 +84,7 @@ class Node(object):
         self._size = size
 
     def __repr__(self):
-        s = '[%d, size: %d]' % (self._key, self._size)
-        return s
+        return '[{key}, size: {size}]'.format(key=self._key, size=self._size)
 
 
 class AugmentedBST(object):
@@ -107,7 +106,7 @@ class AugmentedBST(object):
         :param key: int
         :return: bool
         """
-        return self._search_helper(key, curr=self._root)
+        return self._search_helper(key, self._root)
 
     def _search_helper(self, key: int, curr: Node) -> bool:
         """
@@ -118,15 +117,15 @@ class AugmentedBST(object):
         :return: bool
         """
         # Base case 1: Not found
-        if curr is None:
+        if not curr:
             return False
         # Base case 2: Found it
         if curr.key == key:
             return True
 
         # Recursive case
-        return self._search_helper(key, curr=curr.left) or \
-               self._search_helper(key, curr=curr.right)
+        return self._search_helper(key, curr.left) or \
+            self._search_helper(key, curr.right)
 
     def insert(self, key: int) -> bool:
         """
@@ -134,7 +133,7 @@ class AugmentedBST(object):
         :param key: int
         :return: bool
         """
-        if self._root is None:
+        if not self._root:
             self._root = Node(key)
             return True
 
@@ -153,7 +152,7 @@ class AugmentedBST(object):
         :return: bool
         """
         # Base case 1: Found the spot to insert
-        if curr is None:
+        if not curr:
             if is_lc:
                 parent.left = Node(key)
             else:
@@ -178,7 +177,7 @@ class AugmentedBST(object):
         Traverses the BST in-order.
         :return: str
         """
-        s = self._traverse_in_order_helper(curr=self._root)
+        s = self._traverse_in_order_helper(self._root)
         print(s.strip())
 
     def _traverse_in_order_helper(self, curr: Node) -> str:
@@ -189,12 +188,12 @@ class AugmentedBST(object):
         :return: str
         """
         # Base case
-        if curr is None:
+        if not curr:
             return ''
         # Recursive case
-        s = self._traverse_in_order_helper(curr=curr.left)
+        s = self._traverse_in_order_helper(curr.left)
         s += str(curr) + ' '
-        s += self._traverse_in_order_helper(curr=curr.right)
+        s += self._traverse_in_order_helper(curr.right)
         return s
 
     def select(self, rank: int) -> int:
@@ -204,11 +203,11 @@ class AugmentedBST(object):
         :return: int
         """
         # Check whether the BST is empty
-        if self._root is None:
+        if not self._root:
             raise ValueError('The BST is empty.')
         # Check whether the input ranking is out of range
-        num_of_nodes = self._root.size
-        if rank <= 0 or rank > num_of_nodes:
+        n_node = self._root.size
+        if rank <= 0 or rank > n_node:
             raise ValueError('The input ranking is out of range.')
 
         return self._select_helper(rank, curr=self._root)
@@ -222,7 +221,7 @@ class AugmentedBST(object):
         :return: int
         """
         left_size = 0
-        if curr.left is not None:
+        if curr.left:
             left_size = curr.left.size
         curr_rank_in_subtree = left_size + 1
         # Base case
@@ -231,12 +230,11 @@ class AugmentedBST(object):
 
         # Recursive case
         if curr_rank_in_subtree > rank:
-            return self._select_helper(rank, curr=curr.left)
+            return self._select_helper(rank, curr.left)
         else:
             # Note that the rank in the right sub-tree is
             # (rank - curr_rank_in_subtree)
-            return self._select_helper(rank - curr_rank_in_subtree,
-                                       curr=curr.right)
+            return self._select_helper(rank - curr_rank_in_subtree, curr.right)
 
     def get_rank(self, key: int) -> int:
         """
@@ -244,7 +242,7 @@ class AugmentedBST(object):
         :param key: int
         :return: int
         """
-        return self._get_rank_helper(key, curr=self._root)
+        return self._get_rank_helper(key, self._root)
 
     def _get_rank_helper(self, key: int, curr: Node) -> int:
         """
@@ -255,10 +253,10 @@ class AugmentedBST(object):
         :return: int
         """
         # Base case 1: Not found
-        if curr is None:
+        if not curr:
             return -1
         left_size = 0
-        if curr.left is not None:
+        if curr.left:
             left_size = curr.left.size
         curr_rank_in_subtree = left_size + 1
         # Base case 2: Found it
@@ -267,9 +265,8 @@ class AugmentedBST(object):
 
         # Recursive case
         if curr.key > key:
-            return self._get_rank_helper(key, curr=curr.left)
+            return self._get_rank_helper(key, curr.left)
         else:
             # Note that the rank in the right sub-tree is
             # (rank - curr_rank_in_subtree)
-            return curr_rank_in_subtree + \
-                   self._get_rank_helper(key, curr=curr.right)
+            return curr_rank_in_subtree + self._get_rank_helper(key, curr.right)

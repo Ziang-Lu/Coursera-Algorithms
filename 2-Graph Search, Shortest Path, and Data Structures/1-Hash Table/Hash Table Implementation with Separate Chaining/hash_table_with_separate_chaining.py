@@ -211,8 +211,8 @@ class HTWithSC(object):
         hash_val = self.hash_value(text)
         chaining = self._data[hash_val]
         idx_to_remove = -1
-        for i in range(len(chaining)):
-            if chaining[i].data == text:
+        for i, node in enumerate(chaining):
+            if node.data == text:
                 idx_to_remove = i
                 break
         if idx_to_remove == -1:  # Not found

@@ -171,8 +171,8 @@ public class AugmentedBST implements BSTInterface {
             throw new RuntimeException("The BST is empty.");
         }
         // Check whether the input ranking is out of range
-        int numOfNodes = root.size;
-        if ((rank <= 0) || (rank > numOfNodes)) {
+        int nNode = root.size;
+        if ((rank <= 0) || (rank > nNode)) {
             throw new RuntimeException("The input ranking is out of range.");
         }
 
