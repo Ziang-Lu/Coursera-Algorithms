@@ -36,7 +36,7 @@ class Vertex(AbstractVertex):
         :return: UndirectedEdge
         """
         # Check whether the input neighbor is None
-        if neighbor is None:
+        if not neighbor:
             raise IllegalArgumentError('The input neighbor should not be None.')
 
         for edge in self._edges:
@@ -61,12 +61,13 @@ class Vertex(AbstractVertex):
         :return: None
         """
         # Check whether the input edge is None
-        if new_edge is None:
+        if not new_edge:
             raise IllegalArgumentError('The edge to add should not be None.')
         # Check whether the input edge involves this vertex
-        if (new_edge.end1 is not self) and (new_edge.end2 is not self):
-            raise IllegalArgumentError('The edge to add should involve this '
-                                       'vertex.')
+        if new_edge.end1 is not self and new_edge.end2 is not self:
+            raise IllegalArgumentError(
+                'The edge to add should involve this vertex.'
+            )
 
         self._edges.append(new_edge)
 
@@ -87,13 +88,13 @@ class Vertex(AbstractVertex):
         :return: None
         """
         # Check whether the input edge is None
-        if edge_to_remove is None:
+        if not edge_to_remove:
             raise IllegalArgumentError('The edge to remove should not be None.')
         # Check whether the input edge involves this vertex
-        if (edge_to_remove.end1 is not self) and \
-                (edge_to_remove.end2 is not self):
-            raise IllegalArgumentError('The edge to remove should involve this '
-                                       'vertex.')
+        if edge_to_remove.end1 is not self and edge_to_remove.end2 is not self:
+            raise IllegalArgumentError(
+                'The edge to remove should involve this vertex.'
+            )
 
         self._edges.remove(edge_to_remove)
 
@@ -111,8 +112,9 @@ class Vertex(AbstractVertex):
             self._freq_of_neighbors[neighbor.vtx_id] = freq
 
     def __repr__(self):
-        return 'Vertex #%d, Its neighbors and frequencies: %s' % \
-               (self._vtx_id, self._freq_of_neighbors)
+        return 'Vertex #{}, Its neighbors and frequencies: {}'.format(
+            self._vtx_id, self._freq_of_neighbors
+        )
 
 
 class UndirectedEdge(object):
@@ -161,8 +163,9 @@ class UndirectedEdge(object):
         self._end2 = end2
 
     def __repr__(self):
-        return 'Edge between Vertex #%d and Vertex #%d' % \
-               (self._end1.vtx_id, self._end2.vtx_id)
+        return 'Edge between Vertex #{end1_id} and Vertex #{end2_id}'.format(
+            end1_id=self._end1.vtx_id, end2_id=self._end2.vtx_id
+        )
 
 
 class UndirectedGraph(AbstractGraph):
@@ -184,7 +187,7 @@ class UndirectedGraph(AbstractGraph):
     def _remove_vtx(self, vtx_to_remove):
         # Remove all the edges associated with the vertex to remove
         edges_to_remove = vtx_to_remove.edges
-        while len(edges_to_remove) > 0:
+        while len(edges_to_remove):
             edge_to_remove = edges_to_remove[0]
             self._remove_edge(edge_to_remove=edge_to_remove)
         # Remove the vertex
@@ -193,12 +196,15 @@ class UndirectedGraph(AbstractGraph):
     def add_edge(self, end1_id, end2_id):
         # Check whether the input endpoints both exist
         end1, end2 = self._find_vtx(end1_id), self._find_vtx(end2_id)
-        if end1 is None or end2 is None:
-            raise IllegalArgumentError("The endpoints don't both exist.")
+        if not end1 or not end2:
+            raise IllegalArgumentError(
+                "The endpoints don't both exist."
+            )
         # Check whether the input endpoints are the same (self-loop)
         if end1_id == end2_id:
-            raise IllegalArgumentError("The endpoints are the same "
-                                       "(self-loop).")
+            raise IllegalArgumentError(
+                "The endpoints are the same (self-loop)."
+            )
 
         new_edge = UndirectedEdge(end1, end2)
         self._add_edge(new_edge=new_edge)
@@ -212,12 +218,12 @@ class UndirectedGraph(AbstractGraph):
     def remove_edge(self, end1_id, end2_id):
         # Check whether the input endpoints both exist
         end1, end2 = self._find_vtx(end1_id), self._find_vtx(vtx_id=end2_id)
-        if end1 is None or end2 is None:
+        if not end1 or not end2:
             raise IllegalArgumentError("The endpoints don't both exist.")
 
         # Check whether the edge to remove exists
         edge_to_remove = end1.get_edge_with_neighbor(end2)
-        if edge_to_remove is None:
+        if not edge_to_remove:
             raise IllegalArgumentError("The edge to remove doesn't exist.")
 
         self._remove_edge(edge_to_remove=edge_to_remove)
@@ -228,7 +234,7 @@ class UndirectedGraph(AbstractGraph):
         end2.remove_edge(edge_to_remove)
         self._edge_list.remove(edge_to_remove)
 
-    def remove_edges_between_pair(self, end1_id, end2_id):
+    def remove_edges_between_pair(self, end1_id: int, end2_id: int) -> None:
         """
         Removes all the edges between a vertex pair from this graph.
         :param end1_id: int
@@ -252,7 +258,7 @@ class UndirectedGraph(AbstractGraph):
         # While there are more than 2 vertices
         while len(self._vtx_list) > 2:
             # 1. Pick up an edge randomly
-            random_idx = random.randrange(len(self._edge_list))
+            random_idx = random.randint(0, len(self._edge_list) - 1)
             edge_to_contract = self._edge_list[random_idx]
             end1, end2 = edge_to_contract.end1, edge_to_contract.end2
 
@@ -277,10 +283,7 @@ class UndirectedGraph(AbstractGraph):
         greater than the current largest vertex ID.
         :return: int
         """
-        vtx_ids = []
-        for vtx in self._vtx_list:
-            vtx_ids.append(vtx.vtx_id)
-        return max(vtx_ids) + 1
+        return max(vtx.id for vtx in self._vtx_list) + 1
 
     def _reconnect_edges(self, end: Vertex, merged_vtx: Vertex) -> None:
         """
