@@ -17,6 +17,12 @@ class IllegalArgumentError(ValueError):
 
 
 class Vertex(AbstractVertex):
+    __slots__ = [
+        '_freq_of_emissive_neighbors',
+        '_emissive_edges',
+        '_freq_of_incident_neighbors',
+        '_incident_edges'
+    ]
 
     def __init__(self, vtx_id: int):
         """
@@ -129,12 +135,15 @@ class Vertex(AbstractVertex):
         """
         # Check whether the input emissive edge is None
         if not emissive_edge_to_remove:
-            raise IllegalArgumentError('The emissive edge to remove should not '
-                                       'be None.')
+            raise IllegalArgumentError(
+                'The emissive edge to remove should not be None.'
+            )
         # Check whether the input emissive edge involves this vertex as the tail
         if emissive_edge_to_remove.tail is not self:
-            raise IllegalArgumentError('The emissive edge to remove should '
-                                       'involve this vertex as the tail.')
+            raise IllegalArgumentError(
+                'The emissive edge to remove should involve this vertex as the '
+                'tail.'
+            )
 
         self._emissive_edges.remove(emissive_edge_to_remove)
 
@@ -154,12 +163,15 @@ class Vertex(AbstractVertex):
         """
         # Check whether the input incident edge is None
         if not incident_edge_to_remove:
-            raise IllegalArgumentError('The incident edge to remove should not '
-                                       'be None.')
+            raise IllegalArgumentError(
+                'The incident edge to remove should not be None.'
+            )
         # Check whether the input incident edge involves this vertex as the head
         if incident_edge_to_remove.head is not self:
-            raise IllegalArgumentError('The incident edge to remove should '
-                                       'involve this vertex as the head.')
+            raise IllegalArgumentError(
+                'The incident edge to remove should involve this vertex as the '
+                'head.'
+            )
 
         self._incident_edges.remove(incident_edge_to_remove)
 
@@ -174,9 +186,11 @@ class Vertex(AbstractVertex):
     def __repr__(self):
         s = 'Vertex #{vtx_id}\n'.format(vtx_id=self._vtx_id)
         s += 'Its emissive neighbors and frequencies: {}\n'.format(
-            self._freq_of_emissive_neighbors)
+            self._freq_of_emissive_neighbors
+        )
         s += 'Its incident neighbors and frequencies: {}\n'.format(
-            self._freq_of_incident_neighbors)
+            self._freq_of_incident_neighbors
+        )
         return s
 
     def __eq__(self, other):
@@ -184,6 +198,7 @@ class Vertex(AbstractVertex):
 
 
 class DirectedEdge(object):
+    __slots__ = ['_tail', '_head']
 
     def __init__(self, tail: Vertex, head: Vertex):
         """
@@ -230,10 +245,12 @@ class DirectedEdge(object):
 
     def __repr__(self):
         return 'Edge from Vertex #{tail_id} to Vertex #{head_id}'.format(
-            tail_id=self._tail.vtx_id, head_id=self._head.vtx_id)
+            tail_id=self._tail.vtx_id, head_id=self._head.vtx_id
+        )
 
 
 class DirectedGraph(AbstractGraph):
+    __slots__ = []
 
     def __init__(self):
         """
@@ -267,8 +284,9 @@ class DirectedGraph(AbstractGraph):
             raise IllegalArgumentError("The endpoints don't both exist.")
         # Check whether the input vertices are the same
         if tail_id == head_id:
-            raise IllegalArgumentError("The endpoints are the same "
-                                       "(self-loop).")
+            raise IllegalArgumentError(
+                'The endpoints are the same (self-loop).'
+            )
 
         new_edge = DirectedEdge(tail, head)
         self._add_edge(new_edge=new_edge)

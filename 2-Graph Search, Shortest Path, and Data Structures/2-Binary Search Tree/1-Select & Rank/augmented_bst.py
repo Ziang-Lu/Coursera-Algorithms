@@ -13,6 +13,7 @@ __author__ = 'Ziang Lu'
 
 
 class Node(object):
+    __slots__ = ['_key', '_left', '_right', '_size']
 
     def __init__(self, key: int):
         """
@@ -93,6 +94,7 @@ class AugmentedBST(object):
     A simple BST class, but each node has an additional data field: the number
     of nodes in the sub-tree rooted at that node.
     """
+    __slots__ = ['_root']
 
     def __init__(self):
         """

@@ -11,6 +11,8 @@ class IllegalArgumentError(ValueError):
 
 
 class AbstractVertex(object):
+    __slots__ = ['_vtx_id']
+
     def __init__(self, vtx_id: int):
         """
         Constructor with parameter.
@@ -28,6 +30,8 @@ class AbstractVertex(object):
 
 
 class AbstractGraph(ABC):
+    __slots__ = ['_vtx_list', '_edge_list']
+
     def __init__(self):
         """
         Default constructor.

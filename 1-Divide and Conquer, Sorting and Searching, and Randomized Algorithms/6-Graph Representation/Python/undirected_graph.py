@@ -17,6 +17,7 @@ class IllegalArgumentError(ValueError):
 
 
 class Vertex(AbstractVertex):
+    __slots__ = ['_freq_of_neighbors', '_edges']
 
     def __init__(self, vtx_id: int):
         """
@@ -63,8 +64,9 @@ class Vertex(AbstractVertex):
             raise IllegalArgumentError('The edge to add should not be None.')
         # Check whether the input edge involves this vertex
         if new_edge.end1 is not self and new_edge.end2 is not self:
-            raise IllegalArgumentError('The edge to add should involve this '
-                                       'vertex.')
+            raise IllegalArgumentError(
+                'The edge to add should involve this vertex.'
+            )
 
         self._edges.append(new_edge)
 
@@ -89,8 +91,9 @@ class Vertex(AbstractVertex):
             raise IllegalArgumentError('The edge to remove should not be None.')
         # Check whether the input edge involves this vertex
         if edge_to_remove.end1 is not self and edge_to_remove.end2 is not self:
-            raise IllegalArgumentError('The edge to remove should involve this '
-                                       'vertex.')
+            raise IllegalArgumentError(
+                'The edge to remove should involve this vertex.'
+            )
 
         self._edges.remove(edge_to_remove)
 
@@ -109,10 +112,12 @@ class Vertex(AbstractVertex):
 
     def __repr__(self):
         return 'Vertex #{}, Its neighbors and frequencies: {}'.format(
-            self._vtx_id, self._freq_of_neighbors)
+            self._vtx_id, self._freq_of_neighbors
+        )
 
 
 class UndirectedEdge(object):
+    __slots__ = ['_end1', '_end2']
 
     def __init__(self, end1: Vertex, end2: Vertex):
         """
@@ -159,10 +164,12 @@ class UndirectedEdge(object):
 
     def __repr__(self):
         return 'Edge between Vertex #{end1_id} and Vertex #{end2_id}'.format(
-            end1_id=self._end1.vtx_id, end2_id=self._end2.vtx_id)
+            end1_id=self._end1.vtx_id, end2_id=self._end2.vtx_id
+        )
 
 
 class UndirectedGraph(AbstractGraph):
+    __slots__ = []
 
     def __init__(self):
         """
@@ -194,8 +201,9 @@ class UndirectedGraph(AbstractGraph):
             raise IllegalArgumentError("The endpoints don't both exist.")
         # Check whether the input endpoints are the same (self-loop)
         if end1_id == end2_id:
-            raise IllegalArgumentError("The endpoints are the same "
-                                       "(self-loop).")
+            raise IllegalArgumentError(
+                'The endpoints are the same (self-loop).'
+            )
 
         new_edge = UndirectedEdge(end1, end2)
         self._add_edge(new_edge=new_edge)

@@ -19,6 +19,7 @@ class IllegalArgumentError(ValueError):
 
 
 class Vertex(AbstractVertex):
+    __slots__ = ['_freq_of_neighbors', '_edges']
 
     def __init__(self, vtx_id: int):
         """
@@ -118,6 +119,7 @@ class Vertex(AbstractVertex):
 
 
 class UndirectedEdge(object):
+    __slots__ = ['_end1', '_end2']
 
     def __init__(self, end1: Vertex, end2: Vertex):
         """
@@ -169,6 +171,7 @@ class UndirectedEdge(object):
 
 
 class UndirectedGraph(AbstractGraph):
+    __slots__ = []
 
     def __init__(self):
         """
@@ -203,7 +206,7 @@ class UndirectedGraph(AbstractGraph):
         # Check whether the input endpoints are the same (self-loop)
         if end1_id == end2_id:
             raise IllegalArgumentError(
-                "The endpoints are the same (self-loop)."
+                'The endpoints are the same (self-loop).'
             )
 
         new_edge = UndirectedEdge(end1, end2)

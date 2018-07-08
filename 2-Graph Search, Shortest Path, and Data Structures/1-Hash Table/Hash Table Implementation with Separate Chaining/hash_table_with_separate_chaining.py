@@ -19,6 +19,7 @@ class IllegalArgumentError(ValueError):
 
 
 class DataItem(object):
+    __slots__ = ['_data', '_freq']
 
     def __init__(self, data: str):
         """
@@ -56,6 +57,8 @@ class DataItem(object):
 
 
 class HTWithSC(object):
+    __slots__ = ['_md5', '_data', '_n_item']
+
     _LOAD_FACTOR = 5.0
 
     @staticmethod
@@ -108,7 +111,7 @@ class HTWithSC(object):
 
         self._md5 = hashlib.md5()
         self._data = self._initialize_data(initial_capacity)
-        self._num_of_items = 0
+        self._n_item = 0
 
     def hash_value(self, text: str) -> int:
         """
@@ -128,7 +131,7 @@ class HTWithSC(object):
         Returns the number of items in the hash table.
         :return: int
         """
-        return self._num_of_items
+        return self._n_item
 
     def contains(self, text: str) -> bool:
         """
@@ -166,8 +169,8 @@ class HTWithSC(object):
                 item.add_freq()
                 return
         chaining.append(DataItem(text))
-        self._num_of_items += 1
-        if self._num_of_items / len(self._data) > self._LOAD_FACTOR:
+        self._n_item += 1
+        if self._n_item / len(self._data) > self._LOAD_FACTOR:
             self._rehash()
 
     def _rehash(self) -> None:
@@ -218,7 +221,7 @@ class HTWithSC(object):
         if idx_to_remove == -1:  # Not found
             return None
         removed_data = chaining[idx_to_remove].data
-        self._num_of_items -= 1
+        self._n_item -= 1
         return removed_data
 
     def display(self) -> None:

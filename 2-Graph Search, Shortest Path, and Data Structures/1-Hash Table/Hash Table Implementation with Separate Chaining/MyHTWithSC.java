@@ -83,7 +83,7 @@ public class MyHTWithSC implements MyHTInterface {
      * @param n number to check
      * @return whether the given number is prime
      */
-    private boolean isPrime(int n) {
+    private static boolean isPrime(int n) {
         if (n <= 1) {
             return false;
         }
