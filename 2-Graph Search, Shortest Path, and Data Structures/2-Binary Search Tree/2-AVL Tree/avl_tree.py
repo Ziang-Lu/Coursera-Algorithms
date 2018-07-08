@@ -13,6 +13,7 @@ __author__ = 'Ziang Lu'
 
 
 class Node(object):
+    __slots__ = ['_key', '_left', '_right']
 
     def __init__(self, key: int):
         """
@@ -66,13 +67,51 @@ class Node(object):
         self._right = right
 
     def __repr__(self):
-        s = '[%d]' % self._key
+        s = '[{}]'.format(self._key)
         return s
 
 
 class AVLTree(object):
+    __slots__ = ['_root']
+
+    @staticmethod
+    def _right_rotate(unbalanced: Node) -> Node:
+        """
+        Makes a right rotation towards the given unbalanced node.
+        :param unbalanced: Node
+        :return: Node
+        """
+        # Temporarily store the left child
+        tmp = unbalanced.left
+
+        # Reconnect the references to realize right rotation
+        unbalanced.left = unbalanced.left.right
+        tmp.right = unbalanced
+
+        return tmp
+        # Running time complexity: O(1)
+
+    @staticmethod
+    def _left_rotate(unbalanced: Node) -> Node:
+        """
+        Makes a left rotation towards the given unbalanced node.
+        :param unbalanced: Node
+        :return: Node
+        """
+        # Temporarily store the right child
+        tmp = unbalanced.right
+
+        # Reconnect the references to realize left rotation
+        unbalanced.right = unbalanced.right.left
+        tmp.left = unbalanced
+
+        return tmp
+        # Running time complexity: O(1)
 
     def __init__(self):
+        """
+        Default constructor.
+        """
         self._root = None
 
     def search(self, key: int) -> bool:
@@ -81,7 +120,7 @@ class AVLTree(object):
         :param key: int
         :return: bool
         """
-        return self._search_helper(key, curr=self._root)
+        return self._search_helper(key, self._root)
 
     def _search_helper(self, key: int, curr: Node) -> bool:
         """
@@ -92,7 +131,7 @@ class AVLTree(object):
         :return: bool
         """
         # Base case 1: Not found
-        if curr is None:
+        if not curr:
             return False
         # Base case 2: Found it
         if curr.key == key:
@@ -100,9 +139,9 @@ class AVLTree(object):
 
         # Recursive case
         if curr.key > key:
-            return self._search_helper(key, curr=curr.left)
+            return self._search_helper(key, curr.left)
         else:
-            return self._search_helper(key, curr=curr.right)
+            return self._search_helper(key, curr.right)
 
     def insert(self, key: int) -> None:
         """
@@ -110,7 +149,7 @@ class AVLTree(object):
         :param key: int
         :return: None
         """
-        if self._root is None:
+        if not self._root:
             self._root = Node(key)
             return
 
@@ -129,7 +168,7 @@ class AVLTree(object):
         :return: Node
         """
         # Base case 1: Found the spot to insert
-        if curr is None:
+        if not curr:
             new_node = Node(key)
             if is_lc:
                 parent.left = new_node
@@ -220,12 +259,11 @@ class AVLTree(object):
         :param node: Node
         :return: int
         """
-        if node is None:
+        # Base case
+        if not node:
             return 0
-
-        left_height, right_height = self._get_height(node.left), \
-                                    self._get_height(node.right)
-        return left_height - right_height
+        # Recursive case
+        return self._get_height(node.left) - self._get_height(node.right)
         # Running time complexity: O(n)
 
     def _get_height(self, node: Node) -> int:
@@ -235,47 +273,14 @@ class AVLTree(object):
         :return: int
         """
         # Base case
-        if node is None:
+        if not node:
             return 0
         # Recursive case
-        left_height, right_height = self._get_height(node.left), \
-                                    self._get_height(node.right)
-        return 1 + max(left_height, right_height)
+        return 1 + max(self._get_height(node.left),
+                       self._get_height(node.right))
         # T(n) = 2T(n/2) + O(1)
         # a = 2, b = 2, d = 0
         # According to Master Method, the running time complexity is O(n).
-
-    def _right_rotate(self, unbalanced: Node) -> Node:
-        """
-        Helper method to do a right rotation towards the given unbalanced node.
-        :param unbalanced: Node
-        :return: Node
-        """
-        # Temporarily store the left child
-        tmp = unbalanced.left
-
-        # Reconnect the references to realize right rotation
-        unbalanced.left = unbalanced.left.right
-        tmp.right = unbalanced
-
-        return tmp
-        # Running time complexity: O(1)
-
-    def _left_rotate(self, unbalanced: Node) -> Node:
-        """
-        Helper method to do a left rotation towards the given unbalanced node.
-        :param unbalanced: Node
-        :return: Node
-        """
-        # Temporarily store the right child
-        tmp = unbalanced.right
-
-        # Reconnect the references to realize left rotation
-        unbalanced.right = unbalanced.right.left
-        tmp.left = unbalanced
-
-        return tmp
-        # Running time complexity: O(1)
 
     def delete(self, key: int) -> None:
         """
@@ -283,10 +288,10 @@ class AVLTree(object):
         :param key: int
         :return: None
         """
-        if self._root is None:
+        if not self._root:
             return
 
-        self._root = self._delete_helper(key, curr=self._root)
+        self._root = self._delete_helper(key, self._root)
 
     def _delete_helper(self, key: int, curr: Node) -> Node:
         """
@@ -297,37 +302,37 @@ class AVLTree(object):
         :return: Node
         """
         # Case 1: Not found
-        if curr is None:
+        if not curr:
             return None
 
         if curr.key == key:  # Found it
-            if curr.left is None and curr.right is None:
+            if not curr.left and not curr.right:
                 # Case 2: The node to delete is a leaf.
                 return None
-            elif curr.right is None:
+            elif not curr.right:
                 # Case 3: The node to delete only have left child.
                 return curr.left
-            elif curr.left is None:
+            elif not curr.left:
                 # Case 3: The node to delete only have right child.
                 return curr.right
             else:
                 # Case 4: The node to delete has both left and right children.
-                successor = self._get_successor(node_to_delete=curr)
+                successor = self._get_successor(curr)
                 successor.left = curr.left
 
                 # A reconnection in the right subtree may break the balance of
                 # the current (successor) node.
-                return self._rebalance(curr=successor)
+                return self._rebalance(successor)
 
         # Recursive case
         if curr.key > key:
-            curr.left = self._delete_helper(key, curr=curr.left)
+            curr.left = self._delete_helper(key, curr.left)
         else:
-            curr.right = self._delete_helper(key, curr=curr.right)
+            curr.right = self._delete_helper(key, curr.right)
 
         # A deletion in the left or right subtree may break the balance of the
         # current node.
-        return self._rebalance(curr=curr)
+        return self._rebalance(curr)
         # T(n) = T(n/2) + O(n)
         # a = 1, b = 2, d = 1
         # According to Master Method, the overall running time complexity is
@@ -344,8 +349,7 @@ class AVLTree(object):
         :param node_to_delete: Node
         :return: Node
         """
-        return self._get_successor_helper(node_to_delete=node_to_delete,
-                                          parent=node_to_delete,
+        return self._get_successor_helper(node_to_delete, parent=node_to_delete,
                                           curr=node_to_delete.right)
         # Running time complexity: O(n)
 
@@ -360,31 +364,31 @@ class AVLTree(object):
         :return: Node
         """
         # Base case
-        if curr.left is None:
+        if not curr.left:
             if curr is not node_to_delete.right:
                 parent.left = curr.right
                 curr.right = node_to_delete.right
             return curr
         # Recursive case
-        successor = self._get_successor_helper(node_to_delete=node_to_delete,
-                                               parent=curr, curr=curr.left)
+        successor = self._get_successor_helper(node_to_delete, parent=curr,
+                                               curr=curr.left)
         # A reconnection in the right subtree may break the balance of
         # the current node.
         if curr is node_to_delete.right:
-            parent.right = self._rebalance(curr=curr)
+            parent.right = self._rebalance(curr)
         else:
-            parent.left = self._rebalance(curr=curr)
+            parent.left = self._rebalance(curr)
         return successor
         # T(n) = T(n/2) + O(n)
         # a = 1, b = 2, d = 1
         # According to Master Method, the running time complexity is O(n).
 
-    def traverse_in_order(self) -> str:
+    def traverse_in_order(self) -> None:
         """
         Traverses the BST in-order.
         :return: str
         """
-        s = self._traverse_in_order_helper(curr=self._root)
+        s = self._traverse_in_order_helper(self._root)
         print(s.strip())
 
     def _traverse_in_order_helper(self, curr: Node) -> str:
@@ -395,10 +399,10 @@ class AVLTree(object):
         :return: str
         """
         # Base case
-        if curr is None:
+        if not curr:
             return ''
         # Recursive case
-        s = self._traverse_in_order_helper(curr=curr.left)
+        s = self._traverse_in_order_helper(curr.left)
         s += str(curr) + ' '
-        s += self._traverse_in_order_helper(curr=curr.right)
+        s += self._traverse_in_order_helper(curr.right)
         return s

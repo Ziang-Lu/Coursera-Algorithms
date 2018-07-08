@@ -45,6 +45,40 @@ public class AVLTree implements BSTInterface {
     }
 
     /**
+     * Makes a right rotation towards the given unbalanced node.
+     * @param unbalanced given unbalanced node
+     * @return root of the subtree after right rotation
+     */
+    private static Node rightRotate(Node unbalanced) {
+        // Temporarily store the left child
+        Node tmp = unbalanced.left;
+
+        // Reconnect the references to realize right rotation
+        unbalanced.left = unbalanced.left.right;
+        tmp.right = unbalanced;
+
+        return tmp;
+        // Running time complexity: O(1)
+    }
+
+    /**
+     * Makes a left rotation towards the given unbalanced node.
+     * @param unbalanced given unbalanced node
+     * @return root of the subtree after left rotation
+     */
+    private static Node leftRotate(Node unbalanced) {
+        // Temporarily store the right child
+        Node tmp = unbalanced.right;
+
+        // Reconnect the references to realize left rotation
+        unbalanced.right = unbalanced.right.left;
+        tmp.left = unbalanced;
+
+        return tmp;
+        // Running time complexity: O(1)
+    }
+
+    /**
      * Root of this AVL Tree.
      */
     private Node root;
@@ -181,12 +215,12 @@ public class AVLTree implements BSTInterface {
      * @return balance of the node
      */
     private int getBalance(Node node) {
+        // Base case
         if (node == null) {
             return 0;
         }
-
-        int leftHeight = getHeight(node.left), rightHeight = getHeight(node.right);
-        return leftHeight - rightHeight;
+        // Recursive case
+        return getHeight(node.left) - getHeight(node.right);
         // Running time complexity: O(n)
     }
 
@@ -201,45 +235,10 @@ public class AVLTree implements BSTInterface {
             return 0;
         }
         // Recursive case
-        int leftHeight = getHeight(node.left), rightHeight = getHeight(node.right);
-        return 1 + Math.max(leftHeight, rightHeight);
+        return 1 + Math.max(getHeight(node.left), getHeight(node.right));
         // T(n) = 2T(n/2) + O(1)
         // a = 2, b = 2, d = 0
         // According to Master Method, the running time complexity is O(n).
-    }
-
-    /**
-     * Helper method to do a right rotation towards the given unbalanced node.
-     * @param unbalanced given unbalanced node
-     * @return root of the subtree after right rotation
-     */
-    private Node rightRotate(Node unbalanced) {
-        // Temporarily store the left child
-        Node tmp = unbalanced.left;
-
-        // Reconnect the references to realize right rotation
-        unbalanced.left = unbalanced.left.right;
-        tmp.right = unbalanced;
-
-        return tmp;
-        // Running time complexity: O(1)
-    }
-
-    /**
-     * Helper method to do a left rotation towards the given unbalanced node.
-     * @param unbalanced given unbalanced node
-     * @return root of the subtree after left rotation
-     */
-    private Node leftRotate(Node unbalanced) {
-        // Temporarily store the right child
-        Node tmp = unbalanced.right;
-
-        // Reconnect the references to realize left rotation
-        unbalanced.right = unbalanced.right.left;
-        tmp.left = unbalanced;
-
-        return tmp;
-        // Running time complexity: O(1)
     }
 
     @Override
