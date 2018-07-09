@@ -36,7 +36,7 @@ public class LongestCommonSubstringFinder {
     public String findLongestCommonSubstring(String x, String y) {
         // Check whether the input strings are null or empty
         if ((x == null) || (x.length() == 0) || (y == null) || (y.length() == 0)) {
-            throw new IllegalArgumentException("The input strings should not be null or empty.");
+            return "";
         }
 
         int m = x.length(), n = y.length();

@@ -19,14 +19,9 @@ __author__ = 'Ziang Lu'
 from typing import Dict, List
 
 
-class IllegalArgumentException(ValueError):
-    pass
-
-
-def sequence_alignment_with_consecutive_gaps_pen(x: str, y: str, a: int, b: int,
-                                                 pen_map: Dict[
-                                                     str, Dict[str, int]]) -> \
-        List[str]:
+def sequence_alignment_with_consecutive_gaps_pen(
+    x: str, y: str, a: int, b: int, pen_map: Dict[str, Dict[str, int]]
+) -> List[str]:
     """
     Solves the sequence alignment (with consecutive gaps penalty) of the given
     two strings with the given penalties in a bottom-up way.
@@ -38,23 +33,20 @@ def sequence_alignment_with_consecutive_gaps_pen(x: str, y: str, a: int, b: int,
     :return: list[str]
     """
     # Check whether the input strings are None or empty
-    if x is None or len(x) == 0 or y is None or len(y) == 0:
-        raise IllegalArgumentException('The input sequences should not be None '
-                                       'or empty.')
+    if not x or not y:
+        return []
     # Check whether the input a and b are non-negative
     if a < 0 or b < 0:
-        raise IllegalArgumentException('The input a and b should be '
-                                       'non-negative.')
+        return []
     # Check whether the input map is None
-    if pen_map is None:
-        raise IllegalArgumentException('The input penalty map should not be '
-                                       'None.')
+    if not pen_map:
+        return []
 
     m, n = len(x), len(y)
     # Initialization
-    subproblems = [[0] * (n + 1) for i in range(m + 1)]
-    sx_ends_with_gap = [[False] * (n + 1) for i in range(m + 1)]
-    sy_ends_with_gap = [[False] * (n + 1) for i in range(m + 1)]
+    subproblems = [[0] * (n + 1) for _ in range(m + 1)]
+    sx_ends_with_gap = [[False] * (n + 1) for _ in range(m + 1)]
+    sy_ends_with_gap = [[False] * (n + 1) for _ in range(m + 1)]
     for i in range(1, m + 1):
         subproblems[i][0] = a * i + b
         sy_ends_with_gap[i][0] = True
@@ -80,19 +72,17 @@ def sequence_alignment_with_consecutive_gaps_pen(x: str, y: str, a: int, b: int,
                 sy_ends_with_gap[i][j] = True
             else:
                 sx_ends_with_gap[i][j] = True
-    return _reconstruct_optimal_alignment(x, y, a, b, pen_map,
-                                          subproblems=subproblems,
+    return _reconstruct_optimal_alignment(x, y, a, b, pen_map, subproblems,
                                           sx_ends_with_gap=sx_ends_with_gap,
                                           sy_ends_with_gap=sy_ends_with_gap)
     # Overall running time complexity: O(mn)
 
 
-def _reconstruct_optimal_alignment(x: str, y: str, a: int, b: int,
-                                   pen_gap: Dict[str, Dict[str, int]],
-                                   subproblems: List[List[int]],
-                                   sx_ends_with_gap: List[List[bool]],
-                                   sy_ends_with_gap: List[List[bool]]) -> List[
-    str]:
+def _reconstruct_optimal_alignment(
+    x: str, y: str, a: int, b: int, pen_gap: Dict[str, Dict[str, int]],
+    dp: List[List[int]], sx_ends_with_gap: List[List[bool]],
+    sy_ends_with_gap: List[List[bool]]
+) -> List[str]:
     """
     Private helper function to reconstruct the optimal alignment according to
     the optimal solution using backtracking.
@@ -101,7 +91,7 @@ def _reconstruct_optimal_alignment(x: str, y: str, a: int, b: int,
     :param a: int
     :param b: int
     :param pen_gap: dict{str: dict{str: int}}
-    :param subproblems: list[list[int]]
+    :param dp: list[list[int]]
     :param sx_ends_with_gap: list[list[bool]]
     :param sy_ends_with_gap: list[list[bool]]
     :return: list[str]
@@ -110,11 +100,11 @@ def _reconstruct_optimal_alignment(x: str, y: str, a: int, b: int,
     i, j = len(x), len(y)
     while i >= 1 and j >= 1:
         x_curr, y_curr = x[i - 1], y[j - 1]
-        result1 = subproblems[i - 1][j - 1] + pen_gap[x_curr][y_curr]
-        result2 = subproblems[i - 1][j] + a
+        result1 = dp[i - 1][j - 1] + pen_gap[x_curr][y_curr]
+        result2 = dp[i - 1][j] + a
         if not sx_ends_with_gap[i - 1][j]:
             result2 += b
-        result3 = subproblems[i][j - 1] + a
+        result3 = dp[i][j - 1] + a
         if not sy_ends_with_gap[i][j - 1]:
             result3 += b
         result = min(result1, result2, result3)

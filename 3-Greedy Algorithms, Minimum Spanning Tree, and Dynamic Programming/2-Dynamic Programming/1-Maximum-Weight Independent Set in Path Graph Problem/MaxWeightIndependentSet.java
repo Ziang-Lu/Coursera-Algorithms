@@ -45,7 +45,7 @@ public class MaxWeightIndependentSet {
     public Set<Integer> findMWIS(int[] weights) {
         // Check whether the input array is null or empty
         if ((weights == null) || (weights.length == 0)) {
-            throw new IllegalArgumentException("The input weights should not be null or empty.");
+            return new HashSet<>();
         }
 
         if (weights.length == 1) {

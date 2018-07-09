@@ -40,34 +40,30 @@ __author__ = 'Ziang Lu'
 from typing import List, Set
 
 
-class IllegalArgumentError(ValueError):
-    pass
-
-
-def two_knapsack(vals: List[int], weights: List[int], cap1: int, cap2: int) -> \
-        List[Set[int]]:
+def two_knapsack(vals: List[float], weights: List[int], cap1: int,
+                 cap2: int) -> List[Set[int]]:
     """
     Solves the two-knapsack problem of the items with the given values and
     weights, and the given capacities, in an improved bottom-up way.
-    :param vals: list[int]
+    :param vals: list[float]
     :param weights: list[int]
     :param cap1: int
     :param cap2: int
     :return: list[set{int}]
     """
     # Check whether the input arrays are None or empty
-    if vals is None or len(vals) == 0 or weights is None or len(weights) == 0:
-        raise IllegalArgumentError('The input values and weights should not be '
-                                   'None or empty.')
+    if not vals:
+        return []
     # Check whether the input capacities are non-negative
     if cap1 < 0 or cap2 < 0:
-        raise IllegalArgumentError('The input capacities should be '
-                                   'non-negative.')
+        return []
 
     n = len(vals)
     # Initialization
-    subproblems = [[[0] * (cap2 + 1) for x1 in range(cap1 + 1)]
-                   for i in range(n)]
+    subproblems = [
+        [[0.0] * (cap2 + 1) for _ in range(cap1 + 1)]
+        for _ in range(n)
+    ]
     for x1 in range(cap1 + 1):
         for x2 in range(cap2 + 1):
             if weights[0] <= x1 or weights[0] <= x2:
@@ -95,13 +91,13 @@ def two_knapsack(vals: List[int], weights: List[int], cap1: int, cap2: int) -> \
                         subproblems[item - 1][x1][x2 - weights[item]]
                     subproblems[item][x1][x2] = max(result_without_curr,
                                                     result_with_curr_in_2)
-    return _reconstruct(vals, weights, cap1, cap2, subproblems=subproblems)
+    return _reconstruct(vals, weights, cap1, cap2, subproblems)
     # Overall running time complexity: O(n*W1*W2), where W1 and W2 are the
     # knapsack capacities
 
 
-def _reconstruct(vals: List[int], weights: List[int], cap1: int, cap2: int,
-                 subproblems: List[List[List[int]]]) -> List[Set[int]]:
+def _reconstruct(vals: List[float], weights: List[int], cap1: int, cap2: int,
+                 dp: List[List[List[float]]]) -> List[Set[int]]:
     """
     Private helper function to reconstruct the included items in knapsack-1 and
     knapsack-2 according to the optimal solution using backtracking.
@@ -109,34 +105,30 @@ def _reconstruct(vals: List[int], weights: List[int], cap1: int, cap2: int,
     :param weights: list[int]
     :param cap1: int
     :param cap2: int
-    :param subproblems: list[list[list[int]]]
+    :param dp: list[list[list[float]]]
     :return: list[set{int}]
     """
-    included_items1, included_items2 = set(), set()
-    curr_item, curr_cap1, curr_cap2 = len(vals) - 1, cap1, cap2
-    while curr_item >= 1:
-        result_without_curr = subproblems[curr_item - 1][curr_cap1][curr_cap2]
-        if weights[curr_item] > curr_cap1:
+    included1, included2 = set(), set()
+    item, curr_cap1, curr_cap2 = len(vals) - 1, cap1, cap2
+    while item >= 1:
+        result_without_curr = dp[item - 1][curr_cap1][curr_cap2]
+        if weights[item] > curr_cap1:
             result_with_curr_in_2 = \
-                subproblems[curr_item - 1][curr_cap1][
-                    curr_cap2 - weights[curr_item]] + vals[curr_item]
+                dp[item - 1][curr_cap1][curr_cap2 - weights[item]] + vals[item]
             if result_without_curr < result_with_curr_in_2:
                 # Case 3: The current item is included in S2.
-                included_items2.add(curr_item)
-        elif weights[curr_item] > curr_cap2:
+                included2.add(item)
+        elif weights[item] > curr_cap2:
             result_with_curr_in_1 = \
-                subproblems[curr_item - 1][curr_cap1 - weights[curr_item]][
-                    curr_cap2] + vals[curr_item]
+                dp[item - 1][curr_cap1 - weights[item]][curr_cap2] + vals[item]
             if result_without_curr < result_with_curr_in_1:
                 # Case 2: The current item is included in S1.
-                included_items1.add(curr_item)
+                included1.add(item)
         else:
             result_with_curr_in_1 = \
-                subproblems[curr_item - 1][curr_cap1 - weights[curr_item]][
-                    curr_cap2] + vals[curr_item]
+                dp[item - 1][curr_cap1 - weights[item]][curr_cap2] + vals[item]
             result_with_curr_in_2 = \
-                subproblems[curr_item - 1][curr_cap1][
-                    curr_cap2 - weights[curr_item]] + vals[curr_item]
+                dp[item - 1][curr_cap1][curr_cap2 - weights[item]] + vals[item]
             result = max(result_without_curr, result_with_curr_in_1,
                          result_with_curr_in_2)
             if result == result_without_curr:
@@ -144,16 +136,16 @@ def _reconstruct(vals: List[int], weights: List[int], cap1: int, cap2: int,
                 pass
             elif result == result_with_curr_in_1:
                 # Case 2: The current item is included in S1.
-                included_items1.add(curr_item)
-                curr_cap1 -= weights[curr_item]
+                included1.add(item)
+                curr_cap1 -= weights[item]
             else:
                 # Case 3: The current item is included in S2.
-                included_items2.add(curr_item)
-                curr_cap2 -= weights[curr_item]
-        curr_item -= 1
+                included2.add(item)
+                curr_cap2 -= weights[item]
+        item -= 1
     if weights[0] <= curr_cap1:
-        included_items1.add(0)
+        included1.add(0)
     elif weights[0] <= curr_cap2:
-        included_items2.add(0)
-    return [included_items1, included_items2]
+        included2.add(0)
+    return [included1, included2]
     # Running time complexity: O(n)

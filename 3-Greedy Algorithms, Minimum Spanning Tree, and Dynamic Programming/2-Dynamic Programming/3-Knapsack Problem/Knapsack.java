@@ -1,24 +1,15 @@
 /**
- * Given n items, each item with a non-negative value v and a non-negative
- * integral size (weight) w, and a non-negative integral capacity W, select a
- * subset of the items, that maximizes sum(v), subject to sum(w) <= W.
+ * Given n items, each item with a non-negative value v and a non-negative integral size (weight) w, and a non-negative
+ * integral capacity W, select a subset of the items, that maximizes sum(v), subject to sum(w) <= W.
  *
- * Algorithm: (Dynamic programming)
- * Denote S to be the optimal solution and item-n to be the last item.
- * Consider whether item-n is in S:
- * 1. item-n is NOT in S:
- *    => S must be optimal among only the first (n - 1) items and capacity W.
- *    => S = the optimal solution among the first (n - 1) items and capacity W
- * 2. item-n is in S:
- *    => {S - item-n} must be optimal among only the first (n - 1) items and the
- *       residual capacity (W - w_n) (i.e., the space is "reserved" for item-n).
- *    => S = the optimal solution among the first (n - 1) items and the residual
- *           capacity (W - w_n) + item-n
+ * Algorithm: (Dynamic programming) Denote S to be the optimal solution and item-n to be the last item. Consider whether
+ * item-n is in S: 1. item-n is NOT in S: => S must be optimal among only the first (n - 1) items and capacity W. => S =
+ * the optimal solution among the first (n - 1) items and capacity W 2. item-n is in S: => {S - item-n} must be optimal
+ * among only the first (n - 1) items and the residual capacity (W - w_n) (i.e., the space is "reserved" for item-n). =>
+ * S = the optimal solution among the first (n - 1) items and the residual capacity (W - w_n) + item-n
  *
- * i.e.,
- * Let S(i, x) be the optimal solution for the subproblem among the first i
- * items and capacity x, then
- * S(i, x) = max{S(i - 1, x), S(i - 1, x - w_i) + v_i}
+ * i.e., Let S(i, x) be the optimal solution for the subproblem among the first i items and capacity x, then S(i, x) =
+ * max{S(i - 1, x), S(i - 1, x - w_i) + v_i}
  */
 
 import java.util.HashSet;
@@ -44,12 +35,12 @@ public class Knapsack {
      */
     public Set<Integer> knapsack(double[] vals, int[] weights, int cap) {
         // Check whether the input arrays are null or empty
-        if ((vals == null) || (vals.length == 0) || (weights == null) || (weights.length == 0)) {
-            throw new IllegalArgumentException("The input values and weights should not be null or empty.");
+        if ((vals == null) || (vals.length == 0)) {
+            return new HashSet<>();
         }
         // Check whether the input capacity is non-negative
         if (cap < 0) {
-            throw new IllegalArgumentException("The input capacity should be non-negative.");
+            return new HashSet<>();
         }
 
         int n = vals.length;
@@ -84,22 +75,21 @@ public class Knapsack {
      * @return included items
      */
     private Set<Integer> reconstruct(double[] vals, int[] weights, int cap) {
-        Set<Integer> includedItems = new HashSet<>();
-        int currItem = vals.length - 1, currCap = cap;
-        while (currItem >= 1) {
-            if ((weights[currItem] <= currCap)
-                    && (subproblems[currItem - 1][currCap] < (subproblems[currItem - 1][currCap - weights[currItem]]
-                            + vals[currItem]))) {
+        Set<Integer> included = new HashSet<>();
+        int item = vals.length - 1, currCap = cap;
+        while (item >= 1) {
+            if ((weights[item] <= currCap) &&
+                    (subproblems[item - 1][currCap] < (subproblems[item - 1][currCap - weights[item]] + vals[item]))) {
                 // Case 2: The current item is included.
-                includedItems.add(currItem);
-                currCap -= weights[currItem];
+                included.add(item);
+                currCap -= weights[item];
             }
-            --currItem;
+            --item;
         }
         if (weights[0] <= currCap) {
-            includedItems.add(0);
+            included.add(0);
         }
-        return includedItems;
+        return included;
         // Running time complexity: O(n)
     }
 

@@ -31,10 +31,6 @@ __author__ = 'Ziang Lu'
 from typing import List
 
 
-class IllegalArgumenError(ValueError):
-    pass
-
-
 def longest_common_subsequence(x: str, y: str) -> List[str]:
     """
     Finds the longest common subsequence of the given strings in an improved
@@ -44,13 +40,12 @@ def longest_common_subsequence(x: str, y: str) -> List[str]:
     :return: list[str]
     """
     # Check whether the the input strings are None or empty
-    if x is None or len(x) == 0 or y is None or len(y) == 0:
-        raise IllegalArgumenError('The input strings should not be None or '
-                                  'empty.')
+    if not x or not y:
+        return []
 
     m, n = len(x), len(y)
     # Initialization
-    subproblems = [[0 * (n + 1)] for i in range(m + 1)]
+    subproblems = [[0 * (n + 1)] for _ in range(m + 1)]
     # Bottom-up calculation
     for i in range(1, m + 1):
         for j in range(1, n + 1):
@@ -60,21 +55,19 @@ def longest_common_subsequence(x: str, y: str) -> List[str]:
             else:
                 subproblems[i][j] = max(subproblems[i - 1][j],
                                         subproblems[i][j - 1])
-    return _reconstruct_longest_common_subsequence(x, y,
-                                                   subproblems=subproblems)
+    return _reconstruct_longest_common_subsequence(x, y, subproblems)
     # Overall running time complexity: O(mn)
 
 
 def _reconstruct_longest_common_subsequence(x: str, y: str,
-                                            subproblems: List[List[int]]) -> \
-        List[str]:
+                                            dp: List[List[int]]) -> List[str]:
     """
     Private helper function to reconstruct the longest common subsequence
     according to the optimal solution using backtracking.
     :param x: str
     :param y: str
-    :param subproblems: list[list[int]]
-    :return: list[char]
+    :param dp: list[list[int]]
+    :return: list[str]
     """
     lcs = []
     i, j = len(x), len(y)
@@ -85,7 +78,7 @@ def _reconstruct_longest_common_subsequence(x: str, y: str,
             i -= 1
             j -= 1
         else:
-            if subproblems[i][j] == subproblems[i - 1][j]:
+            if dp[i][j] == dp[i - 1][j]:
                 i -= 1
             else:
                 j -= 1

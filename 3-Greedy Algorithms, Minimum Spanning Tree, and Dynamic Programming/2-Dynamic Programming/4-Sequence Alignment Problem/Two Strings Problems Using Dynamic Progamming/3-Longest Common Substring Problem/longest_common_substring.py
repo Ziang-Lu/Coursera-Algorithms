@@ -22,10 +22,6 @@ the final characters x_i and y_j:
 __author__ = 'Ziang Lu'
 
 
-class IllegalArgumentError(ValueError):
-    pass
-
-
 def find_longest_common_substring(x: str, y: str) -> str:
     """
     Finds the longest common substring between the given two strings in a
@@ -35,9 +31,8 @@ def find_longest_common_substring(x: str, y: str) -> str:
     :return: str
     """
     # Check whether the input strings are None or empty
-    if x is None or len(x) == 0 or y is None or len(y) == 0:
-        raise IllegalArgumentError('The input strings should noe bt None or '
-                                   'empty.')
+    if not x or not y:
+        return ''
 
     m, n = len(x), len(y)
     # Initialization

@@ -103,7 +103,7 @@ public class WeightedIntervalScheduling {
     public LinkedList<Integer> findMaxWeightIntervalScheduling(Job[] jobs) {
         // Check whether the input array is null or empty
         if ((jobs == null) || (jobs.length == 0)) {
-            throw new IllegalArgumentException("The input jobs should not be null or empty.");
+            return LinkedList<>();
         }
 
         // Sort the jobs by finishing time

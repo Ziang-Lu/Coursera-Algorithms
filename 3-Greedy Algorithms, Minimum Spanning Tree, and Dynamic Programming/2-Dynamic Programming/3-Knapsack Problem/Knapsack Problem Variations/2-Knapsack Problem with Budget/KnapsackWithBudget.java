@@ -48,16 +48,16 @@ public class KnapsackWithBudget {
      */
     public Set<Integer> knapsackWithBudget(double[] vals, int[] weights, int budget, int cap) {
         // Check whether the input arrays are null or empty
-        if ((vals == null) || (vals.length == 0) || (weights == null) || (weights.length == 0)) {
-            throw new IllegalArgumentException("The input values and weights should not be null or empty.");
+        if ((vals == null) || (vals.length == 0)) {
+            return new HashSet<>();
         }
         // Check whether the input budget is non-negative
         if (budget < 0) {
-            throw new IllegalArgumentException("The input budget should be non-negative.");
+            return new HashSet<>();
         }
         // Check whether the input capacity is non-negative
         if (cap < 0) {
-            throw new IllegalArgumentException("The input capacity should be non-negative.");
+            return new HashSet<>();
         }
 
         int n = vals.length;
@@ -97,25 +97,24 @@ public class KnapsackWithBudget {
      * @return included items
      */
     private Set<Integer> reconstruct(double[] vals, int[] weights, int budget, int cap) {
-        Set<Integer> includedItems = new HashSet<>();
-        int currItem = vals.length - 1, currBudget = budget, currCap = cap;
-        while (currItem >= 1) {
-            if ((currBudget >= 1) && (weights[currItem] <= currCap) && (subproblems[currItem
-                    - 1][currBudget][currCap] < (subproblems[currItem - 1][currBudget - 1][currCap - weights[currItem]]
-                            + vals[currItem]))) {
+        Set<Integer> included = new HashSet<>();
+        int item = vals.length - 1, currBudget = budget, currCap = cap;
+        while (item >= 1) {
+            if ((currBudget >= 1) && (weights[item] <= currCap) &&
+                    (subproblems[item - 1][currBudget][currCap] <
+                            (subproblems[item - 1][currBudget - 1][currCap - weights[item]] + vals[item]))) {
                 // Case 2: The current item is included.
-                includedItems.add(currItem);
+                included.add(item);
                 --currBudget;
-                currCap -= weights[currItem];
+                currCap -= weights[item];
             }
-            --currItem;
+            --item;
         }
         if ((currBudget >= 1) && (weights[0] <= currCap)) {
-            includedItems.add(0);
+            included.add(0);
         }
-        return includedItems;
+        return included;
         // Running time complexity: O(n)
     }
-
 
 }

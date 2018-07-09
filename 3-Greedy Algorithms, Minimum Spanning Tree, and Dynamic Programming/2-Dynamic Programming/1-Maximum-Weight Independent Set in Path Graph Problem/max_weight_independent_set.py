@@ -31,10 +31,6 @@ __author__ = 'Ziang Lu'
 from typing import List, Set
 
 
-class IllegalArgumentError(ValueError):
-    pass
-
-
 def find_mwis(weights: List[int]) -> Set[int]:
     """
     Finds the maximum-weight independent set (MWIS) in a path graph with the
@@ -60,18 +56,18 @@ def find_mwis(weights: List[int]) -> Set[int]:
     # Overall running time complexity: O(n)
 
 
-def _reconstruct_mwis(weights: List[int], subproblems: List[int]) -> Set[int]:
+def _reconstruct_mwis(weights: List[int], dp: List[int]) -> Set[int]:
     """
     Private helper function to reconstruct MWIS according to the optimal
     solution using backtracking.
     :param weights: list[int]
-    :param subproblems: list[int]
+    :param dp: list[int]
     :return: set{int}
     """
     mwis = set()
-    curr = len(subproblems) - 1
+    curr = len(dp) - 1
     while curr >= 2:
-        if subproblems[curr - 1] >= subproblems[curr - 2] + weights[curr]:
+        if dp[curr - 1] >= dp[curr - 2] + weights[curr]:
             curr -= 1
         else:
             mwis.add(curr)

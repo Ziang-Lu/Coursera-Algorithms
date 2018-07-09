@@ -27,12 +27,12 @@ public class KnapsackWithExactSize {
      */
     public Set<Integer> knapsackWithExactSize(double[] vals, int[] weights, int cap) {
         // Check whether the input arrays are null or empty
-        if ((vals == null) || (vals.length == 0) || (weights == null) || (weights.length == 0)) {
-            throw new IllegalArgumentException("The input values and weights should not be null or empty.");
+        if ((vals == null) || (vals.length == 0)) {
+            return new HashSet<>();
         }
-        // Chekc whether the input capacity is non-negative
+        // Check whether the input capacity is non-negative
         if (cap < 0) {
-            throw new IllegalArgumentException("The input capacity should not be non-negative.");
+            return new HashSet<>();
         }
 
         int n = vals.length;
@@ -71,24 +71,24 @@ public class KnapsackWithExactSize {
      * @return included items
      */
     private Set<Integer> reconstruct(double[] vals, int[] weights, int cap) {
-        Set<Integer> includedItems = new HashSet<>();
-        int currItem = vals.length - 1, currCap = cap;
-        while (currItem >= 1) {
-            while (currItem >= 1) {
-                if ((weights[currItem] <= currCap) && (subproblems[currItem - 1][currCap - weights[currItem]] != 0)
-                        && (subproblems[currItem - 1][currCap] < (subproblems[currItem - 1][currCap - weights[currItem]]
-                                + vals[currItem]))) {
+        Set<Integer> included = new HashSet<>();
+        int item = vals.length - 1, currCap = cap;
+        while (item >= 1) {
+            while (item >= 1) {
+                if ((weights[item] <= currCap) && (subproblems[item - 1][currCap - weights[item]] != 0)
+                        && (subproblems[item - 1][currCap] <
+                        (subproblems[item - 1][currCap - weights[item]] + vals[item]))) {
                     // Case 2: The current item is included.
-                    includedItems.add(currItem);
-                    currCap -= weights[currItem];
+                    included.add(item);
+                    currCap -= weights[item];
                 }
-                --currItem;
+                --item;
             }
         }
         if (weights[0] == currCap) {
-            includedItems.add(0);
+            included.add(0);
         }
-        return includedItems;
+        return included;
         // Running time complexity: O(n)
     }
 

@@ -45,7 +45,7 @@ public class LongestCommonSubsequenceFinder {
     public LinkedList<Character> longestCommonSubsequence(String x, String y) {
         // Check whether the input strings are null or empty
         if ((x == null) || (x.length() == 0) || (y == null) || (y.length() == 0)) {
-            throw new IllegalArgumentException("The input strings should not be null or empty.");
+            return new LinkedList<>();
         }
 
         int m = x.length(), n = y.length();

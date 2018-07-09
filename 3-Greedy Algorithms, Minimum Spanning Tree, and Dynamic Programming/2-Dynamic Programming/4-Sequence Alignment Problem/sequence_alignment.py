@@ -41,10 +41,6 @@ __author__ = 'Ziang Lu'
 from typing import Dict, List
 
 
-class IllegalArgumentError(ValueError):
-    pass
-
-
 def sequence_alignment(x: str, y: str, gap_pen: int,
                        pen_map: Dict[str, Dict[str, int]]) -> List[str]:
     """
@@ -57,20 +53,18 @@ def sequence_alignment(x: str, y: str, gap_pen: int,
     :return: list[str]
     """
     # Check whether the input strings are None or empty
-    if x is None or len(x) == 0 or y is None or len(y) == 0:
-        raise IllegalArgumentError('The input sequences should not be None or '
-                                   'empty.')
+    if not x or not y:
+        return []
     # Check whether the input gap penalty is non-negative
     if gap_pen < 0:
-        raise IllegalArgumentError('The input gap penalty should be '
-                                   'non-negative.')
+        return []
     # Check whether the input penalty map is None
-    if pen_map is None:
-        raise IllegalArgumentError('The input penalty map should not be None.')
+    if not pen_map:
+        return []
 
     m, n = len(x), len(y)
     # Initialization
-    subproblems = [[0] * (n + 1) for i in range(m + 1)]
+    subproblems = [[0] * (n + 1) for _ in range(m + 1)]
     for i in range(m + 1):
         subproblems[i][0] = i * gap_pen
     for j in range(n + 1):
@@ -83,14 +77,14 @@ def sequence_alignment(x: str, y: str, gap_pen: int,
             result2 = subproblems[i - 1][j] + gap_pen
             result3 = subproblems[i][j - 1] + gap_pen
             subproblems[i][j] = min(result1, result2, result3)
-    return _reconstruct_optimal_alignment(x, y, gap_pen, pen_map,
-                                          subproblems=subproblems)
+    return _reconstruct_optimal_alignment(x, y, gap_pen, pen_map, subproblems)
     # Overall running time complexity: O(mn)
 
 
-def _reconstruct_optimal_alignment(x: str, y: str, gap_pen: int,
-                                   pen_map: Dict[str, Dict[str, int]],
-                                   subproblems: List[List[int]]) -> List[str]:
+def _reconstruct_optimal_alignment(
+    x: str, y: str, gap_pen: int, pen_map: Dict[str, Dict[str, int]],
+    dp: List[List[int]]
+) -> List[str]:
     """
     Private helper function to reconstruct the optimal alignment according to
     the optimal solution using backtracking.
@@ -98,16 +92,16 @@ def _reconstruct_optimal_alignment(x: str, y: str, gap_pen: int,
     :param y: str
     :param gap_pen: int
     :param pen_map: dict{str: dict{str: int}}
-    :param subproblems: list[list[int]]
+    :param dp: list[list[int]]
     :return: list[str]
     """
     sx, sy = '', ''
     i, j = len(x), len(y)
     while i >= 1 and j >= 1:
         x_curr, y_curr = x[i - 1], y[j - 1]
-        result1 = subproblems[i - 1][j - 1] + pen_map[x_curr][y_curr]
-        result2 = subproblems[i - 1][j] + gap_pen
-        result = subproblems[i][j]
+        result1 = dp[i - 1][j - 1] + pen_map[x_curr][y_curr]
+        result2 = dp[i - 1][j] + gap_pen
+        result = dp[i][j]
         if result == result1:
             # Case 1: The final positions are x_i and y_j.
             sx = x_curr + sx

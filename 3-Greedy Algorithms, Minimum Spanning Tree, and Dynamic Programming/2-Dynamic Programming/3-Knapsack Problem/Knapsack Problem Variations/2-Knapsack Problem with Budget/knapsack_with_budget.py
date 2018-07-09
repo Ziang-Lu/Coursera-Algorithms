@@ -29,36 +29,33 @@ __author__ = 'Ziang Lu'
 from typing import List, Set
 
 
-class IllegalArgumentError(ValueError):
-    pass
-
-
-def knapsack_with_budget(vals: List[int], weights: List[int], budget: int,
+def knapsack_with_budget(vals: List[float], weights: List[int], budget: int,
                          cap: int) -> Set[int]:
     """
     Solves the knapsack problem (with budget) of the items with the given values
     and weights, with the given budget and capacity, in an bottom-up way.
-    :param vals: list[int]
+    :param vals: list[float]
     :param weights: list[int]
     :param budget: int
     :param cap: int
     :return: set{int}
     """
     # Check whether the input arrays are None or empty
-    if vals is None or len(vals) == 0 or weights is None or len(weights) == 0:
-        raise IllegalArgumentError('The input values and weights should not be '
-                                   'None or empty.')
+    if not vals:
+        return set()
     # Check whether the input budget is non-negative
     if budget < 0:
-        raise IllegalArgumentError('The input budget should be non-negative.')
+        return set()
     # Check whether the input capacity is non-negative
     if cap < 0:
-        raise IllegalArgumentError('The input capacity should be non-negative.')
+        raise set()
 
     n = len(vals)
     # Initialization
-    subproblems = [[[0] * (cap + 1) for b in range(budget + 1)]
-                   for i in range(n)]
+    subproblems = [
+        [[0.0] * (cap + 1) for _ in range(budget + 1)]
+        for _ in range(n)
+    ]
     for b in range(budget + 1):
         for x in range(cap + 1):
             if b >= 1 and weights[0] <= x:
@@ -76,36 +73,36 @@ def knapsack_with_budget(vals: List[int], weights: List[int], budget: int,
                         vals[item]
                     subproblems[item][b][x] = max(result_without_curr,
                                                   result_with_curr)
-    return _reconstruct(vals, weights, budget, cap, subproblems=subproblems)
+    return _reconstruct(vals, weights, budget, cap, subproblems)
     # Overall running time complexity: O(n*k*W), where k is the budget and W is
     # the knapsack capacity
 
 
-def _reconstruct(vals: List[int], weights: List[int], budget: int, cap: int,
-                 subproblems: List[List[List[int]]]) -> Set[int]:
+def _reconstruct(vals: List[float], weights: List[int], budget: int, cap: int,
+                 dp: List[List[List[float]]]) -> Set[int]:
     """
     Private helper function to reconstruct the included items according to the
     optimal solution using backtracking.
-    :param vals: list[int]
+    :param vals: list[float]
     :param weights: list[int]
     :param budget: int
     :param cap: int
-    :param subproblems: list[list[list[int]]]
+    :param dp: list[list[list[float]]]
     :return: set{int}
     """
-    included_item = set()
-    curr_item, curr_budget, curr_cap = len(vals) - 1, budget, cap
-    while curr_item >= 1:
-        result_without_curr = subproblems[curr_item - 1][curr_budget][curr_cap]
-        if curr_budget >= 1 and weights[curr_item] <= curr_cap \
-                and result_without_curr \
-                < (subproblems[curr_item - 1][curr_budget - 1][
-                       curr_cap - weights[curr_item]] + vals[curr_item]):
-            included_item.add(curr_item)
+    included = set()
+    item, curr_budget, curr_cap = len(vals) - 1, budget, cap
+    while item >= 1:
+        result_without_curr = dp[item - 1][curr_budget][curr_cap]
+        if curr_budget >= 1 and weights[item] <= curr_cap and \
+                result_without_curr < \
+                dp[item - 1][curr_budget - 1][curr_cap - weights[item]] + \
+                vals[item]:
+            included.add(item)
             curr_budget -= 1
-            curr_cap -= weights[curr_item]
-        curr_item -= 1
+            curr_cap -= weights[item]
+        item -= 1
     if curr_budget >= 1 and weights[0] <= curr_cap:
-        included_item.add(0)
-    return included_item
+        included.add(0)
+    return included
     # Running time complexity: O(n)

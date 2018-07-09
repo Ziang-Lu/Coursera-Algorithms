@@ -59,15 +59,15 @@ public class SequenceAlignment {
     public String[] sequenceAlignment(String x, String y, int gapPen, Map<Character, Map<Character, Integer>> penMap) {
         // Check whether the input strings are null or empty
         if ((x == null) || (x.length() == 0) || (y == null) || (y.length() == 0)) {
-            throw new IllegalArgumentException("The input sequences should not be null or empty.");
+            return new String[0];
         }
         // Check whether the input gap penalty is non-negative
         if (gapPen < 0) {
-            throw new IllegalArgumentException("The input gap penalty should be non-negative.");
+            return new String[0];
         }
         // Check whether the input map is null
         if (penMap == null) {
-            throw new IllegalArgumentException("The input penalty map should not be null.");
+            return new String[0];
         }
 
         int m = x.length(), n = y.length();

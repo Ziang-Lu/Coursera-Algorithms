@@ -58,12 +58,12 @@ public class TwoKnapsack {
      */
     public List<Set<Integer>> twoKnapsack(double[] vals, int[] weights, int cap1, int cap2) {
         // Check whether the input arrays are null or empty
-        if ((vals == null) || (vals.length == 0) || (weights == null) || (weights.length == 0)) {
-            throw new IllegalArgumentException("The input values and weights should not be null or empty.");
+        if ((vals == null) || (vals.length == 0)) {
+            return new ArrayList<>();
         }
         // Check whether the input capacities are non-negative
         if ((cap1 < 0) || (cap2 < 0)) {
-            throw new IllegalArgumentException("The input capacities should be non-negative.");
+            return new ArrayList<>();
         }
 
         int n = vals.length;
@@ -110,52 +110,48 @@ public class TwoKnapsack {
      * @return included items in knapsack-1 and knapsack-2
      */
     private List<Set<Integer>> reconstruct(double[] vals, int[] weights, int cap1, int cap2) {
-        Set<Integer> includedItems1 = new HashSet<>(), includedItems2 = new HashSet<>();
-        int currItem = vals.length - 1, currCap1 = cap1, currCap2 = cap2;
-        while (currItem >= 1) {
-            double resultWithoutCurr = subproblems[currItem - 1][currCap1][currCap2];
-            if (weights[currItem] > currCap1) {
-                double resultWithCurrIn2 = subproblems[currItem - 1][currCap1][currCap2 - weights[currItem]]
-                        + vals[currItem];
+        Set<Integer> included1 = new HashSet<>(), included2 = new HashSet<>();
+        int item = vals.length - 1, currCap1 = cap1, currCap2 = cap2;
+        while (item >= 1) {
+            double resultWithoutCurr = subproblems[item - 1][currCap1][currCap2];
+            if (weights[item] > currCap1) {
+                double resultWithCurrIn2 = subproblems[item - 1][currCap1][currCap2 - weights[item]] + vals[item];
                 if (resultWithoutCurr < resultWithCurrIn2) {
                     // Case 3: The current item is included in S2.
-                    includedItems2.add(currItem);
+                    included2.add(item);
                 }
-            } else if (weights[currItem] > currCap2) {
-                double resultWithCurrIn1 = subproblems[currItem - 1][currCap1 - weights[currItem]][currCap2]
-                        + vals[currItem];
+            } else if (weights[item] > currCap2) {
+                double resultWithCurrIn1 = subproblems[item - 1][currCap1 - weights[item]][currCap2] + vals[item];
                 if (resultWithoutCurr < resultWithCurrIn1) {
                     // Case 2: The current item is included in S1.
-                    includedItems1.add(currItem);
+                    included1.add(item);
                 }
             } else {
-                double resultWithCurrIn1 = subproblems[currItem - 1][currCap1 - weights[currItem]][currCap2]
-                        + vals[currItem];
-                double resultWithCurrIn2 = subproblems[currItem - 1][currCap1][currCap2 - weights[currItem]]
-                        + vals[currItem];
+                double resultWithCurrIn1 = subproblems[item - 1][currCap1 - weights[item]][currCap2] + vals[item];
+                double resultWithCurrIn2 = subproblems[item - 1][currCap1][currCap2 - weights[item]] + vals[item];
                 double result = Math.max(Math.max(resultWithoutCurr, resultWithCurrIn1), resultWithCurrIn2);
                 if (result == resultWithoutCurr) {
                     // Case 1: The current item is not included.
                 } else if (result == resultWithCurrIn1) {
                     // Case 2: The current item is included in S1.
-                    includedItems1.add(currItem);
-                    currCap1 -= weights[currItem];
+                    included1.add(item);
+                    currCap1 -= weights[item];
                 } else if (result == resultWithCurrIn2) {
                     // Case 3: The current item is included in S2.
-                    includedItems2.add(currItem);
-                    currCap2 -= weights[currItem];
+                    included2.add(item);
+                    currCap2 -= weights[item];
                 }
             }
-            --currItem;
+            --item;
         }
         if (weights[0] <= currCap1) {
-            includedItems1.add(0);
+            included1.add(0);
         } else if (weights[0] <= currCap2) {
-            includedItems2.add(0);
+            included2.add(0);
         }
         List<Set<Integer>> knapsacks = new ArrayList<>();
-        knapsacks.add(includedItems1);
-        knapsacks.add(includedItems2);
+        knapsacks.add(included1);
+        knapsacks.add(included2);
         return knapsacks;
         // Running time complexity: O(n)
     }

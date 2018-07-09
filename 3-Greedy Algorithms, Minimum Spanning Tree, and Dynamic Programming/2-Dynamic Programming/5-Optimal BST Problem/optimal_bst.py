@@ -36,10 +36,6 @@ import sys
 from typing import List
 
 
-class IllegalArgumentError(ValueError):
-    pass
-
-
 def find_optimal_bst(weights: List[int]) -> int:
     """
     Finds the optimal BST for items with the given weight distribution, and
@@ -48,13 +44,12 @@ def find_optimal_bst(weights: List[int]) -> int:
     :return: int
     """
     # Check whether the input array is None or empty
-    if weights is None or len(weights) == 0:
-        raise IllegalArgumentError('The input weight distribution is should be '
-                                   'None or empty.')
+    if not weights:
+        return 0
 
     n = len(weights)
     # Initialization
-    subproblems = [[0] * n for i in range(n)]
+    subproblems = [[0] * n for _ in range(n)]
     for i in range(n):
         subproblems[i][i] = weights[i]
     # Bottom-up calculation

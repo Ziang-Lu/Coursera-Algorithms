@@ -33,20 +33,19 @@ public class OptimalBSTFinderOptimized {
     public int findOptimalBST(int[] weights) {
         // Check whether the input array is null or empty
         if ((weights == null) || (weights.length == 0)) {
-            throw new IllegalArgumentException("The input weight distribution should not be null or empty.");
+            return 0;
         }
 
         int n = weights.length;
         // Initialization
         roots = new int[n][n];
         subproblems = new int[n][n];
-        int nItem = 1;
         for (int i = 0; i < n; ++i) {
             roots[i][i] = i;
             subproblems[i][i] = weights[i];
         }
         // Bottom-up calculation
-        for (nItem = 2; nItem <= n; ++nItem) {
+        for (int nItem = 2; nItem <= n; ++nItem) {
             for (int start = 0; start < (n - nItem + 1); ++start) {
                 int end = Math.min(start + nItem - 1, n - 1);
                 int rootWithMinWST = -1, minWST = Integer.MAX_VALUE;

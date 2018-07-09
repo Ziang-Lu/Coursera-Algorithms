@@ -36,10 +36,6 @@ __author__ = 'Ziang Lu'
 from typing import List
 
 
-class IllegalArgumentError(ValueError):
-    pass
-
-
 class Job(object):
     __slots__ = ['_weight', '_start', '_end']
 
@@ -140,24 +136,23 @@ def _jobs_overlap(job1: Job, job2: Job) -> bool:
     # Running time complexity: O(1)
 
 
-def _reconstruct_max_weight_interval_scheduling(
-    jobs: List[Job], subproblems: List[float]
-) -> List[int]:
+def _reconstruct_max_weight_interval_scheduling(jobs: List[Job],
+                                                dp: List[float]) -> List[int]:
     """
     Private helper function to reconstruct the maximum-weight interval
     scheduling according to the optimal solution using backtracking.
     :param jobs: list[Job]
-    :param subproblems: list[float]
+    :param dp: list[float]
     :return: list[int]
     """
     scheduled_jobs = []
     curr = len(jobs) - 1
     while curr >= 1:
-        result_without_curr = subproblems[curr - 1]
+        result_without_curr = dp[curr - 1]
         result_with_curr = jobs[curr].weight
         last_no_overlap = -_find_last_no_overlap(jobs, i=curr)
         if last_no_overlap != -1:
-            result_with_curr += subproblems[last_no_overlap]
+            result_with_curr += dp[last_no_overlap]
         if result_without_curr >= result_with_curr:
             # Case 1: The current job is not scheduled.
             curr -= 1
