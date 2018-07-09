@@ -90,8 +90,7 @@ public class DirectedGraph implements GraphInterface {
         edgesToRemove.addAll(vtxToRemove.emissiveEdges());
         edgesToRemove.addAll(vtxToRemove.incidentEdges());
         while (edgesToRemove.size() > 0) {
-            DirectedEdge edgeToRemove = edgesToRemove.get(0);
-            removeEdge(edgeToRemove);
+            removeEdge(edgesToRemove.get(0));
         }
         // Remove the vertex
         vtxList.remove(vtxToRemove);
@@ -202,9 +201,7 @@ public class DirectedGraph implements GraphInterface {
                     Vertex w = incidentEdge.tail();
                     // By plucking off the final hop (w, v), we form P'(s, w, i - 1).
                     int pathLength = bellmanFordSubproblems[w.id()][budget - 1] + incidentEdge.length();
-                    if (pathLength < minPathLength) {
-                        minPathLength = pathLength;
-                    }
+                    minPathLength = Math.min(minPathLength, pathLength);
                 }
                 // P(s, v, i) is the minimum among the above (1 + in-degree(v)) candidates.
                 bellmanFordSubproblems[vtx.id()][budget] = minPathLength;
@@ -286,10 +283,10 @@ public class DirectedGraph implements GraphInterface {
         int n = vtxList.size();
         // Initialization
         // Space optimization: We only keep track of the subproblem solutions in the previous outer iteration.
-        int[] prevIterSubproblems = new int[n], currIterSubproblems = new int[n];
+        int[] prevIterDp = new int[n], currIterDp = new int[n];
         for (Vertex vtx : vtxList) {
             if (vtx != srcVtx) {
-                prevIterSubproblems[vtx.id()] = INFINITY;
+                prevIterDp[vtx.id()] = INFINITY;
             }
         }
         // In order to recover the ability to reconstruct the shortest paths, we also keep track of the penultimate
@@ -303,41 +300,41 @@ public class DirectedGraph implements GraphInterface {
         while ((budget <= (n - 1)) && madeUpdateInIter) {
             madeUpdateInIter = false;
             for (Vertex vtx : vtxList) {
-                Integer minPathLength = prevIterSubproblems[vtx.id()];
+                Integer minPathLength = prevIterDp[vtx.id()];
                 Vertex penultimateVtx = prevIterPenultimateVtxs[vtx.id()];
                 for (DirectedEdge incidentEdge : vtx.incidentEdges()) {
                     Vertex w = incidentEdge.tail();
-                    int pathLength = prevIterSubproblems[w.id()] + incidentEdge.length();
+                    int pathLength = prevIterDp[w.id()] + incidentEdge.length();
                     if (pathLength < minPathLength) {
                         minPathLength = pathLength;
                         madeUpdateInIter = true;
                         penultimateVtx = w;
                     }
                 }
-                currIterSubproblems[vtx.id()] = minPathLength;
+                currIterDp[vtx.id()] = minPathLength;
                 currIterPenultimateVtxs[vtx.id()] = penultimateVtx;
             }
             ++budget;
-            System.arraycopy(currIterSubproblems, 0, prevIterSubproblems, 0, n);
+            System.arraycopy(currIterDp, 0, prevIterDp, 0, n);
             System.arraycopy(currIterPenultimateVtxs, 0, prevIterPenultimateVtxs, 0, n);
         }
         madeUpdateInIter = false;
         for (Vertex vtx : vtxList) {
-            Integer minPathLength = prevIterSubproblems[vtx.id()];
+            Integer minPathLength = prevIterDp[vtx.id()];
             for (DirectedEdge incidentEdge : vtx.incidentEdges()) {
                 Vertex w = incidentEdge.tail();
-                int pathLength = prevIterSubproblems[w.id()] + incidentEdge.length();
+                int pathLength = prevIterDp[w.id()] + incidentEdge.length();
                 if (pathLength < minPathLength) {
                     minPathLength = pathLength;
                     madeUpdateInIter = true;
                 }
             }
-            currIterSubproblems[vtx.id()] = minPathLength;
+            currIterDp[vtx.id()] = minPathLength;
         }
         if (madeUpdateInIter) {
             throw new IllegalArgumentException("The graph has negative cycles reachable from the source vertex.");
         }
-        // The final solution lies in exactly prevIterSubproblems.
+        // The final solution lies in exactly prevIterDp.
 
         // We can reconstruct the shortest paths from these penultimate vertices.
         return reconstructShortestPathsOptimized(prevIterPenultimateVtxs);
@@ -395,9 +392,7 @@ public class DirectedGraph implements GraphInterface {
                     Vertex w = emissiveEdge.head();
                     // By plucking off the first hop (v, w), we form P'(w, d, i - 1).
                     int pathLength = bellmanFordSubproblems[w.id()][budget - 1] + emissiveEdge.length();
-                    if (pathLength < minPathLength) {
-                        minPathLength = pathLength;
-                    }
+                    minPathLength = Math.min(minPathLength, pathLength);
                 }
                 // P(v, d, i) is the minimum among the above (1 + out-degree(v)) candidates.
                 bellmanFordSubproblems[vtx.id()][budget] = minPathLength;

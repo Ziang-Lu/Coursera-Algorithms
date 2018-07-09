@@ -88,8 +88,7 @@ public class UndirectedGraph implements GraphInterface {
         // Remove all the edges associated with the vertex to remove
         List<UndirectedEdge> edgesToRemove = vtxToRemove.edges();
         while (edgesToRemove.size() > 0) {
-            UndirectedEdge edgeToRemove = edgesToRemove.get(0);
-            removeEdge(edgeToRemove);
+            removeEdge(edgesToRemove.get(0));
         }
         // Remove the vertex
         vtxList.remove(vtxToRemove);
@@ -208,9 +207,7 @@ public class UndirectedGraph implements GraphInterface {
                     }
                     // By plucking off the final hop (w, v), we form P'(s, w, i - 1).
                     int pathLength = bellmanFordSubproblems[neighbor.id()][budget - 1] + edge.length();
-                    if (pathLength < minPathLength) {
-                        minPathLength = pathLength;
-                    }
+                    minPathLength = Math.min(minPathLength, pathLength);
                     // P(s, v, i) is the minimum among the above (1 + in-degree(v)) candidates.
                     bellmanFordSubproblems[vtx.id()][budget] = minPathLength;
                 }
@@ -304,10 +301,10 @@ public class UndirectedGraph implements GraphInterface {
         int n = vtxList.size();
         // Initialization
         // Space optimization: We only keep track of the subproblem solutions in the previous outer iteration.
-        int[] prevIterSubproblems = new int[n], currIterSubproblems = new int[n];
+        int[] prevIterDp = new int[n], currIterDp = new int[n];
         for (Vertex vtx : vtxList) {
             if (vtx != srcVtx) {
-                prevIterSubproblems[vtx.id()] = INFINITY;
+                prevIterDp[vtx.id()] = INFINITY;
             }
         }
         // In order to recover the ability to reconstruct the shortest paths, we also keep track of the penultimate
@@ -321,7 +318,7 @@ public class UndirectedGraph implements GraphInterface {
         while ((budget <= (n - 1)) && madeUpdateInIter) {
             madeUpdateInIter = false;
             for (Vertex vtx : vtxList) {
-                Integer minPathLength = prevIterSubproblems[vtx.id()];
+                Integer minPathLength = prevIterDp[vtx.id()];
                 Vertex penultimateVtx = prevIterPenultimateVtxs[vtx.id()];
                 for (UndirectedEdge edge : vtx.edges()) {
                     // Find the neighbor
@@ -331,23 +328,23 @@ public class UndirectedGraph implements GraphInterface {
                     } else { // endpoint1 is the neighbor.
                         neighbor = edge.end1();
                     }
-                    int pathLength = prevIterSubproblems[neighbor.id()] + edge.length();
+                    int pathLength = prevIterDp[neighbor.id()] + edge.length();
                     if (pathLength < minPathLength) {
                         minPathLength = pathLength;
                         madeUpdateInIter = true;
                         penultimateVtx = neighbor;
                     }
-                    currIterSubproblems[vtx.id()] = minPathLength;
+                    currIterDp[vtx.id()] = minPathLength;
                     currIterPenultimateVtxs[vtx.id()] = penultimateVtx;
                 }
             }
             ++budget;
-            System.arraycopy(currIterSubproblems, 0, prevIterSubproblems, 0, n);
+            System.arraycopy(currIterDp, 0, prevIterDp, 0, n);
             System.arraycopy(currIterPenultimateVtxs, 0, prevIterPenultimateVtxs, 0, n);
         }
         madeUpdateInIter = false;
         for (Vertex vtx : vtxList) {
-            Integer minPathLength = prevIterSubproblems[vtx.id()];
+            Integer minPathLength = prevIterDp[vtx.id()];
             for (UndirectedEdge edge : vtx.edges()) {
                 // Find the neighbor
                 Vertex neighbor = null;
@@ -356,18 +353,18 @@ public class UndirectedGraph implements GraphInterface {
                 } else { // endpoint1 is the neighbor.
                     neighbor = edge.end1();
                 }
-                int pathLength = prevIterSubproblems[neighbor.id()] + edge.length();
+                int pathLength = prevIterDp[neighbor.id()] + edge.length();
                 if (pathLength < minPathLength) {
                     minPathLength = pathLength;
                     madeUpdateInIter = true;
                 }
             }
-            currIterSubproblems[vtx.id()] = minPathLength;
+            currIterDp[vtx.id()] = minPathLength;
         }
         if (madeUpdateInIter) {
             throw new IllegalArgumentException("The graph has negative cycles reachable from the source vertex.");
         }
-        // The final solution lies in exactly prevIterSubproblems.
+        // The final solution lies in exactly prevIterDp.
 
         // We can reconstruct the shortest paths from these penultimate vertices.
         return reconstructShortestPathsOptimized(prevIterPenultimateVtxs);
@@ -431,9 +428,7 @@ public class UndirectedGraph implements GraphInterface {
                     }
                     // By plucking off the first hop (v, w), we form P'(w, d, i - 1).
                     int pathLength = bellmanFordSubproblems[neighbor.id()][budget - 1] + edge.length();
-                    if (pathLength < minPathLength) {
-                        minPathLength = pathLength;
-                    }
+                    minPathLength = Math.min(minPathLength, pathLength);
                 }
                 // P(v, d, i) is the minimum among the above (1 + out-degree(v)) candidates.
                 bellmanFordSubproblems[vtx.id()][budget] = minPathLength;
@@ -527,10 +522,10 @@ public class UndirectedGraph implements GraphInterface {
         int n = vtxList.size();
         // Initialization
         // Space optimization: We only keep track of the subproblem solutions in the previous outer iteration.
-        int[] prevIterSubproblems = new int[n], currIterSubproblems = new int[n];
+        int[] prevIterDp = new int[n], currIterDp = new int[n];
         for (Vertex vtx : vtxList) {
             if (vtx != destVtx) {
-                prevIterSubproblems[vtx.id()] = INFINITY;
+                prevIterDp[vtx.id()] = INFINITY;
             }
         }
         // In order to recover the ability to reconstruct the shortest paths, we also keep track of the next vertices in
@@ -544,7 +539,7 @@ public class UndirectedGraph implements GraphInterface {
         while ((budget <= (n - 1)) && madeUpdateInIter) {
             madeUpdateInIter = false;
             for (Vertex vtx : vtxList) {
-                Integer minPathLength = prevIterSubproblems[vtx.id()];
+                Integer minPathLength = prevIterDp[vtx.id()];
                 Vertex nextVtx = prevIterNextVtxs[vtx.id()];
                 for (UndirectedEdge edge : vtx.edges()) {
                     // Find the neighbor
@@ -554,23 +549,23 @@ public class UndirectedGraph implements GraphInterface {
                     } else { // endpoint1 is the neighbor.
                         neighbor = edge.end1();
                     }
-                    int pathLength = prevIterSubproblems[neighbor.id()] + edge.length();
+                    int pathLength = prevIterDp[neighbor.id()] + edge.length();
                     if (pathLength < minPathLength) {
                         minPathLength = pathLength;
                         madeUpdateInIter = true;
                         nextVtx = neighbor;
                     }
                 }
-                currIterSubproblems[vtx.id()] = minPathLength;
+                currIterDp[vtx.id()] = minPathLength;
                 currIterNextVtxs[vtx.id()] = nextVtx;
             }
             ++budget;
-            System.arraycopy(currIterSubproblems, 0, prevIterSubproblems, 0, n);
+            System.arraycopy(currIterDp, 0, prevIterDp, 0, n);
             System.arraycopy(currIterNextVtxs, 0, prevIterNextVtxs, 0, n);
         }
         madeUpdateInIter = false;
         for (Vertex vtx : vtxList) {
-            Integer minPathLength = prevIterSubproblems[vtx.id()];
+            Integer minPathLength = prevIterDp[vtx.id()];
             for (UndirectedEdge edge : vtx.edges()) {
                 // Find the neighbor
                 Vertex neighbor = null;
@@ -579,13 +574,13 @@ public class UndirectedGraph implements GraphInterface {
                 } else { // endpoint1 is the neighbor.
                     neighbor = edge.end1();
                 }
-                int pathLength = prevIterSubproblems[neighbor.id()] + edge.length();
+                int pathLength = prevIterDp[neighbor.id()] + edge.length();
                 if (pathLength < minPathLength) {
                     minPathLength = pathLength;
                     madeUpdateInIter = true;
                 }
             }
-            currIterSubproblems[vtx.id()] = minPathLength;
+            currIterDp[vtx.id()] = minPathLength;
         }
         if (madeUpdateInIter) {
             throw new IllegalArgumentException("The graph has negative cycles reachable from the destination vertex.");

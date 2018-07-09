@@ -12,6 +12,7 @@ class IllegalArgumentError(ValueError):
 
 
 class AbstractVertex(object):
+    __slots__ = ['_vtx_id']
 
     def __init__(self, vtx_id: int):
         """
@@ -30,6 +31,7 @@ class AbstractVertex(object):
 
 
 class AbstractEdge(object):
+    __slots__ = ['_length']
 
     def __init__(self, length: int):
         """
@@ -48,6 +50,8 @@ class AbstractEdge(object):
 
 
 class AbstractGraph(ABC):
+    __slots__ = ['_vtx_list', '_edge_list']
+
     _INFINITY = 1000000
 
     def __init__(self):
@@ -86,7 +90,7 @@ class AbstractGraph(ABC):
         """
         # Check whether the input vertex exists
         vtx_to_remove = self._find_vtx(vtx_id)
-        if vtx_to_remove is None:
+        if not vtx_to_remove:
             raise IllegalArgumentError("The input vertex doesn't exist.")
 
         self._remove_vtx(vtx_to_remove=vtx_to_remove)
@@ -165,19 +169,20 @@ class AbstractGraph(ABC):
         pass
 
     @abstractmethod
-    def _reconstruct_shortest_paths(self, subproblems: List[List[int]]) -> List[
-        List[int]]:
+    def _reconstruct_shortest_paths(self,
+                                    dp: List[List[int]]) -> List[List[int]]:
         """
         Private helper function to reconstruct the shortest paths according to
         the optimal solution using backtracking.
-        :param subproblems: list[list[int]]
+        :param dp: list[list[int]]
         :return: list[list[int]]
         """
         pass
 
     @abstractmethod
-    def bellman_ford_shortest_paths_optimized(self, src_vtx_id: int) -> List[
-        List[int]]:
+    def bellman_ford_shortest_paths_optimized(
+        self, src_vtx_id: int
+    ) -> List[List[int]]:
         """
         Returns the mapping between the vertices and the shortest paths from the
         given vertex using Bellman-Ford Shortest-Path Algorithm in an improved
@@ -189,8 +194,9 @@ class AbstractGraph(ABC):
         """
         pass
 
-    def _reconstruct_shortest_paths_optimized(self, penultimate_vtxs: List[
-        AbstractVertex]) -> List[List[int]]:
+    def _reconstruct_shortest_paths_optimized(
+        self, penultimate_vtxs: List[AbstractVertex]
+    ) -> List[List[int]]:
         """
         Private helper function to reconstruct the shortest paths according to
         the penultimate vertices in the shortest paths using backtracking.
@@ -201,7 +207,7 @@ class AbstractGraph(ABC):
         for vtx in self._vtx_list:
             shortest_path = []
             curr_vtx = vtx
-            while curr_vtx is not None:
+            while not curr_vtx:
                 shortest_path.insert(0, curr_vtx.vtx_id)
                 prev_vtx = penultimate_vtxs[curr_vtx.vtx_id]
                 curr_vtx = prev_vtx
@@ -210,8 +216,9 @@ class AbstractGraph(ABC):
         # Running time complexity: O(n^2)
 
     @abstractmethod
-    def bellman_ford_shortest_paths_dest_driven(self, dest_vtx_id: int) -> List[
-        List[int]]:
+    def bellman_ford_shortest_paths_dest_driven(
+        self, dest_vtx_id: int
+    ) -> List[List[int]]:
         """
         Returns the mapping between the vertices and the shortest paths to the
         given vertex using Bellman-Ford Shortest-Path Algorithm in an improved
@@ -224,21 +231,21 @@ class AbstractGraph(ABC):
         pass
 
     @abstractmethod
-    def _reconstruct_shortest_paths_dest_driven(self,
-                                                subproblems: List[List[int]]) \
-            -> List[List[int]]:
+    def _reconstruct_shortest_paths_dest_driven(
+        self, dp: List[List[int]]
+    ) -> List[List[int]]:
         """
         Private helper function to reconstruct the destination-driven shortest
         paths according to the optimal solution using backtracking.
-        :param subproblems: list[list[int]]
+        :param dp: list[list[int]]
         :return: list[list[int]]
         """
         pass
 
     @abstractmethod
-    def bellman_ford_shortest_paths_dest_driven_optimized(self,
-                                                          dest_vtx_id: int) -> \
-            List[List[int]]:
+    def bellman_ford_shortest_paths_dest_driven_optimized(
+        self, dest_vtx_id: int
+    ) -> List[List[int]]:
         """
         Returns the mapping between the vertices and the shortest paths to the
         given vertex using Bellman-Ford Shortest-Path Algorithm in an improved
@@ -248,10 +255,11 @@ class AbstractGraph(ABC):
         """
         pass
 
-    def _reconstruct_shortest_paths_dest_driven_optimized(self, next_vtxs: List[
-        AbstractVertex]) -> List[List[int]]:
+    def _reconstruct_shortest_paths_dest_driven_optimized(
+        self, next_vtxs: List[AbstractVertex]
+    ) -> List[List[int]]:
         """
-        Private heloer function to reconstruct the destination-driven shortest
+        Private helper function to reconstruct the destination-driven shortest
         paths according to the next vertices in the shortest paths using
         backtracking.
         :param next_vtxs: list[AbstractVertex]
@@ -261,7 +269,7 @@ class AbstractGraph(ABC):
         for vtx in self._vtx_list:
             shortest_path = []
             curr_vtx = vtx
-            while curr_vtx is not None:
+            while not curr_vtx:
                 shortest_path.append(curr_vtx.vtx_id)
                 next_vtx = next_vtxs[curr_vtx.vtx_id]
                 curr_vtx = next_vtx
@@ -270,8 +278,9 @@ class AbstractGraph(ABC):
         # Running time complexity: O(n^2)
 
     @abstractmethod
-    def shortest_paths_dest_driven_push_based(self, dest_vtx_id: int) -> List[
-        List[int]]:
+    def shortest_paths_dest_driven_push_based(
+        self, dest_vtx_id: int
+    ) -> List[List[int]]:
         """
         Returns the mapping between the vertices and the shortest paths to the
         given vertex in a push-based way.

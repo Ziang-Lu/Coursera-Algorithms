@@ -19,6 +19,7 @@ class IllegalArgumentError(ValueError):
 
 
 class Vertex(AbstractVertex):
+    __slots__ = ['_edges', '_neighbors']
 
     def __init__(self, vtx_id: int):
         """
@@ -36,7 +37,7 @@ class Vertex(AbstractVertex):
         :return: AbstractEdge
         """
         # Check whether the input neighbor is None
-        if neighbor is None:
+        if not neighbor:
             raise IllegalArgumentError('The input neighbor should not be None.')
 
         for edge in self._edges:
@@ -61,12 +62,14 @@ class Vertex(AbstractVertex):
         :return: None
         """
         # Check whether the input edge is None
-        if new_edge is None:
+        if not new_edge:
             raise IllegalArgumentError('The edge to add should not be None.')
         # Check whether the input edge involves this vertex
-        if (new_edge.end1 is not self) and (new_edge.end2 is not self):
-            raise IllegalArgumentError('The edge to add should involve this '
-                                       'vertex.')
+        if new_edge.end1 is not self and new_edge.end2 is not self:
+            raise IllegalArgumentError(
+                'The edge to add should involve this vertex.'
+            )
+
         # Find the neighbor associated with the input edge
         if new_edge.end1 is self:  # endpoint2 is the neighbor.
             neighbor = new_edge.end2
@@ -86,13 +89,14 @@ class Vertex(AbstractVertex):
         :return: None
         """
         # Check whether the input edge is None
-        if edge_to_remove is None:
+        if not edge_to_remove:
             raise IllegalArgumentError('The edge to remove should not be None.')
         # Check whether the input edge involves this vertex
-        if (edge_to_remove.end1 is not self) and \
-                (edge_to_remove.end2 is not self):
-            raise IllegalArgumentError('The edge to remove should involve this '
-                                       'vertex.')
+        if edge_to_remove.end1 is not self and edge_to_remove.end2 is not self:
+            raise IllegalArgumentError(
+                'The edge to remove should involve this vertex.'
+            )
+
         # Find the neighbor associated with the input edge
         if edge_to_remove.end1 is self:  # endpoint2 is the neighbor.
             neighbor = edge_to_remove.end2
@@ -106,10 +110,13 @@ class Vertex(AbstractVertex):
         self._neighbors.remove(neighbor.vtx_id)
 
     def __repr__(self):
-        return 'Vertex #%d, Its neighbors: %s' % (self._vtx_id, self._neighbors)
+        return 'Vertex #{}, Its neighbors: {}'.format(
+            self._vtx_id, self._neighbors
+        )
 
 
 class UndirectedEdge(AbstractEdge):
+    __slots__ = ['_end1', '_end2']
 
     def __init__(self, end1: Vertex, end2: Vertex, length: int):
         """
@@ -157,11 +164,13 @@ class UndirectedEdge(AbstractEdge):
         self._end2 = end2
 
     def __repr__(self):
-        return 'Edge between Vertex #%d and Vertex #%d' % \
-               (self._end1.vtx_id, self._end2.vtx_id)
+        return 'Edge between Vertex #{end1_id} and Vertex #{end2_id}'.format(
+            end1_id=self._end1.vtx_id, end2_id=self._end2.vtx_id
+        )
 
 
 class UndirectedGraph(AbstractGraph):
+    __slots__ = []
 
     def __init__(self):
         """
@@ -180,21 +189,21 @@ class UndirectedGraph(AbstractGraph):
     def _remove_vtx(self, vtx_to_remove):
         # Remove all the edges associated with the vertex to remove
         edges_to_remove = vtx_to_remove.edges
-        while len(edges_to_remove) > 0:
-            edge_to_remove = edges_to_remove[0]
-            self._remove_edge(edge_to_remove=edge_to_remove)
+        while len(edges_to_remove):
+            self._remove_edge(edge_to_remove=edges_to_remove[0])
         # Remove the vertex
         self._vtx_list.remove(vtx_to_remove)
 
     def add_edge(self, end1_id, end2_id, length):
         # Check whether the input endpoints both exist
         end1, end2 = self._find_vtx(end1_id), self._find_vtx(end2_id)
-        if end1 is None or end2 is None:
+        if not end1 or not end2:
             raise IllegalArgumentError("The endpoints don't both exist.")
         # Check whether the input endpoints are the same (self-loop)
         if end1_id == end2_id:
-            raise IllegalArgumentError("The endpoints are the same "
-                                       "(self-loop).")
+            raise IllegalArgumentError(
+                'The endpoints are the same (self-loop).'
+            )
 
         new_edge = UndirectedEdge(end1, end2, length)
         self._add_edge(new_edge=new_edge)
@@ -208,12 +217,12 @@ class UndirectedGraph(AbstractGraph):
     def remove_edge(self, end1_id, end2_id):
         # Check whether the input endpoints both exist
         end1, end2 = self._find_vtx(end1_id), self._find_vtx(vtx_id=end2_id)
-        if end1 is None or end2 is None:
+        if not end1 or not end2:
             raise IllegalArgumentError("The endpoints don't both exist.")
 
         # Check whether the edge to remove exists
         edge_to_remove = end1.get_edge_with_neighbor(end2)
-        if edge_to_remove is None:
+        if not edge_to_remove:
             raise IllegalArgumentError("The edge to remove doesn't exist.")
 
         self._remove_edge(edge_to_remove=edge_to_remove)
@@ -227,7 +236,7 @@ class UndirectedGraph(AbstractGraph):
     def floyd_warshall_apsp(self):
         n = len(self._vtx_list)
         # Initialization
-        subproblems = [[[0] * n for i in range(n)] for k in range(n + 1)]
+        subproblems = [[[0] * n for _ in range(n)] for _ in range(n + 1)]
         for src_vtx in self._vtx_list:
             for dest_vtx in self._vtx_list:
                 if src_vtx is not dest_vtx:
@@ -274,36 +283,34 @@ class UndirectedGraph(AbstractGraph):
     def floyd_warshall_apsp_optimized(self):
         n = len(self._vtx_list)
         # Initialization
-        prev_iter_subproblems, curr_iter_subproblems = \
-            [[0] * n for i in range(n)], [[0] * n for i in range(n)]
+        prev_iter_dp, curr_iter_dp = [[0] * n for _ in range(n)], \
+            [[0] * n for _ in range(n)]
         for src_vtx in self._vtx_list:
             for dest_vtx in self._vtx_list:
                 if src_vtx is not dest_vtx:
-                    prev_iter_subproblems[src_vtx.vtx_id][dest_vtx.vtx_id] = \
+                    prev_iter_dp[src_vtx.vtx_id][dest_vtx.vtx_id] = \
                         super()._INFINITY
         for edge in self._edge_list:
-            prev_iter_subproblems[edge.end1.vtx_id][edge.end2.vtx_id] = \
-                edge.length
-            prev_iter_subproblems[edge.end2.vtx_id][edge.end1.vtx_id] = \
-                edge.length
+            prev_iter_dp[edge.end1.vtx_id][edge.end2.vtx_id] = edge.length
+            prev_iter_dp[edge.end2.vtx_id][edge.end1.vtx_id] = edge.length
         # Bottom-up calculation
         for k in range(1, n + 1):
             for src_vtx in self._vtx_list:
                 for dest_vtx in self._vtx_list:
                     path_length_without_kth_vtx = \
-                        prev_iter_subproblems[src_vtx.vtx_id][dest_vtx.vtx_id]
+                        prev_iter_dp[src_vtx.vtx_id][dest_vtx.vtx_id]
                     kth_vtx_id = k - 1
                     path_length_with_kth_vtx = \
-                        prev_iter_subproblems[src_vtx.vtx_id][kth_vtx_id] + \
-                        prev_iter_subproblems[kth_vtx_id][dest_vtx.vtx_id]
-                    curr_iter_subproblems[src_vtx.vtx_id][dest_vtx.vtx_id] = \
+                        prev_iter_dp[src_vtx.vtx_id][kth_vtx_id] + \
+                        prev_iter_dp[kth_vtx_id][dest_vtx.vtx_id]
+                    curr_iter_dp[src_vtx.vtx_id][dest_vtx.vtx_id] = \
                         min(path_length_without_kth_vtx,
                             path_length_with_kth_vtx)
-            prev_iter_subproblems = curr_iter_subproblems.copy()
+            prev_iter_dp = curr_iter_dp.copy()
         for vtx in self._vtx_list:
-            if prev_iter_subproblems[vtx.vtx_id][vtx.vtx_id] < 0:
+            if prev_iter_dp[vtx.vtx_id][vtx.vtx_id] < 0:
                 raise IllegalArgumentError('The graph has negative cycles.')
-        # The final solution lies in exactly prev_iter_subproblems.
-        return prev_iter_subproblems
+        # The final solution lies in exactly prev_iter_dp.
+        return prev_iter_dp
         # Overall running time complexity: O(n^3)
         # Overall space complexity: O(n^2)

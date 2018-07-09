@@ -19,6 +19,12 @@ class IllegalArgumentError(ValueError):
 
 
 class Vertex(AbstractVertex):
+    __slots__ = [
+        '_emissive_edges',
+        '_emissive_neighbors',
+        '_incident_edges',
+        '_incident_neighbors'
+    ]
 
     def __init__(self, vtx_id: int):
         """
@@ -38,7 +44,7 @@ class Vertex(AbstractVertex):
         :return: AbstractEdge
         """
         # Check whether the input head is None
-        if head is None:
+        if not head:
             raise IllegalArgumentError('The input head should not be None.')
 
         for emissive_edge in self._emissive_edges:
@@ -62,7 +68,7 @@ class Vertex(AbstractVertex):
         :return: AbstractEdge
         """
         # Check whether the input tail is None
-        if tail is None:
+        if not tail:
             raise IllegalArgumentError('The input tail should not be None.')
 
         for incident_edge in self._incident_edges:
@@ -86,13 +92,15 @@ class Vertex(AbstractVertex):
         :return: None
         """
         # Check whether the input emissive edge is None
-        if new_emissive_edge is None:
-            raise IllegalArgumentError('The emissive edge to add should not be '
-                                       'None.')
+        if not new_emissive_edge:
+            raise IllegalArgumentError(
+                'The emissive edge to add should not be None.'
+            )
         # Check whether the input emissive edge involves this vertex as the tail
         if new_emissive_edge.tail is not self:
-            raise IllegalArgumentError('The emissive edge to add should involve'
-                                       ' this vertex as the tail.')
+            raise IllegalArgumentError(
+                'The emissive edge to add should involve this vertex as the '
+                'tail.')
         # Check whether the input emissive edge already exists
         if new_emissive_edge.head.vtx_id in self._emissive_neighbors:
             raise IllegalArgumentError('The emissive edge already exists.')
@@ -107,13 +115,15 @@ class Vertex(AbstractVertex):
         :return: None
         """
         # Check whether the input incident edge is None
-        if new_incident_edge is None:
-            raise IllegalArgumentError('The incident edge to add should not be '
-                                       'None.')
+        if not new_incident_edge:
+            raise IllegalArgumentError(
+                'The incident edge to add should not be None.'
+            )
         # Check whether the input incident edge involves this vertex as the head
         if new_incident_edge.head is not self:
-            raise IllegalArgumentError('The incident edge to add should involve'
-                                       ' this vertex as the head.')
+            raise IllegalArgumentError(
+                'The incident edge to add should involve this vertex as the '
+                'head.')
         # Check whether the input incident edge already exists
         if new_incident_edge.tail.vtx_id in self._incident_neighbors:
             raise IllegalArgumentError('The incident edge already exists.')
@@ -129,17 +139,21 @@ class Vertex(AbstractVertex):
         :return: None
         """
         # Check whether the input emissive edge is None
-        if emissive_edge_to_remove is None:
-            raise IllegalArgumentError('The emissive edge to remove should not '
-                                       'be None.')
+        if not emissive_edge_to_remove:
+            raise IllegalArgumentError(
+                'The emissive edge to remove should not be None.'
+            )
         # Check whether the input emissive edge involves this vertex as the tail
         if emissive_edge_to_remove.tail is not self:
-            raise IllegalArgumentError('The emissive edge to remove should '
-                                       'involve this vertex as the tail.')
+            raise IllegalArgumentError(
+                'The emissive edge to remove should involve this vertex as the '
+                'tail.'
+            )
         # Check whether the input emissive edge exists
         if emissive_edge_to_remove.head.vtx_id not in self._emissive_neighbors:
-            raise IllegalArgumentError("The emissive edge to remove doesn't "
-                                       "exist.")
+            raise IllegalArgumentError(
+                "The emissive edge to remove doesn't exist."
+            )
 
         self._emissive_edges.remove(emissive_edge_to_remove)
         self._emissive_neighbors.remove(emissive_edge_to_remove.head.vtx_id)
@@ -152,25 +166,29 @@ class Vertex(AbstractVertex):
         :return: None
         """
         # Check whether the input incident edge is None
-        if incident_edge_to_remove is None:
-            raise IllegalArgumentError('The incident edge to remove should not '
-                                       'be None.')
+        if not incident_edge_to_remove:
+            raise IllegalArgumentError(
+                'The incident edge to remove should not be None.'
+            )
         # Check whether the input incident edge involves this vertex as the head
         if incident_edge_to_remove.head is not self:
-            raise IllegalArgumentError('The incident edge to remove should '
-                                       'involve this vertex as the head.')
+            raise IllegalArgumentError(
+                'The incident edge to remove should involve this vertex as the '
+                'head.'
+            )
         # Check whether the input incident edge exists
         if incident_edge_to_remove.tail.vtx_id not in self._incident_neighbors:
-            raise IllegalArgumentError("The incident edge to remove doesn't "
-                                       "exist.")
+            raise IllegalArgumentError(
+                "The incident edge to remove doesn't exist."
+            )
 
         self._incident_edges.remove(incident_edge_to_remove)
         self._incident_neighbors.remove(incident_edge_to_remove.tail.vtx_id)
 
     def __repr__(self):
-        s = 'Vertex #%d\n' % self._vtx_id
-        s += 'Its emissive neighbors: %s\n' % self._emissive_neighbors
-        s += 'Its incident neighbors: %s\n' % self._incident_neighbors
+        s = 'Vertex #{vtx_id}\n'.format(vtx_id=self._vtx_id)
+        s += 'Its emissive neighbors: {}\n'.format(self._emissive_neighbors)
+        s += 'Its incident neighbors: {}\n'.format(self._incident_neighbors)
         return s
 
     def __eq__(self, other):
@@ -178,6 +196,7 @@ class Vertex(AbstractVertex):
 
 
 class DirectedEdge(AbstractEdge):
+    __slots__ = ['_tail', '_head']
 
     def __init__(self, tail: Vertex, head: Vertex, length: int):
         """
@@ -225,11 +244,13 @@ class DirectedEdge(AbstractEdge):
         self._head = head
 
     def __repr__(self):
-        return 'Edge from Vertex #%d to Vertex #%d' % \
-               (self._tail.vtx_id, self._head.vtx_id)
+        return 'Edge from Vertex #{tail_id} to Vertex #{head_id}'.format(
+            tail_id=self._tail.vtx_id, head_id=self._head.vtx_id
+        )
 
 
 class DirectedGraph(AbstractGraph):
+    __slots__ = []
 
     def __init__(self):
         """
@@ -250,21 +271,21 @@ class DirectedGraph(AbstractGraph):
         edges_to_remove = []
         edges_to_remove.extend(vtx_to_remove.emissive_edges)
         edges_to_remove.extend(vtx_to_remove.incident_edges)
-        while len(edges_to_remove) > 0:
-            edge_to_remove = edges_to_remove[0]
-            self._remove_edge(edge_to_remove=edge_to_remove)
+        while len(edges_to_remove):
+            self._remove_edge(edge_to_remove=edges_to_remove[0])
         # Remove the vertex
         self._vtx_list.remove(vtx_to_remove)
 
     def add_edge(self, tail_id, head_id, length):
         # Check whether the input endpoints both exist
         tail, head = self._find_vtx(tail_id), self._find_vtx(head_id)
-        if tail is None or head is None:
+        if not tail or not head:
             raise IllegalArgumentError("The endpoints don't both exist.")
         # Check whether the input vertices are the same
         if tail_id == head_id:
-            raise IllegalArgumentError("The endpoints are the same "
-                                       "(self-loop).")
+            raise IllegalArgumentError(
+                'The endpoints are the same (self-loop).'
+            )
 
         new_edge = DirectedEdge(tail, head, length)
         self._add_edge(new_edge=new_edge)
@@ -278,11 +299,11 @@ class DirectedGraph(AbstractGraph):
     def remove_edge(self, tail_id, head_id):
         # Check whether the input endpoints both exist
         tail, head = self._find_vtx(tail_id), self._find_vtx(head_id)
-        if tail is None or head is None:
+        if not tail or not head:
             raise IllegalArgumentError("The endpoints don't both exist.")
         # Check whether the edge to remove exists
         edge_to_remove = tail.get_emissive_edge_with_head(head)
-        if edge_to_remove is None:
+        if not edge_to_remove:
             raise IllegalArgumentError("The edge to remove doesn't exist.")
 
         self._remove_edge(edge_to_remove=edge_to_remove)
@@ -296,7 +317,7 @@ class DirectedGraph(AbstractGraph):
     def floyd_warshall_apsp(self):
         n = len(self._vtx_list)
         # Initialization
-        subproblems = [[[0] * n for i in range(n)] for k in range(n + 1)]
+        subproblems = [[[0] * n for _ in range(n)] for _ in range(n + 1)]
         for src_vtx in self._vtx_list:
             for dest_vtx in self._vtx_list:
                 if src_vtx is not dest_vtx:
@@ -342,34 +363,33 @@ class DirectedGraph(AbstractGraph):
     def floyd_warshall_apsp_optimized(self):
         n = len(self._vtx_list)
         # Initialization
-        prev_iter_subproblems, curr_iter_subproblems = \
-            [[0] * n for i in range(n)], [[0] * n for i in range(n)]
+        prev_iter_dp, curr_iter_dp = [[0] * n for _ in range(n)], \
+            [[0] * n for _ in range(n)]
         for src_vtx in self._vtx_list:
             for dest_vtx in self._vtx_list:
                 if src_vtx is not dest_vtx:
-                    prev_iter_subproblems[src_vtx.vtx_id][dest_vtx.vtx_id] = \
+                    prev_iter_dp[src_vtx.vtx_id][dest_vtx.vtx_id] = \
                         super()._INFINITY
         for edge in self._edge_list:
-            prev_iter_subproblems[edge.tail.vtx_id][edge.head.vtx_id] = \
-                edge.length
+            prev_iter_dp[edge.tail.vtx_id][edge.head.vtx_id] = edge.length
         # Bottom-up calculation
         for k in range(1, n + 1):
             for src_vtx in self._vtx_list:
                 for dest_vtx in self._vtx_list:
                     path_length_without_kth_vtx = \
-                        prev_iter_subproblems[src_vtx.vtx_id][dest_vtx.vtx_id]
+                        prev_iter_dp[src_vtx.vtx_id][dest_vtx.vtx_id]
                     kth_vtx_id = k - 1
                     path_length_with_kth_vtx = \
-                        prev_iter_subproblems[src_vtx.vtx_id][kth_vtx_id] + \
-                        prev_iter_subproblems[kth_vtx_id][dest_vtx.vtx_id]
-                    curr_iter_subproblems[src_vtx.vtx_id][dest_vtx.vtx_id] = \
+                        prev_iter_dp[src_vtx.vtx_id][kth_vtx_id] + \
+                        prev_iter_dp[kth_vtx_id][dest_vtx.vtx_id]
+                    curr_iter_dp[src_vtx.vtx_id][dest_vtx.vtx_id] = \
                         min(path_length_without_kth_vtx,
                             path_length_with_kth_vtx)
-            prev_iter_subproblems = curr_iter_subproblems.copy()
+            prev_iter_dp = curr_iter_dp.copy()
         for vtx in self._vtx_list:
-            if prev_iter_subproblems[vtx.vtx_id][vtx.vtx_id] < 0:
+            if prev_iter_dp[vtx.vtx_id][vtx.vtx_id] < 0:
                 raise IllegalArgumentError('The graph has negative cycles.')
-        # The final solution lies in exactly prev_iter_subproblems.
-        return prev_iter_subproblems
+        # The final solution lies in exactly prev_iter_dp.
+        return prev_iter_dp
         # Overall running time complexity: O(n^3)
         # Overall space complexity: O(n^2)

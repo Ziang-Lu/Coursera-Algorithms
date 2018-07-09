@@ -19,6 +19,12 @@ class IllegalArgumentError(ValueError):
 
 
 class Vertex(AbstractVertex):
+    __slots__ = [
+        '_emissive_edges',
+        '_emissive_neighbors',
+        '_incident_edges',
+        '_incident_neighbors'
+    ]
 
     def __init__(self, vtx_id: int):
         """
@@ -38,7 +44,7 @@ class Vertex(AbstractVertex):
         :return: AbstractEdge
         """
         # Check whether the input head is None
-        if head is None:
+        if not head:
             raise IllegalArgumentError('The input head should not be None.')
 
         for emissive_edge in self._emissive_edges:
@@ -62,7 +68,7 @@ class Vertex(AbstractVertex):
         :return: AbstractEdge
         """
         # Check whether the input tail is None
-        if tail is None:
+        if not tail:
             raise IllegalArgumentError('The input tail should not be None.')
 
         for incident_edge in self._incident_edges:
@@ -86,13 +92,16 @@ class Vertex(AbstractVertex):
         :return: None
         """
         # Check whether the input emissive edge is None
-        if new_emissive_edge is None:
-            raise IllegalArgumentError('The emissive edge to add should not be '
-                                       'None.')
+        if not new_emissive_edge:
+            raise IllegalArgumentError(
+                'The emissive edge to add should not be None.'
+            )
         # Check whether the input emissive edge involves this vertex as the tail
         if new_emissive_edge.tail is not self:
-            raise IllegalArgumentError('The emissive edge to add should involve'
-                                       ' this vertex as the tail.')
+            raise IllegalArgumentError(
+                'The emissive edge to add should involve this vertex as the '
+                'tail.'
+            )
         # Check whether the input emissive edge already exists
         if new_emissive_edge.head.vtx_id in self._emissive_neighbors:
             raise IllegalArgumentError('The emissive edge already exists.')
@@ -107,13 +116,16 @@ class Vertex(AbstractVertex):
         :return: None
         """
         # Check whether the input incident edge is None
-        if new_incident_edge is None:
-            raise IllegalArgumentError('The incident edge to add should not be '
-                                       'None.')
+        if not new_incident_edge:
+            raise IllegalArgumentError(
+                'The incident edge to add should not be None.'
+            )
         # Check whether the input incident edge involves this vertex as the head
         if new_incident_edge.head is not self:
-            raise IllegalArgumentError('The incident edge to add should involve'
-                                       ' this vertex as the head.')
+            raise IllegalArgumentError(
+                'The incident edge to add should involve this vertex as the '
+                'head.'
+            )
         # Check whether the input incident edge already exists
         if new_incident_edge.tail.vtx_id in self._incident_neighbors:
             raise IllegalArgumentError('The incident edge already exists.')
@@ -129,17 +141,20 @@ class Vertex(AbstractVertex):
         :return: None
         """
         # Check whether the input emissive edge is None
-        if emissive_edge_to_remove is None:
-            raise IllegalArgumentError('The emissive edge to remove should not '
-                                       'be None.')
+        if not emissive_edge_to_remove:
+            raise IllegalArgumentError(
+                'The emissive edge to remove should not be None.'
+            )
         # Check whether the input emissive edge involves this vertex as the tail
         if emissive_edge_to_remove.tail is not self:
-            raise IllegalArgumentError('The emissive edge to remove should '
-                                       'involve this vertex as the tail.')
+            raise IllegalArgumentError(
+                'The emissive edge to remove should involve this vertex as the '
+                'tail.')
         # Check whether the input emissive edge exists
         if emissive_edge_to_remove.head.vtx_id not in self._emissive_neighbors:
-            raise IllegalArgumentError("The emissive edge to remove doesn't "
-                                       "exist.")
+            raise IllegalArgumentError(
+                "The emissive edge to remove doesn't exist."
+            )
 
         self._emissive_edges.remove(emissive_edge_to_remove)
         self._emissive_neighbors.remove(emissive_edge_to_remove.head.vtx_id)
@@ -152,25 +167,28 @@ class Vertex(AbstractVertex):
         :return: None
         """
         # Check whether the input incident edge is None
-        if incident_edge_to_remove is None:
-            raise IllegalArgumentError('The incident edge to remove should not '
-                                       'be None.')
+        if not incident_edge_to_remove:
+            raise IllegalArgumentError(
+                'The incident edge to remove should not be None.'
+            )
         # Check whether the input incident edge involves this vertex as the head
         if incident_edge_to_remove.head is not self:
-            raise IllegalArgumentError('The incident edge to remove should '
-                                       'involve this vertex as the head.')
+            raise IllegalArgumentError(
+                'The incident edge to remove should involve this vertex as the '
+                'head.')
         # Check whether the input incident edge exists
         if incident_edge_to_remove.tail.vtx_id not in self._incident_neighbors:
-            raise IllegalArgumentError("The incident edge to remove doesn't "
-                                       "exist.")
+            raise IllegalArgumentError(
+                "The incident edge to remove doesn't exist."
+            )
 
         self._incident_edges.remove(incident_edge_to_remove)
         self._incident_neighbors.remove(incident_edge_to_remove.tail.vtx_id)
 
     def __repr__(self):
-        s = 'Vertex #%d\n' % self._vtx_id
-        s += 'Its emissive neighbors: %s\n' % self._emissive_neighbors
-        s += 'Its incident neighbors: %s\n' % self._incident_neighbors
+        s = 'Vertex #{vtx_id}\n'.format(vtx_id=self._vtx_id)
+        s += 'Its emissive neighbors: {}\n'.format(self._emissive_neighbors)
+        s += 'Its incident neighbors: {}\n'.format(self._incident_neighbors)
         return s
 
     def __eq__(self, other):
@@ -178,6 +196,7 @@ class Vertex(AbstractVertex):
 
 
 class DirectedEdge(AbstractEdge):
+    __slots__ = ['_tail', '_head']
 
     def __init__(self, tail: Vertex, head: Vertex, length: int):
         """
@@ -225,11 +244,13 @@ class DirectedEdge(AbstractEdge):
         self._head = head
 
     def __repr__(self):
-        return 'Edge from Vertex #%d to Vertex #%d' % \
-               (self._tail.vtx_id, self._head.vtx_id)
+        return 'Edge from Vertex #{tail_id} to Vertex #{head_id}'.format(
+            tail_id=self._tail.vtx_id, head_id=self._head.vtx_id
+        )
 
 
 class DirectedGraph(AbstractGraph):
+    __slots__ = []
 
     def __init__(self):
         """
@@ -250,21 +271,21 @@ class DirectedGraph(AbstractGraph):
         edges_to_remove = []
         edges_to_remove.extend(vtx_to_remove.emissive_edges)
         edges_to_remove.extend(vtx_to_remove.incident_edges)
-        while len(edges_to_remove) > 0:
-            edge_to_remove = edges_to_remove[0]
-            self._remove_edge(edge_to_remove=edge_to_remove)
+        while len(edges_to_remove):
+            self._remove_edge(edge_to_remove=edges_to_remove[0])
         # Remove the vertex
         self._vtx_list.remove(vtx_to_remove)
 
     def add_edge(self, tail_id, head_id, length):
         # Check whether the input endpoints both exist
         tail, head = self._find_vtx(tail_id), self._find_vtx(head_id)
-        if tail is None or head is None:
+        if not tail or not head:
             raise IllegalArgumentError("The endpoints don't both exist.")
         # Check whether the input vertices are the same
         if tail_id == head_id:
-            raise IllegalArgumentError("The endpoints are the same "
-                                       "(self-loop).")
+            raise IllegalArgumentError(
+                'The endpoints are the same (self-loop).'
+            )
 
         new_edge = DirectedEdge(tail, head, length)
         self._add_edge(new_edge=new_edge)
@@ -278,11 +299,11 @@ class DirectedGraph(AbstractGraph):
     def remove_edge(self, tail_id, head_id):
         # Check whether the input endpoints both exist
         tail, head = self._find_vtx(tail_id), self._find_vtx(head_id)
-        if tail is None or head is None:
+        if not tail or not head:
             raise IllegalArgumentError("The endpoints don't both exist.")
         # Check whether the edge to remove exists
         edge_to_remove = tail.get_emissive_edge_with_head(head)
-        if edge_to_remove is None:
+        if not edge_to_remove:
             raise IllegalArgumentError("The edge to remove doesn't exist.")
 
         self._remove_edge(edge_to_remove=edge_to_remove)
@@ -293,28 +314,15 @@ class DirectedGraph(AbstractGraph):
         head.remove_incident_edge(edge_to_remove)
         self._edge_list.remove(edge_to_remove)
 
-    def remove_directed_edges_between_pair(self, tail_id, head_id):
-        """
-        Removes all the directed edges between a vertex pair from this graph.
-        :param tail_id: int
-        :param head_id: int
-        :return: None
-        """
-        try:
-            while True:
-                self.remove_edge(tail_id=tail_id, head_id=head_id)
-        except IllegalArgumentError:
-            pass
-
     def bellman_ford_shortest_paths(self, src_vtx_id):
         # Check whether the input source vertex exists
         src_vtx = self._find_vtx(src_vtx_id)
-        if src_vtx is None:
+        if not src_vtx:
             raise IllegalArgumentError("The source vertex doesn't exist.")
 
         n = len(self._vtx_list)
         # Initialization
-        subproblems = [[0] * n for i in range(n)]
+        subproblems = [[0] * n for _ in range(n)]
         for vtx in self._vtx_list:
             if vtx is not src_vtx:
                 subproblems[vtx.vtx_id][0] = super()._INFINITY
@@ -331,9 +339,8 @@ class DirectedGraph(AbstractGraph):
                     # By plucking off the final hop (w, v), we form
                     # P'(s, w, i - 1).
                     path_length = subproblems[w.vtx_id][budget - 1] + \
-                                  incident_edge.length
-                    if path_length < min_path_length:
-                        min_path_length = path_length
+                        incident_edge.length
+                    min_path_length = min(min_path_length, path_length)
                 # P(s, v, i) is the minimum among the above (1 + in-degree(v))
                 # candidates.
                 subproblems[vtx.vtx_id][budget] = min_path_length
@@ -348,21 +355,23 @@ class DirectedGraph(AbstractGraph):
             for incident_edge in vtx.incident_edges:
                 w = incident_edge.tail
                 path_length = subproblems[w.vtx_id][n - 1] + \
-                              incident_edge.length
+                    incident_edge.length
                 if path_length < min_path_length:
                     min_path_length = path_length
                     made_update_in_extra_iter = True
         if made_update_in_extra_iter:
-            raise IllegalArgumentError('The graph has negative cycles reachable'
-                                       ' from the source vertex.')
+            raise IllegalArgumentError(
+                'The graph has negative cycles reachable from the source '
+                'vertex.'
+            )
         # The final solution lies in exactly subproblems[v][n - 1].
-        return self._reconstruct_shortest_paths(subproblems=subproblems)
+        return self._reconstruct_shortest_paths(subproblems)
         # Outer for-loop: n iterations
         # Inner for-loop: sum(in-degree(v)) = m
         # => Overall running time complexity: O(mn)
         # Overall space complexity: O(n^2)
 
-    def _reconstruct_shortest_paths(self, subproblems):
+    def _reconstruct_shortest_paths(self, dp):
         shortest_paths = []
         for vtx in self._vtx_list:
             shortest_path = [vtx.vtx_id]
@@ -370,11 +379,11 @@ class DirectedGraph(AbstractGraph):
             while budget >= 1:
                 # Find the previous vertex to backtrack
                 prev_vtx = curr_vtx
-                min_path_length = subproblems[curr_vtx.vtx_id][budget - 1]
+                min_path_length = dp[curr_vtx.vtx_id][budget - 1]
                 for incident_edge in curr_vtx.incident_edges:
                     w = incident_edge.tail
-                    path_length = subproblems[w.vtx_id][budget - 1] + \
-                                  incident_edge.length
+                    path_length = dp[w.vtx_id][budget - 1] + \
+                        incident_edge.length
                     if path_length < min_path_length:
                         prev_vtx = w
                         min_path_length = path_length
@@ -389,22 +398,22 @@ class DirectedGraph(AbstractGraph):
     def bellman_ford_shortest_paths_optimized(self, src_vtx_id):
         # Check whether the input source vertex exists
         src_vtx = self._find_vtx(src_vtx_id)
-        if src_vtx is None:
+        if not src_vtx:
             raise IllegalArgumentError("The source vertex doesn't exist.")
 
         n = len(self._vtx_list)
         # Initialization
         # Space optimization: We only keep track of the subproblem solutions in
         # the previous outer iteration.
-        prev_iter_subproblems, curr_iter_subproblems = [0] * n, [0] * n
+        prev_iter_dp, curr_iter_dp = [0] * n, [0] * n
         for vtx in self._vtx_list:
             if vtx is not src_vtx:
-                prev_iter_subproblems[vtx.vtx_id] = super()._INFINITY
+                prev_iter_dp[vtx.vtx_id] = super()._INFINITY
         # In order to recover the ability to reconstruct the shortest paths, we
         # also keep track of the penultimate vertices in the previous outer
         # iteration.
-        prev_iter_penultimate_vtxs, curr_iter_penultimate_vtxs = \
-            [None] * n, [None] * n
+        prev_iter_penultimate_vtxs, curr_iter_penultimate_vtxs = [None] * n, \
+            [None] * n
         # Bottom-up calculation
         budget = 1
         # Optimization: Early-stopping
@@ -414,51 +423,52 @@ class DirectedGraph(AbstractGraph):
         while budget <= n - 1 and made_update_in_iter:
             made_update_in_iter = False
             for vtx in self._vtx_list:
-                min_path_length = prev_iter_subproblems[vtx.vtx_id]
+                min_path_length = prev_iter_dp[vtx.vtx_id]
                 penultimate_vtx = prev_iter_penultimate_vtxs[vtx.vtx_id]
                 for incident_edge in vtx.incident_edges:
                     w = incident_edge.tail
-                    path_length = prev_iter_subproblems[w.vtx_id] + \
-                                  incident_edge.length
+                    path_length = prev_iter_dp[w.vtx_id] + incident_edge.length
                     if path_length < min_path_length:
                         min_path_length = path_length
                         made_update_in_iter = True
                         penultimate_vtx = w
-                curr_iter_subproblems[vtx.vtx_id] = min_path_length
+                curr_iter_dp[vtx.vtx_id] = min_path_length
                 curr_iter_penultimate_vtxs[vtx.vtx_id] = penultimate_vtx
             budget += 1
-            prev_iter_subproblems = curr_iter_subproblems.copy()
+            prev_iter_dp = curr_iter_dp.copy()
             prev_iter_penultimate_vtxs = curr_iter_penultimate_vtxs.copy()
         made_update_in_iter = False
         for vtx in self._vtx_list:
-            min_path_length = prev_iter_subproblems[vtx.vtx_id]
+            min_path_length = prev_iter_dp[vtx.vtx_id]
             for incident_edge in vtx.incident_edges:
                 w = incident_edge.tail
-                path_length = prev_iter_subproblems[w.vtx_id] + \
-                              incident_edge.length
+                path_length = prev_iter_dp[w.vtx_id] + incident_edge.length
                 if path_length < min_path_length:
                     min_path_length = path_length
                     made_update_in_iter = True
         if made_update_in_iter:
-            raise IllegalArgumentError('The graph has negative cycles reachable'
-                                       ' from the source vertex..')
-        # The final solution lies in exactly prev_iter_subproblems.
+            raise IllegalArgumentError(
+                'The graph has negative cycles reachable from the source '
+                'vertex.'
+            )
+        # The final solution lies in exactly prev_iter_dp.
 
         # We can reconstruct the shortest paths from these penultimate vertices.
         return self._reconstruct_shortest_paths_optimized(
-            penultimate_vtxs=prev_iter_penultimate_vtxs)
+            penultimate_vtxs=prev_iter_penultimate_vtxs
+        )
         # Overall running time complexity: O(mn)
         # Overall space complexity: O(n)
 
     def bellman_ford_shortest_paths_dest_driven(self, dest_vtx_id):
         # Check whether the input destination vertex exists
         dest_vtx = self._find_vtx(dest_vtx_id)
-        if dest_vtx is None:
+        if not dest_vtx:
             raise IllegalArgumentError("The destination vertex doesn't exist.")
 
         n = len(self._vtx_list)
         # Initialization
-        subproblems = [[0] * n for i in range(n)]
+        subproblems = [[0] * n for _ in range(n)]
         for vtx in self._vtx_list:
             if vtx is not dest_vtx:
                 subproblems[vtx.vtx_id][0] = super()._INFINITY
@@ -475,9 +485,8 @@ class DirectedGraph(AbstractGraph):
                     # By plucking off the first hop (v, w), we form
                     # P'(w, d, i - 1).
                     path_length = subproblems[w.vtx_id][budget - 1] + \
-                                  emissive_edge.length
-                    if path_length < min_path_length:
-                        min_path_length = path_length
+                        emissive_edge.length
+                    min_path_length = min(min_path_length, path_length)
                 # P(v, d, i) is the minimum among the above (1 + out-degree(v))
                 # candidates.
                 subproblems[vtx.vtx_id][budget] = min_path_length
@@ -492,22 +501,23 @@ class DirectedGraph(AbstractGraph):
             for emissive_edge in vtx.emissive_edges:
                 w = emissive_edge.head
                 path_length = subproblems[w.vtx_id][n - 1] + \
-                              emissive_edge.length
+                    emissive_edge.length
                 if path_length < min_path_length:
                     min_path_length = path_length
                     made_update_in_extra_iter = True
         if made_update_in_extra_iter:
-            raise IllegalArgumentError('The graph has negative cycles reachable'
-                                       ' from the destination vertex.')
+            raise IllegalArgumentError(
+                'The graph has negative cycles reachable from the destination '
+                'vertex.'
+            )
         # The final solution lies in exactly subproblems[v][n - 1].
-        return self._reconstruct_shortest_paths_dest_driven(
-            subproblems=subproblems)
+        return self._reconstruct_shortest_paths_dest_driven(subproblems)
         # Outer for-loop: n iterations
         # Inner for-loop: sum(out-degree(v)) = m
         # Overall running time complexity: O(mn)
         # Overall space complexity: O(n^2)
 
-    def _reconstruct_shortest_paths_dest_driven(self, subproblems):
+    def _reconstruct_shortest_paths_dest_driven(self, dp):
         shortest_paths = []
         for vtx in self._vtx_list:
             shortest_path = [vtx.vtx_id]
@@ -515,11 +525,11 @@ class DirectedGraph(AbstractGraph):
             while budget >= 1:
                 # Find the next vertex
                 next_vtx = curr_vtx
-                min_path_length = subproblems[curr_vtx.vtx_id][budget - 1]
+                min_path_length = dp[curr_vtx.vtx_id][budget - 1]
                 for emissive_edge in curr_vtx.emissive_edges:
                     w = emissive_edge.head
-                    path_length = subproblems[w.vtx_id][budget - 1] + \
-                                  emissive_edge.length
+                    path_length = dp[w.vtx_id][budget - 1] + \
+                        emissive_edge.length
                     if path_length < min_path_length:
                         next_vtx = w
                         min_path_length = path_length
@@ -534,17 +544,17 @@ class DirectedGraph(AbstractGraph):
     def bellman_ford_shortest_paths_dest_driven_optimized(self, dest_vtx_id):
         # Check whether the input destination vertex exists
         dest_vtx = self._find_vtx(dest_vtx_id)
-        if dest_vtx is None:
+        if not dest_vtx:
             raise IllegalArgumentError("The destination vertex doesn't exist.")
 
         n = len(self._vtx_list)
         # Initialization
         # Space optimization: We only keep track of the subproblem solutions in
         # the previous outer iteration.
-        prev_iter_subproblems, curr_iter_subproblems = [0] * n, [0] * n
+        prev_iter_dp, curr_iter_subproblems = [0] * n, [0] * n
         for vtx in self._vtx_list:
             if vtx is not dest_vtx:
-                prev_iter_subproblems[vtx.vtx_id] = super()._INFINITY
+                prev_iter_dp[vtx.vtx_id] = super()._INFINITY
         # In order to recover the ability to reconstruct the shortest paths, we
         # also keep track of the next vertices in the previous outer iteration.
         prev_iter_next_vtxs, curr_iter_next_vtxs = [None] * n, [None] * n
@@ -557,12 +567,11 @@ class DirectedGraph(AbstractGraph):
         while budget <= n - 1 and made_update_in_iter:
             made_update_in_iter = False
             for vtx in self._vtx_list:
-                min_path_length = prev_iter_subproblems[vtx.vtx_id]
+                min_path_length = prev_iter_dp[vtx.vtx_id]
                 next_vtx = prev_iter_next_vtxs[vtx.vtx_id]
                 for emissive_edge in vtx.emissive_edges:
                     w = emissive_edge.head
-                    path_length = prev_iter_subproblems[w.vtx_id] + \
-                                  emissive_edge.length
+                    path_length = prev_iter_dp[w.vtx_id] + emissive_edge.length
                     if path_length < min_path_length:
                         min_path_length = path_length
                         made_update_in_iter = True
@@ -570,32 +579,34 @@ class DirectedGraph(AbstractGraph):
                 curr_iter_subproblems[vtx.vtx_id] = min_path_length
                 curr_iter_next_vtxs[vtx.vtx_id] = next_vtx
             budget += 1
-            prev_iter_subproblems = curr_iter_subproblems.copy()
+            prev_iter_dp = curr_iter_subproblems.copy()
             prev_iter_next_vtxs = curr_iter_next_vtxs.copy()
         made_update_in_iter = False
         for vtx in self._vtx_list:
-            min_path_length = prev_iter_subproblems[vtx.vtx_id]
+            min_path_length = prev_iter_dp[vtx.vtx_id]
             for emissive_edge in vtx.emissive_edges:
                 w = emissive_edge.head
-                path_length = prev_iter_subproblems[w.vtx_id] + \
-                              emissive_edge.length
+                path_length = prev_iter_dp[w.vtx_id] + emissive_edge.length
                 if path_length < min_path_length:
-                    path_length = min_path_length
+                    min_path_length = path_length
                     made_update_in_iter = True
             curr_iter_subproblems[vtx.vtx_id] = min_path_length
         if made_update_in_iter:
-            raise IllegalArgumentError('The graph has negative cycles reachable'
-                                       ' from the destination vertex.')
-        # The final solution lies in exactly in prev_iter_subproblems.
+            raise IllegalArgumentError(
+                'The graph has negative cycles reachable from the destination '
+                'vertex.'
+            )
+        # The final solution lies in exactly in prev_iter_dp.
         return self._reconstruct_shortest_paths_dest_driven_optimized(
-            next_vtxs=prev_iter_next_vtxs)
+            next_vtxs=prev_iter_next_vtxs
+        )
         # Overall running time complexity: O(mn)
         # Overall space complexity: O(n)
 
     def shortest_paths_dest_driven_push_based(self, dest_vtx_id):
         # Check whether the input destination vertex exists
         dest_vtx = self._find_vtx(dest_vtx_id)
-        if dest_vtx is None:
+        if not dest_vtx:
             raise IllegalArgumentError("The destination vertex doesn't exist.")
 
         n = len(self._vtx_list)
@@ -609,7 +620,8 @@ class DirectedGraph(AbstractGraph):
             self._notify_tail(incident_edge, min_path_lengths=min_path_lengths,
                               next_vtxs=next_vtxs)
         return self._reconstruct_shortest_paths_dest_driven_optimized(
-            next_vtxs=next_vtxs)
+            next_vtxs=next_vtxs
+        )
         # Overall running time complexity: O(2^n)
 
     def _notify_tail(self, edge: DirectedEdge, min_path_lengths: List[int],
@@ -630,6 +642,7 @@ class DirectedGraph(AbstractGraph):
             next_vtxs[curr_vtx.vtx_id] = next_vtx
             # Notify all incident neighbors
             for incident_edge in curr_vtx.incident_edges:
-                self._notify_tail(incident_edge,
-                                  min_path_lengths=min_path_lengths,
-                                  next_vtxs=next_vtxs)
+                self._notify_tail(
+                    incident_edge, min_path_lengths=min_path_lengths,
+                    next_vtxs=next_vtxs
+                )

@@ -87,8 +87,7 @@ public class UndirectedGraph implements GraphInterface {
         // Remove all the edges associated with the vertex to remove
         List<UndirectedEdge> edgesToRemove = vtxToRemove.edges();
         while (edgesToRemove.size() > 0) {
-            UndirectedEdge edgeToRemove = edgesToRemove.get(0);
-            removeEdge(edgeToRemove);
+            removeEdge(edgesToRemove.get(0));
         }
         // Remove the vertex
         vtxList.remove(vtxToRemove);
@@ -229,39 +228,37 @@ public class UndirectedGraph implements GraphInterface {
         int n = vtxList.size();
         // Initialization
         // Space optimization: We only keep track of the subproblem solutions in the previous out-most iteration.
-        int[][] prevIterSubproblems = new int[n][n], currIterSubproblems = new int[n][n];
+        int[][] prevIterDp = new int[n][n], currIterDp = new int[n][n];
         for (Vertex srcVtx : vtxList) {
             for (Vertex destVtx : vtxList) {
                 if (srcVtx != destVtx) {
-                    prevIterSubproblems[srcVtx.id()][destVtx.id()] = INFINITY;
+                    prevIterDp[srcVtx.id()][destVtx.id()] = INFINITY;
                 }
             }
         }
         for (UndirectedEdge edge : edgeList) {
-            prevIterSubproblems[edge.end1().id()][edge.end2().id()] = edge.length();
-            prevIterSubproblems[edge.end2().id()][edge.end1().id()] = edge.length();
+            prevIterDp[edge.end1().id()][edge.end2().id()] = edge.length();
+            prevIterDp[edge.end2().id()][edge.end1().id()] = edge.length();
         }
         // Bottom-up calculation
         for (int k = 1; k <= n; ++k) {
             for (Vertex srcVtx : vtxList) {
                 for (Vertex destVtx : vtxList) {
-                    int pathLengthWithoutKthVtx = prevIterSubproblems[srcVtx.id()][destVtx.id()];
+                    int pathLengthWithoutKthVtx = prevIterDp[srcVtx.id()][destVtx.id()];
                     int kthVtxID = k - 1;
-                    int pathLengthWithKthVtx = prevIterSubproblems[srcVtx.id()][kthVtxID]
-                            + prevIterSubproblems[kthVtxID][destVtx.id()];
-                    currIterSubproblems[srcVtx.id()][destVtx.id()] = Math.min(pathLengthWithoutKthVtx,
-                            pathLengthWithKthVtx);
+                    int pathLengthWithKthVtx = prevIterDp[srcVtx.id()][kthVtxID] + prevIterDp[kthVtxID][destVtx.id()];
+                    currIterDp[srcVtx.id()][destVtx.id()] = Math.min(pathLengthWithoutKthVtx, pathLengthWithKthVtx);
                 }
             }
-            System.arraycopy(currIterSubproblems, 0, prevIterSubproblems, 0, n);
+            System.arraycopy(currIterDp, 0, prevIterDp, 0, n);
         }
         for (Vertex vtx : vtxList) {
-            if (prevIterSubproblems[vtx.id()][vtx.id()] < 0) {
+            if (prevIterDp[vtx.id()][vtx.id()] < 0) {
                 throw new IllegalArgumentException("The graph has negative cycles.");
             }
         }
-        // The final solution lies in exactly prevIterSubproblems.
-        return prevIterSubproblems;
+        // The final solution lies in exactly prevIterDp.
+        return prevIterDp;
         // Overall running time complexity: O(n^3)
         // Overall space complexity: O(n^2)
     }
