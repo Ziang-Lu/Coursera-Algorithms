@@ -43,9 +43,8 @@ def find_mwis(weights: List[int]) -> Set[int]:
     :return: set{int}
     """
     # Check whether the input array is None or empty
-    if weights is None or len(weights) == 0:
-        raise IllegalArgumentError('The input weights should not be None or '
-                                   'empty.')
+    if not weights:
+        return set()
 
     if len(weights) == 1:
         return {0}
@@ -53,11 +52,11 @@ def find_mwis(weights: List[int]) -> Set[int]:
     # Initialization
     subproblems = [weights[0], max(weights[0], weights[1])]
     # Bottom-up calculation
-    for curr_vtx in range(2, len(weights)):
+    for curr in range(2, len(weights)):
         subproblems.append(
-            max(subproblems[curr_vtx - 1],
-                subproblems[curr_vtx - 2] + weights[curr_vtx]))
-    return _reconstruct_mwis(weights=weights, subproblems=subproblems)
+            max(subproblems[curr - 1], subproblems[curr - 2] + weights[curr])
+        )
+    return _reconstruct_mwis(weights, subproblems)
     # Overall running time complexity: O(n)
 
 
@@ -70,20 +69,19 @@ def _reconstruct_mwis(weights: List[int], subproblems: List[int]) -> Set[int]:
     :return: set{int}
     """
     mwis = set()
-    curr_vtx = len(subproblems) - 1
-    while curr_vtx >= 2:
-        if subproblems[curr_vtx - 1] >= \
-                subproblems[curr_vtx - 2] + weights[curr_vtx]:
-            curr_vtx -= 1
+    curr = len(subproblems) - 1
+    while curr >= 2:
+        if subproblems[curr - 1] >= subproblems[curr - 2] + weights[curr]:
+            curr -= 1
         else:
-            mwis.add(curr_vtx)
-            curr_vtx -= 2
-    if curr_vtx == 1:
+            mwis.add(curr)
+            curr -= 2
+    if curr == 1:
         if weights[0] >= weights[1]:
             mwis.add(0)
         else:
             mwis.add(1)
-    elif curr_vtx == 0:
+    elif curr == 0:
         mwis.add(0)
     return mwis
     # Running time complexity: O(n)

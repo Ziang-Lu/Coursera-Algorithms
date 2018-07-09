@@ -59,9 +59,8 @@ public class MaxWeightIndependentSet {
         subproblems[0] = weights[0];
         subproblems[1] = Math.max(weights[0], weights[1]);
         // Bottom-up calculation
-        for (int currVtx = 2; currVtx < weights.length; ++currVtx) {
-            subproblems[currVtx] = Math.max(subproblems[currVtx - 1],
-                    subproblems[currVtx - 2] + weights[currVtx]);
+        for (int curr = 2; curr < weights.length; ++curr) {
+            subproblems[curr] = Math.max(subproblems[curr - 1], subproblems[curr - 2] + weights[curr]);
         }
         return reconstructMWIS(weights);
         // Overall running time complexity: O(n)
@@ -75,25 +74,25 @@ public class MaxWeightIndependentSet {
      */
     private Set<Integer> reconstructMWIS(int[] weights) {
         Set<Integer> mwis = new HashSet<>();
-        int currVtx = subproblems.length - 1;
-        while (currVtx >= 2) {
-            if (subproblems[currVtx - 1] >= (subproblems[currVtx - 2] + weights[currVtx])) {
+        int curr = subproblems.length - 1;
+        while (curr >= 2) {
+            if (subproblems[curr - 1] >= (subproblems[curr - 2] + weights[curr])) {
                 // Case 1: The current vertex is not included.
-                --currVtx;
+                --curr;
             } else {
                 // Case 2: The current vertex is included.
-                mwis.add(currVtx);
+                mwis.add(curr);
                 // So the previous vertex must not be included.
-                currVtx -= 2;
+                curr -= 2;
             }
         }
-        if (currVtx == 1) {
+        if (curr == 1) {
             if (weights[0] >= weights[1]) {
                 mwis.add(0);
             } else {
                 mwis.add(1);
             }
-        } else if (currVtx == 0) {
+        } else if (curr == 0) {
             mwis.add(0);
         }
         return mwis;
