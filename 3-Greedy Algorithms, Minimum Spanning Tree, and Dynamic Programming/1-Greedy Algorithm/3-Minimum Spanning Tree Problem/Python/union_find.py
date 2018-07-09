@@ -19,6 +19,7 @@ class IllegalArgumentError(ValueError):
 
 
 class UnionFindObj(object):
+    __slots__ = ['_leader']
 
     def __init__(self):
         self._leader = self
@@ -50,6 +51,20 @@ class UnionFindObj(object):
 
 
 class UnionFind(object):
+    __slots__ = ['_groups']
+
+    @staticmethod
+    def _update_leader(group: List[UnionFindObj],
+                       new_leader: UnionFindObj) -> None:
+        """
+        Updates the leader of the given group to the given new leader.
+        :param group: list[UnionFindObj]
+        :param new_leader: UnionFindObj
+        :return: None
+        """
+        for obj in group:
+            obj.leader = new_leader
+        # Running time complexity: O(1)
 
     def __init__(self, objs: List[UnionFindObj]):
         """
@@ -77,27 +92,27 @@ class UnionFind(object):
         return obj.leader.obj_name
         # Running time complexity: O(1)
 
-    def union(self, group_name_a: str, group_name_b: str) -> None:
+    def union(self, name_a: str, name_b: str) -> None:
         """
         Fuses the given two groups together.
         Objects in the first group and objects in the second group should all
         coalesce, and be now in one single group.
-        :param group_name_a: str
-        :param group_name_b: str
+        :param name_a: str
+        :param name_b: str
         :return: None
         """
         # Check whether the input strings are null or empty
-        if group_name_a is None or len(group_name_a) == 0 or \
-                group_name_b is None or len(group_name_b) == 0:
-            raise IllegalArgumentError('The input group names should not be '
-                                       'None or empty.')
+        if not name_a or not name_b:
+            raise IllegalArgumentError(
+                'The input group names should not be None or empty.'
+            )
         # Check whether the input group names exist
-        if group_name_a not in self._groups or group_name_b not in self._groups:
-            raise IllegalArgumentError("The input group names don't both "
-                                       "exist.")
+        if name_a not in self._groups or name_b not in self._groups:
+            raise IllegalArgumentError(
+                "The input group names don't both exist."
+            )
 
-        group_a, group_b = \
-            self._groups[group_name_a], self._groups[group_name_b]
+        group_a, group_b = self._groups[name_a], self._groups[name_b]
         # In order to reduce the number of leader updates, let the smaller group
         # inherit the leader of the larger one.
         if len(group_a) >= len(group_b):
@@ -111,16 +126,3 @@ class UnionFind(object):
         larger.extend(smaller)
         self._groups[larger_leader.obj_name] = larger
         self._groups.pop(smaller_name)
-
-    def _update_leader(self, group: List[UnionFindObj],
-                       new_leader: UnionFindObj) -> None:
-        """
-        Private helper function to update the leader of the given group to the
-        given new leader.
-        :param group: list[UnionFindObj]
-        :param new_leader: UnionFindObj
-        :return: None
-        """
-        for obj in group:
-            obj.leader = new_leader
-        # Running time complexity: O(1)

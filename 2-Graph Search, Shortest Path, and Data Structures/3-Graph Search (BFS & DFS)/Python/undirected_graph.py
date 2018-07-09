@@ -9,7 +9,7 @@ Note that parallel edges and self-loops are not allowed.
 
 __author__ = 'Ziang Lu'
 
-from queue import Queue
+from collections import deque
 
 from graph_basics import AbstractGraph, AbstractVertex
 
@@ -19,6 +19,7 @@ class IllegalArgumentError(ValueError):
 
 
 class Vertex(AbstractVertex):
+    __slots__ = ['_edges', '_neighbors']
 
     def __init__(self, vtx_id: int):
         """
@@ -36,7 +37,7 @@ class Vertex(AbstractVertex):
         :return: UndirectedEdge
         """
         # Check whether the input neighbor is None
-        if neighbor is None:
+        if not neighbor:
             raise IllegalArgumentError('The input neighbor should not be None.')
 
         for edge in self._edges:
@@ -61,12 +62,13 @@ class Vertex(AbstractVertex):
         :return: None
         """
         # Check whether the input edge is None
-        if new_edge is None:
+        if not new_edge:
             raise IllegalArgumentError('The edge to add should not be None.')
         # Check whether the input edge involves this vertex
-        if (new_edge.end1 is not self) and (new_edge.end2 is not self):
-            raise IllegalArgumentError('The edge to add should involve this '
-                                       'vertex.')
+        if new_edge.end1 is not self and new_edge.end2 is not self:
+            raise IllegalArgumentError(
+                'The edge to add should involve this vertex.'
+            )
         # Find the neighbor associated with the input edge
         if new_edge.end1 is self:  # endpoint2 is the neighbor.
             neighbor = new_edge.end2
@@ -86,13 +88,14 @@ class Vertex(AbstractVertex):
         :return: None
         """
         # Check whether the input edge is None
-        if edge_to_remove is None:
+        if not edge_to_remove:
             raise IllegalArgumentError('The edge to remove should not be None.')
         # Check whether the input edge involves this vertex
         if (edge_to_remove.end1 is not self) and \
                 (edge_to_remove.end2 is not self):
-            raise IllegalArgumentError('The edge to remove should involve this '
-                                       'vertex.')
+            raise IllegalArgumentError(
+                'The edge to remove should involve this vertex.'
+            )
         # Find the neighbor associated with the input edge
         if edge_to_remove.end1 is self:  # endpoint2 is the neighbor.
             neighbor = edge_to_remove.end2
@@ -106,10 +109,13 @@ class Vertex(AbstractVertex):
         self._neighbors.remove(neighbor.vtx_id)
 
     def __repr__(self):
-        return 'Vertex #%d, Its neighbors: %s' % (self._vtx_id, self._neighbors)
+        return 'Vertex #{}, Its neighbors: {}'.format(
+            self._vtx_id, self._neighbors
+        )
 
 
 class UndirectedEdge(object):
+    __slots__ = ['_end1', '_end2']
 
     def __init__(self, end1: Vertex, end2: Vertex):
         """
@@ -155,11 +161,13 @@ class UndirectedEdge(object):
         self._end2 = end2
 
     def __repr__(self):
-        return 'Edge between Vertex #%d and Vertex #%d' % \
-               (self._end1.vtx_id, self._end2.vtx_id)
+        return 'Edge between Vertex #{end1_id} and Vertex #{end2_id}'.format(
+            end1_id=self._end1.vtx_id, end2_id=self._end2.vtx_id
+        )
 
 
 class UndirectedGraph(AbstractGraph):
+    __slots__ = []
 
     def __init__(self):
         """
@@ -178,21 +186,21 @@ class UndirectedGraph(AbstractGraph):
     def _remove_vtx(self, vtx_to_remove):
         # Remove all the edges associated with the vertex to remove
         edges_to_remove = vtx_to_remove.edges
-        while len(edges_to_remove) > 0:
-            edge_to_remove = edges_to_remove[0]
-            self._remove_edge(edge_to_remove=edge_to_remove)
+        while len(edges_to_remove):
+            self._remove_edge(edge_to_remove=edges_to_remove[0])
         # Remove the vertex
         self._vtx_list.remove(vtx_to_remove)
 
     def add_edge(self, end1_id, end2_id):
         # Check whether the input endpoints both exist
         end1, end2 = self._find_vtx(end1_id), self._find_vtx(end2_id)
-        if end1 is None or end2 is None:
+        if not end1 or not end2:
             raise IllegalArgumentError("The endpoints don't both exist.")
         # Check whether the input endpoints are the same (self-loop)
         if end1_id == end2_id:
-            raise IllegalArgumentError("The endpoints are the same "
-                                       "(self-loop).")
+            raise IllegalArgumentError(
+                'The endpoints are the same (self-loop).'
+            )
 
         new_edge = UndirectedEdge(end1, end2)
         self._add_edge(new_edge=new_edge)
@@ -206,12 +214,12 @@ class UndirectedGraph(AbstractGraph):
     def remove_edge(self, end1_id, end2_id):
         # Check whether the input endpoints both exist
         end1, end2 = self._find_vtx(end1_id), self._find_vtx(vtx_id=end2_id)
-        if end1 is None or end2 is None:
+        if not end1 or not end2:
             raise IllegalArgumentError("The endpoints don't both exist.")
 
         # Check whether the edge to remove exists
         edge_to_remove = end1.get_edge_with_neighbor(end2)
-        if edge_to_remove is None:
+        if not edge_to_remove:
             raise IllegalArgumentError("The edge to remove doesn't exist.")
 
         self._remove_edge(edge_to_remove=edge_to_remove)
@@ -225,21 +233,21 @@ class UndirectedGraph(AbstractGraph):
     def bfs(self, src_vtx_id):
         # Check whether the input source vertex exists
         src_vtx = self._find_vtx(src_vtx_id)
-        if src_vtx is None:
+        if not src_vtx:
             raise IllegalArgumentError("The input source vertex doesn't exist.")
 
         # 1. Initialize G as s explored and other vertices unexplored
         src_vtx.set_as_explored()
         # 2. Let Q be the queue of vertices initialized with s
-        queue = Queue()
-        queue.put(src_vtx)
+        queue = deque()
+        queue.append(src_vtx)
 
         findable_vtx_ids = [src_vtx_id]
 
         # 3. While Q is not empty
-        while not queue.empty():
+        while queue:
             # (1) Take out the first vertex v
-            vtx = queue.get()
+            vtx = queue.popleft()
             # (2) For every edge (v, w)
             for edge in vtx.edges:
                 # Find the neighbor
@@ -255,26 +263,26 @@ class UndirectedGraph(AbstractGraph):
                     findable_vtx_ids.append(neighbor.vtx_id)
 
                     # Push w to Q
-                    queue.put(neighbor)
+                    queue.append(neighbor)
         return findable_vtx_ids
 
     def shortest_path(self, src_vtx_id, dest_vtx_id):
         # Check whether the input source and destination vertices both exist
         src_vtx, dest_vtx = self._find_vtx(src_vtx_id), \
-                            self._find_vtx(dest_vtx_id)
-        if src_vtx is None:
+            self._find_vtx(dest_vtx_id)
+        if not src_vtx:
             raise IllegalArgumentError("The input source and destination "
                                        "vertices don't both exist.")
 
         # 1. Initialize G as s explored and other vertices unexplored
         src_vtx.set_as_explored()
         # 2. Let Q be the queue of vertices initialized with s
-        queue = Queue()
-        queue.put(src_vtx)
+        queue = deque()
+        queue.append(src_vtx)
         # 3. While Q is not empty
-        while not queue.empty():
+        while queue:
             # (1) Take out the first vertex v
-            vtx = queue.get()
+            vtx = queue.popleft()
             # (2) For every edge (v, w)
             for edge in vtx.edges:
                 # Find the neighbor
@@ -292,7 +300,7 @@ class UndirectedGraph(AbstractGraph):
                         return dest_vtx.layer
 
                     # Push w to Q
-                    queue.put(neighbor)
+                    queue.append(neighbor)
         # The destination vertex is not findable starting from the given source
         # vertex.
         return -1
@@ -305,7 +313,7 @@ class UndirectedGraph(AbstractGraph):
             if not vtx.explored:
                 # Do BFS towards v
                 # (Discovers precisely v's connected component)
-                component = self.bfs(src_vtx_id=vtx.vtx_id)
+                component = self.bfs(vtx.vtx_id)
                 components.append(component)
         return len(components)
 
@@ -327,8 +335,7 @@ class UndirectedGraph(AbstractGraph):
                 findable_vtx_ids.append(neighbor.vtx_id)
 
                 # Do DFS on (G, w)   (Recursion)
-                self._dfs_helper(vtx=neighbor,
-                                 findable_vtx_ids=findable_vtx_ids)
+                self._dfs_helper(neighbor, findable_vtx_ids=findable_vtx_ids)
 
     def num_of_connected_components_with_dfs(self):
         # Undirected connectivity
@@ -339,6 +346,6 @@ class UndirectedGraph(AbstractGraph):
             if not vtx.explored:
                 # Do DFS towards v
                 # (Discovers precisely v's connected component)
-                component = self.dfs(src_vtx_id=vtx.vtx_id)
+                component = self.dfs(vtx.vtx_id)
                 components.append(component)
         return len(components)

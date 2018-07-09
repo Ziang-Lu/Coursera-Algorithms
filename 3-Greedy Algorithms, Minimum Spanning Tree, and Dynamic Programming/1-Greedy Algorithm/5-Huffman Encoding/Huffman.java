@@ -65,6 +65,28 @@ public class Huffman {
     }
 
     /**
+     * Gets a node with minimum frequency from the given two queues.
+     * @param primitives queue of primitive nodes
+     * @param merged queue of merged nodes
+     * @return node with minimum frequency
+     */
+    private static Node getMinFreqNode(Queue<Node> primitives, Queue<Node> merged) {
+        if (primitives.size() == 0) {
+            return merged.poll();
+        } else if (merged.size() == 0) {
+            return primitives.poll();
+        }
+
+        Node primitivesFront = primitives.peek();
+        Node mergedFront = merged.peek();
+        if (primitivesFront.compareTo(mergedFront) <= 0) {
+            return primitives.poll();
+        } else {
+            return merged.poll();
+        }
+    }
+
+    /**
      * Root of the Huffman tree.
      */
     private Node huffmanTreeRoot;
@@ -167,8 +189,7 @@ public class Huffman {
         // Check whether the input string is null or empty
         if ((s == null) || (s.length() == 0)) {
             huffmanTreeRoot = new Node(null, 0);
-            return;
-        }
+            return
 
         // Create a map between characters and their frequencies
         Map<Character, Integer> freqOfChars = getFreqOfChars(s);
@@ -200,29 +221,6 @@ public class Huffman {
         encodingMap = new HashMap<>();
         createEncoding(huffmanTreeRoot, new StringBuilder());
         // Overall running time complexity: O(nlog n)
-    }
-
-    /**
-     * Private helper method to get a node with minimum frequency from the given
-     * two queues.
-     * @param primitives queue of primitive nodes
-     * @param merged queue of merged nodes
-     * @return node with minimum frequency
-     */
-    private Node getMinFreqNode(Queue<Node> primitives, Queue<Node> merged) {
-        if (primitives.size() == 0) {
-            return merged.poll();
-        } else if (merged.size() == 0) {
-            return primitives.poll();
-        }
-
-        Node primitivesFront = primitives.peek();
-        Node mergedFront = merged.peek();
-        if (primitivesFront.compareTo(mergedFront) <= 0) {
-            return primitives.poll();
-        } else {
-            return merged.poll();
-        }
     }
 
     /**

@@ -11,6 +11,8 @@ class IllegalArgumentError(ValueError):
 
 
 class AbstractVertex(object):
+    __slots__ = ['_vtx_id', '_explored']
+
     def __init__(self, vtx_id):
         """
         Constructor with parameter.
@@ -44,6 +46,8 @@ class AbstractVertex(object):
 
 
 class AbstractGraph(ABC):
+    __slots__ = ['_vtx_list', '_edge_list']
+
     def __init__(self):
         """
         Default constructor.
@@ -52,7 +56,7 @@ class AbstractGraph(ABC):
         self._edge_list = []
 
     @abstractmethod
-    def add_vtx(self, new_vtx_id):
+    def add_vtx(self, new_vtx_id: int) -> None:
         """
         Adds a new vertex to this graph.
         :param new_vtx_id: int
@@ -60,11 +64,11 @@ class AbstractGraph(ABC):
         """
         pass
 
-    def _find_vtx(self, vtx_id):
+    def _find_vtx(self, vtx_id: int) -> AbstractVertex:
         """
         Private helper function to find the given vertex in this adjacency list.
         :param vtx_id: int
-        :return: Vertex
+        :return: AbstractVertex
         """
         for vtx in self._vtx_list:
             if vtx.vtx_id == vtx_id:
@@ -72,7 +76,7 @@ class AbstractGraph(ABC):
         # Not found
         return None
 
-    def remove_vtx(self, vtx_id):
+    def remove_vtx(self, vtx_id: int) -> None:
         """
         Removes a vertex from this graph.
         :param vtx_id: int
@@ -80,22 +84,22 @@ class AbstractGraph(ABC):
         """
         # Check whether the input vertex exists
         vtx_to_remove = self._find_vtx(vtx_id)
-        if vtx_to_remove is None:
+        if not vtx_to_remove:
             raise IllegalArgumentError("The input vertex doesn't exist.")
 
         self._remove_vtx(vtx_to_remove=vtx_to_remove)
 
     @abstractmethod
-    def _remove_vtx(self, vtx_to_remove):
+    def _remove_vtx(self, vtx_to_remove: AbstractVertex) -> None:
         """
         Private helper function to remove the given vertex from this graph.
-        :param vtx_to_remove: Vertex
+        :param vtx_to_remove: AbstractVertex
         :return: None
         """
         pass
 
     @abstractmethod
-    def add_edge(self, end1_id, end2_id, cost):
+    def add_edge(self, end1_id: int, end2_id: int, cost: float) -> None:
         """
         Adds a new edge to this graph.
         :param end1_id: int
@@ -106,7 +110,7 @@ class AbstractGraph(ABC):
         pass
 
     @abstractmethod
-    def _add_edge(self, new_edge):
+    def _add_edge(self, new_edge) -> None:
         """
         Private helper function to add the given edge to this graph.
         :param new_edge: Edge
@@ -115,7 +119,7 @@ class AbstractGraph(ABC):
         pass
 
     @abstractmethod
-    def remove_edge(self, end1_id, end2_id):
+    def remove_edge(self, end1_id: int, end2_id: int) -> None:
         """
         Removes an edge from this graph.
         :param end1_id: int
@@ -125,7 +129,7 @@ class AbstractGraph(ABC):
         pass
 
     @abstractmethod
-    def _remove_edge(self, edge_to_remove):
+    def _remove_edge(self, edge_to_remove) -> None:
         """
         Private helper function to remove the given edge from this graph.
         :param edge_to_remove: Edge
@@ -133,7 +137,7 @@ class AbstractGraph(ABC):
         """
         pass
 
-    def show_graph(self):
+    def show_graph(self) -> None:
         """
         Shows this graph.
         :return: None

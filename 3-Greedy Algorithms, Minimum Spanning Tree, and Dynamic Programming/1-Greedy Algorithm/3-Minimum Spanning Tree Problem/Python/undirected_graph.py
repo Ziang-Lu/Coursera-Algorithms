@@ -25,6 +25,10 @@ class IllegalArgumentError(ValueError):
 
 @total_ordering
 class Vertex(AbstractVertex, UnionFindObj):
+    __slots__ = [
+        '_edges', '_neighbors', '_min_cost_incident_edge', '_min_incident_cost'
+    ]
+
     DEFAULT_MIN_INCIDENT_COST = sys.maxsize
 
     def __init__(self, vtx_id: int):
@@ -46,7 +50,7 @@ class Vertex(AbstractVertex, UnionFindObj):
         :return: UndirectedEdge
         """
         # Check whether the input neighbor is None
-        if neighbor is None:
+        if not neighbor:
             raise IllegalArgumentError('The input neighbor should not be None.')
 
         for edge in self._edges:
@@ -81,7 +85,7 @@ class Vertex(AbstractVertex, UnionFindObj):
         return self._min_incident_cost
 
     @property
-    def obj_name(self):
+    def obj_name(self) -> str:
         return str(self._vtx_id)
 
     def add_edge(self, new_edge) -> None:
@@ -91,12 +95,13 @@ class Vertex(AbstractVertex, UnionFindObj):
         :return: None
         """
         # Check whether the input edge is None
-        if new_edge is None:
+        if not new_edge:
             raise IllegalArgumentError('The edge to add should not be None.')
         # Check whether the input edge involves this vertex
-        if (new_edge.end1 is not self) and (new_edge.end2 is not self):
-            raise IllegalArgumentError('The edge to add should involve this '
-                                       'vertex.')
+        if new_edge.end1 is not self and new_edge.end2 is not self:
+            raise IllegalArgumentError(
+                'The edge to add should involve this vertex.'
+            )
         # Find the neighbor associated with the input edge
         if new_edge.end1 is self:  # endpoint2 is the neighbor.
             neighbor = new_edge.end2
@@ -116,13 +121,13 @@ class Vertex(AbstractVertex, UnionFindObj):
         :return: None
         """
         # Check whether the input edge is None
-        if edge_to_remove is None:
+        if not edge_to_remove:
             raise IllegalArgumentError('The edge to remove should not be None.')
         # Check whether the input edge involves this vertex
-        if (edge_to_remove.end1 is not self) and \
-                (edge_to_remove.end2 is not self):
-            raise IllegalArgumentError('The edge to remove should involve this '
-                                       'vertex.')
+        if edge_to_remove.end1 is not self and edge_to_remove.end2 is not self:
+            raise IllegalArgumentError(
+                'The edge to remove should involve this vertex.'
+            )
         # Find the neighbor associated with the input edge
         if edge_to_remove.end1 is self:  # endpoint2 is the neighbor.
             neighbor = edge_to_remove.end2
@@ -157,11 +162,14 @@ class Vertex(AbstractVertex, UnionFindObj):
         return self._min_incident_cost < other.min_incident_cost
 
     def __repr__(self):
-        return 'Vertex #%d, Its neighbors: %s' % (self._vtx_id, self._neighbors)
+        return 'Vertex #{}, Its neighbors: {}'.format(
+            self._vtx_id, self._neighbors
+        )
 
 
 @total_ordering
 class UndirectedEdge(object):
+    __slots__ = ['_end1', '_end2', '_cost']
 
     def __init__(self, end1: Vertex, end2: Vertex, cost: float):
         """
@@ -220,11 +228,13 @@ class UndirectedEdge(object):
         return self._cost < other.cost
 
     def __repr__(self):
-        return 'Edge between Vertex #%d and Vertex #%d' % \
-               (self._end1.vtx_id, self._end2.vtx_id)
+        return 'Edge between Vertex #{end1_id} and Vertex #{end2_id}'.format(
+            end1_id=self._end1.vtx_id, end2_id=self._end2.vtx_id
+        )
 
 
 class UndirectedGraph(AbstractGraph):
+    __slots__ = []
 
     def __init__(self):
         """
@@ -243,21 +253,21 @@ class UndirectedGraph(AbstractGraph):
     def _remove_vtx(self, vtx_to_remove):
         # Remove all the edges associated with the vertex to remove
         edges_to_remove = vtx_to_remove.edges
-        while len(edges_to_remove) > 0:
-            edge_to_remove = edges_to_remove[0]
-            self._remove_edge(edge_to_remove=edge_to_remove)
+        while len(edges_to_remove):
+            self._remove_edge(edge_to_remove=edges_to_remove[0])
         # Remove the vertex
         self._vtx_list.remove(vtx_to_remove)
 
     def add_edge(self, end1_id, end2_id, cost):
         # Check whether the input endpoints both exist
         end1, end2 = self._find_vtx(end1_id), self._find_vtx(end2_id)
-        if end1 is None or end2 is None:
+        if not end1 or not end2:
             raise IllegalArgumentError("The endpoints don't both exist.")
         # Check whether the input endpoints are the same (self-loop)
         if end1_id == end2_id:
-            raise IllegalArgumentError("The endpoints are the same "
-                                       "(self-loop).")
+            raise IllegalArgumentError(
+                'The endpoints are the same (self-loop).'
+            )
 
         new_edge = UndirectedEdge(end1, end2, cost)
         self._add_edge(new_edge=new_edge)
@@ -271,12 +281,12 @@ class UndirectedGraph(AbstractGraph):
     def remove_edge(self, end1_id, end2_id):
         # Check whether the input endpoints both exist
         end1, end2 = self._find_vtx(end1_id), self._find_vtx(vtx_id=end2_id)
-        if end1 is None or end2 is None:
+        if not end1 or not end2:
             raise IllegalArgumentError("The endpoints don't both exist.")
 
         # Check whether the edge to remove exists
         edge_to_remove = end1.get_edge_with_neighbor(end2)
-        if edge_to_remove is None:
+        if not edge_to_remove:
             raise IllegalArgumentError("The edge to remove doesn't exist.")
 
         self._remove_edge(edge_to_remove=edge_to_remove)
@@ -334,7 +344,7 @@ class UndirectedGraph(AbstractGraph):
                 if neighbor.vtx_id not in spanned:
                     heapq.heappush(crossing_edges, w_edge)
 
-        return sum(map(lambda edge: edge.cost, curr_spanning_tree))
+        return sum(map(lambda x: x.cost, curr_spanning_tree))
         # Overall running time complexity: O((m + n)log m)
         # Since usually m >= n, it could be simplified to O(mlog m).
 
@@ -359,7 +369,7 @@ class UndirectedGraph(AbstractGraph):
                                             edge.end2):
                 curr_spanning_tree.append(edge)
 
-        return sum(map(lambda edge: edge.cost, curr_spanning_tree))
+        return sum(map(lambda x: x.cost, curr_spanning_tree))
         # Overall running time complexity: O(mn)
 
     def _dfs_and_check_path(self, spanning_tree: List[UndirectedEdge],
@@ -379,8 +389,9 @@ class UndirectedGraph(AbstractGraph):
         return self._dfs_and_check_path_helper(connections, curr=v, target=w)
         # Running time complexity: O(n)
 
-    def _construct_connections(self, edges: List[UndirectedEdge]) -> Dict[
-        int, List[Vertex]]:
+    def _construct_connections(
+        self, edges: List[UndirectedEdge]
+    ) -> Dict[int, List[Vertex]]:
         """
         Helper function to construct the connection map from the given edges.
         :param edges: list[UndirectedEdge]
@@ -457,8 +468,8 @@ class UndirectedGraph(AbstractGraph):
             if edge.end1.leader is not edge.end2.leader:
                 curr_spanning_tree.append(edge)
                 # Fuse the two connected components to a single one
-                group_name_v, group_name_w = \
-                    edge.end1.leader.obj_name, edge.end2.leader.obj_name
+                group_name_v, group_name_w = edge.end1.leader.obj_name, \
+                    edge.end2.leader.obj_name
                 union_find.union(group_name_v, group_name_w)
         # Originally we would think it involves O(mn) leader updates; however,
         # we can change to a "vertex-centric" view:
@@ -471,7 +482,7 @@ class UndirectedGraph(AbstractGraph):
         # Thus, each vertex experiences O(log n) leader updates, leading to a
         # O(nlog n) leader updates in total.
 
-        return sum(map(lambda edge: edge.cost, curr_spanning_tree))
+        return sum(map(lambda x: x.cost, curr_spanning_tree))
         # Overall running time complexity: O(mlog m)
 
     def clustering_with_max_spacing(self, k: int) -> float:
@@ -485,8 +496,9 @@ class UndirectedGraph(AbstractGraph):
         """
         # Check whether the input k is greater than 1
         if k <= 1:
-            raise IllegalArgumentError('The number of clusters must be greater '
-                                       'than 1.')
+            raise IllegalArgumentError(
+                'The number of clusters must be greater than 1.'
+            )
 
         edges = sorted(self._edge_list)
 
@@ -501,8 +513,8 @@ class UndirectedGraph(AbstractGraph):
                 # Let p, q = closest pair of separated points, which determines
                 # the current spacing
                 # Merge the clusters containing p and q into a single cluster
-                group_name_p, group_name_q = \
-                    edge.end1.leader.obj_name, edge.end2.leader.obj_name
+                group_name_p, group_name_q = edge.end1.leader.obj_name, \
+                    edge.end2.leader.obj_name
                 union_find.union(group_name_p, group_name_q)
                 if union_find.num_of_groups() == k:  # Repeat until only k
                     # clusters
@@ -510,5 +522,5 @@ class UndirectedGraph(AbstractGraph):
                     # cheapest crossing edge among different connected
                     # components.
                     stopped = True
-        return 0.0
+        return 0.0  # Codes should never reach here.
         # Overall running time complexity: O(mlog m)

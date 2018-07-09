@@ -49,6 +49,7 @@ from typing import List
 
 @total_ordering
 class Job(object):
+    __slots__ = ['_weight', '_length']
 
     def __init__(self, weight: float, length: float):
         """
@@ -76,13 +77,14 @@ class Job(object):
         return self._length
 
     def __lt__(self, other):
-        score, other_score = self._weight / self._length, other.weight / \
-                             other.length
+        score, other_score = self._weight / self._length, \
+            other.weight / other.length
         return other_score < score
 
     def __repr__(self):
-        return 'Job with weight %lf and length %lf' % \
-               (self._weight, self._length)
+        return 'Job with weight {weight} and length {length}'.format(
+            weight=self._weight, length=self._length
+        )
 
 
 def schedule(jobs: List[Job]) -> None:

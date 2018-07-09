@@ -15,6 +15,18 @@ import java.util.Map;
 public class UnionFind <T> {
 
     /**
+     * Updates leader of the given group to the given new leader.
+     * @param group given group
+     * @param newLeader given new leader
+     */
+    private static void updateLeader(List<UnionFindObj> group, UnionFindObj newLeader) {
+        for (UnionFindObj obj : group) {
+            obj.setLeader(newLeader);
+        }
+        // Running time complexity: O(n)
+    }
+
+    /**
      * Mapping between group names and the corresponding group.
      * Maintain a linked structure, and each subset has an arbitrary leader
      * (representative of the group) object, and the group name is exactly the
@@ -59,20 +71,20 @@ public class UnionFind <T> {
      * Fuses the given two groups together.
      * Objects in the first group and objects in the second group should all
      * coalesce, and be now in one single group.
-     * @param groupNameA name of the first group
-     * @param groupNameB name of the second group
+     * @param nameA name of the first group
+     * @param nameB name of the second group
      */
-    public void union(String groupNameA, String groupNameB) {
+    public void union(String nameA, String nameB) {
         // Check whether the input strings are null or empty
-        if ((groupNameA == null) || (groupNameA.length() == 0) || (groupNameB == null) || (groupNameB.length() == 0)) {
+        if ((nameA == null) || (nameA.length() == 0) || (nameB == null) || (nameB.length() == 0)) {
             throw new IllegalArgumentException("The input group names should not be null or empty.");
         }
         // Check whether the input group names exist
-        if (!(groups.containsKey(groupNameA)) || !(groups.containsKey(groupNameB))) {
+        if (!(groups.containsKey(nameA)) || !(groups.containsKey(nameB))) {
             throw new IllegalArgumentException("The input group names don't both exist.");
         }
 
-        List<UnionFindObj> groupA = groups.get(groupNameA), groupB = groups.get(groupNameB);
+        List<UnionFindObj> groupA = groups.get(nameA), groupB = groups.get(nameB);
         // In order to reduce the number of leader updates, let the smaller group inherit the leader of the larger one.
         List<UnionFindObj> larger = null, smaller = null;
         if (groupA.size() >= groupB.size()) {
@@ -87,18 +99,6 @@ public class UnionFind <T> {
         larger.addAll(smaller);
         groups.put(largerLeader.objName(), larger);
         groups.remove(smallerName);
-        // Running time complexity: O(n)
-    }
-
-    /**
-     * Private helper method to update leader of the given group to the given new leader.
-     * @param group given group
-     * @param newLeader given new leader
-     */
-    private void updateLeader(List<UnionFindObj> group, UnionFindObj newLeader) {
-        for (UnionFindObj obj : group) {
-            obj.setLeader(newLeader);
-        }
         // Running time complexity: O(n)
     }
 

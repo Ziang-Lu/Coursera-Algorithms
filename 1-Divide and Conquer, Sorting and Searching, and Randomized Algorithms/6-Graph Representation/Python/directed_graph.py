@@ -272,8 +272,7 @@ class DirectedGraph(AbstractGraph):
         edges_to_remove.extend(vtx_to_remove.emissive_edges)
         edges_to_remove.extend(vtx_to_remove.incident_edges)
         while len(edges_to_remove):
-            edge_to_remove = edges_to_remove[0]
-            self._remove_edge(edge_to_remove=edge_to_remove)
+            self._remove_edge(edge_to_remove=edges_to_remove[0])
         # Remove the vertex
         self._vtx_list.remove(vtx_to_remove)
 

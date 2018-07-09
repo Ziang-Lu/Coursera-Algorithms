@@ -65,6 +65,7 @@ class LazyUnionObj:
     """
     Simple class for object to be stored in Union-Find data structure.
     """
+    __slots__ = ['_name', '_parent', '_rank']
 
     def __init__(self, name: str):
         """
@@ -157,11 +158,11 @@ class LazyUnion(object):
         # Running time complexity: O(1)
 
     @staticmethod
-    def _path_compression(obj, root: LazyUnionObj) -> LazyUnionObj:
+    def _path_compression(obj, root: LazyUnionObj) -> None:
         """
         Private helper function to do path compression for the given object.
         :param obj: LazyUnionObj
-        :param root: LazyUnionObj
+        :param root: None
         """
         curr = obj
         while not LazyUnion._is_root(curr):

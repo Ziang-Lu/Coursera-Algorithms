@@ -75,8 +75,7 @@ public class UndirectedGraph implements GraphInterface {
         // Remove all the edges associated with the vertex to remove
         List<UndirectedEdge> edgesToRemove = vtxToRemove.edges();
         while (edgesToRemove.size() > 0) {
-            UndirectedEdge edgeToRemove = edgesToRemove.get(0);
-            removeEdge(edgeToRemove);
+            removeEdge(edgesToRemove.get(0));
         }
         // Remove the vertex
         vtxList.remove(vtxToRemove);

@@ -191,8 +191,7 @@ class UndirectedGraph(AbstractGraph):
         # Remove all the edges associated with the vertex to remove
         edges_to_remove = vtx_to_remove.edges
         while len(edges_to_remove):
-            edge_to_remove = edges_to_remove[0]
-            self._remove_edge(edge_to_remove=edge_to_remove)
+            self._remove_edge(edge_to_remove=edges_to_remove[0])
         # Remove the vertex
         self._vtx_list.remove(vtx_to_remove)
 

@@ -9,7 +9,7 @@ Note that parallel edges and self-loops are not allowed.
 
 __author__ = 'Ziang Lu'
 
-from queue import Queue
+from collections import deque
 from typing import List
 
 from graph_basics import AbstractGraph, AbstractVertex
@@ -20,6 +20,12 @@ class IllegalArgumentError(ValueError):
 
 
 class Vertex(AbstractVertex):
+    __slots__ = [
+        '_emissive_edges',
+        '_emissive_neighbors',
+        '_incident_edges',
+        '_incident_neighbors'
+    ]
 
     def __init__(self, vtx_id: int):
         """
@@ -39,7 +45,7 @@ class Vertex(AbstractVertex):
         :return: DirectedEdge
         """
         # Check whether the input head is None
-        if head is None:
+        if not head:
             raise IllegalArgumentError('The input head should not be None.')
 
         for emissive_edge in self._emissive_edges:
@@ -63,7 +69,7 @@ class Vertex(AbstractVertex):
         :return: DirectedEdge
         """
         # Check whether the input tail is None
-        if tail is None:
+        if not tail:
             raise IllegalArgumentError('The input tail should not be None.')
 
         for incident_edge in self._incident_edges:
@@ -87,13 +93,16 @@ class Vertex(AbstractVertex):
         :return: None
         """
         # Check whether the input emissive edge is None
-        if new_emissive_edge is None:
-            raise IllegalArgumentError('The emissive edge to add should not be '
-                                       'None.')
+        if not new_emissive_edge:
+            raise IllegalArgumentError(
+                'The emissive edge to add should not be None.'
+            )
         # Check whether the input emissive edge involves this vertex as the tail
         if new_emissive_edge.tail is not self:
-            raise IllegalArgumentError('The emissive edge to add should involve'
-                                       ' this vertex as the tail.')
+            raise IllegalArgumentError(
+                'The emissive edge to add should involve this vertex as the '
+                'tail.'
+            )
         # Check whether the input emissive edge already exists
         if new_emissive_edge.head.vtx_id in self._emissive_neighbors:
             raise IllegalArgumentError('The emissive edge already exists.')
@@ -108,13 +117,16 @@ class Vertex(AbstractVertex):
         :return: None
         """
         # Check whether the input incident edge is None
-        if new_incident_edge is None:
-            raise IllegalArgumentError('The incident edge to add should not be '
-                                       'None.')
+        if not new_incident_edge:
+            raise IllegalArgumentError(
+                'The incident edge to add should not be None.'
+            )
         # Check whether the input incident edge involves this vertex as the head
         if new_incident_edge.head is not self:
-            raise IllegalArgumentError('The incident edge to add should involve'
-                                       ' this vertex as the head.')
+            raise IllegalArgumentError(
+                'The incident edge to add should involve this vertex as the '
+                'head.'
+            )
         # Check whether the input incident edge already exists
         if new_incident_edge.tail.vtx_id in self._incident_neighbors:
             raise IllegalArgumentError('The incident edge already exists.')
@@ -129,17 +141,21 @@ class Vertex(AbstractVertex):
         :return: None
         """
         # Check whether the input emissive edge is None
-        if emissive_edge_to_remove is None:
-            raise IllegalArgumentError('The emissive edge to remove should not '
-                                       'be None.')
+        if not emissive_edge_to_remove:
+            raise IllegalArgumentError(
+                'The emissive edge to remove should not be None.'
+            )
         # Check whether the input emissive edge involves this vertex as the tail
         if emissive_edge_to_remove.tail is not self:
-            raise IllegalArgumentError('The emissive edge to remove should '
-                                       'involve this vertex as the tail.')
+            raise IllegalArgumentError(
+                'The emissive edge to remove should involve this vertex as the '
+                'tail.'
+            )
         # Check whether the input emissive edge exists
         if emissive_edge_to_remove.head.vtx_id not in self._emissive_neighbors:
-            raise IllegalArgumentError("The emissive edge to remove doesn't "
-                                       "exist.")
+            raise IllegalArgumentError(
+                "The emissive edge to remove doesn't exist."
+            )
 
         self._emissive_edges.remove(emissive_edge_to_remove)
         self._emissive_neighbors.remove(emissive_edge_to_remove.head.vtx_id)
@@ -151,25 +167,29 @@ class Vertex(AbstractVertex):
         :return: None
         """
         # Check whether the input incident edge is None
-        if incident_edge_to_remove is None:
-            raise IllegalArgumentError('The incident edge to remove should not '
-                                       'be None.')
+        if not incident_edge_to_remove:
+            raise IllegalArgumentError(
+                'The incident edge to remove should not be None.'
+            )
         # Check whether the input incident edge involves this vertex as the head
         if incident_edge_to_remove.head is not self:
-            raise IllegalArgumentError('The incident edge to remove should '
-                                       'involve this vertex as the head.')
+            raise IllegalArgumentError(
+                'The incident edge to remove should involve this vertex as the '
+                'head.'
+            )
         # Check whether the input incident edge exists
         if incident_edge_to_remove.tail.vtx_id not in self._incident_neighbors:
-            raise IllegalArgumentError("The incident edge to remove doesn't "
-                                       "exist.")
+            raise IllegalArgumentError(
+                "The incident edge to remove doesn't exist."
+            )
 
         self._incident_edges.remove(incident_edge_to_remove)
         self._incident_neighbors.remove(incident_edge_to_remove.tail.vtx_id)
 
     def __repr__(self):
-        s = 'Vertex #%d\n' % self._vtx_id
-        s += 'Its emissive neighbors: %s\n' % self._emissive_neighbors
-        s += 'Its incident neighbors: %s\n' % self._incident_neighbors
+        s = 'Vertex #{vtx_id}\n'.format(vtx_id=self._vtx_id)
+        s += 'Its emissive neighbors: {}\n'.format(self._emissive_neighbors)
+        s += 'Its incident neighbors: %s\n'.format(self._incident_neighbors)
         return s
 
     def __eq__(self, other):
@@ -177,6 +197,7 @@ class Vertex(AbstractVertex):
 
 
 class DirectedEdge(object):
+    __slots__ = ['_tail', '_head']
 
     def __init__(self, tail: Vertex, head: Vertex):
         """
@@ -222,11 +243,13 @@ class DirectedEdge(object):
         self._head = head
 
     def __repr__(self):
-        return 'Edge from Vertex #%d to Vertex #%d' % \
-               (self._tail.vtx_id, self._head.vtx_id)
+        return 'Edge from Vertex #{tail_id} to Vertex #{head_id}'.format(
+            tail_id=self._tail.vtx_id, head_id=self._head.vtx_id
+        )
 
 
 class DirectedGraph(AbstractGraph):
+    __slots__ = []
 
     def __init__(self):
         """
@@ -247,21 +270,21 @@ class DirectedGraph(AbstractGraph):
         edges_to_remove = []
         edges_to_remove.extend(vtx_to_remove.emissive_edges)
         edges_to_remove.extend(vtx_to_remove.incident_edges)
-        while len(edges_to_remove) > 0:
-            edge_to_remove = edges_to_remove[0]
-            self._remove_edge(edge_to_remove=edge_to_remove)
+        while len(edges_to_remove):
+            self._remove_edge(edge_to_remove=edges_to_remove[0])
         # Remove the vertex
         self._vtx_list.remove(vtx_to_remove)
 
     def add_edge(self, tail_id, head_id):
         # Check whether the input endpoints both exist
         tail, head = self._find_vtx(tail_id), self._find_vtx(head_id)
-        if tail is None or head is None:
+        if not tail or not head:
             raise IllegalArgumentError("The endpoints don't both exist.")
         # Check whether the input vertices are the same
         if tail_id == head_id:
-            raise IllegalArgumentError("The endpoints are the same "
-                                       "(self-loop).")
+            raise IllegalArgumentError(
+                'The endpoints are the same (self-loop).'
+            )
 
         new_edge = DirectedEdge(tail, head)
         self._add_edge(new_edge=new_edge)
@@ -275,11 +298,11 @@ class DirectedGraph(AbstractGraph):
     def remove_edge(self, tail_id, head_id):
         # Check whether the input endpoints both exist
         tail, head = self._find_vtx(tail_id), self._find_vtx(head_id)
-        if tail is None or head is None:
+        if not tail or not head:
             raise IllegalArgumentError("The endpoints don't both exist.")
         # Check whether the edge to remove exists
         edge_to_remove = tail.get_emissive_edge_with_head(head)
-        if edge_to_remove is None:
+        if not edge_to_remove:
             raise IllegalArgumentError("The edge to remove doesn't exist.")
 
         self._remove_edge(edge_to_remove=edge_to_remove)
@@ -290,37 +313,24 @@ class DirectedGraph(AbstractGraph):
         head.remove_incident_edge(edge_to_remove)
         self._edge_list.remove(edge_to_remove)
 
-    def remove_directed_edges_between_pair(self, tail_id, head_id):
-        """
-        Removes all the directed edges between a vertex pair from this graph.
-        :param tail_id: int
-        :param head_id: int
-        :return: None
-        """
-        try:
-            while True:
-                self.remove_edge(tail_id=tail_id, head_id=head_id)
-        except IllegalArgumentError:
-            pass
-
     def bfs(self, src_vtx_id):
         # Check whether the input source vertex exists
         src_vtx = self._find_vtx(src_vtx_id)
-        if src_vtx is None:
+        if not src_vtx:
             raise IllegalArgumentError("The input source vertex doesn't exist.")
 
         # 1. Initialize G as s explored and other vertices unexplored
         src_vtx.set_as_explored()
         # 2. Let Q be the queue of vertices initialized with s
-        queue = Queue()
-        queue.put(src_vtx)
+        queue = deque()
+        queue.append(src_vtx)
 
         findable_vtx_ids = [src_vtx_id]
 
         # 3. While Q is not empty
-        while not queue.empty():
+        while queue:
             # (1) Take out the first vertex v
-            vtx = queue.get()
+            vtx = queue.popleft()
             # (2) For every directed edge (v, w)
             for edge in vtx.emissive_edges:
                 w = edge.head
@@ -332,26 +342,27 @@ class DirectedGraph(AbstractGraph):
                     findable_vtx_ids.append(w.vtx_id)
 
                     # Push w to Q
-                    queue.put(w)
+                    queue.append(w)
         return findable_vtx_ids
 
     def shortest_path(self, src_vtx_id, dest_vtx_id):
         # Check whether the input source and destination vertices both exist
         src_vtx, dest_vtx = self._find_vtx(src_vtx_id), \
-                            self._find_vtx(dest_vtx_id)
-        if src_vtx is None:
-            raise IllegalArgumentError("The input source and destination "
-                                       "vertices don't both exist.")
+            self._find_vtx(dest_vtx_id)
+        if not src_vtx:
+            raise IllegalArgumentError(
+                "The input source and destination vertices don't both exist."
+            )
 
         # 1. Initialize G as s explored and other vertices unexplored
         src_vtx.set_as_explored()
         # 2. Let Q be the queue of vertices initialized with s
-        queue = Queue()
-        queue.put(src_vtx)
+        queue = deque()
+        queue.append(src_vtx)
         # 3. While Q is not empty
-        while not queue.empty():
+        while queue:
             # (1) Take out the first vertex v
-            vtx = queue.get()
+            vtx = queue.popleft()
             # (2) For every directed edge (v, w)
             for edge in vtx.emissive_edges:
                 w = edge.head
@@ -365,7 +376,7 @@ class DirectedGraph(AbstractGraph):
                         return dest_vtx.layer
 
                     # Push w to Q
-                    queue.put(w)
+                    queue.append(w)
         # The destination vertex is not findable starting from the given source
         # vertex along directed edges.
         return -1
@@ -389,7 +400,7 @@ class DirectedGraph(AbstractGraph):
                 findable_vtx_ids.append(w.vtx_id)
 
                 # Do DFS on (G, w)   (Recursion)
-                self._dfs_helper(vtx=w, findable_vtx_ids=findable_vtx_ids)
+                self._dfs_helper(w, findable_vtx_ids=findable_vtx_ids)
 
     def num_of_connected_components_with_dfs(self):
         # Directed connectivity
@@ -418,7 +429,7 @@ class DirectedGraph(AbstractGraph):
                 vtx.set_as_explored()
                 count += 1
                 # Do DFS towards v (Discovers precisely v's SCC)
-                self.dfs(src_vtx_id=vtx.vtx_id)
+                self.dfs(vtx.vtx_id)
         return count
 
     def _get_vtxs_sorted_by_finish_time(self) -> List[Vertex]:
@@ -435,14 +446,14 @@ class DirectedGraph(AbstractGraph):
                 # Mark v as explored
                 vtx.set_as_explored()
                 # Do DFS towards v
-                self._dfs_helper_with_finish_time(vtx=vtx,
-                                                  vtxs_sorted_by_finish_time=
-                                                  vtxs_sorted_by_finish_time)
+                self._dfs_helper_with_finish_time(
+                    vtx, vtxs_sorted_by_finish_time=vtxs_sorted_by_finish_time
+                )
         return vtxs_sorted_by_finish_time
 
-    def _dfs_helper_with_finish_time(self, vtx: Vertex,
-                                     vtxs_sorted_by_finish_time: List[
-                                         Vertex]) -> None:
+    def _dfs_helper_with_finish_time(
+        self, vtx: Vertex, vtxs_sorted_by_finish_time: List[Vertex]
+    ) -> None:
         """
         Helper function to do DFS and set the finishing time of the given
         vertex.
@@ -458,9 +469,9 @@ class DirectedGraph(AbstractGraph):
                 # Mark w as explored
                 w.set_as_explored()
                 # Do DFS towards w
-                self._dfs_helper_with_finish_time(vtx=w,
-                                                  vtxs_sorted_by_finish_time=
-                                                  vtxs_sorted_by_finish_time)
+                self._dfs_helper_with_finish_time(
+                    w, vtxs_sorted_by_finish_time=vtxs_sorted_by_finish_time
+                )
         # Set v's finishing time
         vtxs_sorted_by_finish_time.append(vtx)
 
@@ -472,8 +483,9 @@ class DirectedGraph(AbstractGraph):
         """
         vtxs_sorted_by_finish_time = self._get_vtxs_sorted_by_finish_time()
 
-        return list(reversed(list(map(lambda vtx: vtx.vtx_id,
-                                      vtxs_sorted_by_finish_time))))
+        return list(
+            reversed(list(map(lambda x: x.vtx_id, vtxs_sorted_by_finish_time)))
+        )
 
     def topological_sort_straightforward(self) -> List[int]:
         """
@@ -482,15 +494,14 @@ class DirectedGraph(AbstractGraph):
         :return: list[int]
         """
         topological_ordering = [0] * len(self._vtx_list)
-        self._topological_sort_straightforward_helper(topological_ordering,
-                                                      curr_order=
-                                                      len(self._vtx_list))
+        self._topological_sort_straightforward_helper(
+            topological_ordering, curr_order=len(self._vtx_list)
+        )
         return topological_ordering
 
-    def _topological_sort_straightforward_helper(self,
-                                                 topological_ordering: List[
-                                                     int],
-                                                 curr_order: int) -> None:
+    def _topological_sort_straightforward_helper(
+        self, topological_ordering: List[int], curr_order: int
+    ) -> None:
         """
         Private helper function to fill in the given order of the topological
         ordering using straightforward algorithm recursively.
@@ -503,7 +514,7 @@ class DirectedGraph(AbstractGraph):
             return
         sink_vtx = self._get_sink_vertex()
         # Base case 2: No more sink vertices
-        if sink_vtx is None:
+        if not sink_vtx:
             return
 
         # Recursive case

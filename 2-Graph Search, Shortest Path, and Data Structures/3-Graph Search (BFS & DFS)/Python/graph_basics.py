@@ -12,6 +12,7 @@ class IllegalArgumentError(ValueError):
 
 
 class AbstractVertex(object):
+    __slots__ = ['_vtx_id', '_explored', '_layer']
 
     def __init__(self, vtx_id: int):
         """
@@ -71,6 +72,7 @@ class AbstractVertex(object):
 
 
 class AbstractGraph(ABC):
+    __slots__ = ['_vtx_list', '_edge_list']
 
     def __init__(self):
         """
@@ -108,7 +110,7 @@ class AbstractGraph(ABC):
         """
         # Check whether the input vertex exists
         vtx_to_remove = self._find_vtx(vtx_id)
-        if vtx_to_remove is None:
+        if not vtx_to_remove:
             raise IllegalArgumentError("The input vertex doesn't exist.")
 
         self._remove_vtx(vtx_to_remove=vtx_to_remove)
@@ -221,7 +223,7 @@ class AbstractGraph(ABC):
         """
         # Check whether the input source vertex exists
         src_vtx = self._find_vtx(src_vtx_id)
-        if src_vtx is None:
+        if not src_vtx:
             raise IllegalArgumentError("The input source vertex doesn't exist.")
 
         # Initialize G as s explored and other vertices unexplored
@@ -229,7 +231,7 @@ class AbstractGraph(ABC):
 
         findable_vtx_ids = [src_vtx_id]
 
-        self._dfs_helper(vtx=src_vtx, findable_vtx_ids=findable_vtx_ids)
+        self._dfs_helper(src_vtx, findable_vtx_ids=findable_vtx_ids)
 
         return findable_vtx_ids
 

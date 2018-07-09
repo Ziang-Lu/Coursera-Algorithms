@@ -77,8 +77,7 @@ public class DirectedGraph implements GraphInterface {
         edgesToRemove.addAll(vtxToRemove.emissiveEdges());
         edgesToRemove.addAll(vtxToRemove.incidentEdges());
         while (edgesToRemove.size() > 0) {
-            DirectedEdge edgeToRemove = edgesToRemove.get(0);
-            removeEdge(edgeToRemove);
+            removeEdge(edgesToRemove.get(0));
         }
         // Remove the vertex
         vtxList.remove(vtxToRemove);
