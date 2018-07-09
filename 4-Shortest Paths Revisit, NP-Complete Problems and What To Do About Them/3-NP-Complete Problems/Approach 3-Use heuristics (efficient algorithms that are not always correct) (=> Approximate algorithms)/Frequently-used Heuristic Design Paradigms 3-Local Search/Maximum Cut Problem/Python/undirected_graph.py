@@ -19,6 +19,7 @@ class IllegalArgumentError(ValueError):
 
 
 class Vertex(AbstractVertex):
+    __slots__ = ['_edges', '_neighbors']
 
     def __init__(self, vtx_id: int):
         """
@@ -36,7 +37,7 @@ class Vertex(AbstractVertex):
         :return: Edge
         """
         # Check whether the input neighbor is None
-        if neighbor is None:
+        if not neighbor:
             raise IllegalArgumentError('The input neighbor should not be None.')
 
         for edge in self._edges:
@@ -61,12 +62,14 @@ class Vertex(AbstractVertex):
         :return: None
         """
         # Check whether the input edge is None
-        if new_edge is None:
+        if not new_edge:
             raise IllegalArgumentError('The edge to add should not be None.')
         # Check whether the input edge involves this vertex
-        if (new_edge.end1 is not self) and (new_edge.end2 is not self):
-            raise IllegalArgumentError('The edge to add should involve this '
-                                       'vertex.')
+        if new_edge.end1 is not self and new_edge.end2 is not self:
+            raise IllegalArgumentError(
+                'The edge to add should involve this vertex.'
+            )
+
         # Find the neighbor associated with the input edge
         if new_edge.end1 is self:  # endpoint2 is the neighbor.
             neighbor = new_edge.end2
@@ -86,13 +89,14 @@ class Vertex(AbstractVertex):
         :return: None
         """
         # Check whether the input edge is None
-        if edge_to_remove is None:
+        if not edge_to_remove:
             raise IllegalArgumentError('The edge to remove should not be None.')
         # Check whether the input edge involves this vertex
-        if (edge_to_remove.end1 is not self) and \
-                (edge_to_remove.end2 is not self):
-            raise IllegalArgumentError('The edge to remove should involve this '
-                                       'vertex.')
+        if edge_to_remove.end1 is not self and edge_to_remove.end2 is not self:
+            raise IllegalArgumentError(
+                'The edge to remove should involve this vertex.'
+            )
+
         # Find the neighbor associated with the input edge
         if edge_to_remove.end1 is self:  # endpoint2 is the neighbor.
             neighbor = edge_to_remove.end2
@@ -106,10 +110,13 @@ class Vertex(AbstractVertex):
         self._neighbors.remove(neighbor.vtx_id)
 
     def __repr__(self):
-        return 'Vertex #%d, Its neighbors: %s' % (self._vtx_id, self._neighbors)
+        return 'Vertex #{}, Its neighbors: {}'.format(
+            self._vtx_id, self._neighbors
+        )
 
 
 class UndirectedEdge(object):
+    __slots__ = ['_end1', '_end2']
 
     def __init__(self, end1: Vertex, end2: Vertex):
         """
@@ -155,11 +162,13 @@ class UndirectedEdge(object):
         self._end2 = end2
 
     def __repr__(self):
-        return 'Edge between Vertex #%d and Vertex #%d' % \
-               (self._end1.vtx_id, self._end2.vtx_id)
+        return 'Edge between Vertex #{end1_id} and Vertex #{end2_id}'.format(
+            end1_id=self._end1.vtx_id, end2_id=self._end2.vtx_id
+        )
 
 
 class UndirectedGraph(AbstractGraph):
+    __slots__ = []
 
     def __init__(self):
         """
@@ -178,21 +187,21 @@ class UndirectedGraph(AbstractGraph):
     def _remove_vtx(self, vtx_to_remove):
         # Remove all the edges associated with the vertex to remove
         edges_to_remove = vtx_to_remove.edges
-        while len(edges_to_remove) > 0:
-            edge_to_remove = edges_to_remove[0]
-            self._remove_edge(edge_to_remove=edge_to_remove)
+        while len(edges_to_remove):
+            self._remove_edge(edge_to_remove=edges_to_remove[0])
         # Remove the vertex
         self._vtx_list.remove(vtx_to_remove)
 
     def add_edge(self, end1_id, end2_id, length):
         # Check whether the input endpoints both exist
         end1, end2 = self._find_vtx(end1_id), self._find_vtx(end2_id)
-        if end1 is None or end2 is None:
+        if not end1 or not end2:
             raise IllegalArgumentError("The endpoints don't both exist.")
         # Check whether the input endpoints are the same (self-loop)
         if end1_id == end2_id:
-            raise IllegalArgumentError("The endpoints are the same "
-                                       "(self-loop).")
+            raise IllegalArgumentError(
+                'The endpoints are the same (self-loop).'
+            )
 
         new_edge = UndirectedEdge(end1, end2)
         self._add_edge(new_edge=new_edge)
@@ -206,12 +215,12 @@ class UndirectedGraph(AbstractGraph):
     def remove_edge(self, end1_id, end2_id):
         # Check whether the input endpoints both exist
         end1, end2 = self._find_vtx(end1_id), self._find_vtx(vtx_id=end2_id)
-        if end1 is None or end2 is None:
+        if not end1 or not end2:
             raise IllegalArgumentError("The endpoints don't both exist.")
 
         # Check whether the edge to remove exists
         edge_to_remove = end1.get_edge_with_neighbor(end2)
-        if edge_to_remove is None:
+        if not edge_to_remove:
             raise IllegalArgumentError("The edge to remove doesn't exist.")
 
         self._remove_edge(edge_to_remove=edge_to_remove)
@@ -238,8 +247,8 @@ class UndirectedGraph(AbstractGraph):
         n_crossing_edge = 0
         for edge in self._edge_list:
             end1, end2 = edge.end1, edge.end2
-            if end1.vtx_id in group1 and end2.vtx_id not in group2 \
-                    or end1.vtx_id not in group1 and end2.vtx_id in group2:
+            if (end1.vtx_id in group1 and end2.vtx_id not in group2) \
+                    or (end1.vtx_id not in group1 and end2.vtx_id in group2):
                 n_crossing_edge += 1
 
         for vtx in self._vtx_list:

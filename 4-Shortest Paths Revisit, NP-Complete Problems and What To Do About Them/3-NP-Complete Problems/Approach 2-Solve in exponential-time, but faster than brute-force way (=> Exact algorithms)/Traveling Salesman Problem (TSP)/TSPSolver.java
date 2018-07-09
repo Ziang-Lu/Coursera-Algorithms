@@ -96,9 +96,7 @@ public class TSPSolver {
                     for (int w = 0; w < n; ++w) {
                         if (bitIsSet(S, w) && (w != v)) {
                             float pathLength = A.get(w).get(S.toString()) + (float) cities[w].distance(cities[v]);
-                            if (pathLength < minPathLength) {
-                                minPathLength = pathLength;
-                            }
+                            minPathLength = Math.min(minPathLength, pathLength);
                         }
                     }
                     changeBit(S, v, true);
@@ -120,9 +118,7 @@ public class TSPSolver {
         for (int w = 0; w < n; ++w) {
             if (w != s) {
                 float tourLength = A.get(w).get(S.toString()) + (float) cities[w].distance(cities[s]);
-                if (tourLength < minTourLength) {
-                    minTourLength = tourLength;
-                }
+                minTourLength = Math.min(minTourLength, tourLength);
             }
         }
         return minTourLength;
@@ -282,9 +278,7 @@ public class TSPSolver {
                         if (bitIsSet(S, w) && (w != v)) {
                             float pathLength = prevMSubproblems.get(w).get(S.toString())
                                     + (float) cities[w].distance(cities[v]);
-                            if (pathLength < minPathLength) {
-                                minPathLength = pathLength;
-                            }
+                            minPathLength = Math.min(minPathLength, pathLength);
                         }
                     }
                     changeBit(S, v, true);
@@ -309,9 +303,7 @@ public class TSPSolver {
         for (int w = 0; w < n; ++w) {
             if (w != s) {
                 float tourLength = prevMSubproblems.get(w).get(S.toString()) + (float) cities[w].distance(cities[s]);
-                if (tourLength < minTourLength) {
-                    minTourLength = tourLength;
-                }
+                minTourLength = Math.min(minTourLength, tourLength);
             }
         }
         return minTourLength;

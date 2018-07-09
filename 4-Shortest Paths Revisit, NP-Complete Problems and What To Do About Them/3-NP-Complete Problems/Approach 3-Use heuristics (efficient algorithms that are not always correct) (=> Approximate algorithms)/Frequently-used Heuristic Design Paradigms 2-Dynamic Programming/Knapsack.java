@@ -23,6 +23,7 @@
  */
 
 import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 
@@ -49,14 +50,14 @@ public class Knapsack {
      * @param cap capacity of the knapsack
      * @return included items
      */
-    public HashSet<Integer> knapsack(int[] vals, double[] weights, double cap) {
+    public Set<Integer> knapsack(int[] vals, double[] weights, double cap) {
         // Check whether the input arrays are null or empty
-        if ((vals == null) || (vals.length == 0) || (weights == null) || (weights.length == 0)) {
-            throw new IllegalArgumentException("The input values and weights should not be null or empty.");
+        if ((vals == null) || (vals.length == 0)) {
+            return new HashSet<>();
         }
         // Check whether the input capacity is non-negative
         if (cap < 0.0) {
-            throw new IllegalArgumentException("The input capacity should be non-negative.");
+            return new HashSet<>();
         }
 
         int n = vals.length;
@@ -93,7 +94,7 @@ public class Knapsack {
      * @param cap capacity of the knapsack
      * @return included items
      */
-    private HashSet<Integer> reconstruct(int[] vals, double[] weights, double cap) {
+    private Set<Integer> reconstruct(int[] vals, double[] weights, double cap) {
         // Find the optimal solution itself
         int valSum = IntStream.of(vals).sum();
         int maxTotalVal = 0, lastItem = -1;
@@ -113,27 +114,27 @@ public class Knapsack {
         }
 
         // Reconstruct the included items from the optimal solution
-        HashSet<Integer> includedItems = new HashSet<>();
-        int currItem = lastItem, currTargetVal = maxTotalVal;
+        Set<Integer> included = new HashSet<>();
+        int item = lastItem, currTargetVal = maxTotalVal;
         double currCap = cap;
-        while (currItem >= 1) {
-            double resultWithoutCurr = subproblems[currItem - 1][currTargetVal];
-            double resultWithCurr = weights[currItem];
-            if (vals[currItem] < currTargetVal) {
-                resultWithCurr += subproblems[currItem - 1][currTargetVal - vals[currItem]];
+        while (item >= 1) {
+            double resultWithoutCurr = subproblems[item - 1][currTargetVal];
+            double resultWithCurr = weights[item];
+            if (vals[item] < currTargetVal) {
+                resultWithCurr += subproblems[item - 1][currTargetVal - vals[item]];
             }
-            if ((resultWithoutCurr > resultWithCurr) && (weights[currItem] <= currCap)) {
+            if ((resultWithoutCurr > resultWithCurr) && (weights[item] <= currCap)) {
                 // Case 2: The current item is included.
-                includedItems.add(currItem);
-                currTargetVal -= vals[currItem];
-                currCap -= weights[currItem];
+                included.add(item);
+                currTargetVal -= vals[item];
+                currCap -= weights[item];
             }
-            --currItem;
+            --item;
         }
         if ((vals[0] >= currTargetVal) && (weights[0] <= currCap)) {
-            includedItems.add(0);
+            included.add(0);
         }
-        return includedItems;
+        return included;
         // Running time complexity: O(n)
     }
 
@@ -147,19 +148,19 @@ public class Knapsack {
      * @param epsilon tolerant error rate
      * @return included items
      */
-    public HashSet<Integer> knapsackWithDynamicProgrammingHeuristic(double[] vals, double[] weights, double cap,
+    public Set<Integer> knapsackWithDynamicProgrammingHeuristic(double[] vals, double[] weights, double cap,
             double epsilon) {
         // Check whether the input arrays are null or empty
-        if ((vals == null) || (vals.length == 0) || (weights == null) || (weights.length == 0)) {
-            throw new IllegalArgumentException("The input values and weights should not be null or empty.");
+        if ((vals == null) || (vals.length == 0)) {
+            return new HashSet<>();
         }
         // Check whether the input capacity is non-negative
         if (cap < 0.0) {
-            throw new IllegalArgumentException("The input capacity should be non-negative.");
+            return new HashSet<>();
         }
         // Check whether the input tolerant error rate is in (0, 1)
         if ((epsilon <= 0.0) || (epsilon >= 1.0)) {
-            throw new IllegalArgumentException("The input tolerance error rate should be in (0, 1).");
+            return new HashSet<>();
         }
 
         // Refer to the documentation for the choice of m

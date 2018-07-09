@@ -31,15 +31,12 @@ from typing import Iterable, List
 INFINITY = 1000000
 
 
-class IllegalArgumentError(ValueError):
-    pass
-
-
 class City(object):
+    __slots__ = ['_x', '_y']
 
     def __init__(self, x: float, y: float):
         """
-        Constructur with parameters.
+        Constructor with parameters.
         :param x: float
         :param y: float
         """
@@ -71,16 +68,15 @@ def tsp(cities: List[City]) -> float:
     :return: float
     """
     # Check whether the input cities is None or empty
-    if cities is None or len(cities) == 0:
-        raise IllegalArgumentError('The input cities should not be None or '
-                                   'empty.')
+    if not cities:
+        return 0.0
 
     n, s = len(cities), 0
 
     # Initialization
-    A = [{} for v in range(n)]
+    A = [{} for _ in range(n)]
     # Convert the city subset that contains only the source city to a bit string
-    S = _construct_bit_str(length=n, set_idxs=[s])
+    S = _construct_bit_str(n, set_idxs=[s])
     for v in range(n):
         if v == s:
             A[s][S] = 0
@@ -94,7 +90,7 @@ def tsp(cities: List[City]) -> float:
             if s not in subset:
                 continue
             # Convert the city subset to a bit string
-            S = _construct_bit_str(length=n, set_idxs=subset)
+            S = _construct_bit_str(n, set_idxs=subset)
             for v in range(n):
                 # Let P(v, S) be the shortest path from s to v that visits the
                 # vertices in S, containing s and v, exactly once for each.
@@ -118,20 +114,18 @@ def tsp(cities: List[City]) -> float:
                     if _bit_is_set(S_wo_v, w) and w != v:
                         path_length = A[w][S_wo_v] + \
                                       _euclidean_distance(cities[w], cities[v])
-                        if path_length < min_path_length:
-                            min_path_length = path_length
+                        min_path_length = min(min_path_length, path_length)
                 A[v][S] = min_path_length
 
     # By now the algorithm only computes the shortest paths from s to each v
     # that visit all the vertices exactly once for each.
     # However to complete TSP, we still need to go back to s.
-    S = _construct_bit_str(length=n, set_idxs=range(n))
+    S = _construct_bit_str(n, set_idxs=range(n))
     min_tour_length = INFINITY
     for w in range(n):
         if w != s:
             tour_length = A[w][S] + _euclidean_distance(cities[w], cities[s])
-            if tour_length < min_tour_length:
-                min_tour_length = tour_length
+            min_tour_length = min(min_tour_length, tour_length)
     return min_tour_length
     # Since there are O(n 2^n) subproblems, and each subproblem runs in O(n),
     # the overall running time complexity is O(n^2 2^n).
@@ -163,11 +157,14 @@ def _change_bit(bit_str: str, i: int, set_bit: bool) -> str:
     :param set_bit: bool
     :return: str
     """
+    changed = bit_str[:i]
     if set_bit:
-        return bit_str[:i] + '1' + bit_str[i + 1:]
+        changed += '1'
     else:
-        return bit_str[:i] + '0' + bit_str[i + 1:]
-    # Running time complexty: O(1)
+        changed += '0'
+    changed += bit_str[i + 1:]
+    return changed
+    # Running time complexity: O(1)
 
 
 def _bit_is_set(bit_str: str, i: int) -> bool:
@@ -202,17 +199,16 @@ def tsp_optimized(cities: List[City]) -> float:
     :return: float
     """
     # Check whether the input cities is None or empty
-    if cities is None or len(cities) == 0:
-        raise IllegalArgumentError('The input cities should not be None or '
-                                   'empty.')
+    if not cities:
+        return 0.0
 
     n, s = len(cities), 0
 
     # Initialization
     # Space optimization: We only keep track of the subproblem solutions in the
     # previous out-most iteration.
-    prev_m_subproblems = [{} for v in range(n)]
-    S = _construct_bit_str(length=n, set_idxs=[s])
+    prev_m_subproblems = [{} for _ in range(n)]
+    S = _construct_bit_str(n, set_idxs=[s])
     for v in range(n):
         if v == s:
             prev_m_subproblems[s][S] = 0
@@ -222,12 +218,12 @@ def tsp_optimized(cities: List[City]) -> float:
     # Bottom-up calculation
     for m in range(2, n + 1):
         # Initialize the subproblems of size-m subsets
-        curr_m_subproblems = [{} for v in range(n)]
+        curr_m_subproblems = [{} for _ in range(n)]
 
         for subset in itertools.combinations(range(n), m):
             if s not in subset:
                 continue
-            S = _construct_bit_str(length=n, set_idxs=subset)
+            S = _construct_bit_str(n, set_idxs=subset)
             for v in range(n):
                 if not _bit_is_set(S, v):
                     continue
@@ -242,8 +238,7 @@ def tsp_optimized(cities: List[City]) -> float:
                     if _bit_is_set(S_wo_v, w) and w != v:
                         path_length = prev_m_subproblems[w][S_wo_v] + \
                                       _euclidean_distance(cities[w], cities[v])
-                        if path_length < min_path_length:
-                            min_path_length = path_length
+                        min_path_length = min(min_path_length, path_length)
                 curr_m_subproblems[v][S] = min_path_length
         prev_m_subproblems = curr_m_subproblems
         # Explicitly run garbage collection
@@ -252,14 +247,13 @@ def tsp_optimized(cities: List[City]) -> float:
     # By now the algorithm only computes the shortest paths from s to each v
     # that visit all the vertices exactly once for each.
     # However to complete TSP, we still need to go back to s.
-    S = _construct_bit_str(length=n, set_idxs=range(n))
+    S = _construct_bit_str(n, set_idxs=range(n))
     min_tour_length = INFINITY
     for w in range(n):
         if w != s:
             tour_length = prev_m_subproblems[w][S] + \
                           _euclidean_distance(cities[w], cities[s])
-            if tour_length < min_tour_length:
-                min_tour_length = tour_length
+            min_tour_length = min(min_tour_length, tour_length)
     return min_tour_length
     # Overall running time complexity: (O(n^2 2^n))
     # Overall space complexity: O(n * (n choose k)) = O(n^(k+1))

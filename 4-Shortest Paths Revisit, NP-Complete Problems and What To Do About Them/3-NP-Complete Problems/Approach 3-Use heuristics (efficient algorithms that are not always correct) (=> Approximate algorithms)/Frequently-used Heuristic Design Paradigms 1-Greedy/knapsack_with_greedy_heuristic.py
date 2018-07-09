@@ -27,17 +27,14 @@ __author__ = 'Ziang Lu'
 from typing import Callable, List, Set, Tuple
 
 
-class IllegalArgumentError(ValueError):
-    pass
-
-
 class Item(object):
+    __slots__ = ['_idx', '_val', '_weight']
 
-    def __init__(self, idx: int, val: int, weight: int):
+    def __init__(self, idx: int, val: float, weight: int):
         """
         Constructor with parameter.
         :param idx: int
-        :param val: int
+        :param val: float
         :param weight: int
         """
         self._idx = idx
@@ -53,7 +50,7 @@ class Item(object):
         return self._idx
 
     @property
-    def val(self) -> int:
+    def val(self) -> float:
         """
         Accessor of val.
         :return: int
@@ -69,44 +66,40 @@ class Item(object):
         return self._weight
 
 
-def knapsack_greedy(vals: List[int], weights: List[int], cap: int) -> Set[int]:
+def knapsack_greedy(vals: List[float], weights: List[int],
+                    cap: int) -> Set[int]:
     """
     Solves the knapsack problem of the items of the given values and weights,
     and the given capacity, using a greedy heuristic.
-    :param vals: list[int]
+    :param vals: list[float]
     :param weights: list[int]
     :param cap: int
     :return: set{int}
     """
     # Check whether the input arrays are None or empty
-    if vals is None or len(weights) == 0 \
-            or weights is None or len(weights) == 0:
-        raise IllegalArgumentError('The input values and weights should not be '
-                                   'null or empty.')
+    if not vals:
+        return set()
     # Check whether the input capacity is non-negative
     if cap < 0:
-        raise IllegalArgumentError('The input capacity should be non-negative.')
+        return set()
 
-    n = len(vals)
-    items = []
-    for idx in range(n):
-        items.append(Item(idx, vals[idx], weights[idx]))
+    items = [Item(i, info[0], info[1]) for i, info in enumerate(zip(vals, weights))]
 
-    included_items1, total_val1 = _greedy_packing(
-        items, cap, func=lambda item: item.val / item.weight)
+    included1, total_val1 = _greedy_packing(
+        items, cap, func=lambda x: x.val / x.weight
+    )
 
-    included_items2, total_val2 = _greedy_packing(
-        items, cap, func=lambda item: item.val)
+    included2, total_val2 = _greedy_packing(items, cap, func=lambda x: x.val)
 
     if total_val1 >= total_val2:
-        return included_items1
+        return included1
     else:
-        return included_items2
+        return included2
     # Overall running time complexity: O(nlog n)
 
 
-def _greedy_packing(items: List[Item], cap: int, func: Callable) -> Tuple[
-    Set[int], int]:
+def _greedy_packing(items: List[Item], cap: int,
+                    func: Callable) -> Tuple[Set[int], int]:
     """
     Private helper function to pack the items using the given greedy heuristic.
     :param items: list[Item]
@@ -115,13 +108,13 @@ def _greedy_packing(items: List[Item], cap: int, func: Callable) -> Tuple[
     :return: set{int}, int
     """
     items.sort(key=func)
-    included_items = set()
+    included = set()
     total_val, total_weight = 0, 0
-    for i in range(len(items)):
-        if total_weight + items[i].weight > cap:
+    for item in items:
+        if total_weight + item.weight > cap:
             continue
-        included_items.add(items[i].idx)
-        total_val += items[i].val
-        total_weight += items[i].weight
-    return included_items, total_val
+        included.add(item.idx)
+        total_val += item.val
+        total_weight += item.weight
+    return included, total_val
     # Running time complexity: O(nlog n)

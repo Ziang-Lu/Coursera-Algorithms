@@ -31,10 +31,6 @@ from typing import List, Set
 INFINITY = 1000000.0
 
 
-class IllegalArgumentError(ValueError):
-    pass
-
-
 def knapsack(vals: List[int], weights: List[float], cap: float) -> Set[int]:
     """
     Solves the knapsack problem of the items with the given values and weights,
@@ -45,18 +41,16 @@ def knapsack(vals: List[int], weights: List[float], cap: float) -> Set[int]:
     :return: set{int}
     """
     # Check whether the input arrays are None or empty
-    if vals is None or len(weights) == 0 \
-            or weights is None or len(weights) == 0:
-        raise IllegalArgumentError('The input values and weights should not be '
-                                   'null or empty.')
+    if not vals:
+        return set()
     # Check whether the input capacity is non-negative
     if cap < 0.0:
-        raise IllegalArgumentError('The input capacity should be non-negative.')
+        return set()
 
     n = len(vals)
     val_sum = sum(vals)
     # Initialization
-    subproblems = [[0.0] * (val_sum + 1) for i in range(n)]
+    subproblems = [[0.0] * (val_sum + 1) for _ in range(n)]
     for x in range(val_sum + 1):
         if vals[0] >= x:
             subproblems[0][x] = weights[0]
@@ -70,20 +64,20 @@ def knapsack(vals: List[int], weights: List[float], cap: float) -> Set[int]:
             if vals[item] < x:
                 result_with_curr += subproblems[item - 1][x - vals[item]]
             subproblems[item][x] = min(result_without_curr, result_with_curr)
-    return _reconstruct(vals, weights, cap, subproblems=subproblems)
+    return _reconstruct(vals, weights, cap, subproblems)
     # Overall running time complexity: O(n sum(v)) <= O(n n v_max) =
     # O(n ^ 2 v_max)
 
 
 def _reconstruct(vals: List[int], weights: List[float], cap: float,
-                 subproblems: List[List[float]]) -> Set[int]:
+                 dp: List[List[float]]) -> Set[int]:
     """
     Private helper function to find the optimal solution itself and reconstruct
     the included items according to the optimal solution using backtracking.
     :param vals: list[int]
     :param weights: list[float]
     :param cap: float
-    :param subproblems: list[list[float]]
+    :param dp: list[list[float]]
     :return: set{int}
     """
     # Find the optimal solution itself
@@ -92,7 +86,7 @@ def _reconstruct(vals: List[int], weights: List[float], cap: float,
     for x in range(val_sum, -1, -1):
         found = False
         for item in range(len(vals)):
-            if subproblems[item][x] <= cap:
+            if dp[item][x] <= cap:
                 max_total_val, last_item = x, item
                 found = True
                 break
@@ -100,31 +94,28 @@ def _reconstruct(vals: List[int], weights: List[float], cap: float,
             break
 
     # Reconstruct the included items from the optimal solution
-    included_items = set()
-    curr_item, curr_target_val, curr_cap = last_item, max_total_val, cap
-    while curr_item >= 1:
-        result_without_curr = subproblems[curr_item - 1][curr_target_val]
-        result_with_curr = weights[curr_item]
-        if vals[curr_item] < curr_target_val:
-            result_with_curr += \
-                subproblems[curr_item - 1][curr_target_val - vals[curr_item]]
-        if result_without_curr > result_with_curr \
-                and weights[curr_item] <= curr_cap:
+    included = set()
+    item, curr_target_val, curr_cap = last_item, max_total_val, cap
+    while item >= 1:
+        result_without_curr = dp[item - 1][curr_target_val]
+        result_with_curr = weights[item]
+        if vals[item] < curr_target_val:
+            result_with_curr += dp[item - 1][curr_target_val - vals[item]]
+        if result_without_curr > result_with_curr and weights[item] <= curr_cap:
             # Case 2: The current item is included.
-            included_items.add(curr_item)
-            curr_target_val -= vals[curr_item]
-            curr_cap -= weights[curr_item]
-        curr_item -= 1
+            included.add(item)
+            curr_target_val -= vals[item]
+            curr_cap -= weights[item]
+        item -= 1
     if vals[0] >= curr_target_val and weights[0] <= curr_cap:
-        included_items.add(0)
-    return included_items
+        included.add(0)
+    return included
     # Running time complexity: O(n)
 
 
-def knapsack_with_dynamic_programming_heuristic(vals: List[float],
-                                                weights: List[float],
-                                                cap: float, epsilon: float) -> \
-        Set[int]:
+def knapsack_with_dynamic_programming_heuristic(
+    vals: List[float], weights: List[float], cap: float, epsilon: float
+) -> Set[int]:
     """
     Solves the knapsack problem of the items with the given values and weights,
     and the given capacity, using a dynamic programming-based heuristic with the
@@ -136,23 +127,20 @@ def knapsack_with_dynamic_programming_heuristic(vals: List[float],
     :return: set{int}
     """
     # Check whether the input arrays are None or empty
-    if vals is None or len(weights) == 0 \
-            or weights is None or len(weights) == 0:
-        raise IllegalArgumentError('The input values and weights should not be '
-                                   'null or empty.')
+    if not vals:
+        return set()
     # Check whether the input capacity is non-negative
     if cap < 0.0:
-        raise IllegalArgumentError('The input capacity should be non-negative.')
+        return set()
     # Check whether the input tolerant error rate is in (0, 1)
     if epsilon <= 0.0 or epsilon >= 1.0:
-        raise IllegalArgumentError('The input tolerant error rate should be in '
-                                   '(0, 1).')
+        return set()
 
     # Refer to the documentation for the choice of m
     max_val, n = max(vals), len(vals)
     m = epsilon * max_val / n
     # Perform transformation
-    transformed_vals = [int(val / m) for val in vals]
+    transformed_vals = list(map(lambda x: int(x / m), vals))
 
     # Feed the rounded values, the original weights and the knapsack capacity
     # into the above algorithm, and get the included items in the optimal

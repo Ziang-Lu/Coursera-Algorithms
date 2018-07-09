@@ -90,12 +90,12 @@ public class KnapsackWithGreedyHeuristic {
      */
     public Set<Integer> knapsackGreedy(double[] vals, int[] weights, int cap) {
         // Check whether the input arrays are null or empty
-        if ((vals == null) || (vals.length == 0) || (weights == null) || (weights.length == 0)) {
-            throw new IllegalArgumentException("The input values and weights should not be null or empty.");
+        if ((vals == null) || (vals.length == 0)) {
+            return new HashSet<>();
         }
         // Check whether the input capacity is non-negative
         if (cap < 0) {
-            throw new IllegalArgumentException("The input capacity should be non-negative.");
+            return new HashSet<>();
         }
 
         int n = vals.length;
@@ -104,7 +104,7 @@ public class KnapsackWithGreedyHeuristic {
             items[idx] = new Item(idx, vals[idx], weights[idx]);
         }
 
-        Set<Integer> includedItems1 = greedyPacking(items, cap, new Comparator<Item>() {
+        Set<Integer> included1 = greedyPacking(items, cap, new Comparator<Item>() {
             @Override
             public int compare(Item o1, Item o2) {
                 double ratio1 = o1.getVal() / o1.getWeight(), ratio2 = o2.getVal() / o2.getWeight();
@@ -112,25 +112,25 @@ public class KnapsackWithGreedyHeuristic {
             }
         });
         int totalVal1 = 0;
-        for (Integer idx : includedItems1) {
+        for (Integer idx : included1) {
             totalVal1 += vals[idx];
         }
 
-        Set<Integer> includedItems2 = greedyPacking(items, cap, new Comparator<Item>() {
+        Set<Integer> included2 = greedyPacking(items, cap, new Comparator<Item>() {
             @Override
             public int compare(Item o1, Item o2) {
                 return Double.compare(o2.getVal(), o1.getVal());
             }
         });
         int totalVal2 = 0;
-        for (Integer idx : includedItems1) {
+        for (Integer idx : included2) {
             totalVal2 += vals[idx];
         }
 
         if (totalVal1 >= totalVal2) {
-            return includedItems1;
+            return included1;
         } else {
-            return includedItems2;
+            return included2;
         }
         // Overall running time complexity: O(nlog n)
     }
@@ -144,16 +144,16 @@ public class KnapsackWithGreedyHeuristic {
      */
     private Set<Integer> greedyPacking(Item[] items, int cap, Comparator<Item> comparator) {
         Arrays.sort(items, comparator);
-        Set<Integer> includedItems = new HashSet<>();
+        Set<Integer> included = new HashSet<>();
         int totalWeight = 0;
-        for (int i = 0; i < items.length; ++i) {
-            if ((totalWeight + items[i].getWeight()) > cap) {
+        for (Item item : items) {
+            if ((totalWeight + item.getWeight()) > cap) {
                 continue;
             }
-            includedItems.add(items[i].getIdx());
-            totalWeight += items[i].getWeight();
+            included.add(item.getIdx());
+            totalWeight += item.getWeight();
         }
-        return includedItems;
+        return included;
         // Running time complexity: O(nlog n)
     }
 
