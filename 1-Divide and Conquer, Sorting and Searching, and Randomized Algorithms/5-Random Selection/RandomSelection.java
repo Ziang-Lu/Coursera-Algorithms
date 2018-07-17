@@ -73,8 +73,8 @@ public class RandomSelection {
      */
     private void choosePivot(int[] nums, int left, int right) {
         // [Randomized] Randomly choose a pivot from the given subarray
-        Random randomGenerator = new Random();
-        int pivotIdx = left + randomGenerator.nextInt(right + 1 - left);
+        Random random = new Random();
+        int pivotIdx = left + random.nextInt(right + 1 - left);
         // Move the pivot to the left
         if (pivotIdx != left) {
             swap(nums, pivotIdx, left);
