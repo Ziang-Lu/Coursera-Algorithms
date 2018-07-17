@@ -171,12 +171,12 @@ public class UndirectedGraph implements GraphInterface {
             return 0;
         }
 
-        Random randomGenerator = new Random();
+        Random random = new Random();
 
         // While there are more than 2 vertices
         while (vtxList.size() > 2) {
             // 1. Pick up an edge randomly
-            int randomIdx = randomGenerator.nextInt(edgeList.size());
+            int randomIdx = random.nextInt(edgeList.size());
             UndirectedEdge edgeToContract = edgeList.get(randomIdx);
             Vertex end1 = edgeToContract.end1(), end2 = edgeToContract.end2();
 
