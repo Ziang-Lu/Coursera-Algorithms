@@ -47,8 +47,8 @@ public class QuickSort {
      */
     private void choosePivot(int[] nums, int left, int right, boolean randomly) {
         // [Randomized] Randomly choose a pivot from the given sub-array
-        Random randomGenerator = new Random();
-        int pivotIdx = left + randomGenerator.nextInt(right + 1 - left);
+        Random random = new Random();
+        int pivotIdx = left + random.nextInt(right + 1 - left);
         // [Deterministic] Use the median of medians as the pivot
         // Move the pivot to the left
         if (pivotIdx != left) {
