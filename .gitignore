@@ -91,6 +91,13 @@ fabric.properties
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
+### Python ###
+# Cache files
+__pycache__/
+
+# Compiled file
+*.pyc
+
 ### Kotlin ###
 # Compiled class file
 
