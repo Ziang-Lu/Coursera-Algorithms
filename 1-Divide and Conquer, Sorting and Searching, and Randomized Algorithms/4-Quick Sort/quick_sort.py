@@ -1,6 +1,10 @@
 #!usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+"""
+Quick Sort implementation.
+"""
+
 __author__ = 'Ziang Lu'
 
 import random

@@ -3,6 +3,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * Quick Sort implementation.
+ *
+ * @author Ziang Lu
+ */
 public class QuickSort {
 
     /**

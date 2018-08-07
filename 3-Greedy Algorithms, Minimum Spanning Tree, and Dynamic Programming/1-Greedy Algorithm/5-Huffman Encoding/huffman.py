@@ -1,6 +1,10 @@
 #!usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+"""
+Huffman encoding implementation.
+"""
+
 __author__ = 'Ziang Lu'
 
 import heapq

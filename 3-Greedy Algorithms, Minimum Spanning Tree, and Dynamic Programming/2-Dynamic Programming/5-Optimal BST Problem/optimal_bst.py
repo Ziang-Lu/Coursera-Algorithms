@@ -75,3 +75,4 @@ def find_optimal_bst(weights: List[int]) -> int:
             subproblems[start][end] = min_wst
     return subproblems[0][n - 1]
     # Overall running time complexity: O(n^3)
+

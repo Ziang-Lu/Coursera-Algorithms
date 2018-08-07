@@ -22,7 +22,7 @@ def find_closest_pair_1d(points: List[float]) -> List[float]:
     """
     # Check whether the input point list is null or empty
     if not points:
-            return []
+        return []
 
     if len(points) == 1:
         return []
@@ -156,8 +156,7 @@ def _find_closest_pair_2d_helper(Px: List[Point],
     closer_split_pair = _find_closer_split_pair(Py, x_threshold, delta=delta)
     if closer_split_pair:
         return closer_split_pair
-    else:
-        return delta_pair
+    return delta_pair
     # T(n) = 2T(n / 2) + O(n)
     # a = 2, b = 2, d = 1
     # According to Master Method, the running time complexity is O(nlog n)

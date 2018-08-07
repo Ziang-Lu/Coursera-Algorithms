@@ -146,9 +146,8 @@ public class ClosestPairFinder {
         Point2D.Double[] closerSplitPair = findCloserSplitPair(Py, xThreshold, delta);
         if (closerSplitPair != null) {
             return closerSplitPair;
-        } else {
-            return deltaPair;
         }
+        return deltaPair;
         // T(n) = 2T(n/2) + O(n)
         // a = 2, b = 2, d = 1
         // According to Master Method, the running time complexity is O(nlog n).
