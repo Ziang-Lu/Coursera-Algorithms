@@ -67,8 +67,7 @@ class Node(object):
         self._right = right
 
     def __repr__(self):
-        s = '[{}]'.format(self._key)
-        return s
+        return f'[{self._key}]'
 
 
 class AVLTree(object):

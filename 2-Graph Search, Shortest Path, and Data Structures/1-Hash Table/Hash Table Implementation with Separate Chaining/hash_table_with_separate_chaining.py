@@ -53,7 +53,7 @@ class DataItem(object):
         self._freq += 1
 
     def __repr__(self):
-        return '[{data}, {freq}]'.format(data=self._data, freq=self._freq)
+        return f'[{self._data}, {self._freq}]'
 
 
 class HTWithSC(object):

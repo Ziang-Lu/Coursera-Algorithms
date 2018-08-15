@@ -113,9 +113,7 @@ class Vertex(AbstractVertex):
             self._freq_of_neighbors[neighbor.vtx_id] = freq
 
     def __repr__(self):
-        return 'Vertex #{}, Its neighbors and frequencies: {}'.format(
-            self._vtx_id, self._freq_of_neighbors
-        )
+        return f'Vertex #{self._vtx_id}, Its neighbors and frequencies: {self._freq_of_neighbors}'
 
 
 class UndirectedEdge(object):
@@ -165,9 +163,7 @@ class UndirectedEdge(object):
         self._end2 = end2
 
     def __repr__(self):
-        return 'Edge between Vertex #{end1_id} and Vertex #{end2_id}'.format(
-            end1_id=self._end1.vtx_id, end2_id=self._end2.vtx_id
-        )
+        return f'Edge between Vertex #{self._end1.vtx_id} and Vertex #{self._end2.vtx_id}'
 
 
 class UndirectedGraph(AbstractGraph):

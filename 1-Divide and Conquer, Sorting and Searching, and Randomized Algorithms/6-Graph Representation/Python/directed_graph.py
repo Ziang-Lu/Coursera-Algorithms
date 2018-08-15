@@ -184,13 +184,9 @@ class Vertex(AbstractVertex):
             self._freq_of_incident_neighbors[incident_neighbor.vtx_id] = freq
 
     def __repr__(self):
-        s = 'Vertex #{vtx_id}\n'.format(vtx_id=self._vtx_id)
-        s += 'Its emissive neighbors and frequencies: {}\n'.format(
-            self._freq_of_emissive_neighbors
-        )
-        s += 'Its incident neighbors and frequencies: {}\n'.format(
-            self._freq_of_incident_neighbors
-        )
+        s = f'Vertex #{self._vtx_id}\n'
+        s += f'Its emissive neighbors and frequencies: {self._freq_of_emissive_neighbors}\n'
+        s += f'Its incident neighbors and frequencies: {self._freq_of_incident_neighbors}\n'
         return s
 
     def __eq__(self, other):
@@ -244,9 +240,7 @@ class DirectedEdge(object):
         self._head = head
 
     def __repr__(self):
-        return 'Edge from Vertex #{tail_id} to Vertex #{head_id}'.format(
-            tail_id=self._tail.vtx_id, head_id=self._head.vtx_id
-        )
+        return f'Edge from Vertex #{self._tail.vtx_id} to Vertex #{self._head.vtx_id}'
 
 
 class DirectedGraph(AbstractGraph):

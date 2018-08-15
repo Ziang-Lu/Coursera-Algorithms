@@ -186,9 +186,9 @@ class Vertex(AbstractVertex):
         self._incident_neighbors.remove(incident_edge_to_remove.tail.vtx_id)
 
     def __repr__(self):
-        s = 'Vertex #{vtx_id}\n'.format(vtx_id=self._vtx_id)
-        s += 'Its emissive neighbors: {}\n'.format(self._emissive_neighbors)
-        s += 'Its incident neighbors: {}\n'.format(self._incident_neighbors)
+        s = f'Vertex #{self._vtx_id}\n'.format(vtx_id=self._vtx_id)
+        s += f'Its emissive neighbors: {self._emissive_neighbors}\n'
+        s += f'Its incident neighbors: {self._incident_neighbors}\n'
         return s
 
     def __eq__(self, other):
@@ -244,9 +244,7 @@ class DirectedEdge(AbstractEdge):
         self._head = head
 
     def __repr__(self):
-        return 'Edge from Vertex #{tail_id} to Vertex #{head_id}'.format(
-            tail_id=self._tail.vtx_id, head_id=self._head.vtx_id
-        )
+        return f'Edge from Vertex #{self._tail.vtx_id} to Vertex #{self._head.vtx_id}'
 
 
 class DirectedGraph(AbstractGraph):

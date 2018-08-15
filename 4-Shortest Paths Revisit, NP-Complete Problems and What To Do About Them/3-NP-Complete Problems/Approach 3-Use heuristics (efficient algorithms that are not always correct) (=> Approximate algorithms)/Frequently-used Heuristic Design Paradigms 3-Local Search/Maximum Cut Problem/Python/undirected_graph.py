@@ -110,9 +110,7 @@ class Vertex(AbstractVertex):
         self._neighbors.remove(neighbor.vtx_id)
 
     def __repr__(self):
-        return 'Vertex #{}, Its neighbors: {}'.format(
-            self._vtx_id, self._neighbors
-        )
+        return f'Vertex #{self._vtx_id}, Its neighbors: {self._neighbors}'
 
 
 class UndirectedEdge(object):

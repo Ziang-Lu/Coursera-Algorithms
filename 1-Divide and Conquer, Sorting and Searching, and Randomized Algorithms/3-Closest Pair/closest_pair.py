@@ -78,7 +78,7 @@ class Point(object):
         return math.sqrt((self._x - another.x)**2 + (self._y - another.y)**2)
 
     def __repr__(self):
-        return 'Point(x={x}, y={y})'.format(x=self._x, y=self._y)
+        return f'Point(x={self._x}, y={self._y})'
 
 
 def find_closest_pair_2d(points: List[Point]) -> List[Point]:

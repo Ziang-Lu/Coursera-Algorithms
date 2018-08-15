@@ -121,7 +121,7 @@ def main():
         minimum_cut = graph.compute_minimum_cut()
         if minimum_cut < curr_minimum_cut:
             curr_minimum_cut = minimum_cut
-    print('Minimum cut: %d' % curr_minimum_cut)  # 2
+    print(f'Minimum cut: {curr_minimum_cut}')  # 2
 
 
 if __name__ == '__main__':

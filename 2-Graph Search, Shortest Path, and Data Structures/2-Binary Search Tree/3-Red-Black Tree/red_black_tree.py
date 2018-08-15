@@ -109,7 +109,7 @@ class Node(object):
         self._color = color
 
     def __repr__(self):
-        s = '[{} '.format(self._key)
+        s = f'[{self._key} '
         if self._color == RedBlackTree.RED:
             s += 'R'
         else:

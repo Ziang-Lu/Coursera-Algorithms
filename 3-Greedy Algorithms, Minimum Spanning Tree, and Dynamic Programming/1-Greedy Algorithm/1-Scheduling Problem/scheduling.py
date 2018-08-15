@@ -82,9 +82,7 @@ class Job(object):
         return other_score < score
 
     def __repr__(self):
-        return 'Job with weight {weight} and length {length}'.format(
-            weight=self._weight, length=self._length
-        )
+        return f'Job with weight {self._weight} and length {self._length}'
 
 
 def schedule(jobs: List[Job]) -> None:

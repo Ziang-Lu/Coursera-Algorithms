@@ -162,9 +162,7 @@ class Vertex(AbstractVertex, UnionFindObj):
         return self._min_incident_cost < other.min_incident_cost
 
     def __repr__(self):
-        return 'Vertex #{}, Its neighbors: {}'.format(
-            self._vtx_id, self._neighbors
-        )
+        return f'Vertex #{self._vtx_id}, Its neighbors: {self._neighbors}'
 
 
 @total_ordering
@@ -228,9 +226,7 @@ class UndirectedEdge(object):
         return self._cost < other.cost
 
     def __repr__(self):
-        return 'Edge between Vertex #{end1_id} and Vertex #{end2_id}'.format(
-            end1_id=self._end1.vtx_id, end2_id=self._end2.vtx_id
-        )
+        return f'Edge between Vertex #{self._end1.vtx_id} and Vertex #{self._end2.vtx_id}'
 
 
 class UndirectedGraph(AbstractGraph):

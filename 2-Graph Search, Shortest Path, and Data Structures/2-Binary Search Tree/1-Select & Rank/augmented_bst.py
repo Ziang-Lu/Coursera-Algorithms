@@ -85,7 +85,7 @@ class Node(object):
         self._size = size
 
     def __repr__(self):
-        return '[{key}, size: {size}]'.format(key=self._key, size=self._size)
+        return f'[{self._key}, size: {self._size}]'
 
 
 class AugmentedBST(object):
