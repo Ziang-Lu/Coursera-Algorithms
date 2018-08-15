@@ -95,4 +95,4 @@ This repo contains course notes and assignments, most implemented both in Java a
 
 ## License
 
-This repo is distributed under the MIT license.
+This repo is distributed under the <a href="https://github.com/Ziang-Lu/Coursera-Algorithms/blob/master/LICENSE">MIT license</a>.
