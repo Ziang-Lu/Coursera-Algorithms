@@ -1,5 +1,7 @@
 # Coursera-Algorithms   [Stanford University]
 
+This repo contains course notes and assignments, most implemented both in Java and Python, in the Algorithm specialization from Stanford University on Coursera.
+
 ## Divide and Conquer, Sorting and Searching, and Randomized Algorithms
 
 1. Karatsuba Multiplication
@@ -89,3 +91,8 @@
   * Local search
     * Maximum Cut
 
+<br>
+
+## License
+
+This repo is distributed under the MIT license.
