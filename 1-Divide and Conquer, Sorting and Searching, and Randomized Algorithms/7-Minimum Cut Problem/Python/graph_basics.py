@@ -131,4 +131,3 @@ class AbstractGraph(ABC):
         print('The edges are:')
         for edge in self._edge_list:
             print(edge)
-

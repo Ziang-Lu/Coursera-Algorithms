@@ -27,7 +27,6 @@ __author__ = 'Ziang Lu'
 
 from typing import List, Set
 
-
 INFINITY = 1000000.0
 
 

@@ -24,9 +24,7 @@ __author__ = 'Ziang Lu'
 import gc
 import itertools
 import math
-
 from typing import Iterable, List
-
 
 INFINITY = 1000000
 
