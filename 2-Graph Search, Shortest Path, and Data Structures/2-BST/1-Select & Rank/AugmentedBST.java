@@ -204,6 +204,9 @@ public class AugmentedBST implements BSTInterface {
             // Note that rank in the right sub-tree is (rank - currRankInSubTree)
             return selectHelper(rank - currRankInSubTree, curr.right);
         }
+        // T(n) = T(n/2) + O(1)
+        // a = 1, b = 2, d = 0
+        // According to Master Method, time: O(log n)
     }
 
     /**
@@ -244,6 +247,9 @@ public class AugmentedBST implements BSTInterface {
             // Note that the rank in the right sub-tree is (rank - currRankInSubTree)
             return currRankInSubTree + getRankHelper(key, curr.right);
         }
+        // T(n) = T(n/2) + O(1)
+        // a = 1, b = 2, d = 0
+        // According to Master Method, time: O(log n)
     }
 
 }

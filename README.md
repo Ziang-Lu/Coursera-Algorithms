@@ -18,7 +18,7 @@ This repo contains course notes and assignments, most implemented both in Java a
 
 #### Hash Table
 
-#### Binary Search Tree
+#### BST
 
 * Select & Rank
 * AVL Tree

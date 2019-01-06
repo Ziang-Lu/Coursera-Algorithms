@@ -12,7 +12,7 @@ The two sub-problems are mutually reverse problems.
 __author__ = 'Ziang Lu'
 
 
-class Node(object):
+class Node:
     __slots__ = ['_key', '_left', '_right', '_size']
 
     def __init__(self, key: int):
@@ -88,7 +88,7 @@ class Node(object):
         return f'[{self._key}, size: {self._size}]'
 
 
-class AugmentedBST(object):
+class AugmentedBST:
     """
     Augmented BST class.
     A simple BST class, but each node has an additional data field: the number
@@ -237,6 +237,9 @@ class AugmentedBST(object):
             # Note that the rank in the right sub-tree is
             # (rank - curr_rank_in_subtree)
             return self._select_helper(rank - curr_rank_in_subtree, curr.right)
+        # T(n) = T(n/2) + O(1)
+        # a = 1, b = 2, d = 0
+        # According to Master Method, time: O(log n)
 
     def get_rank(self, key: int) -> int:
         """
@@ -272,3 +275,6 @@ class AugmentedBST(object):
             # Note that the rank in the right sub-tree is
             # (rank - curr_rank_in_subtree)
             return curr_rank_in_subtree + self._get_rank_helper(key, curr.right)
+        # T(n) = T(n/2) + O(1)
+        # a = 1, b = 2, d = 0
+        # According to Master Method, time: O(log n)

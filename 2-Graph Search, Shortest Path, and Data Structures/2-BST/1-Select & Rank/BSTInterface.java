@@ -24,4 +24,5 @@ public interface BSTInterface {
      * Traverses the BST in-order.
      */
     void traverseInOrder();
+
 }
