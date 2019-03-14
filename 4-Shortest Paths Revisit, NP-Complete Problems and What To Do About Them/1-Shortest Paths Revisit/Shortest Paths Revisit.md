@@ -95,7 +95,7 @@ In each round, each vertex only "communicate" with the vertices it is connected 
 
 <br>
 
-#### Application: Internet rounting
+#### Application: Internet routing
 
 Modifications to Bellman-Ford Shortest-Path Algorithm towards a routing protocol:
 
