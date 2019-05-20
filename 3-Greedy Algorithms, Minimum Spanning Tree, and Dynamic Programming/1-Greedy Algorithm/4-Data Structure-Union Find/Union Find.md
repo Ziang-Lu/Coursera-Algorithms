@@ -81,10 +81,6 @@ Link rx and ry in O(1) time
 
 <br>
 
-**Problem: Which group to change the leader?**
-
-<br>
-
 #### Optimization 1: Union-by-Rank (from the idea of the previous practical optimization)
 
 Look at which of the two trees is already deeper, and we want to keep the root of that deeper tree, so we install the root of the shallower tree as the child of the deeper one.
@@ -93,7 +89,7 @@ Look at which of the two trees is already deeper, and we want to keep the root o
 
 => The rank of an object is 1 + maximum rank of its children.
 
-=> Both ``find()`` and ``union()`` operations: O(r), where r is the rank of the root of the tree that the object belongs to
+=> Both ``find()`` and ``union()`` operations: O(r), where r is the rank of the root that the object belongs to
 
 <br>
 
