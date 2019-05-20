@@ -51,7 +51,7 @@ If we merge the sole subsets one by one to the single entire set, like in Kruska
 
 Consider the number of leader updates for a single vertex:
 
-Every time the leader of this vertex gets updated, the size of its connected components at least doubles, so suppose it experiences $x$ leader updates in total, we have
+Every time the leader of this vertex gets updated, the size of its connected component at least doubles, so suppose it experiences $x$ leader updates in total, we have
 $$
 2^x \le n \\
 x \le log_2n
