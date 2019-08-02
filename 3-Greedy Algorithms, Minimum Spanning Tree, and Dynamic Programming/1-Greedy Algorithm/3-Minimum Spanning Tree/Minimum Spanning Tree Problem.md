@@ -23,7 +23,7 @@ $Cost_T$ = $\Sigma c_e$ for $e \in T$
 
 *Assumption: G is connected. Or it's impossible to find a spanning tree that spans all the vertices. -> Can be easily checked by BFS/DFS in linear time*
 
-**Output**
+**Output:**
 
 A spanning tree $T \subseteq E$ that spans the all the vertices with minimum cost
 
@@ -72,9 +72,9 @@ A spanning tree $T \subseteq E$ that spans the all the vertices with minimum cos
 
 **Problem Statement:**
 
-Given $N$ points, a distance measure $d$ (symmetrical, i.e., $d(p, q) = d(q, p)$), and the number of clustering $k$.
+Given $N$ points, a distance measure $d$ (symmetrical, i.e., $d(p, q) = d(q, p)$), and the number of clusters $k$.
 
-*Two points $p$ and $q$ are called **separated** if they are assigned to **different clusterings**.*
+*Two points $p$ and $q$ are called **separated** if they are assigned to **different clusters**.*
 
 *=> Objective function (variable): the **spacing of a clustering** is the **distance between the closest pair of separated points**.*
 

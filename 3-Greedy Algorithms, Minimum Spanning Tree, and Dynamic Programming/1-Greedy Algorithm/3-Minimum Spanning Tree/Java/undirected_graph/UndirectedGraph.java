@@ -183,17 +183,16 @@ public class UndirectedGraph implements GraphInterface {
         spanned.set(srcVtx.id());
         List<UndirectedEdge> currSpanningTree = new ArrayList<>();
 
-        // 3. Create a heap containing all the edges with one endpoint in X (the set) and the other in (V-X)
+        // 3. Create a heap containing all the edges with one endpoint in X and the other in (V-X)
         PriorityQueue<UndirectedEdge> crossingEdges = new PriorityQueue<>(srcVtx.edges());
 
         // 4. While X != V
         while (spanned.cardinality() < vtxList.size()) {
-            // Among all crossing edges e = (v, w) with v in X (the set) and w in (V-X), pick up the cheapest crossing
-            // edge
+            // Among all crossing edges e = (v, w) with v in X and w in (V-X), pick up the cheapest crossing edge
             UndirectedEdge cheapestCrossingEdge = crossingEdges.poll();
             // Add e to T
             currSpanningTree.add(cheapestCrossingEdge);
-            // Add w to X (the set)
+            // Add w to X
             Vertex w = null;
             if (spanned.get(cheapestCrossingEdge.end1().id())) { // endpoint2 is the w.
                 w = cheapestCrossingEdge.end2();
@@ -258,21 +257,21 @@ public class UndirectedGraph implements GraphInterface {
 
         // 4. While X != V
         while (spanned.cardinality() < vtxList.size()) {
-            // Among all crossing edges e = (v, w) with v in X (the set) and w in (V-X) (the heap), pick up the cheapest
-            // crossing edge
+            // Among all crossing edges e = (v, w) with v in X and w in (V-X) (the heap), pick up the cheapest crossing
+            // edge
             Vertex w = vtxsToProcess.poll();
             // Add e to T
             currSpanningTree.add(w.minCostIncidentEdge());
-            // Add w to X (the set)
+            // Add w to X
             spanned.set(w.id());
 
             // Extracting one vertex from the heap (V-X) may influence some minimum cost of the incident edges from X
-            // (the set) of the vertices that are still in the heap (V-X).
+            // of the vertices that are still in the heap (V-X).
             // Vertices that are not connected to w and are still in the heap (V-X) won't be influenced.
-            // => The minimum cost of the incident edges from X (the set) of vertices that are connected to w and are
-            //    still in the heap (V-X) may drop down.
+            // => The minimum cost of the incident edges from X of vertices that are connected to w and are still in the
+            //    heap (V-X) may drop down.
 
-            // Update the minimum cost of the incident edges from X (the set) for the vertices if necessary
+            // Update the minimum cost of the incident edges from X for the vertices if necessary
             for (UndirectedEdge wEdge : w.edges()) {
                 // Find the neighbor
                 Vertex neighbor = null;
@@ -283,12 +282,12 @@ public class UndirectedGraph implements GraphInterface {
                 }
                 // Check whether the neighbor of w has been spanned
                 if (!spanned.get(neighbor.id())) {
-                    // Check whether the minimum cost of the incident edges from X (the set) needs to be updated
+                    // Check whether the minimum cost of the incident edges from X needs to be updated
                     double newCost = wEdge.cost();
                     if (newCost < neighbor.minIncidentCost()) {
                         // Remove this neighbor from the heap (V-X)
                         vtxsToProcess.remove(neighbor);
-                        // Update its minimum cost of the incident edges from X (the set)
+                        // Update its minimum cost of the incident edges from X
                         neighbor.setMinCostIncidentEdge(wEdge);
                         neighbor.setMinIncidentCost(newCost);
                         // Put this neighbor back to the heap (V-X)
@@ -320,7 +319,7 @@ public class UndirectedGraph implements GraphInterface {
         for (UndirectedEdge edge : edges) {
             // Check whether adding e to T causes cycles in T
             // This is equivalent to checking whether there exists a v-w path in T before adding e.
-            if (dfsAndCheckPath(currSpanningTree, edge.end1(), edge.end2()) == false) {
+            if (!dfsAndCheckPath(currSpanningTree, edge.end1(), edge.end2())) {
                 currSpanningTree.add(edge);
             }
         }
@@ -391,7 +390,7 @@ public class UndirectedGraph implements GraphInterface {
                 return true;
             }
             if (!neighbor.explored()) {
-                if (dfsAndCheckPathHelper(connections, neighbor, target) == true) {
+                if (dfsAndCheckPathHelper(connections, neighbor, target)) {
                     return true;
                 }
             }

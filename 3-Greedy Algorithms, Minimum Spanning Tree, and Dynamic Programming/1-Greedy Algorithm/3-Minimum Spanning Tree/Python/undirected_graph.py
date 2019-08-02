@@ -308,20 +308,20 @@ class UndirectedGraph(AbstractGraph):
         spanned.add(src_vtx.vtx_id)
         curr_spanning_tree = []
 
-        # 3. Create a heap containing all the edge with one endpoint in X (the
-        #    set) and the other in (V-X)
+        # 3. Create a heap containing all the edge with one endpoint in X and
+        #    the other in (V-X)
         crossing_edges = []
         for edge in src_vtx.edges:
             heapq.heappush(crossing_edges, edge)
 
         # 4. While X != V
         while len(spanned) < len(self._vtx_list):
-            # Among all crossing edges e = (v, w) with v in X (the set) and w in
-            # (V-X), pick up the cheapest crossing edge
+            # Among all crossing edges e = (v, w) with v in X and w in (V-X),
+            # pick up the cheapest crossing edge
             cheapest_crossing_edge = heapq.heappop(crossing_edges)
             # Add e to T
             curr_spanning_tree.append(cheapest_crossing_edge)
-            # Add w to X (the set)
+            # Add w to X
             if cheapest_crossing_edge.end1.vtx_id in spanned:  # endpoint2 is
                 #  the w.
                 w = cheapest_crossing_edge.end2
