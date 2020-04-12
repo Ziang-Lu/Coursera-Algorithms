@@ -2,18 +2,19 @@
 # -*- coding: utf-8 -*-
 
 """
-A very simple self-balancing AVL Tree implementation.
+A very simple self-balancing AVL-Tree implementation.
 
-Invariant of an AVL Tree:
-The heights of the left and right subtrees of any node in an AVL Tree won't
-differ more than 1.
+Invariant of an AVL-Tree:
+The heights of the left and right subtrees of any node won't differ more than 1.
 """
 
 __author__ = 'Ziang Lu'
 
+from typing import List
+
 
 class Node(object):
-    __slots__ = ['_key', '_left', '_right']
+    __slots__ = ['_key', '_left', '_right', '_height']
 
     def __init__(self, key: int):
         """
@@ -23,6 +24,7 @@ class Node(object):
         self._key = key
         self._left = None
         self._right = None
+        self._height = 1
 
     @property
     def key(self) -> int:
@@ -48,6 +50,14 @@ class Node(object):
         """
         return self._right
 
+    @property
+    def height(self) -> int:
+        """
+        Accessor of height.
+        :return: int
+        """
+        return self._height
+
     @left.setter
     def left(self, left) -> None:
         """
@@ -66,8 +76,17 @@ class Node(object):
         """
         self._right = right
 
-    def __repr__(self):
-        return f'[{self._key}]'
+    def update_height(self) -> None:
+        """
+        Updates the height of this node.
+        :return: None
+        """
+        left_height, right_height = 0, 0
+        if self._left:
+            left_height = self._left.height
+        if self._right:
+            right_height = self._right.height
+        self._height = 1 + max(left_height, right_height)
 
 
 class AVLTree(object):
@@ -141,6 +160,9 @@ class AVLTree(object):
             return self._search_helper(key, curr.left)
         else:
             return self._search_helper(key, curr.right)
+        # T(n) = T(n/2) + O(1)
+        # a = 1, b = 2, d = 0
+        # According to Master Method, time: O(log n)
 
     def insert(self, key: int) -> None:
         """
@@ -151,79 +173,85 @@ class AVLTree(object):
         if not self._root:
             self._root = Node(key)
             return
+        self._root = self._insert_helper(key, [], self._root)
 
-        self._root = self._insert_helper(key, parent=None, curr=self._root,
-                                         is_lc=True)
-
-    def _insert_helper(self, key: int, parent: Node, curr: Node,
-                       is_lc: bool) -> Node:
+    def _insert_helper(self, key: int, path: List[Node], curr: Node) -> Node:
         """
         Private helper function to insert the given key to the given subtree
         recursively.
         :param key: int
-        :param parent: Node
+        :param parent: list[Node]
         :param curr: Node
-        :param is_lc: bool
         :return: Node
         """
         # Base case 1: Found the spot to insert
         if not curr:
+            parent = path[-1]
             new_node = Node(key)
-            if is_lc:
+            if curr is parent.left:
                 parent.left = new_node
             else:
                 parent.right = new_node
+            self._update_path_height(path)
             return new_node
         # Base case 2: Found it
         if curr.key == key:
-            # No duplicate allowed
+            # No duplicates allowed
             return curr
 
         # Recursive case
+        path.append(curr)
         if curr.key > key:
-            curr.left = self._insert_helper(key, parent=curr, curr=curr.left,
-                                            is_lc=True)
+            curr.left = self._insert_helper(key, path, curr.left)
         else:
-            curr.right = self._insert_helper(key, parent=curr, curr=curr.right,
-                                             is_lc=False)
-
+            curr.right = self._insert_helper(key, path, curr.right)
         # An insertion in the left or right subtree may break the balance of
         # the current node.
-        return self._rebalance(curr)
-        # T(n) = T(n/2) + O(n)
-        # a = 1, b = 2, d = 1
-        # According to Master Method, the overall running time complexity is
-        # O(n).
-
+        return self._rebalance(curr, path)
         # For insertion, there is at most one rebalancing operation when
         # backtracking and rebalancing, since after rebalancing the first
         # encountered unbalanced node when backtracking, all of its upper nodes
         # remain balanced.
+        # T(n) = T(n/2) + O(1)
+        # a = 1, b = 2, d = 1
+        # According to Master Method, time: O(log n)
 
-    def _rebalance(self, curr: Node) -> Node:
+    def _update_path_height(self, path: List[Node]) -> None:
+        """
+        Helper method to update the heights of the nodes along the path.
+        :param path: list[Node]
+        :return: Node
+        """
+        for node in reversed(path):
+            node.update_height()
+        # Time: O(log n)
+
+    def _rebalance(self, curr: Node, path: List[Node]) -> Node:
         """
         Helper function to rebalance the given node if it is unbalanced.
         :param curr: Node
+        :param path: list[Node]
         :return: Node
         """
         balance = self._get_balance(curr)
-        # For detailed explanation, please refer to the tutorial.
-        if balance > 1 and self._get_balance(curr.left) > 0:
-            # Left-left imbalance
+        # For detailed explanation, please refer to the tutorial
+        if balance > 1 and self._get_balance(curr.left) > 0:  # "Left-left imbalance"
             # For the unbalanced node, the height of the left subtree is 2
             # higher than the right subtree;
             # for the left child, the height of the left subtree is 1 higher
             # than the right subtree.
-            return self._right_rotate(unbalanced=curr)
-        elif balance < -1 and self._get_balance(curr.right) < 0:
-            # Right-right imbalance
+            new_root = self._right_rotate(unbalanced=curr)
+            self._update_path_height(path)
+            return new_root
+        elif balance < -1 and self._get_balance(curr.right) < 0:  # "Right-right imbalance"
             # For the unbalanced node, the height of the right subtree is 2
             # higher than the left subtree;
             # for the right child, the height of the right subtree is 1 higher
             # than the left subtree.
-            return self._left_rotate(unbalanced=curr)
-        elif balance > 1 and self._get_balance(curr.left) < 0:
-            # Left-left imbalance
+            new_root = self._left_rotate(unbalanced=curr)
+            self._update_path_height(path)
+            return new_root
+        elif balance > 1 and self._get_balance(curr.left) < 0:  # "Left-left imbalance"
             # For the unbalanced node, the height of the left subtree is 2
             # higher than the right subtree;
             # for the left child, the height of the right subtree is 1 higher
@@ -233,9 +261,10 @@ class AVLTree(object):
             # left-left imbalance
             curr.left = self._left_rotate(unbalanced=curr.left)
 
-            return self._right_rotate(unbalanced=curr)
-        elif balance < -1 and self._get_balance(curr.right) > 0:
-            # Right-left imbalance
+            new_root = self._right_rotate(unbalanced=curr)
+            self._update_path_height(path)
+            return new_root
+        elif balance < -1 and self._get_balance(curr.right) > 0:  # "Right-left imbalance"
             # For the unbalanced node, the height of the right subtree is 2
             # higher than the left subtree;
             # for the right child, the height of the left subtree is 1 higher
@@ -245,12 +274,13 @@ class AVLTree(object):
             # a right-right imbalance
             curr.right = self._right_rotate(unbalanced=curr.right)
 
-            return self._left_rotate(unbalanced=curr)
+            new_root = self._left_rotate(unbalanced=curr)
+            self._update_path_height(new_root)
+            return new_root
 
-        # The insertion/deletion/reconnection doesn't break the balance of the
-        # current node.
+        # The insertion doesn't break the balance of the current node.
         return curr
-        # Running time complexity: O(n)
+        # Time: O(log n)
 
     def _get_balance(self, node: Node) -> int:
         """
@@ -258,150 +288,12 @@ class AVLTree(object):
         :param node: Node
         :return: int
         """
-        # Base case
         if not node:
             return 0
-        # Recursive case
-        return self._get_height(node.left) - self._get_height(node.right)
-        # Running time complexity: O(n)
-
-    def _get_height(self, node: Node) -> int:
-        """
-        Helper function to calculate the height of the given node recursively.
-        :param node: Node
-        :return: int
-        """
-        # Base case
-        if not node:
-            return 0
-        # Recursive case
-        return 1 + max(self._get_height(node.left),
-                       self._get_height(node.right))
-        # T(n) = 2T(n/2) + O(1)
-        # a = 2, b = 2, d = 0
-        # According to Master Method, the running time complexity is O(n).
-
-    def delete(self, key: int) -> None:
-        """
-        Deletes the given key from the BST.
-        :param key: int
-        :return: None
-        """
-        if not self._root:
-            return
-
-        self._root = self._delete_helper(key, self._root)
-
-    def _delete_helper(self, key: int, curr: Node) -> Node:
-        """
-        Private helper function to delete the given key from the given subtree
-        recursively.
-        :param key: int
-        :param curr: Node
-        :return: Node
-        """
-        # Case 1: Not found
-        if not curr:
-            return None
-
-        if curr.key == key:  # Found it
-            if not curr.left and not curr.right:
-                # Case 2: The node to delete is a leaf.
-                return None
-            elif not curr.right:
-                # Case 3: The node to delete only have left child.
-                return curr.left
-            elif not curr.left:
-                # Case 3: The node to delete only have right child.
-                return curr.right
-            else:
-                # Case 4: The node to delete has both left and right children.
-                successor = self._get_successor(curr)
-                successor.left = curr.left
-
-                # A reconnection in the right subtree may break the balance of
-                # the current (successor) node.
-                return self._rebalance(successor)
-
-        # Recursive case
-        if curr.key > key:
-            curr.left = self._delete_helper(key, curr.left)
-        else:
-            curr.right = self._delete_helper(key, curr.right)
-
-        # A deletion in the left or right subtree may break the balance of the
-        # current node.
-        return self._rebalance(curr)
-        # T(n) = T(n/2) + O(n)
-        # a = 1, b = 2, d = 1
-        # According to Master Method, the overall running time complexity is
-        # O(n).
-
-        # For deletion, there could be multiple rebalancing operations when
-        # backtracking and rebalancing, since after rebalancing the first
-        # encountered unbalanced node when backtracking, its upper nodes may
-        # also be unbalanced.
-
-    def _get_successor(self, node_to_delete: Node) -> Node:
-        """
-        Helper function to get the successor of the given node to delete.
-        :param node_to_delete: Node
-        :return: Node
-        """
-        return self._get_successor_helper(node_to_delete, parent=node_to_delete,
-                                          curr=node_to_delete.right)
-        # Running time complexity: O(n)
-
-    def _get_successor_helper(self, node_to_delete: Node, parent: Node,
-                              curr: Node) -> Node:
-        """
-        Helper function to get the successor of the given node to delete in the
-        given subtree recursively.
-        :param node_to_delete: Node
-        :param parent: Node
-        :param curr: Node
-        :return: Node
-        """
-        # Base case
-        if not curr.left:
-            if curr is not node_to_delete.right:
-                parent.left = curr.right
-                curr.right = node_to_delete.right
-            return curr
-        # Recursive case
-        successor = self._get_successor_helper(node_to_delete, parent=curr,
-                                               curr=curr.left)
-        # A reconnection in the right subtree may break the balance of
-        # the current node.
-        if curr is node_to_delete.right:
-            parent.right = self._rebalance(curr)
-        else:
-            parent.left = self._rebalance(curr)
-        return successor
-        # T(n) = T(n/2) + O(n)
-        # a = 1, b = 2, d = 1
-        # According to Master Method, the running time complexity is O(n).
-
-    def traverse_in_order(self) -> None:
-        """
-        Traverses the BST in-order.
-        :return: str
-        """
-        s = self._traverse_in_order_helper(self._root)
-        print(s.strip())
-
-    def _traverse_in_order_helper(self, curr: Node) -> str:
-        """
-        Private helper function to traverse the given subtree in-order
-        recursively.
-        :param curr: Node
-        :return: str
-        """
-        # Base case
-        if not curr:
-            return ''
-        # Recursive case
-        s = self._traverse_in_order_helper(curr.left)
-        s += str(curr) + ' '
-        s += self._traverse_in_order_helper(curr.right)
-        return s
+        left_height, right_height = 0, 0
+        if node.left:
+            left_height = node.left.height
+        if node.right:
+            right_height = node.right.height
+        return left_height - right_height
+        # Time: O(1)

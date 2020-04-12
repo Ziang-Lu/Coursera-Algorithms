@@ -4,7 +4,6 @@
  * @author Ziang Lu
  */
 public interface BSTInterface {
-
     /**
      * Searches for the given key in the BST.
      * @param key key to search for
@@ -18,15 +17,4 @@ public interface BSTInterface {
      * @param key key to insert
      */
     void insert(int key);
-
-    /**
-     * Deletes the given key from the BST.
-     * @param key key to delete
-     */
-    void delete(int key);
-
-    /**
-     * Traverses the BST in-order.
-     */
-    void traverseInOrder();
 }

@@ -1,9 +1,12 @@
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * A very simple self-balanced AVL Tree implementation.
+ * A very simple self-balanced AVL-Tree implementation.
  *
- * Invariant of an AVL Tree:
- * The heights of the left and right subtrees of any node in an AVL Tree won't
- * differ more than 1.
+ * Invariant of an AVL-Tree:
+ * The heights of the left and right subtrees of any node won't differ more than
+ * 1.
  *
  * @author Ziang Lu
  */
@@ -16,70 +19,84 @@ public class AVLTree implements BSTInterface {
         /**
          * Key of this node.
          */
-        private int key;
+        private final int key;
         /**
-         * Reference to left child.
+         * Reference to left and right children.
          */
-        private Node left;
+        private Node left, right;
         /**
-         * Reference to right child.
+         * Height of this node.
          */
-        private Node right;
+        private int height;
 
         /**
          * Constructor with parameter.
-         * @param key key to store
+         * @param key key of the node
          */
         Node(int key) {
             this.key = key;
             left = null;
             right = null;
+            height = 1;
         }
 
-        @Override
-        public String toString() {
-            StringBuilder s = new StringBuilder();
-            s.append("[").append(key).append("]");
-            return s.toString();
+        /**
+         * Updates the height of this node.
+         */
+        void updateHeight() {
+            int leftHeight = 0, rightHeight = 0;
+            if (left != null) {
+                leftHeight = left.height;
+            }
+            if (right != null) {
+                rightHeight = right.height;
+            }
+            height = 1 + Math.max(leftHeight, rightHeight);
         }
     }
 
     /**
      * Makes a right rotation towards the given unbalanced node.
-     * @param unbalanced given unbalanced node
+     * @param unbalanced unbalanced node
      * @return root of the subtree after right rotation
      */
     private static Node rightRotate(Node unbalanced) {
         // Temporarily store the left child
         Node tmp = unbalanced.left;
 
-        // Reconnect the references to realize right rotation
+        // Reconnect the references to achieve right rotation
         unbalanced.left = unbalanced.left.right;
         tmp.right = unbalanced;
+        // Also, take care of the height
+        unbalanced.updateHeight();
+        tmp.updateHeight();
 
         return tmp;
-        // Running time complexity: O(1)
+        // Time: O(1)
     }
 
     /**
      * Makes a left rotation towards the given unbalanced node.
-     * @param unbalanced given unbalanced node
+     * @param unbalanced unbalanced node
      * @return root of the subtree after left rotation
      */
     private static Node leftRotate(Node unbalanced) {
         // Temporarily store the right child
         Node tmp = unbalanced.right;
 
-        // Reconnect the references to realize left rotation
+        // Reconnect the references to achieve left rotation
         unbalanced.right = unbalanced.right.left;
         tmp.left = unbalanced;
+        // Also, take care of the height
+        unbalanced.updateHeight();
+        tmp.updateHeight();
 
         return tmp;
-        // Running time complexity: O(1)
+        // Time: O(1)
     }
 
     /**
-     * Root of this AVL Tree.
+     * Root of this AVL-Tree.
      */
     private Node root;
 
@@ -111,6 +128,9 @@ public class AVLTree implements BSTInterface {
         } else {
             return searchHelper(key, curr.right);
         }
+        // T(n) = T(n/2) + O(1)
+        // a = 1, b = 2, d = 0
+        // According to Master Method, time: O(log n)
     }
 
     @Override
@@ -119,94 +139,109 @@ public class AVLTree implements BSTInterface {
             root = new Node(key);
             return;
         }
-
-        root = insertHelper(key, null, root, true);
+        root = insertHelper(key, new ArrayList<>(), root);
     }
 
     /**
      * Private helper method to insert the given key to the given subtree
      * recursively.
      * @param key key to insert
-     * @param parent parent node
+     * @param path nodes along the path
      * @param curr current node
-     * @param isLC whether the current node is the left child
      * @return root of the subtree after insertion
      */
-    private Node insertHelper(int key, Node parent, Node curr, boolean isLC) {
+    private Node insertHelper(int key, List<Node> path, Node curr) {
         // Base case 1: Found the spot to insert
         if (curr == null) {
+            Node parent = path.get(path.size() - 1);
             Node newNode = new Node(key);
-            if (isLC) {
+            if (curr == parent.left) {
                 parent.left = newNode;
             } else {
                 parent.right = newNode;
             }
+            updatePathHeight(path);
             return newNode;
         }
         // Base case 2: Found it
         if (curr.key == key) {
-            // No duplicate allowed
+            // No duplicates allowed
             return curr;
         }
 
         // Recursive case
+        path.add(curr);
         if (curr.key > key) {
-            curr.left = insertHelper(key, curr, curr.left, true);
+            curr.left = insertHelper(key, path, curr.left, true);
         } else {
-            curr.right = insertHelper(key, curr, curr.right, false);
+            curr.right = insertHelper(key, path, curr.right, false);
         }
-
         // An insertion in the left or right subtree may break the balance of the current node.
-        return rebalance(curr);
-        // T(n) = T(n/2) + O(n)
-        // a = 1, b = 2, d = 1
-        // According to Master Method, the overall running time complexity is O(n).
-
+        return rebalance(curr, path);
         // For insertion, there is at most one rebalancing operation when backtracking and rebalancing, since after
-        // rebalancing the first encountered unbalanced node when backtracking, all of its upper nodes remain balanced.
+        // rebalancing the first encountered unbalanced node, all of its upper nodes remain balanced.
+        // T(n) = T(n/2) + O(1)
+        // a = 1, b = 2, d = 0
+        // According to Master Method, time: O(log n)
     }
 
     /**
-     * Helper method to rebalance the given node if it is unbalanced.
-     * @param curr given node
+     * Helper method to update the heights of the nodes along the path.
+     * @param path nodes along the path
+     */
+    private void updatePathHeight(List<Node> path) {
+        for (int i = path.size() - 1; i >= 0; --i) {
+            path.get(i).updateHeight();
+        }
+        // Time: O(log n)
+    }
+
+    /**
+     * Helper method to rebalance along the given path.
+     * @param curr current node
+     * @param path path to rebalance
      * @return root of the subtree after rebalancing
      */
-    private Node rebalance(Node curr) {
+    private Node rebalance(Node curr, List<Node> path) {
         int balance = getBalance(curr);
-        // For detailed explanation, please refer to the tutorial.
-        if ((balance > 1) && (getBalance(curr.left) > 0)) {
-            // Left-left imbalance
+        // For detailed explanation, please refer to the tutorial
+        if ((balance > 1) && (getBalance(curr.left) > 0)) { // "Left-left imbalance"
             // For the unbalanced node, the height of the left subtree is 2 higher than the right subtree;
             // for the left child, the height of the left subtree is 1 higher than the right subtree.
-            return rightRotate(curr);
-        } else if ((balance < -1) && (getBalance(curr.right) < 0)) {
-            // Right-right imbalance
+            Node newRoot = rightRotate(curr);
+            updatePathHeight(path);
+            return newRoot;
+        } else if ((balance < -1) && (getBalance(curr.right) < 0)) { // "Right-right imbalance"
             // For the unbalanced node, the height of the right subtree is 2 higher than the left subtree;
             // for the right child, the height of the right subtree is 1 higher than the left subtree.
-            return leftRotate(curr);
-        } else if ((balance > 1) && (getBalance(curr.left) < 0)) {
-            // Left-right imbalance
+            Node newRoot = leftRotate(curr);
+            updatePathHeight(path);
+            return newRoot;
+        } else if ((balance > 1) && (getBalance(curr.left) < 0)) { // "Left-right imbalance"
             // For the unbalanced node, the height of the left subtree is 2 higher than the right subtree;
             // for the left child, the height of the right subtree is 1 higher than the left subtree.
 
             // First do a left rotation towards the left child, making the case a left-left imbalance
             curr.left = leftRotate(curr.left);
 
-            return rightRotate(curr);
-        } else if ((balance < -1) && (getBalance(curr.right) > 0)) {
-            // Right-left imbalance
+            Node newRoot = rightRotate(curr);
+            updatePathHeight(path);
+            return newRoot;
+        } else if ((balance < -1) && (getBalance(curr.right) > 0)) { // "Right-left imbalance"
             // For the unbalanced node, the height of the right subtree is 2 higher than the left subtree;
             // for the right child, the height of the left subtree is 1 higher than the right subtree.
 
             // First do a right rotation towards the right child, making the case a right-right imbalance
             curr.right = rightRotate(curr.right);
 
-            return leftRotate(curr);
+            Node newRoot = leftRotate(curr);
+            updatePathHeight(path);
+            return newRoot;
         }
 
         // The insertion doesn't break the balance of the current node.
         return curr;
-        // Running time complexity: O(n)
+        // Time: O(log n)
     }
 
     /**
@@ -215,206 +250,18 @@ public class AVLTree implements BSTInterface {
      * @return balance of the node
      */
     private int getBalance(Node node) {
-        // Base case
         if (node == null) {
             return 0;
         }
-        // Recursive case
-        return getHeight(node.left) - getHeight(node.right);
-        // Running time complexity: O(n)
-    }
-
-    /**
-     * Helper method to calculate the height of the given node recursively.
-     * @param node given node
-     * @return height of the node
-     */
-    private int getHeight(Node node) {
-        // Base case
-        if (node == null) {
-            return 0;
+        int leftHeight = 0, rightHeight = 0;
+        if (node.left != null) {
+            leftHeight = node.left.height;
         }
-        // Recursive case
-        return 1 + Math.max(getHeight(node.left), getHeight(node.right));
-        // T(n) = 2T(n/2) + O(1)
-        // a = 2, b = 2, d = 0
-        // According to Master Method, the running time complexity is O(n).
-    }
-
-    @Override
-    public void delete(int key) {
-        if (root == null) {
-            return;
+        if (node.right != null) {
+            rightHeight = node.right.height;
         }
-
-        root = deleteHelper(key, root);
-    }
-
-    /**
-     * Private helper method to delete the given key from the given subtree
-     * recursively.
-     * @param key key to delete
-     * @param curr current node
-     * @return root of the subtree after deletion
-     */
-    private Node deleteHelper(int key, Node curr) {
-        // Case 1: Not found
-        if (curr == null) {
-            return null;
-        }
-
-        if (curr.key == key) { // Found it
-            if ((curr.left == null) && (curr.right == null)) {
-                // Case 2: The node to delete is a leaf.
-                return null;
-            } else if (curr.right == null) {
-                // Case 3: The node only have left child.
-                return curr.left;
-            } else if (curr.left == null) {
-                // Case 3: The node only have right child.
-                return curr.right;
-            } else {
-                // Case 4: The node has both left and right children.
-                Node successor = getSuccessor(curr);
-                successor.left = curr.left;
-
-                // A reconnection in the right subtree may break the balance of the current (successor) node.
-                return rebalance(successor);
-            }
-        }
-
-        // Recursive case
-        if (curr.key > key) {
-            curr.left = deleteHelper(key, curr.left);
-        } else {
-            curr.right = deleteHelper(key, curr.right);
-        }
-
-        // A deletion in the left or right subtree may break the balance of the current node.
-        return rebalance(curr);
-        // T(n) = T(n/2) + O(n)
-        // a = 1, b = 2, d = 1
-        // According to Master Method, the overall running time complexity is O(n).
-
-        // For deletion, there could be multiple rebalancing operations when backtracking and rebalancing, since after
-        // rebalancing the first encountered unbalanced node when backtracking, its upper nodes may also be unbalanced.
-    }
-
-    /**
-     * Helper method to get the successor of the given node to delete.
-     * Note that the given node to delete has both left and right children
-     * @param nodeToDelete node to delete
-     * @return successor
-     */
-    private Node getSuccessor(Node nodeToDelete) {
-        return getSuccessorHelper(nodeToDelete, nodeToDelete, nodeToDelete.right);
-        // Running time complexity: O(n)
-    }
-
-    /**
-     * Helper method to get the successor of the given node to delete in the
-     * given subtree recursively.
-     * @param nodeToDelete node to delete
-     * @param parent parent node
-     * @param curr current node
-     * @return successor
-     */
-    private Node getSuccessorHelper(Node nodeToDelete, Node parent, Node curr) {
-        // Base case
-        if (curr.left == null) {
-            if (curr != nodeToDelete.right) {
-                parent.left = curr.right;
-                curr.right = nodeToDelete.right;
-            }
-            return curr;
-        }
-        // Recursive case
-        Node successor = getSuccessorHelper(nodeToDelete, curr, curr.left);
-        // A reconnection in the left subtree may break the balance of the current node.
-        if (curr == nodeToDelete.right) {
-            parent.right = rebalance(curr);
-        } else {
-            parent.left = rebalance(curr);
-        }
-        return successor;
-        // T(n) = T(n/2) + O(n)
-        // a = 1, b = 2, d = 1
-        // According to Master Method, the running time complexity is O(n).
-    }
-
-    @Override
-    public void traverseInOrder() {
-        StringBuilder s = new StringBuilder();
-        traverseInOrderHelper(root, s);
-        System.out.println(s.toString().trim());
-    }
-
-    /**
-     * Private helper method to traverse the given subtree in-order recursively.
-     * @param curr current node
-     * @param s StringBuilder to append
-     */
-    private void traverseInOrderHelper(Node curr, StringBuilder s) {
-        // Base case
-        if (curr == null) {
-            return;
-        }
-        // Recursive case
-        traverseInOrderHelper(curr.left, s);
-        s.append(curr).append(" ");
-        traverseInOrderHelper(curr.right, s);
-    }
-
-    /**
-     * Main driver.
-     * @param args arguments from command line
-     */
-    public static void main(String[] args) {
-        AVLTree tree = new AVLTree();
-
-        // Test insertion
-        tree.insert(7);
-        tree.insert(2);
-        tree.insert(1); tree.insert(1);
-        tree.insert(5);
-        tree.insert(3);
-        tree.insert(6);
-        tree.insert(4);
-        tree.insert(9);
-        tree.insert(8);
-        tree.insert(11); tree.insert(11);
-        tree.insert(10);
-        tree.insert(12);
-        System.out.println("Testing insertion **********************************");
-        tree.traverseInOrder(); // [1] [2] [3] [4] [5] [6] [7] [8] [9] [10] [11] [12]
-        System.out.println("root: " + tree.root); // [5]
-        System.out.println("root.left: " + tree.root.left); // [2]
-        System.out.println("root.right: " + tree.root.right); // [9]
-        System.out.println("****************************************************");
-        System.out.println();
-
-        // Test search
-        System.out.println("Testing searching *******");
-        System.out.println("Searching for 2: " + tree.search(2)); // true
-        System.out.println("Searching for 100: " + tree.search(100)); // false
-        System.out.println("*************************");
-        System.out.println();
-
-        // Test deletion
-        System.out.println("Testing deletion ******************************");
-        tree.delete(1);
-        System.out.println("After deleting 1:");
-        tree.traverseInOrder(); // [2] [3] [4] [5] [6] [7] [8] [9] [10] [11] [12]
-
-        tree.delete(9);
-        System.out.println("After deleting 9:");
-        tree.traverseInOrder(); // [2] [3] [4] [5] [6] [7] [8] [10] [11] [12]
-
-        tree.delete(11);
-        System.out.println("After deleting 11:");
-        tree.traverseInOrder(); // [2] [3] [4] [5] [6] [7] [8] [10] [12]
-        System.out.println("***********************************************");
-        System.out.println();
+        return leftHeight - rightHeight;
+        // Time: O(1)
     }
 
 }
