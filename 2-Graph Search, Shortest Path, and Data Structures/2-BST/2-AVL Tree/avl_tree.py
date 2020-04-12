@@ -173,22 +173,24 @@ class AVLTree(object):
         if not self._root:
             self._root = Node(key)
             return
-        self._root = self._insert_helper(key, [], self._root)
+        self._root = self._insert_helper(key, [], self._root, is_lc=True)
 
-    def _insert_helper(self, key: int, path: List[Node], curr: Node) -> Node:
+    def _insert_helper(self, key: int, path: List[Node], curr: Node,
+                       is_lc: bool) -> Node:
         """
         Private helper function to insert the given key to the given subtree
         recursively.
         :param key: int
         :param parent: list[Node]
         :param curr: Node
+        :param is_lc: bool
         :return: Node
         """
         # Base case 1: Found the spot to insert
         if not curr:
             parent = path[-1]
             new_node = Node(key)
-            if curr is parent.left:
+            if is_lc:
                 parent.left = new_node
             else:
                 parent.right = new_node
@@ -202,9 +204,9 @@ class AVLTree(object):
         # Recursive case
         path.append(curr)
         if curr.key > key:
-            curr.left = self._insert_helper(key, path, curr.left)
+            curr.left = self._insert_helper(key, path, curr.left, is_lc=True)
         else:
-            curr.right = self._insert_helper(key, path, curr.right)
+            curr.right = self._insert_helper(key, path, curr.right, is_lc=False)
         # An insertion in the left or right subtree may break the balance of
         # the current node.
         return self._rebalance(curr, path)
@@ -235,7 +237,8 @@ class AVLTree(object):
         """
         balance = self._get_balance(curr)
         # For detailed explanation, please refer to the tutorial
-        if balance > 1 and self._get_balance(curr.left) > 0:  # "Left-left imbalance"
+        # "Left-left imbalance"
+        if balance > 1 and self._get_balance(curr.left) > 0:
             # For the unbalanced node, the height of the left subtree is 2
             # higher than the right subtree;
             # for the left child, the height of the left subtree is 1 higher
@@ -243,7 +246,8 @@ class AVLTree(object):
             new_root = self._right_rotate(unbalanced=curr)
             self._update_path_height(path)
             return new_root
-        elif balance < -1 and self._get_balance(curr.right) < 0:  # "Right-right imbalance"
+        # "Right-right imbalance"
+        elif balance < -1 and self._get_balance(curr.right) < 0:
             # For the unbalanced node, the height of the right subtree is 2
             # higher than the left subtree;
             # for the right child, the height of the right subtree is 1 higher
@@ -251,7 +255,8 @@ class AVLTree(object):
             new_root = self._left_rotate(unbalanced=curr)
             self._update_path_height(path)
             return new_root
-        elif balance > 1 and self._get_balance(curr.left) < 0:  # "Left-left imbalance"
+        # "Left-left imbalance"
+        elif balance > 1 and self._get_balance(curr.left) < 0:
             # For the unbalanced node, the height of the left subtree is 2
             # higher than the right subtree;
             # for the left child, the height of the right subtree is 1 higher
@@ -264,7 +269,8 @@ class AVLTree(object):
             new_root = self._right_rotate(unbalanced=curr)
             self._update_path_height(path)
             return new_root
-        elif balance < -1 and self._get_balance(curr.right) > 0:  # "Right-left imbalance"
+        # "Right-left imbalance"
+        elif balance < -1 and self._get_balance(curr.right) > 0:
             # For the unbalanced node, the height of the right subtree is 2
             # higher than the left subtree;
             # for the right child, the height of the left subtree is 1 higher

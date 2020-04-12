@@ -12,7 +12,7 @@
  *
  * @author Ziang Lu
  */
-public class RedBlackTree {
+public class RedBlackTree implements BSTInterface {
 
     /**
      * Static nested Node class.
@@ -21,7 +21,7 @@ public class RedBlackTree {
         /**
          * Key of this node.
          */
-        private int key;
+        private final int key;
         /**
          * Reference to the parent.
          */
@@ -42,27 +42,15 @@ public class RedBlackTree {
         /**
          * Constructor with parameter.
          * @param key key to store
-         * @param color color of this node
+         * @param parent parent of the node
+         * @param color color of the node
          */
-        Node(int key, boolean color) {
+        Node(int key, Node parent, boolean color) {
             this.key = key;
-            parent = null;
+            this.parent = parent;
             left = null;
             right = null;
             this.color = color;
-        }
-
-        @Override
-        public String toString() {
-            StringBuilder s = new StringBuilder();
-            s.append("[").append(key).append(" ");
-            if (color == RED) {
-                s.append("R");
-            } else {
-                s.append("B");
-            }
-            s.append("]");
-            return s.toString();
         }
     }
 
@@ -80,18 +68,7 @@ public class RedBlackTree {
      */
     private Node root;
 
-    /**
-     * Default constructor.
-     */
-    public RedBlackTree() {
-        root = null;
-    }
-
-    /**
-     * Searches for the given key in the Red-Black Tree.
-     * @param key key to search for
-     * @return whether the key is in the Red-Black Tree
-     */
+    @Override
     public boolean search(int key) {
         return searchHelper(key, root);
     }
@@ -119,9 +96,24 @@ public class RedBlackTree {
         } else {
             return searchHelper(key, curr.right);
         }
+        // T(n) = T(n/2) + O(1)
+        // a = 1, b = 2, d = 0
+        // According to Master Method, time: O(log n)
+    }
+
+    @Override
+    public void insert(int key) {
+        if (root == null) {
+            root = new Node(key, null, BLACK);
+            return;
+        }
+        insertHelper(key, null, root, true);
     }
 
     /**
+     * Private helper method to insert the given key to the given subtree
+     * recursively.
+     *
      * Insertion:
      * 1. Insert a new element as a normal BST (Might break invariants)
      *    Note that the newly inserted node is always red, since the probability
@@ -132,40 +124,26 @@ public class RedBlackTree {
      *          broken invariant #4, which is also more difficult to restore.
      * 2. Recolor and perform rotations until invariants are restored
      * @param key key to insert
-     */
-    public void insert(int key) {
-        insertHelper(key, null, root, true);
-    }
-
-    /**
-     * Private helper method to insert the given key to the given subtree
-     * recursively.
-     * @param key key to insert
      * @param curr current node
      * @param isLC whether the current node is the left child
+     * @return root of the subtree after insertion
      */
     private void insertHelper(int key, Node parent, Node curr, boolean isLC) {
         // Base case 1: Found the spot to insert
         if (curr == null) {
-            Node newNode = new Node(key, RED);
-            newNode.parent = parent;
-            if (parent == null) {
-                root = newNode;
+            Node newNode = new Node(key, parent, RED);
+            if (isLC) {
+                parent.left = newNode;
             } else {
-                if (isLC) {
-                    parent.left = newNode;
-                } else {
-                    parent.right = newNode;
-                }
+                parent.right = newNode;
             }
-
-            // Restore the invariants   [O(log n)]
-            restoreInvariants(newNode);
+            // Restore the invariants
+            restoreInvariants(newNode); // O(log n)
             return;
         }
         // Base case 2: Found it
         if (curr.key == key) {
-            // No duplicate allowed
+            // No duplicates allowed
             return;
         }
 
@@ -177,7 +155,7 @@ public class RedBlackTree {
         }
         // T(n) = T(n/2) + O(1)
         // a = 1, b = 2, d = 0
-        // According to Master Method, the overall running time complexity is O(log n).
+        // According to Master Method, time: O(log n)
     }
 
     /**
@@ -185,37 +163,27 @@ public class RedBlackTree {
      * @param toRestore node to restore (must be red)
      */
     private void restoreInvariants(Node toRestore) {
-        // Case 1: Insert the first node (as the root)
-        // Since toRestore is red, this only violates invariant #2.
-        // We simply need to recolor toRestore to black.
-        if (toRestore == root) {
-            toRestore.color = BLACK;
+        Node parent = toRestore.parent;
+        // Case 1: The parent is black.
+        if (parent.color == BLACK) { // This won't violate invariant #3.
             return;
         }
 
-        // Case 2: The parent is black.
-        // This won't violate invariant #3.
-
-        // Case 3: The parent is red.
-        // This violates invariant #3.
-        Node parent = toRestore.parent;
-        if (parent.color == RED) {
+        // Case 2: The parent is red.
+        if (parent.color == RED) { // This violates invariant #3.
             // Then toRestore must have a grandparent, and it must be black according to invariant #3.
             Node grandparent = toRestore.parent.parent;
-
             if (parent == grandparent.left) {
                 Node uncle = grandparent.right;
-
-                if ((uncle != null) && (uncle.color == RED)) { // Case 3.1: The uncle is red.
-                    // To restore invariant #3 and #4, simply recolor the grandparent to red and the parent and the uncle to
-                    // black.
+                if ((uncle != null) && (uncle.color == RED)) { // Case 2.1: The uncle is red.
+                    // To restore invariant #3 and #4, simply recolor the grandparent to red and the parent and the
+                    // uncle to black.
                     restoreParentAndUncleAreRed(grandparent, parent, uncle);
-
                     // In this way, the same case applies to the newly recolored grandparent.
                     // Then we simply need to recurse towards grandparent.
                     restoreInvariants(grandparent);
-                } else { // Case 3.2: The uncle is black.
-                    if (toRestore == parent.right) { // Case 3.2.1: toRestore is the right child.
+                } else if ((uncle != null) && (uncle.color == BLACK)) { // Case 3.2: The uncle is black.
+                    if (toRestore == parent.right) { // Case 2.2.1: toRestore is the right child.
                         /*
                                  Black
                                 /   \
@@ -224,11 +192,10 @@ public class RedBlackTree {
                                Red (Curr)
                          */
                         leftRotate(parent);
-
                         // In this way, the same case applies to the newly left rotated parent.
                         // Then we simply need to recurse towards parent.
                         restoreInvariants(parent);
-                    } else { // Case 3.2.2: toRestore is the left child.
+                    } else { // Case 2.2.2: toRestore is the left child.
                         /*
                                  Black
                                  /   \
@@ -244,12 +211,11 @@ public class RedBlackTree {
                 }
             } else {
                 Node uncle = grandparent.left;
-
-                if ((uncle != null) && (uncle.color == RED)) { // Case 3.1: The uncle is red.
+                if ((uncle != null) && (uncle.color == RED)) { // Case 2.1: The uncle is red.
                     restoreParentAndUncleAreRed(grandparent, parent, uncle);
                     restoreInvariants(grandparent);
-                } else { // Case 3.2: The uncle is black.
-                    if (toRestore == parent.left) { // Case 3.2.1: toRestore is the left child.
+                } else if ((uncle != null) && (uncle.color == BLACK)) { // Case 3.2: The uncle is black.
+                    if (toRestore == parent.left) { // Case 2.2.1: toRestore is the left child.
                         /*
                                  Black
                                  /   \
@@ -258,11 +224,10 @@ public class RedBlackTree {
                                 Red (Curr)
                          */
                         rightRotate(parent);
-
                         // In this way, the same case applies to the newly left rotated parent.
                         // Then we simply need to recurse towards parent.
                         restoreInvariants(parent);
-                    } else { // Case 3.2.2: toRestore is the right child.
+                    } else { // Case 2.2.2: toRestore is the right child.
                         /*
                                  Black
                                 /   \
@@ -270,7 +235,6 @@ public class RedBlackTree {
                                        \
                                     Red (Curr)
                          */
-
                         // Recolor the parent to black, and the grandparent to red
                         parent.color = BLACK;
                         grandparent.color = RED;
@@ -282,7 +246,7 @@ public class RedBlackTree {
 
         // Recolor the root to black to ensure invariant #2
         root.color = BLACK;
-        // Running time complexity: O(log n)
+        // Time: O(log n)
     }
 
     /**
@@ -296,7 +260,7 @@ public class RedBlackTree {
         grandparent.color = RED;
         parent.color = BLACK;
         uncle.color = BLACK;
-        // Running time complexity: O(1)
+        // Time: O(1)
     }
 
     /**
@@ -308,7 +272,7 @@ public class RedBlackTree {
         Node parent = toRotate.parent;
         Node tmp = toRotate.right;
 
-        // Reconnect the references to realize left rotation
+        // Reconnect the references to achieve left rotation
         toRotate.right = tmp.left;
         if (tmp.left != null) {
             tmp.left.parent = toRotate;
@@ -326,10 +290,11 @@ public class RedBlackTree {
         }
         tmp.parent = parent;
 
+        // Take care of the root
         if (toRotate == root) {
             root = tmp;
         }
-        // Running time complexity: O(1)
+        // Time: O(1)
     }
 
     /**
@@ -341,7 +306,7 @@ public class RedBlackTree {
         Node parent = toRotate.parent;
         Node tmp = toRotate.left;
 
-        // Reconnect the references to realize right rotation
+        // Reconnect the references to achieve right rotation
         toRotate.left = tmp.right;
         if (tmp.right != null) {
             tmp.right.parent = toRotate;
@@ -359,35 +324,11 @@ public class RedBlackTree {
         }
         tmp.parent = parent;
 
+        // Take care of the root
         if (toRotate == root) {
             root = tmp;
         }
-        // Running time complexity: O(1)
-    }
-
-    /**
-     * Traverses this Red-Black Tree in-order.
-     */
-    public void traverseInOrder() {
-        StringBuilder s = new StringBuilder();
-        traverseInOrderHelper(root, s);
-        System.out.println(s.toString().trim());
-    }
-
-    /**
-     * Private helper method to traverse the given subtree in-order recursively.
-     * @param curr current node
-     * @param s StringBuilder to append
-     */
-    private void traverseInOrderHelper(Node curr, StringBuilder s) {
-        // Base case
-        if (curr == null) {
-            return;
-        }
-        // Recursive case
-        traverseInOrderHelper(curr.left, s);
-        s.append(curr.toString()).append(' ');
-        traverseInOrderHelper(curr.right, s);
+        // Time: O(1)
     }
 
 }

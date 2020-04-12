@@ -20,14 +20,15 @@ __author__ = 'Ziang Lu'
 class Node(object):
     __slots__ = ['_key', '_parent', '_left', '_right', '_color']
 
-    def __init__(self, key: int, color: bool):
+    def __init__(self, key: int, parent, color: bool):
         """
         Constructor with parameter.
         :param key: int
+        :param parent: Node
         :param color: boolean
         """
         self._key = key
-        self._parent = None
+        self._parent = parent
         self._left = None
         self._right = None
         self._color = color
@@ -103,19 +104,10 @@ class Node(object):
     def color(self, color: bool) -> None:
         """
         Mutator of color.
-        :param color: boolean
+        :param color: bool
         :return: None
         """
         self._color = color
-
-    def __repr__(self):
-        s = f'[{self._key} '
-        if self._color == RedBlackTree.RED:
-            s += 'R'
-        else:
-            s += 'B'
-        s += ']'
-        return s
 
 
 class RedBlackTree(object):
@@ -158,9 +150,26 @@ class RedBlackTree(object):
             return self._search_helper(key, curr.left)
         else:
             return self._search_helper(key, curr.right)
+        # T(n) = T(n/2) + O(1)
+        # a = 1, b = 2, d = 0
+        # According to Master Method, time: O(log n)
 
     def insert(self, key: int) -> None:
         """
+        Inserts the given key to the Red-Black Tree.
+        :param key: int
+        :return: None
+        """
+        if not self._root:
+            self._root = Node(key, None, self.BLACK)
+            return
+        self._insert_helper(key, None, self._root, is_lc=True)
+
+    def _insert_helper(self, key: int, parent: Node, curr: Node,
+                       is_lc: bool) -> None:
+        """
+        Private helper method to insert the given key to the given subtree
+        recursively.
         Insertion:
         1. Insert a new element as a normal BST (Might break invariants)
            Note that the newly inserted node is always red, since the
@@ -171,16 +180,6 @@ class RedBlackTree(object):
                  broken invariant #4, which is also more difficult to restore.
         2. Recolor and perform rotations until invariants are restored
         :param key: int
-        :return: None
-        """
-        self._insert_helper(key, parent=None, curr=self._root, is_lc=True)
-
-    def _insert_helper(self, key: int, parent: Node, curr: Node,
-                       is_lc: bool) -> None:
-        """
-        Private helper method to insert the given key to the given subtree
-        recursively.
-        :param key: int
         :param parent: Node
         :param curr: Node
         :param is_lc: boolean
@@ -188,33 +187,27 @@ class RedBlackTree(object):
         """
         # Base case 1: Found the spot to insert
         if not curr:
-            new_node = Node(key, self.RED)
-            new_node.parent = parent
-            if not parent:
-                self._root = new_node
+            new_node = Node(key, parent, self.RED)
+            if is_lc:
+                parent.left = new_node
             else:
-                if is_lc:
-                    parent.left = new_node
-                else:
-                    parent.right = new_node
-
-            # Restore the invariants   [O(log n)]
-            self._restore_invariants(to_restore=new_node)
+                parent.right = new_node
+            # Restore the invariants
+            self._restore_invariants(to_restore=new_node)  # O(log n)
             return
         # Base case 2: Found it
         if curr.key == key:
-            # No duplicate allowed
+            # No duplicates allowed
             return
 
         # Recursive case
         if curr.key > key:
-            self._insert_helper(key, parent=curr, curr=curr.left, is_lc=True)
+            self._insert_helper(key, curr, curr.left, is_lc=True)
         else:
-            self._insert_helper(key, parent=curr, curr=curr.right, is_lc=False)
+            self._insert_helper(key, curr, curr.right, is_lc=False)
         # T(n) = T(n/2) + O(1)
         # a = 1, b = 2, d = 0
-        # According to Master Method, the overall running time complexity is
-        # O(log n).
+        # According to Master Method, time: O(log n)
 
     def _restore_invariants(self, to_restore: Node) -> None:
         """
@@ -222,65 +215,41 @@ class RedBlackTree(object):
         :param to_restore: Node
         :return: None
         """
-        # Case 1: Insert the first node (as the root)
-        # Since to_store is red, this only violates invariant #2.
-        # We simply need to recolor toRestore to black.
-        if to_restore is self._root:
-            to_restore.color = self.BLACK
+        parent = to_restore.parent
+        # Case 1: The parent is black.
+        if parent.color == self.BLACK:  # This won't violate invariant #3.
             return
 
-        # Case 2: The parent is black.
-        # This won't violate invariant #3.
-
-        # Case 3: The parent is red.
-        # This violates invariant #3.
-        parent = to_restore.parent
-        if parent.color == self.RED:
+        # Case 2: The parent is red.
+        if parent.color == self.RED:  # This violates invariant #3.
             # Then to_restore must have a grandparent, and it must be black
             # according to invariant #3.
             grandparent = to_restore.parent.parent
-
             if parent is grandparent.left:
                 uncle = grandparent.right
-
-                if uncle and uncle.color == self.RED:
-                    # Case 3.1: The uncle is red.
-                    #         Black
-                    #        /    \
-                    #     Red     Red
-                    #     /
-                    # Red (Curr)
+                if uncle and uncle.color == self.RED:  # Case 2.1: The uncle is red.
                     # To restore invariant #3 and #4, simply recolor the
                     # grandparent to red and the parent and the uncle to black.
-                    self._restore_parent_and_uncle_are_red(grandparent, parent,
-                                                           uncle)
-                    #          Red
-                    #        /    \
-                    #     Black  Black
-                    #     /
-                    # Red (Curr)
-
+                    self._restore_parent_and_uncle_are_red(
+                        grandparent, parent, uncle
+                    )
                     # In this way, the same case applies to the newly recolored
                     # grandparent.
                     # Then we simply need to recurse towards grandparent.
                     self._restore_invariants(to_restore=grandparent)
-                else:
-                    # Case 3.2: The uncle is black.
-                    if to_restore is parent.right:
-                        # Case 3.2.1: to_restore is the right child.
+                elif uncle and uncle.color == self.BLACK:  # Case 2.2: The uncle is black.
+                    if to_restore is parent.right:  # Case 2.2.1: to_restore is the right child.
                         #         Black
                         #        /    \
                         #     Red    Black
                         #       \
                         #    Red (Curr)
                         self._left_rotate(to_rotate=parent)
-
                         # In this way, the same case applies to the newly left
                         # rotated parent.
                         # Then we simply need to recurse towards parent.
                         self._restore_invariants(to_restore=parent)
-                    else:
-                        # Case 3.2.2: to_restore is the left child.
+                    else:  # Case 2.2.2: to_restore is the left child.
                         #         Black
                         #        /    \
                         #     Red    Black
@@ -293,23 +262,19 @@ class RedBlackTree(object):
                         self._right_rotate(to_rotate=grandparent)
             else:
                 uncle = grandparent.left
-
-                if uncle and uncle.color == self.RED:
-                    # Case 3.1: The uncle is red.
-                    self._restore_parent_and_uncle_are_red(grandparent, parent,
-                                                           uncle)
+                if uncle and uncle.color == self.RED:  # Case 2.1: The uncle is red.
+                    self._restore_parent_and_uncle_are_red(
+                        grandparent, parent, uncle
+                    )
                     self._restore_invariants(to_restore=grandparent)
-                else:
-                    # Case 3.2: The uncle is black.
-                    if to_restore is parent.left:
-                        # Case 3.2.1: to_restore is the left child.
+                elif uncle and uncle.color == self.BLACK:  # Case 2.2: The uncle is black.
+                    if to_restore is parent.left:  # Case 3.2.1: to_restore is the left child.
                         #     Black
                         #    /    \
                         # Black   Red
                         #         /
                         #    Red (Curr)
                         self._right_rotate(to_rotate=parent)
-
                         # In this way, the same case applies to the newly  left
                         # rotated parent.
                         # Then we simply need to recurse towards parent.
@@ -321,7 +286,6 @@ class RedBlackTree(object):
                         # Black   Red
                         #           \
                         #        Red (Curr)
-
                         # Recolor the parent to black, and the grandparent to
                         # red
                         parent.color = self.BLACK
@@ -330,7 +294,7 @@ class RedBlackTree(object):
 
         # Recolor the root to black to ensure invariant #2
         self._root.color = self.BLACK
-        # Running time complexity: O(log n)
+        # Time: O(log n)
 
     def _restore_parent_and_uncle_are_red(self, grandparent: Node, parent: Node,
                                           uncle: Node) -> None:
@@ -345,7 +309,7 @@ class RedBlackTree(object):
         grandparent.color = self.RED
         parent.color = self.BLACK
         uncle.color = self.BLACK
-        # Running time complexity: O(1)
+        # Time: O(1)
 
     def _left_rotate(self, to_rotate: Node) -> None:
         """
@@ -374,7 +338,7 @@ class RedBlackTree(object):
 
         if to_rotate is self._root:
             self._root = to_rotate
-        # Running time complexity: O(1)
+        # Time: O(1)
 
     def _right_rotate(self, to_rotate: Node) -> None:
         """
@@ -403,28 +367,4 @@ class RedBlackTree(object):
 
         if to_rotate is self._root:
             self._root = to_rotate
-        # Running time complexity: O(1)
-
-    def traverse_in_order(self) -> None:
-        """
-        Traverses the Red-Black Tree in-order.
-        :return: None
-        """
-        s = self._traverse_in_order_helper(self._root)
-        print(s.strip())
-
-    def _traverse_in_order_helper(self, curr: Node) -> str:
-        """
-        Private helper function to traverse the given subtree in-order
-        recursively.
-        :param curr: Node
-        :return: str
-        """
-        # Base case
-        if not curr:
-            return ''
-        # Recursive case
-        s = self._traverse_in_order_helper(curr.left)
-        s += str(curr) + ' '
-        s += self._traverse_in_order_helper(curr.right)
-        return s
+        # Time: O(1)

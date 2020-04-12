@@ -1,10 +1,10 @@
-### Red-Black Tree
+# Red-Black Tree
 
 #### Invariants
 
 1. Each node is either **red** or **black**.
 
-   Store one bit more information at each node, indicating whether it's a red node, or a black node
+   *Store one bit more information at each node, indicating whether it's a red node, or a black node*
 
 2. The **root** is always **black**.
 
@@ -16,7 +16,7 @@
 
    i.e., The number of black nodes that a root-null path passes cannot depend on the path.
 
-
+<br>
 
 #### Height Guarantee
 
@@ -53,6 +53,7 @@ According to Invariant #3,
 $$
 Max \ Height = m_{red} + m_{black} \le 2m_{black} \le 2log_2(n + 1)
 $$
-where Max Height is exactly the longest root-null path.
+where *Max Height* is exactly the longest root-null path.
 
 (A Red-Black Tree has to look like a perfectly balanced tree with at most a factor of 2 "inflation".)
+

@@ -139,7 +139,7 @@ public class AVLTree implements BSTInterface {
             root = new Node(key);
             return;
         }
-        root = insertHelper(key, new ArrayList<>(), root);
+        root = insertHelper(key, new ArrayList<>(), root, true);
     }
 
     /**
@@ -148,14 +148,15 @@ public class AVLTree implements BSTInterface {
      * @param key key to insert
      * @param path nodes along the path
      * @param curr current node
+     * @param isLC whether curr is the left child
      * @return root of the subtree after insertion
      */
-    private Node insertHelper(int key, List<Node> path, Node curr) {
+    private Node insertHelper(int key, List<Node> path, Node curr, boolean isLC) {
         // Base case 1: Found the spot to insert
         if (curr == null) {
             Node parent = path.get(path.size() - 1);
             Node newNode = new Node(key);
-            if (curr == parent.left) {
+            if (isLC) {
                 parent.left = newNode;
             } else {
                 parent.right = newNode;
